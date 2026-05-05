@@ -1,0 +1,146 @@
+[
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5387"
+    },
+    "name_en": "Thunderstone",
+    "name_es": "Piedra Trueno",
+    "description_es": "",
+    "server_effect": "evo_use_thunder_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "thunderstone"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f537e"
+    },
+    "name_en": "Deep Sea Scale",
+    "name_es": "Escama Marina",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_deepseascale",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "deep_sea_scale"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5380"
+    },
+    "name_en": "Dragon Scale",
+    "name_es": "Escama de Dragón",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_dragonscale",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "dragon_scale"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5382"
+    },
+    "name_en": "King's Rock",
+    "name_es": "Roca del Rey",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_kingsrock",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "king_s_rock"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f537f"
+    },
+    "name_en": "Deep Sea Tooth",
+    "name_es": "Diente Marino",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_deepseatooth",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "deep_sea_tooth"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5385"
+    },
+    "name_en": "Moon Stone",
+    "name_es": "Piedra Lunar",
+    "description_es": "",
+    "server_effect": "evo_use_moon_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "moon_stone"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5388"
+    },
+    "name_en": "Up-Grade",
+    "name_es": "Mejora",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_upgrade",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "up_grade"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5381"
+    },
+    "name_en": "Fire Stone",
+    "name_es": "Piedra Fuego",
+    "description_es": "",
+    "server_effect": "evo_use_fire_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "fire_stone"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5383"
+    },
+    "name_en": "Leaf Stone",
+    "name_es": "Piedra Hoja",
+    "description_es": "",
+    "server_effect": "evo_use_leaf_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "leaf_stone"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5384"
+    },
+    "name_en": "Metal Coat",
+    "name_es": "Revestimiento Metálico",
+    "description_es": "",
+    "server_effect": "evo_trade_with_item_metalcoat",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "metal_coat"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5386"
+    },
+    "name_en": "Sun Stone",
+    "name_es": "Piedra Solar",
+    "description_es": "",
+    "server_effect": "evo_use_sun_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "sun_stone"
+  },
+  {
+    "_id": {
+      "$oid": "69f070899a42cface88f5389"
+    },
+    "name_en": "Water Stone",
+    "name_es": "Piedra Agua",
+    "description_es": "",
+    "server_effect": "evo_use_water_stone",
+    "category": "evolution",
+    "import_type": "pokemon_item",
+    "idObjeto": "water_stone"
+  }
+]

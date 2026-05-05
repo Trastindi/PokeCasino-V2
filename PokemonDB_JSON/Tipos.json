@@ -1,0 +1,267 @@
+[
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182d7"
+    },
+    "Nombre": "Normal",
+    "Ventajas": [],
+    "Debilidades": [
+      "Lucha"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182d9"
+    },
+    "Nombre": "Agua",
+    "Ventajas": [
+      "Fuego",
+      "Roca",
+      "Tierra"
+    ],
+    "Debilidades": [
+      "Eléctrico",
+      "Planta"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182db"
+    },
+    "Nombre": "Eléctrico",
+    "Ventajas": [
+      "Agua",
+      "Volador"
+    ],
+    "Debilidades": [
+      "Tierra"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e3"
+    },
+    "Nombre": "Roca",
+    "Ventajas": [
+      "Fuego",
+      "Hielo",
+      "Volador",
+      "Bicho"
+    ],
+    "Debilidades": [
+      "Agua",
+      "Planta",
+      "Lucha",
+      "Tierra",
+      "Acero"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182de"
+    },
+    "Nombre": "Veneno",
+    "Ventajas": [
+      "Planta",
+      "Hada"
+    ],
+    "Debilidades": [
+      "Tierra",
+      "Psíquico"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e2"
+    },
+    "Nombre": "Bicho",
+    "Ventajas": [
+      "Planta",
+      "Psíquico",
+      "Siniestro"
+    ],
+    "Debilidades": [
+      "Fuego",
+      "Volador",
+      "Roca"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e4"
+    },
+    "Nombre": "Fantasma",
+    "Ventajas": [
+      "Psíquico",
+      "Fantasma"
+    ],
+    "Debilidades": [
+      "Fantasma",
+      "Siniestro"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182d8"
+    },
+    "Nombre": "Fuego",
+    "Ventajas": [
+      "Planta",
+      "Hielo",
+      "Bicho",
+      "Acero"
+    ],
+    "Debilidades": [
+      "Agua",
+      "Roca",
+      "Tierra"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182dc"
+    },
+    "Nombre": "Hielo",
+    "Ventajas": [
+      "Planta",
+      "Tierra",
+      "Volador",
+      "Dragón"
+    ],
+    "Debilidades": [
+      "Fuego",
+      "Lucha",
+      "Roca",
+      "Acero"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182df"
+    },
+    "Nombre": "Tierra",
+    "Ventajas": [
+      "Fuego",
+      "Eléctrico",
+      "Veneno",
+      "Roca",
+      "Acero"
+    ],
+    "Debilidades": [
+      "Agua",
+      "Planta",
+      "Hielo"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182da"
+    },
+    "Nombre": "Planta",
+    "Ventajas": [
+      "Agua",
+      "Tierra",
+      "Roca"
+    ],
+    "Debilidades": [
+      "Fuego",
+      "Hielo",
+      "Veneno",
+      "Volador",
+      "Bicho"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182dd"
+    },
+    "Nombre": "Lucha",
+    "Ventajas": [
+      "Normal",
+      "Hielo",
+      "Roca",
+      "Acero"
+    ],
+    "Debilidades": [
+      "Volador",
+      "Psíquico",
+      "Hada"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e0"
+    },
+    "Nombre": "Volador",
+    "Ventajas": [
+      "Planta",
+      "Lucha",
+      "Bicho"
+    ],
+    "Debilidades": [
+      "Eléctrico",
+      "Hielo",
+      "Roca"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e1"
+    },
+    "Nombre": "Psíquico",
+    "Ventajas": [
+      "Lucha",
+      "Veneno"
+    ],
+    "Debilidades": [
+      "Bicho",
+      "Fantasma",
+      "Siniestro"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e5"
+    },
+    "Nombre": "Dragón",
+    "Ventajas": [
+      "Dragón"
+    ],
+    "Debilidades": [
+      "Hielo",
+      "Hada",
+      "Dragón"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e6"
+    },
+    "Nombre": "Hada",
+    "Ventajas": [
+      "Lucha",
+      "Dragón",
+      "Siniestro"
+    ],
+    "Debilidades": [
+      "Veneno",
+      "Acero"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "698ca64953c50a2f90d182e7"
+    },
+    "Nombre": "Acero",
+    "Ventajas": [
+      "Hielo",
+      "Roca",
+      "Hada"
+    ],
+    "Debilidades": [
+      "Fuego",
+      "Lucha",
+      "Tierra"
+    ]
+  }
+]

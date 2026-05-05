@@ -1,0 +1,1211 @@
+[
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287c"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.483Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287e"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.495Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172d80fba5cfc3e962883"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "single",
+    "Fecha": {
+      "$date": "2026-02-27T10:32:56.549Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e962885"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 1,
+    "NombrePokemon": "Bulbasaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.322Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e962886"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.329Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e962887"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.335Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e962889"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e96288e"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.372Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962892"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.029Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46cf"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 129,
+    "NombrePokemon": "Magikarp",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.629Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d3"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 129,
+    "NombrePokemon": "Magikarp",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.657Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d7"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 43,
+    "NombrePokemon": "Oddish",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46d8"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 60,
+    "NombrePokemon": "Poliwag",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.158Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46da"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 118,
+    "NombrePokemon": "Goldeen",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.168Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46dc"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 118,
+    "NombrePokemon": "Goldeen",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.179Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46dd"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 69,
+    "NombrePokemon": "Bellsprout",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.184Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46de"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 60,
+    "NombrePokemon": "Poliwag",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.189Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46df"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 129,
+    "NombrePokemon": "Magikarp",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e8"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 98,
+    "NombrePokemon": "Krabby",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.586Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46fa"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4702"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.828Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4704"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.838Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4705"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 1,
+    "NombrePokemon": "Bulbasaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.843Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4706"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.847Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e962878"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.453Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287a"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.470Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287f"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.502Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e962881"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 3,
+    "NombrePokemon": "Venusaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.513Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e96288c"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.362Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e96288f"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.011Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962890"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 1,
+    "NombrePokemon": "Bulbasaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.017Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962898"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.059Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d0"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 72,
+    "NombrePokemon": "Tentacool",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.636Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d1"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 118,
+    "NombrePokemon": "Goldeen",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d2"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 69,
+    "NombrePokemon": "Bellsprout",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.652Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d4"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 116,
+    "NombrePokemon": "Horsea",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46d9"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 16,
+    "NombrePokemon": "Pidgey",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.163Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e4"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 72,
+    "NombrePokemon": "Tentacool",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.565Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e5"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 73,
+    "NombrePokemon": "Tentacruel",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.569Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46ea"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 129,
+    "NombrePokemon": "Magikarp",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.594Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46ef"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 11,
+    "NombrePokemon": "Metapod",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.829Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f1"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 14,
+    "NombrePokemon": "Kakuna",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.838Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f4"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 25,
+    "NombrePokemon": "Pikachu",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.849Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46f7"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.671Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46f8"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 35,
+    "NombrePokemon": "Clefairy",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46f9"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.679Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46fe"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.699Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4703"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.833Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4707"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.851Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4708"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.864Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e962879"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.463Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172da0fba5cfc3e962884"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "single",
+    "Fecha": {
+      "$date": "2026-02-27T10:32:58.937Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e962888"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 3,
+    "NombrePokemon": "Venusaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.342Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e96288d"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.367Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962893"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962894"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962895"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.044Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962896"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.048Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d5"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 60,
+    "NombrePokemon": "Poliwag",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46d6"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 129,
+    "NombrePokemon": "Magikarp",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.673Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46e0"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 118,
+    "NombrePokemon": "Goldeen",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46e1"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 116,
+    "NombrePokemon": "Horsea",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.203Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e2"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 116,
+    "NombrePokemon": "Horsea",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.556Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e7"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 118,
+    "NombrePokemon": "Goldeen",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.582Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46eb"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 98,
+    "NombrePokemon": "Krabby",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.598Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46ed"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 10,
+    "NombrePokemon": "Caterpie",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.821Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f0"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 13,
+    "NombrePokemon": "Weedle",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.834Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46f6"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.667Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46fb"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.687Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46fc"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.691Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46ff"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 41,
+    "NombrePokemon": "Zubat",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.703Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4701"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.824Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4709"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.869Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287b"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.476Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e96287d"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.489Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a16eb50fba5cfc3e962880"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 1,
+    "NombrePokemon": "Bulbasaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:15:17.507Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172d60fba5cfc3e962882"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "single",
+    "Fecha": {
+      "$date": "2026-02-27T10:32:54.296Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e96288a"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 4,
+    "NombrePokemon": "Charmander",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.352Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e10fba5cfc3e96288b"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 2,
+    "NombrePokemon": "Ivysaur",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:05.357Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962891"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 5,
+    "NombrePokemon": "Charmeleon",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a172e80fba5cfc3e962897"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 8,
+    "NombrePokemon": "Wartortle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-02-27T10:33:12.055Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853eb758c1d1ab6ce46ce"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 72,
+    "NombrePokemon": "Tentacool",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:46:51.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853f8758c1d1ab6ce46db"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 43,
+    "NombrePokemon": "Oddish",
+    "Zona": "Ciudad Celeste",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:04.174Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e3"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 72,
+    "NombrePokemon": "Tentacool",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.561Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e6"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 72,
+    "NombrePokemon": "Tentacool",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.577Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a853ff758c1d1ab6ce46e9"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 73,
+    "NombrePokemon": "Tentacruel",
+    "Zona": "Ciudad Canela",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:11.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46ec"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 13,
+    "NombrePokemon": "Weedle",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.814Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46ee"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 10,
+    "NombrePokemon": "Caterpie",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.825Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f2"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 10,
+    "NombrePokemon": "Caterpie",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.841Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f3"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 14,
+    "NombrePokemon": "Kakuna",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.845Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85406758c1d1ab6ce46f5"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 10,
+    "NombrePokemon": "Caterpie",
+    "Zona": "Bosque Verde",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:18.853Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85410758c1d1ab6ce46fd"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 35,
+    "NombrePokemon": "Clefairy",
+    "Zona": "Monte Moon",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:47:28.695Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69a85453758c1d1ab6ce4700"
+    },
+    "UserId": "699d808aa76f269dbf7d92d5",
+    "PokemonId": 7,
+    "NombrePokemon": "Squirtle",
+    "Zona": "Pueblo Paleta",
+    "TipoTirada": "multi",
+    "Fecha": {
+      "$date": "2026-03-04T15:48:35.819Z"
+    }
+  }
+]
