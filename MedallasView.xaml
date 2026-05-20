@@ -1,0 +1,63 @@
+﻿<Window x:Class="PK_Proyect.View.MedallasView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Medallas"
+        Height="600" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F8F0D8">
+
+    <Border BorderBrush="Black" BorderThickness="3" Margin="10" Background="#F8F0D8">
+        <StackPanel Margin="10">
+
+            <TextBlock Text="Medallas"
+                       FontSize="26"
+                       FontFamily="{StaticResource PokemonClassic}"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0 0 0 20"/>
+
+            <!-- GRID DE 15 MEDALLAS -->
+            <UniformGrid Columns="3" Rows="5" Margin="10">
+
+                <ItemsControl ItemsSource="{Binding Medallas}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+
+                            <Border BorderBrush="Black"
+                                    BorderThickness="2"
+                                    Margin="5"
+                                    Padding="5"
+                                    Background="{Binding ColorFondo}"
+                                    ToolTip="{Binding Tooltip}">
+
+                                <Grid>
+
+                                    <!-- Imagen o interrogación -->
+                                    <TextBlock Text="{Binding Icono}"
+                                               FontSize="32"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontFamily="{StaticResource PokemonClassic}"/>
+
+                                    <!-- Nombre debajo -->
+                                    <TextBlock Text="{Binding Nombre}"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Bottom"
+                                               Margin="0 5 0 0"
+                                               FontFamily="{StaticResource PokemonClassic}"/>
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </UniformGrid>
+
+        </StackPanel>
+    </Border>
+</Window>
