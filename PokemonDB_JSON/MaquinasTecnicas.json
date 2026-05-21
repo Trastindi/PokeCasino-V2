@@ -1,0 +1,352 @@
+[
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb828"
+    },
+    "id": "MT05",
+    "name": "Roar"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82b"
+    },
+    "id": "MT08",
+    "name": "Bulk Up"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb833"
+    },
+    "id": "MT16",
+    "name": "Light Screen"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb834"
+    },
+    "id": "MT17",
+    "name": "Protect"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb839"
+    },
+    "id": "MT22",
+    "name": "Solar Beam"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83d"
+    },
+    "id": "MT26",
+    "name": "Earthquake"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb841"
+    },
+    "id": "MT30",
+    "name": "Shadow Ball"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb846"
+    },
+    "id": "MT35",
+    "name": "Flamethrower"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84a"
+    },
+    "id": "MT39",
+    "name": "Rock Tomb"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84c"
+    },
+    "id": "MT41",
+    "name": "Torment"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84e"
+    },
+    "id": "MT43",
+    "name": "Secret Power"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb824"
+    },
+    "id": "MT01",
+    "name": "Focus Punch"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb827"
+    },
+    "id": "MT04",
+    "name": "Calm Mind"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb829"
+    },
+    "id": "MT06",
+    "name": "Toxic"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82a"
+    },
+    "id": "MT07",
+    "name": "Hail"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82e"
+    },
+    "id": "MT11",
+    "name": "Sunny Day"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb832"
+    },
+    "id": "MT15",
+    "name": "Hyper Beam"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb837"
+    },
+    "id": "MT20",
+    "name": "Safeguard"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83e"
+    },
+    "id": "MT27",
+    "name": "Return"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb847"
+    },
+    "id": "MT36",
+    "name": "Sludge Bomb"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb848"
+    },
+    "id": "MT37",
+    "name": "Sandstorm"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb849"
+    },
+    "id": "MT38",
+    "name": "Fire Blast"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb852"
+    },
+    "id": "MT47",
+    "name": "Steel Wing"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb853"
+    },
+    "id": "MT48",
+    "name": "Skill Swap"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb826"
+    },
+    "id": "MT03",
+    "name": "Water Pulse"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82c"
+    },
+    "id": "MT09",
+    "name": "Bullet Seed"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb830"
+    },
+    "id": "MT13",
+    "name": "Ice Beam"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb835"
+    },
+    "id": "MT18",
+    "name": "Rain Dance"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb836"
+    },
+    "id": "MT19",
+    "name": "Giga Drain"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83a"
+    },
+    "id": "MT23",
+    "name": "Iron Tail"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83f"
+    },
+    "id": "MT28",
+    "name": "Dig"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb842"
+    },
+    "id": "MT31",
+    "name": "Brick Break"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84b"
+    },
+    "id": "MT40",
+    "name": "Aerial Ace"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84f"
+    },
+    "id": "MT44",
+    "name": "Rest"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb851"
+    },
+    "id": "MT46",
+    "name": "Thief"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb854"
+    },
+    "id": "MT49",
+    "name": "Snatch"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb855"
+    },
+    "id": "MT50",
+    "name": "Overheat"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb825"
+    },
+    "id": "MT02",
+    "name": "Dragon Claw"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82d"
+    },
+    "id": "MT10",
+    "name": "Hidden Power"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb82f"
+    },
+    "id": "MT12",
+    "name": "Taunt"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb831"
+    },
+    "id": "MT14",
+    "name": "Blizzard"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb838"
+    },
+    "id": "MT21",
+    "name": "Frustration"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83b"
+    },
+    "id": "MT24",
+    "name": "Thunderbolt"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb83c"
+    },
+    "id": "MT25",
+    "name": "Thunder"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb840"
+    },
+    "id": "MT29",
+    "name": "Psychic"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb843"
+    },
+    "id": "MT32",
+    "name": "Double Team"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb844"
+    },
+    "id": "MT33",
+    "name": "Reflect"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb845"
+    },
+    "id": "MT34",
+    "name": "Shock Wave"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb84d"
+    },
+    "id": "MT42",
+    "name": "Facade"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25e18fee368f314cb850"
+    },
+    "id": "MT45",
+    "name": "Attract"
+  }
+]

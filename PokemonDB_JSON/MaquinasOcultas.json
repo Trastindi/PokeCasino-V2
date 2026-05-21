@@ -1,0 +1,51 @@
+[
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb81b"
+    },
+    "id": "MO01",
+    "name": "Cut"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb81c"
+    },
+    "id": "MO02",
+    "name": "Fly"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb81e"
+    },
+    "id": "MO04",
+    "name": "Strength"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb820"
+    },
+    "id": "MO06",
+    "name": "Rock Smash"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb81f"
+    },
+    "id": "MO05",
+    "name": "Flash"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb81d"
+    },
+    "id": "MO03",
+    "name": "Surf"
+  },
+  {
+    "_id": {
+      "$oid": "69ef25a78fee368f314cb821"
+    },
+    "id": "MO07",
+    "name": "Waterfall"
+  }
+]

@@ -1,0 +1,444 @@
+[
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc531"
+    },
+    "attack_type": "Normal",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 0.5,
+      "Fantasma": 0,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc537"
+    },
+    "attack_type": "Lucha",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 2,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 2,
+      "Lucha": 1,
+      "Veneno": 0.5,
+      "Tierra": 1,
+      "Volador": 0.5,
+      "Psíquico": 0.5,
+      "Bicho": 0.5,
+      "Roca": 2,
+      "Fantasma": 0,
+      "Dragón": 1,
+      "Siniestro": 2,
+      "Acero": 2
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc538"
+    },
+    "attack_type": "Veneno",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 2,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 0.5,
+      "Tierra": 0.5,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 0.5,
+      "Fantasma": 0.5,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 0
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc536"
+    },
+    "attack_type": "Hielo",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 0.5,
+      "Agua": 0.5,
+      "Planta": 2,
+      "Eléctrico": 1,
+      "Hielo": 0.5,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 2,
+      "Volador": 2,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 1,
+      "Dragón": 2,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53d"
+    },
+    "attack_type": "Roca",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 2,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 2,
+      "Lucha": 0.5,
+      "Veneno": 1,
+      "Tierra": 0.5,
+      "Volador": 2,
+      "Psíquico": 1,
+      "Bicho": 2,
+      "Roca": 1,
+      "Fantasma": 1,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53e"
+    },
+    "attack_type": "Fantasma",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 0,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 2,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 2,
+      "Dragón": 1,
+      "Siniestro": 0.5,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc540"
+    },
+    "attack_type": "Siniestro",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 0.5,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 2,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 2,
+      "Dragón": 1,
+      "Siniestro": 0.5,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc532"
+    },
+    "attack_type": "Fuego",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 0.5,
+      "Agua": 0.5,
+      "Planta": 2,
+      "Eléctrico": 1,
+      "Hielo": 2,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 2,
+      "Roca": 0.5,
+      "Fantasma": 1,
+      "Dragón": 0.5,
+      "Siniestro": 1,
+      "Acero": 2
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc534"
+    },
+    "attack_type": "Planta",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 0.5,
+      "Agua": 2,
+      "Planta": 0.5,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 0.5,
+      "Tierra": 2,
+      "Volador": 0.5,
+      "Psíquico": 1,
+      "Bicho": 0.5,
+      "Roca": 2,
+      "Fantasma": 1,
+      "Dragón": 0.5,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc535"
+    },
+    "attack_type": "Eléctrico",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 2,
+      "Planta": 0.5,
+      "Eléctrico": 0.5,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 0,
+      "Volador": 2,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 1,
+      "Dragón": 0.5,
+      "Siniestro": 1,
+      "Acero": 1
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53b"
+    },
+    "attack_type": "Psíquico",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 2,
+      "Veneno": 2,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 0.5,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 1,
+      "Dragón": 1,
+      "Siniestro": 0,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53f"
+    },
+    "attack_type": "Dragón",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 1,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 1,
+      "Dragón": 2,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc533"
+    },
+    "attack_type": "Agua",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 2,
+      "Agua": 0.5,
+      "Planta": 0.5,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 2,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 2,
+      "Fantasma": 1,
+      "Dragón": 0.5,
+      "Siniestro": 1,
+      "Acero": 1
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc539"
+    },
+    "attack_type": "Tierra",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 2,
+      "Agua": 1,
+      "Planta": 0.5,
+      "Eléctrico": 2,
+      "Hielo": 1,
+      "Lucha": 1,
+      "Veneno": 2,
+      "Tierra": 1,
+      "Volador": 0,
+      "Psíquico": 1,
+      "Bicho": 0.5,
+      "Roca": 2,
+      "Fantasma": 1,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 2
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53a"
+    },
+    "attack_type": "Volador",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 1,
+      "Agua": 1,
+      "Planta": 2,
+      "Eléctrico": 0.5,
+      "Hielo": 1,
+      "Lucha": 2,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 2,
+      "Roca": 0.5,
+      "Fantasma": 1,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc53c"
+    },
+    "attack_type": "Bicho",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 0.5,
+      "Agua": 1,
+      "Planta": 2,
+      "Eléctrico": 1,
+      "Hielo": 1,
+      "Lucha": 0.5,
+      "Veneno": 0.5,
+      "Tierra": 1,
+      "Volador": 0.5,
+      "Psíquico": 2,
+      "Bicho": 1,
+      "Roca": 1,
+      "Fantasma": 0.5,
+      "Dragón": 1,
+      "Siniestro": 2,
+      "Acero": 0.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ef73ce11746b1f1a5dc541"
+    },
+    "attack_type": "Acero",
+    "generation": 3,
+    "effectiveness": {
+      "Normal": 1,
+      "Fuego": 0.5,
+      "Agua": 0.5,
+      "Planta": 1,
+      "Eléctrico": 0.5,
+      "Hielo": 2,
+      "Lucha": 1,
+      "Veneno": 1,
+      "Tierra": 1,
+      "Volador": 1,
+      "Psíquico": 1,
+      "Bicho": 1,
+      "Roca": 2,
+      "Fantasma": 1,
+      "Dragón": 1,
+      "Siniestro": 1,
+      "Acero": 0.5
+    }
+  }
+]

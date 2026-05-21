@@ -1,0 +1,2101 @@
+[
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5149"
+    },
+    "name_en": "Chlorophyll",
+    "name_es": "Clorofila",
+    "generation": 3,
+    "description_es": "Aumenta la Velocidad con sol.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "weather_is",
+            "value": "sun"
+          }
+        ],
+        "params": {
+          "stat": "speed",
+          "multiplier": 2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514f"
+    },
+    "name_en": "Damp",
+    "name_es": "Humedad",
+    "generation": 3,
+    "description_es": "Impide ciertas explosiones.",
+    "triggers": [
+      {
+        "event": "on_before_move",
+        "handler": "block_moves_by_name",
+        "target": "all",
+        "conditions": [],
+        "params": {
+          "moves": [
+            "Self-Destruct",
+            "Explosion"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5151"
+    },
+    "name_en": "Drought",
+    "name_es": "Sequía",
+    "generation": 3,
+    "description_es": "Crea sol intenso al entrar en combate.",
+    "triggers": [
+      {
+        "event": "on_enter_battle",
+        "handler": "set_weather",
+        "target": "battle",
+        "conditions": [],
+        "params": {
+          "weather": "sun",
+          "duration": null
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5155"
+    },
+    "name_en": "Flash Fire",
+    "name_es": "Absorbe Fuego",
+    "generation": 3,
+    "description_es": "Potencia el fuego si recibe ataques de fuego.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "grant_move_immunity",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "fire"
+          }
+        ],
+        "params": {}
+      },
+      {
+        "event": "on_receive_move",
+        "handler": "set_volatile_flag",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "fire"
+          }
+        ],
+        "params": {
+          "flag": "flash_fire_boost",
+          "value": true
+        }
+      },
+      {
+        "event": "on_move_power_calc",
+        "handler": "modify_move_power",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "fire"
+          },
+          {
+            "type": "volatile_flag_is",
+            "flag": "flash_fire_boost",
+            "value": true
+          }
+        ],
+        "params": {
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5156"
+    },
+    "name_en": "Forecast",
+    "name_es": "Predicción",
+    "generation": 3,
+    "description_es": "Cambia de tipo según el clima.",
+    "triggers": [
+      {
+        "event": "on_weather_change",
+        "handler": "set_type_from_weather",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "species_is",
+            "value": "Castform"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5158"
+    },
+    "name_en": "Huge Power",
+    "name_es": "Potencia",
+    "generation": 3,
+    "description_es": "Aumenta mucho el Ataque.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "stat": "attack",
+          "multiplier": 2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515c"
+    },
+    "name_en": "Inner Focus",
+    "name_es": "Impasible",
+    "generation": 3,
+    "description_es": "Evita retroceder.",
+    "triggers": [
+      {
+        "event": "on_flinch_attempt",
+        "handler": "block_flinch",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515e"
+    },
+    "name_en": "Intimidate",
+    "name_es": "Intimidación",
+    "generation": 3,
+    "description_es": "Baja el Ataque del rival al entrar en combate.",
+    "triggers": [
+      {
+        "event": "on_enter_battle",
+        "handler": "apply_stat_stage_change",
+        "target": "adjacent_opponents",
+        "conditions": [],
+        "params": {
+          "stat": "attack",
+          "stages": -1
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5163"
+    },
+    "name_en": "Liquid Ooze",
+    "name_es": "Lodo Líquido",
+    "generation": 3,
+    "description_es": "Hiere a quien intente drenarle PS.",
+    "triggers": [
+      {
+        "event": "on_drain_attempt",
+        "handler": "invert_drain_to_damage",
+        "target": "move_source",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5164"
+    },
+    "name_en": "Magma Armor",
+    "name_es": "Escudo Magma",
+    "generation": 3,
+    "description_es": "Evita congelarse.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "freeze"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5165"
+    },
+    "name_en": "Magnet Pull",
+    "name_es": "Imán",
+    "generation": 3,
+    "description_es": "Impide huir a los Pokémon de tipo acero.",
+    "triggers": [
+      {
+        "event": "on_escape_attempt",
+        "handler": "block_escape",
+        "target": "opponents",
+        "conditions": [
+          {
+            "type": "target_has_type",
+            "value": "steel"
+          }
+        ],
+        "params": {}
+      },
+      {
+        "event": "on_switch_attempt",
+        "handler": "block_switch",
+        "target": "opponents",
+        "conditions": [
+          {
+            "type": "target_has_type",
+            "value": "steel"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516a"
+    },
+    "name_en": "Overgrow",
+    "name_es": "Espesura",
+    "generation": 3,
+    "description_es": "Potencia los movimientos de planta cuando le quedan pocos PS.",
+    "triggers": [
+      {
+        "event": "on_move_power_calc",
+        "handler": "modify_move_power",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "grass"
+          },
+          {
+            "type": "hp_lte_fraction",
+            "value": 0.3333333333
+          }
+        ],
+        "params": {
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516e"
+    },
+    "name_en": "Pressure",
+    "name_es": "Presión",
+    "generation": 3,
+    "description_es": "Hace que el rival gaste más PP.",
+    "triggers": [
+      {
+        "event": "on_move_pp_consumption",
+        "handler": "increase_pp_consumption_against_self",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "extra_pp": 1
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516f"
+    },
+    "name_en": "Pure Power",
+    "name_es": "Poder Puro",
+    "generation": 3,
+    "description_es": "Aumenta mucho el Ataque.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "stat": "attack",
+          "multiplier": 2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5178"
+    },
+    "name_en": "Shed Skin",
+    "name_es": "Mudar",
+    "generation": 3,
+    "description_es": "Puede curar sus estados por sí mismo.",
+    "triggers": [
+      {
+        "event": "on_turn_end",
+        "handler": "cure_major_status_chance",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "has_major_status",
+            "value": true
+          }
+        ],
+        "params": {
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5183"
+    },
+    "name_en": "Swift Swim",
+    "name_es": "Nado Rápido",
+    "generation": 3,
+    "description_es": "Aumenta la Velocidad cuando llueve.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "weather_is",
+            "value": "rain"
+          }
+        ],
+        "params": {
+          "stat": "speed",
+          "multiplier": 2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518a"
+    },
+    "name_en": "Water Absorb",
+    "name_es": "Absorbe Agua",
+    "generation": 3,
+    "description_es": "Recupera PS si recibe ataques de agua.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "heal_on_type_hit",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "water"
+          }
+        ],
+        "params": {
+          "fraction": 0.25,
+          "grant_immunity": true
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518b"
+    },
+    "name_en": "Water Veil",
+    "name_es": "Velo Agua",
+    "generation": 3,
+    "description_es": "Evita quemarse.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "burn"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5190"
+    },
+    "name_en": "Illuminate",
+    "name_es": "Iluminación",
+    "generation": 3,
+    "description_es": "Aumenta la frecuencia de encuentros salvajes.",
+    "triggers": [
+      {
+        "event": "on_field_check",
+        "handler": "increase_wild_encounters",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5192"
+    },
+    "name_en": "Shed Skin",
+    "name_es": "Mudar",
+    "generation": 3,
+    "description_es": "Puede curar sus estados por sí mismo.",
+    "triggers": [
+      {
+        "event": "on_turn_end",
+        "handler": "cure_major_status_chance",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "has_major_status",
+            "value": true
+          }
+        ],
+        "params": {
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5193"
+    },
+    "name_en": "Adaptability",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5194"
+    },
+    "name_en": "Motor Drive",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5196"
+    },
+    "name_en": "Download",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5199"
+    },
+    "name_en": "Forewarn",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519c"
+    },
+    "name_en": "Mold Breaker",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519e"
+    },
+    "name_en": "Solid Rock",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a2"
+    },
+    "name_en": "Simple",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a4"
+    },
+    "name_en": "Skill Link",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a7"
+    },
+    "name_en": "Tinted Lens",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a8"
+    },
+    "name_en": "No Guard",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51aa"
+    },
+    "name_en": "Gluttony",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5146"
+    },
+    "name_en": "Arena Trap",
+    "name_es": "Trampa Arena",
+    "generation": 3,
+    "description_es": "Impide que el rival huya.",
+    "triggers": [
+      {
+        "event": "on_escape_attempt",
+        "handler": "block_escape",
+        "target": "opponents",
+        "conditions": [
+          {
+            "type": "is_grounded",
+            "value": true
+          }
+        ],
+        "params": {}
+      },
+      {
+        "event": "on_switch_attempt",
+        "handler": "block_switch",
+        "target": "opponents",
+        "conditions": [
+          {
+            "type": "is_grounded",
+            "value": true
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5148"
+    },
+    "name_en": "Blaze",
+    "name_es": "Mar Llamas",
+    "generation": 3,
+    "description_es": "Potencia los movimientos de fuego cuando le quedan pocos PS.",
+    "triggers": [
+      {
+        "event": "on_move_power_calc",
+        "handler": "modify_move_power",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "fire"
+          },
+          {
+            "type": "hp_lte_fraction",
+            "value": 0.3333333333
+          }
+        ],
+        "params": {
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514a"
+    },
+    "name_en": "Clear Body",
+    "name_es": "Cuerpo Puro",
+    "generation": 3,
+    "description_es": "Evita que le bajen las características.",
+    "triggers": [
+      {
+        "event": "on_stat_drop_attempt",
+        "handler": "block_stat_drop",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "source_is_opponent",
+            "value": true
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514c"
+    },
+    "name_en": "Color Change",
+    "name_es": "Cambio Color",
+    "generation": 3,
+    "description_es": "Cambia de tipo según el ataque recibido.",
+    "triggers": [
+      {
+        "event": "on_after_hit",
+        "handler": "change_type_to_move_type",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_dealt_damage",
+            "value": true
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5153"
+    },
+    "name_en": "Effect Spore",
+    "name_es": "Efecto Espora",
+    "generation": 3,
+    "description_es": "Puede causar estados al recibir contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "apply_random_status_chance",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "statuses": [
+            "poison",
+            "paralysis",
+            "sleep"
+          ],
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5154"
+    },
+    "name_en": "Flame Body",
+    "name_es": "Cuerpo Llama",
+    "generation": 3,
+    "description_es": "Puede quemar al rival al contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "apply_status_chance",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "status": "burn",
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5159"
+    },
+    "name_en": "Hustle",
+    "name_es": "Entusiasmo",
+    "generation": 3,
+    "description_es": "Aumenta el Ataque pero baja la precisión de los movimientos físicos.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "stat": "attack",
+          "multiplier": 1.5
+        }
+      },
+      {
+        "event": "on_accuracy_calc",
+        "handler": "modify_accuracy",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_category_is",
+            "value": "physical"
+          }
+        ],
+        "params": {
+          "multiplier": 0.8
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5161"
+    },
+    "name_en": "Lightning Rod",
+    "name_es": "Pararrayos",
+    "generation": 3,
+    "description_es": "Atrae ataques eléctricos.",
+    "triggers": [
+      {
+        "event": "on_move_targeting",
+        "handler": "redirect_move_to_self",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "electric"
+          },
+          {
+            "type": "battle_format_is",
+            "value": "double"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5162"
+    },
+    "name_en": "Limber",
+    "name_es": "Flexibilidad",
+    "generation": 3,
+    "description_es": "Evita la parálisis.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "paralysis"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516c"
+    },
+    "name_en": "Plus",
+    "name_es": "Más",
+    "generation": 3,
+    "description_es": "Potencia al Pokémon si combate junto a uno con Menos.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "ally_has_ability",
+            "value": "Minus"
+          }
+        ],
+        "params": {
+          "stat": "special_attack",
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5170"
+    },
+    "name_en": "Rain Dish",
+    "name_es": "Cura Lluvia",
+    "generation": 3,
+    "description_es": "Recupera PS cuando llueve.",
+    "triggers": [
+      {
+        "event": "on_turn_end",
+        "handler": "heal_fraction_max_hp",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "weather_is",
+            "value": "rain"
+          }
+        ],
+        "params": {
+          "fraction": 0.0625
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5175"
+    },
+    "name_en": "Sand Veil",
+    "name_es": "Velo Arena",
+    "generation": 3,
+    "description_es": "Aumenta la evasión en tormenta de arena.",
+    "triggers": [
+      {
+        "event": "on_evasion_calc",
+        "handler": "modify_evasion",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "weather_is",
+            "value": "sandstorm"
+          }
+        ],
+        "params": {
+          "multiplier": 1.2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5177"
+    },
+    "name_en": "Shadow Tag",
+    "name_es": "Sombra Trampa",
+    "generation": 3,
+    "description_es": "Impide que el rival huya.",
+    "triggers": [
+      {
+        "event": "on_escape_attempt",
+        "handler": "block_escape",
+        "target": "opponents",
+        "conditions": [],
+        "params": {}
+      },
+      {
+        "event": "on_switch_attempt",
+        "handler": "block_switch",
+        "target": "opponents",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517b"
+    },
+    "name_en": "Soundproof",
+    "name_es": "Insonorizar",
+    "generation": 3,
+    "description_es": "Es inmune a movimientos de sonido.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "grant_move_group_immunity",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_group_is",
+            "value": "sound"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5180"
+    },
+    "name_en": "Sturdy",
+    "name_es": "Robustez",
+    "generation": 3,
+    "description_es": "Protege de ciertos movimientos fulminantes.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "grant_move_group_immunity",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_group_is",
+            "value": "ohko"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5181"
+    },
+    "name_en": "Suction Cups",
+    "name_es": "Ventosas",
+    "generation": 3,
+    "description_es": "Evita ser arrastrado o cambiado.",
+    "triggers": [
+      {
+        "event": "on_forced_switch_attempt",
+        "handler": "block_forced_switch",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5185"
+    },
+    "name_en": "Thick Fat",
+    "name_es": "Sebo",
+    "generation": 3,
+    "description_es": "Reduce el daño de fuego y hielo.",
+    "triggers": [
+      {
+        "event": "on_damage_calc",
+        "handler": "modify_damage_taken",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_in",
+            "value": [
+              "fire",
+              "ice"
+            ]
+          }
+        ],
+        "params": {
+          "multiplier": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5186"
+    },
+    "name_en": "Torrent",
+    "name_es": "Torrente",
+    "generation": 3,
+    "description_es": "Potencia los movimientos de agua cuando le quedan pocos PS.",
+    "triggers": [
+      {
+        "event": "on_move_power_calc",
+        "handler": "modify_move_power",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "water"
+          },
+          {
+            "type": "hp_lte_fraction",
+            "value": 0.3333333333
+          }
+        ],
+        "params": {
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518d"
+    },
+    "name_en": "Wonder Guard",
+    "name_es": "Superguarda",
+    "generation": 3,
+    "description_es": "Solo recibe daño de ataques muy eficaces.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "block_damage_if_not_supereffective",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_is_damaging",
+            "value": true
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518e"
+    },
+    "name_en": "Vital Spirit",
+    "name_es": "Espíritu Vital",
+    "generation": 3,
+    "description_es": "Evita quedarse dormido.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "sleep"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518f"
+    },
+    "name_en": "Pickup",
+    "name_es": "Recogida",
+    "generation": 3,
+    "description_es": "Puede recoger objetos tras el combate.",
+    "triggers": [
+      {
+        "event": "on_battle_end",
+        "handler": "pickup_field_item_after_battle",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "battle_type_in",
+            "value": [
+              "wild",
+              "trainer"
+            ]
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a3"
+    },
+    "name_en": "Normalize",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a5"
+    },
+    "name_en": "Slow Start",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a9"
+    },
+    "name_en": "Super Luck",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514b"
+    },
+    "name_en": "Cloud Nine",
+    "name_es": "Aclimatación",
+    "generation": 3,
+    "description_es": "Anula los efectos del clima.",
+    "triggers": [
+      {
+        "event": "on_battle_state_check",
+        "handler": "suppress_weather_effects",
+        "target": "battle",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514e"
+    },
+    "name_en": "Cute Charm",
+    "name_es": "Gran Encanto",
+    "generation": 3,
+    "description_es": "Puede enamorar al rival al contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "apply_status_chance",
+        "target": "move_source",
+        "conditions": [
+          {
+            "type": "is_opposite_gender",
+            "value": true
+          }
+        ],
+        "params": {
+          "status": "infatuation",
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515b"
+    },
+    "name_en": "Immunity",
+    "name_es": "Inmunidad",
+    "generation": 3,
+    "description_es": "Evita ser envenenado.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "poison"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515d"
+    },
+    "name_en": "Insomnia",
+    "name_es": "Insomnio",
+    "generation": 3,
+    "description_es": "Evita quedarse dormido.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "sleep"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5160"
+    },
+    "name_en": "Levitate",
+    "name_es": "Levitación",
+    "generation": 3,
+    "description_es": "Es inmune a los movimientos de tipo tierra.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "grant_move_immunity",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "ground"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5166"
+    },
+    "name_en": "Marvel Scale",
+    "name_es": "Escama Especial",
+    "generation": 3,
+    "description_es": "Aumenta la Defensa cuando tiene un problema de estado.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "has_major_status",
+            "value": true
+          }
+        ],
+        "params": {
+          "stat": "defense",
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5167"
+    },
+    "name_en": "Minus",
+    "name_es": "Menos",
+    "generation": 3,
+    "description_es": "Potencia al Pokémon si combate junto a uno con Más.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "ally_has_ability",
+            "value": "Plus"
+          }
+        ],
+        "params": {
+          "stat": "special_attack",
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5168"
+    },
+    "name_en": "Natural Cure",
+    "name_es": "Cura Natural",
+    "generation": 3,
+    "description_es": "Cura sus estados al ser cambiado.",
+    "triggers": [
+      {
+        "event": "on_switch_out",
+        "handler": "cure_major_status",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5169"
+    },
+    "name_en": "Oblivious",
+    "name_es": "Despiste",
+    "generation": 3,
+    "description_es": "Evita el enamoramiento.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "infatuation"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5173"
+    },
+    "name_en": "Run Away",
+    "name_es": "Fuga",
+    "generation": 3,
+    "description_es": "Facilita huir de combates salvajes.",
+    "triggers": [
+      {
+        "event": "on_escape_attempt",
+        "handler": "guarantee_escape",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "battle_type_is",
+            "value": "wild"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517e"
+    },
+    "name_en": "Stench",
+    "name_es": "Hedor",
+    "generation": 3,
+    "description_es": "Ayuda a mantener alejados a los Pokémon salvajes.",
+    "triggers": [
+      {
+        "event": "on_field_check",
+        "handler": "reduce_wild_encounters",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5184"
+    },
+    "name_en": "Synchronize",
+    "name_es": "Sincronía",
+    "generation": 3,
+    "description_es": "Transmite su estado al rival.",
+    "triggers": [
+      {
+        "event": "on_status_applied",
+        "handler": "reflect_status_to_source",
+        "target": "status_source",
+        "conditions": [
+          {
+            "type": "status_in",
+            "value": [
+              "burn",
+              "poison",
+              "paralysis"
+            ]
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5187"
+    },
+    "name_en": "Trace",
+    "name_es": "Rastro",
+    "generation": 3,
+    "description_es": "Copia la habilidad del rival.",
+    "triggers": [
+      {
+        "event": "on_enter_battle",
+        "handler": "copy_opponent_ability",
+        "target": "opponent",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5188"
+    },
+    "name_en": "Truant",
+    "name_es": "Ausente",
+    "generation": 3,
+    "description_es": "Solo actúa un turno de cada dos.",
+    "triggers": [
+      {
+        "event": "on_before_move",
+        "handler": "skip_turn_every_other_turn",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f518c"
+    },
+    "name_en": "White Smoke",
+    "name_es": "Humo Blanco",
+    "generation": 3,
+    "description_es": "Evita que le bajen las características.",
+    "triggers": [
+      {
+        "event": "on_stat_drop_attempt",
+        "handler": "block_stat_drop",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "source_is_opponent",
+            "value": true
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5191"
+    },
+    "name_en": "Stench",
+    "name_es": "Hedor",
+    "generation": 3,
+    "description_es": "Ayuda a mantener alejados a los Pokémon salvajes.",
+    "triggers": [
+      {
+        "event": "on_field_check",
+        "handler": "reduce_wild_encounters",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5197"
+    },
+    "name_en": "Aftermath",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519a"
+    },
+    "name_en": "Dry Skin",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519d"
+    },
+    "name_en": "Filter",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519f"
+    },
+    "name_en": "Sniper",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a0"
+    },
+    "name_en": "Tinted Lens",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51ab"
+    },
+    "name_en": "Anger Point",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5145"
+    },
+    "name_en": "Air Lock",
+    "name_es": "Bucle Aire",
+    "generation": 3,
+    "description_es": "Anula los efectos del clima.",
+    "triggers": [
+      {
+        "event": "on_battle_state_check",
+        "handler": "suppress_weather_effects",
+        "target": "battle",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5147"
+    },
+    "name_en": "Battle Armor",
+    "name_es": "Armadura Batalla",
+    "generation": 3,
+    "description_es": "Bloquea los golpes críticos.",
+    "triggers": [
+      {
+        "event": "on_critical_check",
+        "handler": "prevent_critical_hit",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f514d"
+    },
+    "name_en": "Compound Eyes",
+    "name_es": "Ojo Compuesto",
+    "generation": 3,
+    "description_es": "Aumenta la precisión.",
+    "triggers": [
+      {
+        "event": "on_accuracy_calc",
+        "handler": "modify_accuracy",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "multiplier": 1.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5150"
+    },
+    "name_en": "Drizzle",
+    "name_es": "Llovizna",
+    "generation": 3,
+    "description_es": "Hace que llueva al entrar en combate.",
+    "triggers": [
+      {
+        "event": "on_enter_battle",
+        "handler": "set_weather",
+        "target": "battle",
+        "conditions": [],
+        "params": {
+          "weather": "rain",
+          "duration": null
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5152"
+    },
+    "name_en": "Early Bird",
+    "name_es": "Madrugador",
+    "generation": 3,
+    "description_es": "Se despierta antes de los sueños.",
+    "triggers": [
+      {
+        "event": "on_sleep_turns_calc",
+        "handler": "reduce_sleep_duration",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "multiplier": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5157"
+    },
+    "name_en": "Guts",
+    "name_es": "Agallas",
+    "generation": 3,
+    "description_es": "Aumenta el Ataque cuando sufre un problema de estado.",
+    "triggers": [
+      {
+        "event": "on_stat_calc",
+        "handler": "modify_stat",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "has_major_status",
+            "value": true
+          }
+        ],
+        "params": {
+          "stat": "attack",
+          "multiplier": 1.5
+        }
+      },
+      {
+        "event": "on_burn_attack_penalty_check",
+        "handler": "suppress_burn_attack_penalty",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515a"
+    },
+    "name_en": "Hyper Cutter",
+    "name_es": "Corte Fuerte",
+    "generation": 3,
+    "description_es": "Evita que baje su Ataque.",
+    "triggers": [
+      {
+        "event": "on_stat_drop_attempt",
+        "handler": "block_specific_stat_drop",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "source_is_opponent",
+            "value": true
+          }
+        ],
+        "params": {
+          "stat": "attack"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f515f"
+    },
+    "name_en": "Keen Eye",
+    "name_es": "Vista Lince",
+    "generation": 3,
+    "description_es": "Evita que baje su Precisión.",
+    "triggers": [
+      {
+        "event": "on_stat_drop_attempt",
+        "handler": "block_specific_stat_drop",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "source_is_opponent",
+            "value": true
+          }
+        ],
+        "params": {
+          "stat": "accuracy"
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516b"
+    },
+    "name_en": "Own Tempo",
+    "name_es": "Ritmo Propio",
+    "generation": 3,
+    "description_es": "Evita la confusión.",
+    "triggers": [
+      {
+        "event": "on_status_attempt",
+        "handler": "block_status",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "status_is",
+            "value": "confusion"
+          }
+        ],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f516d"
+    },
+    "name_en": "Poison Point",
+    "name_es": "Punto Tóxico",
+    "generation": 3,
+    "description_es": "Puede envenenar al rival al contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "apply_status_chance",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "status": "poison",
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5171"
+    },
+    "name_en": "Rock Head",
+    "name_es": "Cabeza Roca",
+    "generation": 3,
+    "description_es": "Evita daño de retroceso.",
+    "triggers": [
+      {
+        "event": "on_recoil_check",
+        "handler": "prevent_recoil_damage",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5172"
+    },
+    "name_en": "Rough Skin",
+    "name_es": "Piel Tosca",
+    "generation": 3,
+    "description_es": "Daña al rival al contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "deal_fraction_max_hp_damage",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "fraction": 0.0625
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5174"
+    },
+    "name_en": "Sand Stream",
+    "name_es": "Chorro Arena",
+    "generation": 3,
+    "description_es": "Crea una tormenta de arena al entrar en combate.",
+    "triggers": [
+      {
+        "event": "on_enter_battle",
+        "handler": "set_weather",
+        "target": "battle",
+        "conditions": [],
+        "params": {
+          "weather": "sandstorm",
+          "duration": null
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5176"
+    },
+    "name_en": "Serene Grace",
+    "name_es": "Dicha",
+    "generation": 3,
+    "description_es": "Aumenta la probabilidad de efectos secundarios.",
+    "triggers": [
+      {
+        "event": "on_secondary_effect_chance_calc",
+        "handler": "modify_secondary_effect_chance",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "multiplier": 2
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5179"
+    },
+    "name_en": "Shell Armor",
+    "name_es": "Caparazón",
+    "generation": 3,
+    "description_es": "Bloquea los golpes críticos.",
+    "triggers": [
+      {
+        "event": "on_critical_check",
+        "handler": "prevent_critical_hit",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517a"
+    },
+    "name_en": "Shield Dust",
+    "name_es": "Polvo Escudo",
+    "generation": 3,
+    "description_es": "Bloquea efectos secundarios de ataques.",
+    "triggers": [
+      {
+        "event": "on_secondary_effect_attempt",
+        "handler": "block_secondary_effects_from_moves",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517c"
+    },
+    "name_en": "Speed Boost",
+    "name_es": "Impulso",
+    "generation": 3,
+    "description_es": "Aumenta la Velocidad con el tiempo.",
+    "triggers": [
+      {
+        "event": "on_turn_end",
+        "handler": "apply_stat_stage_change",
+        "target": "self",
+        "conditions": [],
+        "params": {
+          "stat": "speed",
+          "stages": 1
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517d"
+    },
+    "name_en": "Static",
+    "name_es": "Electricidad Estática",
+    "generation": 3,
+    "description_es": "Puede paralizar al rival al contacto.",
+    "triggers": [
+      {
+        "event": "on_contact_taken",
+        "handler": "apply_status_chance",
+        "target": "move_source",
+        "conditions": [],
+        "params": {
+          "status": "paralysis",
+          "chance": 0.3
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f517f"
+    },
+    "name_en": "Sticky Hold",
+    "name_es": "Viscosidad",
+    "generation": 3,
+    "description_es": "Evita que le quiten el objeto.",
+    "triggers": [
+      {
+        "event": "on_item_remove_attempt",
+        "handler": "block_item_removal",
+        "target": "self",
+        "conditions": [],
+        "params": {}
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5182"
+    },
+    "name_en": "Swarm",
+    "name_es": "Enjambre",
+    "generation": 3,
+    "description_es": "Potencia los movimientos de bicho cuando le quedan pocos PS.",
+    "triggers": [
+      {
+        "event": "on_move_power_calc",
+        "handler": "modify_move_power",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "bug"
+          },
+          {
+            "type": "hp_lte_fraction",
+            "value": 0.3333333333
+          }
+        ],
+        "params": {
+          "multiplier": 1.5
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5189"
+    },
+    "name_en": "Volt Absorb",
+    "name_es": "Absorbe Elec.",
+    "generation": 3,
+    "description_es": "Recupera PS si recibe ataques eléctricos.",
+    "triggers": [
+      {
+        "event": "on_receive_move",
+        "handler": "heal_on_type_hit",
+        "target": "self",
+        "conditions": [
+          {
+            "type": "move_type_is",
+            "value": "electric"
+          }
+        ],
+        "params": {
+          "fraction": 0.25,
+          "grant_immunity": true
+        }
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5195"
+    },
+    "name_en": "Bad Dreams",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f5198"
+    },
+    "name_en": "Anticipation",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f519b"
+    },
+    "name_en": "Leaf Guard",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a1"
+    },
+    "name_en": "Unaware",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51a6"
+    },
+    "name_en": "Technician",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  },
+  {
+    "_id": {
+      "$oid": "69f062a09a42cface88f51ac"
+    },
+    "name_en": "Mold Breaker",
+    "name_es": "",
+    "generation": 3,
+    "description_es": "",
+    "triggers": []
+  }
+]

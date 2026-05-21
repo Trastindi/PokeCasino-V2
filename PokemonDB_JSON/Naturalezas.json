@@ -1,0 +1,227 @@
+[
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9037"
+    },
+    "id": 1,
+    "nombre": "Fuerte",
+    "sube": null,
+    "baja": null
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9038"
+    },
+    "id": 2,
+    "nombre": "Huraña",
+    "sube": "Ataque",
+    "baja": "Defensa"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9039"
+    },
+    "id": 3,
+    "nombre": "Audaz",
+    "sube": "Ataque",
+    "baja": "Velocidad"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903a"
+    },
+    "id": 4,
+    "nombre": "Firme",
+    "sube": "Ataque",
+    "baja": "Ataque especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903b"
+    },
+    "id": 5,
+    "nombre": "Pícara",
+    "sube": "Ataque",
+    "baja": "Defensa especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903c"
+    },
+    "id": 6,
+    "nombre": "Osada",
+    "sube": "Defensa",
+    "baja": "Ataque"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903d"
+    },
+    "id": 7,
+    "nombre": "Agitada",
+    "sube": "Defensa",
+    "baja": "Ataque especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903e"
+    },
+    "id": 8,
+    "nombre": "Plácida",
+    "sube": "Defensa",
+    "baja": "Velocidad"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa903f"
+    },
+    "id": 9,
+    "nombre": "Floja",
+    "sube": "Defensa",
+    "baja": "Defensa especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9040"
+    },
+    "id": 10,
+    "nombre": "Miedosa",
+    "sube": "Velocidad",
+    "baja": "Ataque"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9041"
+    },
+    "id": 11,
+    "nombre": "Activa",
+    "sube": "Velocidad",
+    "baja": "Defensa"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9042"
+    },
+    "id": 12,
+    "nombre": "Alegre",
+    "sube": "Velocidad",
+    "baja": "Ataque especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9043"
+    },
+    "id": 13,
+    "nombre": "Ingenua",
+    "sube": "Velocidad",
+    "baja": "Defensa especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9044"
+    },
+    "id": 14,
+    "nombre": "Modesta",
+    "sube": "Ataque especial",
+    "baja": "Ataque"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9045"
+    },
+    "id": 15,
+    "nombre": "Afable",
+    "sube": "Ataque especial",
+    "baja": "Defensa"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9046"
+    },
+    "id": 16,
+    "nombre": "Mansa",
+    "sube": "Ataque especial",
+    "baja": "Velocidad"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9047"
+    },
+    "id": 17,
+    "nombre": "Alocada",
+    "sube": "Ataque especial",
+    "baja": "Defensa especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9048"
+    },
+    "id": 18,
+    "nombre": "Serena",
+    "sube": "Defensa especial",
+    "baja": "Ataque"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa9049"
+    },
+    "id": 19,
+    "nombre": "Amable",
+    "sube": "Defensa especial",
+    "baja": "Defensa"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904a"
+    },
+    "id": 20,
+    "nombre": "Cauta",
+    "sube": "Defensa especial",
+    "baja": "Ataque especial"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904b"
+    },
+    "id": 21,
+    "nombre": "Grosera",
+    "sube": "Defensa especial",
+    "baja": "Velocidad"
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904c"
+    },
+    "id": 22,
+    "nombre": "Dócil",
+    "sube": null,
+    "baja": null
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904d"
+    },
+    "id": 23,
+    "nombre": "Seria",
+    "sube": null,
+    "baja": null
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904e"
+    },
+    "id": 24,
+    "nombre": "Tímida",
+    "sube": null,
+    "baja": null
+  },
+  {
+    "_id": {
+      "$oid": "69ea0e2ab4db1f0ec3fa904f"
+    },
+    "id": 25,
+    "nombre": "Rara",
+    "sube": null,
+    "baja": null
+  }
+]
