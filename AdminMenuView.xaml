@@ -1,0 +1,234 @@
+﻿<Window x:Class="PK_Proyect.View.AdminMenuView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        mc:Ignorable="av" 
+        MouseDown="Window_MouseDown"
+        Title="Panel de Administración"
+        Height="650" Width="1084"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True">
+
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PkYellow" Color="#FFD733"/>
+        <SolidColorBrush x:Key="PkBlue" Color="#2A2AA8"/>
+        <SolidColorBrush x:Key="PkRed" Color="#E00000"/>
+        <SolidColorBrush x:Key="PkWhite" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="PkBox" Color="#FFF5F2DF" Opacity="0.7"/>
+
+        <Style x:Key="RetroButton" TargetType="{x:Type Button}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource PkWhite}"/>
+            <Setter Property="Background" Value="{StaticResource PkBlue}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PkRed}"/>
+            <Setter Property="BorderThickness" Value="4"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+
+        <Style x:Key="RetroText" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource PkBlue}"/>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="18"
+            BorderThickness="3"
+            BorderBrush="{StaticResource PkBlue}">
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/PokeAdmin.jpg" Stretch="UniformToFill"/>
+        </Border.Background>
+
+        <Border CornerRadius="15"
+                BorderThickness="3"
+                BorderBrush="{StaticResource PkBlue}"
+                Background="{StaticResource PkBox}"
+                Opacity="0.98">
+
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!-- Barra superior -->
+                <Border Grid.Row="0"
+                        Background="{StaticResource PkYellow}"
+                        CornerRadius="15,15,0,0" Margin="-20,-21,-20,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="PANEL DE ADMINISTRACIÓN"
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"
+                                   Style="{StaticResource RetroText}"/>
+
+                        <Button Content="X"
+                                Grid.Column="1"
+                                FontSize="20"
+                                Width="30" Height="30"
+                                Background="{StaticResource PkRed}"
+                                BorderBrush="{StaticResource PkBlue}"
+                                Click="btnClose_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- Contenido -->
+                <Grid Grid.Row="1" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Lista de usuarios -->
+                    <DataGrid x:Name="dgUsuarios"
+                              ItemsSource="{Binding Usuarios}"
+                              SelectedItem="{Binding UsuarioSeleccionado, Mode=TwoWay}"
+                              Grid.Column="0"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              Background="{StaticResource PkBox}"
+                              BorderBrush="{StaticResource PkBlue}"
+                              BorderThickness="3"
+                              RowHeight="35"
+                              FontSize="9" Grid.ColumnSpan="2" Margin="316,41,0,46"
+                              FontFamily="{StaticResource PokemonClassic}" SelectionChanged="dgUsuarios_SelectionChanged">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="*"/>
+                            <DataGridTextColumn Header="Usuario" Binding="{Binding Username}" Width="*"/>
+                            <DataGridTextColumn Header="Correo" Binding="{Binding Correo}" Width="*"/>
+                            <DataGridTextColumn Header="Pokes" Binding="{Binding Pokes}" Width="*"/>
+                            <DataGridTextColumn Header="Fichas Casino" Binding="{Binding FichasCasino}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Column="1"
+                                Margin="20,0,0,0"
+                                VerticalAlignment="Top">
+                        <Separator Margin="0,20,0,20"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="{Binding UsuarioConectado.Username, StringFormat=Usuario Conectado: {0}}"
+                            FontFamily="{StaticResource PokemonClassic}"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Style="{StaticResource RetroText}"
+                            Margin="315,14,315,518"
+                            Grid.Row="1"><Run Text="Usuario"/><Run Language="es-es" Text=" Conectado"/><Run Text=":"/></TextBlock>
+
+
+
+
+                <!-- Título Acciones -->
+                <TextBlock Text="Acciones"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Style="{StaticResource RetroText}" 
+                    Margin="0,14,652,518" Grid.Row="1"/>
+
+
+
+
+                <!-- Botones existentes -->
+                <Button Content="Ver Pokémon Obtenidos"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding VerPokemonCommand}" 
+                    Margin="0,59,734,458" Grid.Row="1"/>
+
+                <Button Content="Ver Equipo Pokémon"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding VerEquipoCommand}" 
+                    Margin="0,110,734,407" Grid.Row="1"/>
+
+                <Button Content="Ver Medallas"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding VerMedallasCommand}" 
+                    Margin="0,161,734,356" Grid.Row="1"/>
+
+                <Button Content="Editar Usuario"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding EditarCommand}" 
+                    Margin="0,212,734,304" Grid.Row="1"/>
+
+                <Button Content="Eliminar Usuario"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding EliminarCommand}" 
+                    Margin="0,264,734,253" Grid.Row="1"/>
+
+                <Button Content="Cambiar Rol"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding CambiarRolCommand}" 
+                    Margin="0,315,734,202" Grid.Row="1"/>
+
+                <Button Content="Resetear Contraseña"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="13"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding ResetPassCommand}" 
+                    Margin="0,366,734,151" Grid.Row="1"/>
+
+                <!-- NUEVOS BOTONES -->
+                <Button Content="Ver / Editar Pokes"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="12"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding VerPokesCommand}" 
+                    Margin="0,417,734,100" Grid.Row="1"/>
+
+                <Button Content="Ver / Editar Fichas Casino"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="12"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding VerFichasCasinoCommand}" 
+                    Margin="0,468,734,49" Grid.Row="1"/>
+
+                <Button Content="⏻ - Cerrar Sesion"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        FontSize="12"
+                        Style="{StaticResource RetroButton}"
+                        Command="{Binding CerrarSesionCommand}" 
+                        Margin="0,519,734,0" Grid.Row="1"/>
+
+
+                <Button Content="Actualizar"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="12"
+                    Style="{StaticResource RetroButton}"
+                    Command="{Binding ActualizarCommand}"
+                    Margin="864,520,0,0" Grid.Row="1"/>
+
+
+
+            </Grid>
+        </Border>
+    </Border>
+</Window>
+
