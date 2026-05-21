@@ -1,0 +1,10 @@
+﻿<Application x:Class="PK_Proyect.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PK_Proyect"
+             
+             StartupUri="/MainWindow.xaml">
+    <Application.Resources>
+        <FontFamily x:Key="PokemonClassic">Fonts\PokemonClassic.ttf#Pokemon Classic Regular</FontFamily>
+    </Application.Resources>
+</Application>

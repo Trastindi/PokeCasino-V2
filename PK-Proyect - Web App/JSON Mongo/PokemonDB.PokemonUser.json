@@ -1,0 +1,384 @@
+[{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e17"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 8,
+  "Nombre": "Wartortle",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 8,
+  "Cantidad": 8,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.441Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e18"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 4,
+  "Nombre": "Charmander",
+  "TipoPrincipal": "Fuego",
+  "TipoSecundario": null,
+  "Nivel": 7,
+  "Cantidad": 7,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.459Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e19"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 7,
+  "Nombre": "Squirtle",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 9,
+  "Cantidad": 9,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.467Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e1a"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 2,
+  "Nombre": "Ivysaur",
+  "TipoPrincipal": "Planta",
+  "TipoSecundario": "Veneno",
+  "Nivel": 6,
+  "Cantidad": 6,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.487Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e1b"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 5,
+  "Nombre": "Charmeleon",
+  "TipoPrincipal": "Fuego",
+  "TipoSecundario": null,
+  "Nivel": 7,
+  "Cantidad": 7,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.498Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e1c"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 1,
+  "Nombre": "Bulbasaur",
+  "TipoPrincipal": "Planta",
+  "TipoSecundario": "Veneno",
+  "Nivel": 4,
+  "Cantidad": 4,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.505Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a16eb5b428c408bdf34e1d"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 3,
+  "Nombre": "Venusaur",
+  "TipoPrincipal": "Planta",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-02-27T10:15:17.510Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77333"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 72,
+  "Nombre": "Tentacool",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": "Veneno",
+  "Nivel": 5,
+  "Cantidad": 5,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.582Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77334"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 129,
+  "Nombre": "Magikarp",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 5,
+  "Cantidad": 5,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.626Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77335"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 118,
+  "Nombre": "Goldeen",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 5,
+  "Cantidad": 5,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.638Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77336"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 69,
+  "Nombre": "Bellsprout",
+  "TipoPrincipal": "Planta",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.649Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77337"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 116,
+  "Nombre": "Horsea",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 3,
+  "Cantidad": 3,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.660Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77338"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 60,
+  "Nombre": "Poliwag",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 3,
+  "Cantidad": 3,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.665Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853eb000232de65c77339"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 43,
+  "Nombre": "Oddish",
+  "TipoPrincipal": "Planta",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:46:51.675Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853f8000232de65c7733a"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 16,
+  "Nombre": "Pidgey",
+  "TipoPrincipal": "Normal",
+  "TipoSecundario": "Volador",
+  "Nivel": 1,
+  "Cantidad": 1,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:04.160Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853ff000232de65c7733b"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 73,
+  "Nombre": "Tentacruel",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:11.567Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a853ff000232de65c7733c"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 98,
+  "Nombre": "Krabby",
+  "TipoPrincipal": "Agua",
+  "TipoSecundario": null,
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:11.584Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85406000232de65c7733d"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 13,
+  "Nombre": "Weedle",
+  "TipoPrincipal": "Bicho",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:18.811Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85406000232de65c7733e"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 10,
+  "Nombre": "Caterpie",
+  "TipoPrincipal": "Bicho",
+  "TipoSecundario": null,
+  "Nivel": 4,
+  "Cantidad": 4,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:18.816Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85406000232de65c7733f"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 11,
+  "Nombre": "Metapod",
+  "TipoPrincipal": "Bicho",
+  "TipoSecundario": null,
+  "Nivel": 1,
+  "Cantidad": 1,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:18.827Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85406000232de65c77340"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 14,
+  "Nombre": "Kakuna",
+  "TipoPrincipal": "Bicho",
+  "TipoSecundario": "Veneno",
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:18.836Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85406000232de65c77341"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 25,
+  "Nombre": "Pikachu",
+  "TipoPrincipal": "Eléctrico",
+  "TipoSecundario": null,
+  "Nivel": 1,
+  "Cantidad": 1,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:18.847Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85410000232de65c77342"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 41,
+  "Nombre": "Zubat",
+  "TipoPrincipal": "Veneno",
+  "TipoSecundario": "Volador",
+  "Nivel": 8,
+  "Cantidad": 8,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:28.664Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69a85410000232de65c77343"
+  },
+  "UserId": "699d808aa76f269dbf7d92d5",
+  "Username": "LEX",
+  "PokemonId": 35,
+  "Nombre": "Clefairy",
+  "TipoPrincipal": "Normal",
+  "TipoSecundario": null,
+  "Nivel": 2,
+  "Cantidad": 2,
+  "FechaObtenido": {
+    "$date": "2026-03-04T15:47:28.673Z"
+  }
+}]

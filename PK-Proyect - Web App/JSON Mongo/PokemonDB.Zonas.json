@@ -1,0 +1,1242 @@
+[{
+  "_id": "699ea8f6e4ed95376167c319",
+  "nombre": "Pueblo Paleta",
+  "region": "Kanto",
+  "tipo": "especial",
+  "descripcion": "El hogar del Profesor Oak y el punto de partida de muchos entrenadores.",
+  "pokemon": [
+    {
+      "prob": 33,
+      "PokemonId": 1
+    },
+    {
+      "prob": 21,
+      "PokemonId": 2
+    },
+    {
+      "prob": 13,
+      "PokemonId": 3
+    },
+    {
+      "prob": 33,
+      "PokemonId": 4
+    },
+    {
+      "prob": 23,
+      "PokemonId": 5
+    },
+    {
+      "prob": 5,
+      "PokemonId": 6
+    },
+    {
+      "prob": 33,
+      "PokemonId": 7
+    },
+    {
+      "prob": 23,
+      "PokemonId": 8
+    },
+    {
+      "prob": 12,
+      "PokemonId": 9
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c31a",
+  "nombre": "Ciudad Verde",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Una ciudad tranquila al oeste de Kanto.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c31b",
+  "nombre": "Ciudad Plateada",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad famosa por su gimnasio de tipo Roca.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c31c",
+  "nombre": "Ciudad Celeste",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad conocida por su gimnasio de tipo Agua.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 30,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 69
+    },
+    {
+      "prob": 60,
+      "PokemonId": 54
+    },
+    {
+      "prob": 50,
+      "PokemonId": 60
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 72
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c31d",
+  "nombre": "Ciudad Carmín",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad portuaria famosa por el S.S. Anne.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c31e",
+  "nombre": "Ciudad Lavanda",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad conocida por la Torre Pokémon.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c31f",
+  "nombre": "Ciudad Azulona",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "La ciudad más grande de Kanto.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 30,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 69
+    },
+    {
+      "prob": 80,
+      "PokemonId": 72
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c320",
+  "nombre": "Ciudad Azafrán",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad central de Kanto.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c321",
+  "nombre": "Ciudad Fucsia",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad famosa por la Zona Safari.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c322",
+  "nombre": "Ciudad Canela",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ciudad volcánica con gimnasio de tipo Fuego.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c323",
+  "nombre": "Meseta Añil",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "La sede de la Liga Pokémon.",
+  "pokemon": []
+},
+{
+  "_id": "699ea8f6e4ed95376167c324",
+  "nombre": "Ruta 1",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta que conecta Pueblo Paleta con Ciudad Verde.",
+  "pokemon": [
+    {
+      "prob": 50,
+      "PokemonId": 16
+    },
+    {
+      "prob": 50,
+      "PokemonId": 19
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c325",
+  "nombre": "Ruta 2",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana al Bosque Verde.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 10
+    },
+    {
+      "prob": 40,
+      "PokemonId": 13
+    },
+    {
+      "prob": 20,
+      "PokemonId": 16
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c326",
+  "nombre": "Ruta 3",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana al Monte Moon.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 40,
+      "PokemonId": 21
+    },
+    {
+      "prob": 20,
+      "PokemonId": 39
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c327",
+  "nombre": "Ruta 4",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta que conecta Monte Moon con Ciudad Celeste.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 40,
+      "PokemonId": 19
+    },
+    {
+      "prob": 20,
+      "PokemonId": 21
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c328",
+  "nombre": "Ruta 5",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al sur de Ciudad Celeste.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 30,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 69
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c329",
+  "nombre": "Ruta 6",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta con lago al sur de Ciudad Celeste.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 30,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 69
+    },
+    {
+      "prob": 60,
+      "PokemonId": 54
+    },
+    {
+      "prob": 50,
+      "PokemonId": 60
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 72
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32a",
+  "nombre": "Ruta 7",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta entre Ciudad Azulona y Ciudad Azafrán.",
+  "pokemon": [
+    {
+      "prob": 50,
+      "PokemonId": 52
+    },
+    {
+      "prob": 50,
+      "PokemonId": 58
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32b",
+  "nombre": "Ruta 8",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana al túnel subterráneo.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 52
+    },
+    {
+      "prob": 40,
+      "PokemonId": 58
+    },
+    {
+      "prob": 20,
+      "PokemonId": 63
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32c",
+  "nombre": "Ruta 9",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al este de Ciudad Celeste.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 16
+    },
+    {
+      "prob": 40,
+      "PokemonId": 21
+    },
+    {
+      "prob": 20,
+      "PokemonId": 69
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32d",
+  "nombre": "Ruta 10",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana a la Central Energía.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 81
+    },
+    {
+      "prob": 40,
+      "PokemonId": 100
+    },
+    {
+      "prob": 80,
+      "PokemonId": 72
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32e",
+  "nombre": "Ruta 11",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana al túnel Diglett.",
+  "pokemon": [
+    {
+      "prob": 30,
+      "PokemonId": 19
+    },
+    {
+      "prob": 30,
+      "PokemonId": 20
+    },
+    {
+      "prob": 20,
+      "PokemonId": 96
+    },
+    {
+      "prob": 20,
+      "PokemonId": 81
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c32f",
+  "nombre": "Ruta 12",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta costera al sur de Ciudad Lavanda.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 48
+    },
+    {
+      "prob": 30,
+      "PokemonId": 79
+    },
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c330",
+  "nombre": "Ruta 13",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta costera con puentes largos.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 48
+    },
+    {
+      "prob": 30,
+      "PokemonId": 79
+    },
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea8f6e4ed95376167c331",
+  "nombre": "Ruta 14",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al sur de la Ruta 13.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 48
+    },
+    {
+      "prob": 30,
+      "PokemonId": 79
+    },
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c333",
+  "nombre": "Ruta 15",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al este de Ciudad Fucsia.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 30,
+      "PokemonId": 48
+    },
+    {
+      "prob": 30,
+      "PokemonId": 79
+    },
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c334",
+  "nombre": "Ruta 16",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta cercana al camino de Bicis.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 19
+    },
+    {
+      "prob": 40,
+      "PokemonId": 20
+    },
+    {
+      "prob": 20,
+      "PokemonId": 21
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c335",
+  "nombre": "Ruta 17",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta del camino de Bicis.",
+  "pokemon": [
+    {
+      "prob": 50,
+      "PokemonId": 20
+    },
+    {
+      "prob": 50,
+      "PokemonId": 22
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c336",
+  "nombre": "Ruta 18",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al oeste de Ciudad Fucsia.",
+  "pokemon": [
+    {
+      "prob": 50,
+      "PokemonId": 20
+    },
+    {
+      "prob": 50,
+      "PokemonId": 22
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c337",
+  "nombre": "Ruta 19",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta costera al sur de Ciudad Fucsia.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c338",
+  "nombre": "Ruta 20",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta marítima entre Ciudad Fucsia y las Islas Espuma.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c339",
+  "nombre": "Ruta 21",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta marítima al sur de Ciudad Verde.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c33a",
+  "nombre": "Ruta 22",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al oeste de Ciudad Verde.",
+  "pokemon": [
+    {
+      "prob": 30,
+      "PokemonId": 19
+    },
+    {
+      "prob": 30,
+      "PokemonId": 21
+    },
+    {
+      "prob": 20,
+      "PokemonId": 29
+    },
+    {
+      "prob": 20,
+      "PokemonId": 32
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c33b",
+  "nombre": "Ruta 23",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta que conduce a la Meseta Añil.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 22
+    },
+    {
+      "prob": 30,
+      "PokemonId": 24
+    },
+    {
+      "prob": 30,
+      "PokemonId": 56
+    },
+    {
+      "prob": 80,
+      "PokemonId": 72
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699ea9c5e4ed95376167c33c",
+  "nombre": "Ruta 24",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta famosa por el Puente Pepita.",
+  "pokemon": [
+    {
+      "prob": 20,
+      "PokemonId": 63
+    },
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 40,
+      "PokemonId": 69
+    },
+    {
+      "prob": 60,
+      "PokemonId": 54
+    },
+    {
+      "prob": 50,
+      "PokemonId": 60
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 72
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c33e",
+  "nombre": "Ruta 25",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Ruta al norte de Ciudad Celeste, hogar de Bill.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 43
+    },
+    {
+      "prob": 40,
+      "PokemonId": 69
+    },
+    {
+      "prob": 20,
+      "PokemonId": 63
+    },
+    {
+      "prob": 60,
+      "PokemonId": 54
+    },
+    {
+      "prob": 50,
+      "PokemonId": 60
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 72
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c33f",
+  "nombre": "Bosque Verde",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Un bosque lleno de Pokémon de tipo Bicho.",
+  "pokemon": [
+    {
+      "prob": 50,
+      "PokemonId": 10
+    },
+    {
+      "prob": 15,
+      "PokemonId": 11
+    },
+    {
+      "prob": 25,
+      "PokemonId": 13
+    },
+    {
+      "prob": 5,
+      "PokemonId": 14
+    },
+    {
+      "prob": 5,
+      "PokemonId": 25
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c340",
+  "nombre": "Monte Moon",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Montaña famosa por los fósiles y los Clefairy.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 41
+    },
+    {
+      "prob": 20,
+      "PokemonId": 35
+    },
+    {
+      "prob": 20,
+      "PokemonId": 46
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c341",
+  "nombre": "Túnel Roca",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Un túnel oscuro lleno de Pokémon de tipo Roca y Lucha.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 41
+    },
+    {
+      "prob": 40,
+      "PokemonId": 66
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c342",
+  "nombre": "Torre Pokémon",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Torre espiritual donde descansan los Pokémon fallecidos.",
+  "pokemon": [
+    {
+      "prob": 85,
+      "PokemonId": 92
+    },
+    {
+      "prob": 15,
+      "PokemonId": 93
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c343",
+  "nombre": "Mansión Pokémon",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Una mansión abandonada llena de Pokémon de tipo Veneno y Fuego.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 88
+    },
+    {
+      "prob": 20,
+      "PokemonId": 89
+    },
+    {
+      "prob": 25,
+      "PokemonId": 109
+    },
+    {
+      "prob": 15,
+      "PokemonId": 110
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c344",
+  "nombre": "Zona Safari",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Una zona especial llena de Pokémon raros.",
+  "pokemon": [
+    {
+      "prob": 20,
+      "PokemonId": 46
+    },
+    {
+      "prob": 10,
+      "PokemonId": 47
+    },
+    {
+      "prob": 20,
+      "PokemonId": 102
+    },
+    {
+      "prob": 10,
+      "PokemonId": 111
+    },
+    {
+      "prob": 1,
+      "PokemonId": 113
+    },
+    {
+      "prob": 4,
+      "PokemonId": 115
+    },
+    {
+      "prob": 4,
+      "PokemonId": 128
+    },
+    {
+      "prob": 15,
+      "PokemonId": 29
+    },
+    {
+      "prob": 15,
+      "PokemonId": 32
+    },
+    {
+      "prob": 60,
+      "PokemonId": 54
+    },
+    {
+      "prob": 50,
+      "PokemonId": 60
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 72
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c345",
+  "nombre": "Islas Espuma",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "Islas heladas donde habitan Pokémon de tipo Hielo y Agua.",
+  "pokemon": [
+    {
+      "prob": 40,
+      "PokemonId": 86
+    },
+    {
+      "prob": 40,
+      "PokemonId": 87
+    },
+    {
+      "prob": 20,
+      "PokemonId": 124
+    },
+    {
+      "prob": 60,
+      "PokemonId": 72
+    },
+    {
+      "prob": 40,
+      "PokemonId": 73
+    },
+    {
+      "prob": 100,
+      "PokemonId": 129
+    },
+    {
+      "prob": 40,
+      "PokemonId": 98
+    },
+    {
+      "prob": 60,
+      "PokemonId": 116
+    },
+    {
+      "prob": 40,
+      "PokemonId": 118
+    }
+  ]
+},
+{
+  "_id": "699eaa30e4ed95376167c346",
+  "nombre": "Calle Victoria",
+  "region": "Kanto",
+  "tipo": "normal",
+  "descripcion": "El último desafío antes de la Liga Pokémon.",
+  "pokemon": [
+    {
+      "prob": 60,
+      "PokemonId": 41
+    },
+    {
+      "prob": 40,
+      "PokemonId": 66
+    }
+  ]
+}]

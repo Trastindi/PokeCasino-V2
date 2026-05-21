@@ -1,0 +1,34 @@
+[{
+  "_id": {
+    "$oid": "699d808aa76f269dbf7d92d5"
+  },
+  "Nombre": "Lex",
+  "Apellido": "Luthor",
+  "Username": "LEX",
+  "Correo": "LL@Luthorcorp.es",
+  "Pokemon": 24,
+  "Password": "$2a$11$tMJxWXv0Kg8GRlyPnKgNeuMdTxP5ma.r6ZGonsgWdi69kMgIUCLAm",
+  "Birthdate": {
+    "$date": "2004-07-01T22:00:00.000Z"
+  },
+  "Role": "user",
+  "Pokes": 800000,
+  "FichasCasino": 781987
+},
+{
+  "_id": {
+    "$oid": "699de521131cc99ff72e6a41"
+  },
+  "Nombre": "Oak",
+  "Apellido": "Pale",
+  "Username": "Prof.Oak",
+  "Correo": "Prof.Oak@LabPaleta.es",
+  "Pokemon": 0,
+  "Password": "$2a$11$Inj2pyVWWV5rZEzKNJZnzefWe9mu9O2PM044uPtFveUGMTew9pH9i",
+  "Birthdate": {
+    "$date": "1975-07-17T22:00:00.000Z"
+  },
+  "Role": "admin",
+  "Pokes": 500,
+  "FichasCasino": 500
+}]

@@ -1,0 +1,199 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\pruebas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\pruebas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\ipruebarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\ipruebarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\zonarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\zonarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\izonarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\izonarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\ipokedexrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\ipokedexrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\repositories\\medallasuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\repositories\\medallasuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|c:\\users\\usuario\\documents\\pokemonproyect\\pk_proyect_050326\\pk-proyect\\pk-proyect\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A82DA423-1038-43FD-B10E-058807A91839}|PK-Proyect\\PK-Proyect.csproj|solutionrelative:pk-proyect\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 8,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IpruebaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IpruebaRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\IpruebaRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IpruebaRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\IpruebaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:39:37.3Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IAdminRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IAdminRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\IAdminRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IAdminRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\IAdminRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:36:37.767Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IZonaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IZonaRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\IZonaRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IZonaRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\IZonaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:36:27.039Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MedallasUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\MedallasUserRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\MedallasUserRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\MedallasUserRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\MedallasUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:35:51.5Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IPokedexRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IPokedexRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\IPokedexRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IPokedexRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\IPokedexRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:35:50.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Services\\UserService.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Services\\UserService.cs",
+              "RelativeToolTip": "PK-Proyect\\Services\\UserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:35:06.029Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:34:08.199Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\IUserRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\IUserRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:34:02.79Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Pruebas.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\Pruebas.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\Pruebas.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\Pruebas.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\Pruebas.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAIwA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:40:25.048Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ZonaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\ZonaRepository.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Repositories\\ZonaRepository.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Repositories\\ZonaRepository.cs",
+              "RelativeToolTip": "PK-Proyect\\Repositories\\ZonaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:37:12.928Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Models\\User.cs",
+              "RelativeDocumentMoniker": "PK-Proyect\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\Models\\User.cs",
+              "RelativeToolTip": "PK-Proyect\\Models\\User.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:34:42.142Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
