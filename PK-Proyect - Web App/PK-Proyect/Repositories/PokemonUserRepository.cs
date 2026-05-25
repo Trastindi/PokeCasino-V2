@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using PK_Proyect.Models;
 
 namespace PK_Proyect.Repositories
@@ -9,9 +9,7 @@ namespace PK_Proyect.Repositories
 
         public PokemonUserRepository()
         {
-            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
-            var db = client.GetDatabase("PokemonDB");
-            _collection = db.GetCollection<PokemonUser>("PokemonUser");
+            _collection = MongoDbContext.GetCollection<PokemonUser>("PokemonUser");
         }
 
         public PokemonUser GetPokemon(string userId, int pokemonId)
@@ -37,7 +35,6 @@ namespace PK_Proyect.Repositories
         public int CountByType(string userId, string tipo)
         {
             return (int)_collection.CountDocuments(p => p.UserId == userId && p.TipoPrincipal == tipo);
-
         }
     }
 }

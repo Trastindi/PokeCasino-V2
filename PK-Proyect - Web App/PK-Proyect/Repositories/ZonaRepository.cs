@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using PK_Proyect.Models;
 using System.Collections.Generic;
 
@@ -10,9 +10,7 @@ namespace PK_Proyect.Repositories
 
         public ZonaRepository()
         {
-            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
-            var database = client.GetDatabase("PokemonDB");
-            _zonas = database.GetCollection<Zona>("Zonas");
+            _zonas = MongoDbContext.GetCollection<Zona>("Zonas");
         }
 
         public List<Zona> ObtenerTodas()

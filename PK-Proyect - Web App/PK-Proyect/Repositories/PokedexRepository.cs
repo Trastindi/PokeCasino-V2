@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using PK_Proyect.Models;
 
 namespace PK_Proyect.Repositories
@@ -9,9 +9,7 @@ namespace PK_Proyect.Repositories
 
         public PokedexRepository()
         {
-            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
-            var database = client.GetDatabase("PokemonDB");
-            _pokedex = database.GetCollection<Pokemon>("Pokedex");
+            _pokedex = MongoDbContext.GetCollection<Pokemon>("Pokedex");
         }
 
         public Pokemon ObtenerPorId(int Id)
@@ -19,6 +17,9 @@ namespace PK_Proyect.Repositories
             return _pokedex.Find(p => p.numero_pokedex == Id).FirstOrDefault();
         }
 
-        public List<Pokemon> ObtenerTodos() { return _pokedex.Find(p => true).ToList(); }
+        public List<Pokemon> ObtenerTodos()
+        {
+            return _pokedex.Find(p => true).ToList();
+        }
     }
 }

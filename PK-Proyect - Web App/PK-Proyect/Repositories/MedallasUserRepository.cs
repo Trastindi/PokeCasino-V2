@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using PK_Proyect.Models;
 
 namespace PK_Proyect.Repositories
@@ -9,9 +9,7 @@ namespace PK_Proyect.Repositories
 
         public MedallasUserRepository()
         {
-            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
-            var db = client.GetDatabase("PokemonDB");
-            _collection = db.GetCollection<MedallasUser>("MedallasUser");
+            _collection = MongoDbContext.GetCollection<MedallasUser>("MedallasUser");
         }
 
         public List<MedallasUser> GetByUser(string userId)
