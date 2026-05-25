@@ -1,6 +1,5 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Repositories;
-
 using PK_Proyect.Services;
 
 namespace PK_Proyect.Services
@@ -20,44 +19,52 @@ namespace PK_Proyect.Services
         {
             var existente = _repo.GetPokemon(userId, pokemonId);
             var user = _userRepo.GetUserById(userId);
-            Random random = new Random();
+
             if (existente == null)
             {
                 var nuevo = new PokemonUser
                 {
-                    UserId = userId,
-                    Username = user.Username,
-                    PokemonId = pokemonId,
-                    Nombre = nombre,
+                    UserId        = userId,
+                    Username      = user.Username,
+                    PokemonId     = pokemonId,
+                    Nombre        = nombre,
                     TipoPrincipal = tipo1,
                     TipoSecundario = tipo2,
-                    Nivel = 1,
-                    Cantidad = 1,
+                    Nivel         = 1,
+                    Cantidad      = 1,
                     FechaObtenido = DateTime.Now,
-                    HiddenPowerSeed = Random.Shared.Next(0, 16),
+                    HiddenPowerSeed  = Random.Shared.Next(0, 16),
                     HiddenPowerPower = (Random.Shared.Next(31, 71) + Random.Shared.Next(31, 71)) / 2,
-                    CurrentHp = currentHp,
+                    CurrentHp     = currentHp,
                 };
 
                 _repo.InsertPokemon(nuevo);
-
                 RecalcularPokemon(userId);
-
                 return nuevo;
             }
 
-            // Si ya existe → solo sube cantidad y nivel
+            // Documento existente: subir cantidad y nivel
             existente.Cantidad++;
             existente.Nivel++;
             existente.Username = user.Username;
 
+            // Backfill: rellenar campos que faltan en documentos antiguos
+            if (existente.HiddenPowerSeed == 0 && existente.HiddenPowerPower == 0)
+            {
+                existente.HiddenPowerSeed  = Random.Shared.Next(0, 16);
+                existente.HiddenPowerPower = (Random.Shared.Next(31, 71) + Random.Shared.Next(31, 71)) / 2;
+            }
+
+            if (existente.CurrentHp == 0)
+                existente.CurrentHp = currentHp;
+
+            if (existente.MoveSet == null || existente.MoveSet.Count == 0)
+                existente.MoveSet = new List<string>();
+
             _repo.UpdatePokemon(existente);
-
             RecalcularPokemon(userId);
-
             return existente;
         }
-
 
         private void RecalcularPokemon(string userId)
         {
@@ -68,8 +75,6 @@ namespace PK_Proyect.Services
             user.Pokemon = totalUnicos;
             _userRepo.UpdateUser(user);
         }
-
-
 
         public int ContarPorTipo(string userId, string tipo)
         {
