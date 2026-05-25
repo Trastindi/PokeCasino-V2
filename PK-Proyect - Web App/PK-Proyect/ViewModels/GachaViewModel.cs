@@ -1,4 +1,4 @@
-﻿using PK_Proyect.Commands;
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 
@@ -241,7 +241,7 @@ namespace PK_Proyect.ViewModels.Banners
                 poke.Nombre,
                 poke.TipoPrincipal,
                 poke.TipoSecundario,
-                poke.EstadisticasBase[0]
+                poke.EstadisticasBase?.Ps ?? 0
             );
 
             var repoHist = new HistoricoTiradasRepository();
@@ -314,7 +314,7 @@ namespace PK_Proyect.ViewModels.Banners
                     poke.Nombre,
                     poke.TipoPrincipal,
                     poke.TipoSecundario,
-                    poke.EstadisticasBase[0]
+                    poke.EstadisticasBase?.Ps ?? 0
                 );
 
                 resultadosMulti.Add(resultado);
@@ -436,7 +436,7 @@ namespace PK_Proyect.ViewModels.Banners
                 poke.Nombre,
                 poke.TipoPrincipal,
                 poke.TipoSecundario,
-                poke.EstadisticasBase[0]
+                poke.EstadisticasBase?.Ps ?? 0
             );
 
             // 3. Mostrar mensaje
