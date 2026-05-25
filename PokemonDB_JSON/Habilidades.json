@@ -1,16 +1,21 @@
 [
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5149"
+      "$oid": "6a0b2b71ea122e5cb429298b"
     },
-    "name_en": "Chlorophyll",
-    "name_es": "Clorofila",
-    "generation": 3,
-    "description_es": "Aumenta la Velocidad con sol.",
-    "triggers": [
+    "abilityId": "chlorophyll",
+    "name": "Clorofila",
+    "nameEn": "Chlorophyll",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -21,22 +26,35 @@
         "params": {
           "stat": "speed",
           "multiplier": 2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta la Velocidad con sol."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514f"
+      "$oid": "6a0b2b71ea122e5cb429298c"
     },
-    "name_en": "Damp",
-    "name_es": "Humedad",
-    "generation": 3,
-    "description_es": "Impide ciertas explosiones.",
-    "triggers": [
+    "abilityId": "damp",
+    "name": "Humedad",
+    "nameEn": "Damp",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_before_move",
-        "handler": "block_moves_by_name",
+        "phase": "before_move",
+        "effectType": "block_moves_by_name",
+        "handlerKey": "block_moves_by_name",
         "target": "all",
         "conditions": [],
         "params": {
@@ -44,43 +62,65 @@
             "Self-Destruct",
             "Explosion"
           ]
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Impide ciertas explosiones."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5151"
+      "$oid": "6a0b2b71ea122e5cb429298d"
     },
-    "name_en": "Drought",
-    "name_es": "Sequía",
-    "generation": 3,
-    "description_es": "Crea sol intenso al entrar en combate.",
-    "triggers": [
+    "abilityId": "drought",
+    "name": "Sequía",
+    "nameEn": "Drought",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_enter_battle",
-        "handler": "set_weather",
+        "phase": "enter_battle",
+        "effectType": "set_weather",
+        "handlerKey": "set_weather",
         "target": "battle",
         "conditions": [],
         "params": {
           "weather": "sun",
           "duration": null
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Crea sol intenso al entrar en combate."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5155"
+      "$oid": "6a0b2b71ea122e5cb429298e"
     },
-    "name_en": "Flash Fire",
-    "name_es": "Absorbe Fuego",
-    "generation": 3,
-    "description_es": "Potencia el fuego si recibe ataques de fuego.",
-    "triggers": [
+    "abilityId": "flash-fire",
+    "name": "Absorbe Fuego",
+    "nameEn": "Flash Fire",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "grant_move_immunity",
+        "phase": "receive_move",
+        "effectType": "grant_move_immunity",
+        "handlerKey": "grant_move_immunity",
         "target": "self",
         "conditions": [
           {
@@ -88,11 +128,14 @@
             "value": "fire"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_receive_move",
-        "handler": "set_volatile_flag",
+        "phase": "receive_move",
+        "effectType": "set_volatile_flag",
+        "handlerKey": "set_volatile_flag",
         "target": "self",
         "conditions": [
           {
@@ -103,11 +146,14 @@
         "params": {
           "flag": "flash_fire_boost",
           "value": true
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_move_power_calc",
-        "handler": "modify_move_power",
+        "phase": "move_power",
+        "effectType": "modify_move_power",
+        "handlerKey": "modify_move_power",
         "target": "self",
         "conditions": [
           {
@@ -122,22 +168,34 @@
         ],
         "params": {
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia el fuego si recibe ataques de fuego."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5156"
+      "$oid": "6a0b2b71ea122e5cb429298f"
     },
-    "name_en": "Forecast",
-    "name_es": "Predicción",
-    "generation": 3,
-    "description_es": "Cambia de tipo según el clima.",
-    "triggers": [
+    "abilityId": "forecast",
+    "name": "Predicción",
+    "nameEn": "Forecast",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_weather_change",
-        "handler": "set_type_from_weather",
+        "phase": "weather_change",
+        "effectType": "set_type_from_weather",
+        "handlerKey": "set_type_from_weather",
         "target": "self",
         "conditions": [
           {
@@ -145,100 +203,155 @@
             "value": "Castform"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Cambia de tipo según el clima."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5158"
+      "$oid": "6a0b2b71ea122e5cb4292990"
     },
-    "name_en": "Huge Power",
-    "name_es": "Potencia",
-    "generation": 3,
-    "description_es": "Aumenta mucho el Ataque.",
-    "triggers": [
+    "abilityId": "huge-power",
+    "name": "Potencia",
+    "nameEn": "Huge Power",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [],
         "params": {
           "stat": "attack",
           "multiplier": 2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta mucho el Ataque."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515c"
+      "$oid": "6a0b2b71ea122e5cb4292991"
     },
-    "name_en": "Inner Focus",
-    "name_es": "Impasible",
-    "generation": 3,
-    "description_es": "Evita retroceder.",
-    "triggers": [
+    "abilityId": "inner-focus",
+    "name": "Impasible",
+    "nameEn": "Inner Focus",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_flinch_attempt",
-        "handler": "block_flinch",
+        "phase": "flinch_attempt",
+        "effectType": "block_flinch",
+        "handlerKey": "block_flinch",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Evita retroceder."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515e"
+      "$oid": "6a0b2b71ea122e5cb4292992"
     },
-    "name_en": "Intimidate",
-    "name_es": "Intimidación",
-    "generation": 3,
-    "description_es": "Baja el Ataque del rival al entrar en combate.",
-    "triggers": [
+    "abilityId": "intimidate",
+    "name": "Intimidación",
+    "nameEn": "Intimidate",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_enter_battle",
-        "handler": "apply_stat_stage_change",
+        "phase": "enter_battle",
+        "effectType": "apply_stat_stage_change",
+        "handlerKey": "apply_stat_stage_change",
         "target": "adjacent_opponents",
         "conditions": [],
         "params": {
           "stat": "attack",
           "stages": -1
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Baja el Ataque del rival al entrar en combate."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5163"
+      "$oid": "6a0b2b71ea122e5cb4292993"
     },
-    "name_en": "Liquid Ooze",
-    "name_es": "Lodo Líquido",
-    "generation": 3,
-    "description_es": "Hiere a quien intente drenarle PS.",
-    "triggers": [
+    "abilityId": "liquid-ooze",
+    "name": "Lodo Líquido",
+    "nameEn": "Liquid Ooze",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_drain_attempt",
-        "handler": "invert_drain_to_damage",
+        "phase": "drain_attempt",
+        "effectType": "invert_drain_to_damage",
+        "handlerKey": "invert_drain_to_damage",
         "target": "move_source",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Hiere a quien intente drenarle PS."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5164"
+      "$oid": "6a0b2b71ea122e5cb4292994"
     },
-    "name_en": "Magma Armor",
-    "name_es": "Escudo Magma",
-    "generation": 3,
-    "description_es": "Evita congelarse.",
-    "triggers": [
+    "abilityId": "magma-armor",
+    "name": "Escudo Magma",
+    "nameEn": "Magma Armor",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -246,22 +359,35 @@
             "value": "freeze"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita congelarse."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5165"
+      "$oid": "6a0b2b71ea122e5cb4292995"
     },
-    "name_en": "Magnet Pull",
-    "name_es": "Imán",
-    "generation": 3,
-    "description_es": "Impide huir a los Pokémon de tipo acero.",
-    "triggers": [
+    "abilityId": "magnet-pull",
+    "name": "Imán",
+    "nameEn": "Magnet Pull",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_escape_attempt",
-        "handler": "block_escape",
+        "phase": "escape_attempt",
+        "effectType": "block_escape",
+        "handlerKey": "block_escape",
         "target": "opponents",
         "conditions": [
           {
@@ -269,11 +395,14 @@
             "value": "steel"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_switch_attempt",
-        "handler": "block_switch",
+        "phase": "switch_attempt",
+        "effectType": "block_switch",
+        "handlerKey": "block_switch",
         "target": "opponents",
         "conditions": [
           {
@@ -281,22 +410,34 @@
             "value": "steel"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Impide huir a los Pokémon de tipo acero."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516a"
+      "$oid": "6a0b2b71ea122e5cb4292996"
     },
-    "name_en": "Overgrow",
-    "name_es": "Espesura",
-    "generation": 3,
-    "description_es": "Potencia los movimientos de planta cuando le quedan pocos PS.",
-    "triggers": [
+    "abilityId": "overgrow",
+    "name": "Espesura",
+    "nameEn": "Overgrow",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_power_calc",
-        "handler": "modify_move_power",
+        "phase": "move_power",
+        "effectType": "modify_move_power",
+        "handlerKey": "modify_move_power",
         "target": "self",
         "conditions": [
           {
@@ -310,63 +451,95 @@
         ],
         "params": {
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia los movimientos de planta cuando le quedan pocos PS."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516e"
+      "$oid": "6a0b2b71ea122e5cb4292997"
     },
-    "name_en": "Pressure",
-    "name_es": "Presión",
-    "generation": 3,
-    "description_es": "Hace que el rival gaste más PP.",
-    "triggers": [
+    "abilityId": "pressure",
+    "name": "Presión",
+    "nameEn": "Pressure",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_pp_consumption",
-        "handler": "increase_pp_consumption_against_self",
+        "phase": "move_pp_consumption",
+        "effectType": "increase_pp_consumption_against_self",
+        "handlerKey": "increase_pp_consumption_against_self",
         "target": "move_source",
         "conditions": [],
         "params": {
           "extra_pp": 1
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Hace que el rival gaste más PP."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516f"
+      "$oid": "6a0b2b71ea122e5cb4292998"
     },
-    "name_en": "Pure Power",
-    "name_es": "Poder Puro",
-    "generation": 3,
-    "description_es": "Aumenta mucho el Ataque.",
-    "triggers": [
+    "abilityId": "pure-power",
+    "name": "Poder Puro",
+    "nameEn": "Pure Power",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [],
         "params": {
           "stat": "attack",
           "multiplier": 2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta mucho el Ataque."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5178"
+      "$oid": "6a0b2b71ea122e5cb4292999"
     },
-    "name_en": "Shed Skin",
-    "name_es": "Mudar",
-    "generation": 3,
-    "description_es": "Puede curar sus estados por sí mismo.",
-    "triggers": [
+    "abilityId": "shed-skin",
+    "name": "Mudar",
+    "nameEn": "Shed Skin",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_turn_end",
-        "handler": "cure_major_status_chance",
+        "phase": "turn_end",
+        "effectType": "cure_major_status_chance",
+        "handlerKey": "cure_major_status_chance",
         "target": "self",
         "conditions": [
           {
@@ -376,22 +549,35 @@
         ],
         "params": {
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede curar sus estados por sí mismo."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5183"
+      "$oid": "6a0b2b71ea122e5cb429299a"
     },
-    "name_en": "Swift Swim",
-    "name_es": "Nado Rápido",
-    "generation": 3,
-    "description_es": "Aumenta la Velocidad cuando llueve.",
-    "triggers": [
+    "abilityId": "swift-swim",
+    "name": "Nado Rápido",
+    "nameEn": "Swift Swim",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -402,22 +588,35 @@
         "params": {
           "stat": "speed",
           "multiplier": 2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta la Velocidad cuando llueve."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518a"
+      "$oid": "6a0b2b71ea122e5cb429299b"
     },
-    "name_en": "Water Absorb",
-    "name_es": "Absorbe Agua",
-    "generation": 3,
-    "description_es": "Recupera PS si recibe ataques de agua.",
-    "triggers": [
+    "abilityId": "water-absorb",
+    "name": "Absorbe Agua",
+    "nameEn": "Water Absorb",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "heal_on_type_hit",
+        "phase": "receive_move",
+        "effectType": "heal_on_type_hit",
+        "handlerKey": "heal_on_type_hit",
         "target": "self",
         "conditions": [
           {
@@ -428,22 +627,34 @@
         "params": {
           "fraction": 0.25,
           "grant_immunity": true
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Recupera PS si recibe ataques de agua."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518b"
+      "$oid": "6a0b2b71ea122e5cb429299c"
     },
-    "name_en": "Water Veil",
-    "name_es": "Velo Agua",
-    "generation": 3,
-    "description_es": "Evita quemarse.",
-    "triggers": [
+    "abilityId": "water-veil",
+    "name": "Velo Agua",
+    "nameEn": "Water Veil",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -451,40 +662,63 @@
             "value": "burn"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita quemarse."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5190"
+      "$oid": "6a0b2b71ea122e5cb429299d"
     },
-    "name_en": "Illuminate",
-    "name_es": "Iluminación",
-    "generation": 3,
-    "description_es": "Aumenta la frecuencia de encuentros salvajes.",
-    "triggers": [
+    "abilityId": "illuminate",
+    "name": "Iluminación",
+    "nameEn": "Illuminate",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_field_check",
-        "handler": "increase_wild_encounters",
+        "phase": "field_check",
+        "effectType": "increase_wild_encounters",
+        "handlerKey": "increase_wild_encounters",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta la frecuencia de encuentros salvajes."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5192"
+      "$oid": "6a0b2b71ea122e5cb429299e"
     },
-    "name_en": "Shed Skin",
-    "name_es": "Mudar",
-    "generation": 3,
-    "description_es": "Puede curar sus estados por sí mismo.",
-    "triggers": [
+    "abilityId": "shed-skin",
+    "name": "Mudar",
+    "nameEn": "Shed Skin",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_turn_end",
-        "handler": "cure_major_status_chance",
+        "phase": "turn_end",
+        "effectType": "cure_major_status_chance",
+        "handlerKey": "cure_major_status_chance",
         "target": "self",
         "conditions": [
           {
@@ -494,132 +728,211 @@
         ],
         "params": {
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede curar sus estados por sí mismo."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5193"
+      "$oid": "6a0b2b71ea122e5cb429299f"
     },
-    "name_en": "Adaptability",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "adaptability",
+    "name": "Adaptability",
+    "nameEn": "Adaptability",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5194"
+      "$oid": "6a0b2b71ea122e5cb42929a0"
     },
-    "name_en": "Motor Drive",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "motor-drive",
+    "name": "Motor Drive",
+    "nameEn": "Motor Drive",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5196"
+      "$oid": "6a0b2b71ea122e5cb42929a1"
     },
-    "name_en": "Download",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "download",
+    "name": "Download",
+    "nameEn": "Download",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5199"
+      "$oid": "6a0b2b71ea122e5cb42929a2"
     },
-    "name_en": "Forewarn",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "forewarn",
+    "name": "Forewarn",
+    "nameEn": "Forewarn",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519c"
+      "$oid": "6a0b2b71ea122e5cb42929a3"
     },
-    "name_en": "Mold Breaker",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "mold-breaker",
+    "name": "Mold Breaker",
+    "nameEn": "Mold Breaker",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519e"
+      "$oid": "6a0b2b71ea122e5cb42929a4"
     },
-    "name_en": "Solid Rock",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "solid-rock",
+    "name": "Solid Rock",
+    "nameEn": "Solid Rock",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a2"
+      "$oid": "6a0b2b71ea122e5cb42929a5"
     },
-    "name_en": "Simple",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "simple",
+    "name": "Simple",
+    "nameEn": "Simple",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a4"
+      "$oid": "6a0b2b71ea122e5cb42929a6"
     },
-    "name_en": "Skill Link",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "skill-link",
+    "name": "Skill Link",
+    "nameEn": "Skill Link",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a7"
+      "$oid": "6a0b2b71ea122e5cb42929a7"
     },
-    "name_en": "Tinted Lens",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "tinted-lens",
+    "name": "Tinted Lens",
+    "nameEn": "Tinted Lens",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a8"
+      "$oid": "6a0b2b71ea122e5cb42929a8"
     },
-    "name_en": "No Guard",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "no-guard",
+    "name": "No Guard",
+    "nameEn": "No Guard",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51aa"
+      "$oid": "6a0b2b71ea122e5cb42929a9"
     },
-    "name_en": "Gluttony",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "gluttony",
+    "name": "Gluttony",
+    "nameEn": "Gluttony",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5146"
+      "$oid": "6a0b2b71ea122e5cb42929aa"
     },
-    "name_en": "Arena Trap",
-    "name_es": "Trampa Arena",
-    "generation": 3,
-    "description_es": "Impide que el rival huya.",
-    "triggers": [
+    "abilityId": "arena-trap",
+    "name": "Trampa Arena",
+    "nameEn": "Arena Trap",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_escape_attempt",
-        "handler": "block_escape",
+        "phase": "escape_attempt",
+        "effectType": "block_escape",
+        "handlerKey": "block_escape",
         "target": "opponents",
         "conditions": [
           {
@@ -627,11 +940,14 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_switch_attempt",
-        "handler": "block_switch",
+        "phase": "switch_attempt",
+        "effectType": "block_switch",
+        "handlerKey": "block_switch",
         "target": "opponents",
         "conditions": [
           {
@@ -639,22 +955,34 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Impide que el rival huya."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5148"
+      "$oid": "6a0b2b71ea122e5cb42929ab"
     },
-    "name_en": "Blaze",
-    "name_es": "Mar Llamas",
-    "generation": 3,
-    "description_es": "Potencia los movimientos de fuego cuando le quedan pocos PS.",
-    "triggers": [
+    "abilityId": "blaze",
+    "name": "Mar Llamas",
+    "nameEn": "Blaze",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_power_calc",
-        "handler": "modify_move_power",
+        "phase": "move_power",
+        "effectType": "modify_move_power",
+        "handlerKey": "modify_move_power",
         "target": "self",
         "conditions": [
           {
@@ -668,22 +996,34 @@
         ],
         "params": {
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia los movimientos de fuego cuando le quedan pocos PS."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514a"
+      "$oid": "6a0b2b71ea122e5cb42929ac"
     },
-    "name_en": "Clear Body",
-    "name_es": "Cuerpo Puro",
-    "generation": 3,
-    "description_es": "Evita que le bajen las características.",
-    "triggers": [
+    "abilityId": "clear-body",
+    "name": "Cuerpo Puro",
+    "nameEn": "Clear Body",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_drop_attempt",
-        "handler": "block_stat_drop",
+        "phase": "on_stat_drop_attempt",
+        "effectType": "block_stat_drop",
+        "handlerKey": "block_stat_drop",
         "target": "self",
         "conditions": [
           {
@@ -691,22 +1031,34 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita que le bajen las características."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514c"
+      "$oid": "6a0b2b71ea122e5cb42929ad"
     },
-    "name_en": "Color Change",
-    "name_es": "Cambio Color",
-    "generation": 3,
-    "description_es": "Cambia de tipo según el ataque recibido.",
-    "triggers": [
+    "abilityId": "color-change",
+    "name": "Cambio Color",
+    "nameEn": "Color Change",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_after_hit",
-        "handler": "change_type_to_move_type",
+        "phase": "on_after_hit",
+        "effectType": "change_type_to_move_type",
+        "handlerKey": "change_type_to_move_type",
         "target": "self",
         "conditions": [
           {
@@ -714,22 +1066,34 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Cambia de tipo según el ataque recibido."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5153"
+      "$oid": "6a0b2b71ea122e5cb42929ae"
     },
-    "name_en": "Effect Spore",
-    "name_es": "Efecto Espora",
-    "generation": 3,
-    "description_es": "Puede causar estados al recibir contacto.",
-    "triggers": [
+    "abilityId": "effect-spore",
+    "name": "Efecto Espora",
+    "nameEn": "Effect Spore",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "apply_random_status_chance",
+        "phase": "on_contact_taken",
+        "effectType": "apply_random_status_chance",
+        "handlerKey": "apply_random_status_chance",
         "target": "move_source",
         "conditions": [],
         "params": {
@@ -739,53 +1103,80 @@
             "sleep"
           ],
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede causar estados al recibir contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5154"
+      "$oid": "6a0b2b71ea122e5cb42929af"
     },
-    "name_en": "Flame Body",
-    "name_es": "Cuerpo Llama",
-    "generation": 3,
-    "description_es": "Puede quemar al rival al contacto.",
-    "triggers": [
+    "abilityId": "flame-body",
+    "name": "Cuerpo Llama",
+    "nameEn": "Flame Body",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "apply_status_chance",
+        "phase": "on_contact_taken",
+        "effectType": "apply_status_chance",
+        "handlerKey": "apply_status_chance",
         "target": "move_source",
         "conditions": [],
         "params": {
           "status": "burn",
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede quemar al rival al contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5159"
+      "$oid": "6a0b2b71ea122e5cb42929b0"
     },
-    "name_en": "Hustle",
-    "name_es": "Entusiasmo",
-    "generation": 3,
-    "description_es": "Aumenta el Ataque pero baja la precisión de los movimientos físicos.",
-    "triggers": [
+    "abilityId": "hustle",
+    "name": "Entusiasmo",
+    "nameEn": "Hustle",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [],
         "params": {
           "stat": "attack",
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_accuracy_calc",
-        "handler": "modify_accuracy",
+        "phase": "accuracy",
+        "effectType": "modify_accuracy",
+        "handlerKey": "modify_accuracy",
         "target": "self",
         "conditions": [
           {
@@ -795,22 +1186,34 @@
         ],
         "params": {
           "multiplier": 0.8
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta el Ataque pero baja la precisión de los movimientos físicos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5161"
+      "$oid": "6a0b2b71ea122e5cb42929b1"
     },
-    "name_en": "Lightning Rod",
-    "name_es": "Pararrayos",
-    "generation": 3,
-    "description_es": "Atrae ataques eléctricos.",
-    "triggers": [
+    "abilityId": "lightning-rod",
+    "name": "Pararrayos",
+    "nameEn": "Lightning Rod",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_targeting",
-        "handler": "redirect_move_to_self",
+        "phase": "on_move_targeting",
+        "effectType": "redirect_move_to_self",
+        "handlerKey": "redirect_move_to_self",
         "target": "self",
         "conditions": [
           {
@@ -822,22 +1225,34 @@
             "value": "double"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Atrae ataques eléctricos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5162"
+      "$oid": "6a0b2b71ea122e5cb42929b2"
     },
-    "name_en": "Limber",
-    "name_es": "Flexibilidad",
-    "generation": 3,
-    "description_es": "Evita la parálisis.",
-    "triggers": [
+    "abilityId": "limber",
+    "name": "Flexibilidad",
+    "nameEn": "Limber",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -845,22 +1260,35 @@
             "value": "paralysis"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita la parálisis."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516c"
+      "$oid": "6a0b2b71ea122e5cb42929b3"
     },
-    "name_en": "Plus",
-    "name_es": "Más",
-    "generation": 3,
-    "description_es": "Potencia al Pokémon si combate junto a uno con Menos.",
-    "triggers": [
+    "abilityId": "plus",
+    "name": "Más",
+    "nameEn": "Plus",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -871,22 +1299,34 @@
         "params": {
           "stat": "special_attack",
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia al Pokémon si combate junto a uno con Menos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5170"
+      "$oid": "6a0b2b71ea122e5cb42929b4"
     },
-    "name_en": "Rain Dish",
-    "name_es": "Cura Lluvia",
-    "generation": 3,
-    "description_es": "Recupera PS cuando llueve.",
-    "triggers": [
+    "abilityId": "rain-dish",
+    "name": "Cura Lluvia",
+    "nameEn": "Rain Dish",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_turn_end",
-        "handler": "heal_fraction_max_hp",
+        "phase": "turn_end",
+        "effectType": "heal_fraction_max_hp",
+        "handlerKey": "heal_fraction_max_hp",
         "target": "self",
         "conditions": [
           {
@@ -896,22 +1336,35 @@
         ],
         "params": {
           "fraction": 0.0625
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Recupera PS cuando llueve."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5175"
+      "$oid": "6a0b2b71ea122e5cb42929b5"
     },
-    "name_en": "Sand Veil",
-    "name_es": "Velo Arena",
-    "generation": 3,
-    "description_es": "Aumenta la evasión en tormenta de arena.",
-    "triggers": [
+    "abilityId": "sand-veil",
+    "name": "Velo Arena",
+    "nameEn": "Sand Veil",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_evasion_calc",
-        "handler": "modify_evasion",
+        "phase": "on_evasion_calc",
+        "effectType": "modify_evasion",
+        "handlerKey": "modify_evasion",
         "target": "self",
         "conditions": [
           {
@@ -921,47 +1374,73 @@
         ],
         "params": {
           "multiplier": 1.2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta la evasión en tormenta de arena."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5177"
+      "$oid": "6a0b2b71ea122e5cb42929b6"
     },
-    "name_en": "Shadow Tag",
-    "name_es": "Sombra Trampa",
-    "generation": 3,
-    "description_es": "Impide que el rival huya.",
-    "triggers": [
+    "abilityId": "shadow-tag",
+    "name": "Sombra Trampa",
+    "nameEn": "Shadow Tag",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_escape_attempt",
-        "handler": "block_escape",
+        "phase": "escape_attempt",
+        "effectType": "block_escape",
+        "handlerKey": "block_escape",
         "target": "opponents",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_switch_attempt",
-        "handler": "block_switch",
+        "phase": "switch_attempt",
+        "effectType": "block_switch",
+        "handlerKey": "block_switch",
         "target": "opponents",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Impide que el rival huya."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517b"
+      "$oid": "6a0b2b71ea122e5cb42929b7"
     },
-    "name_en": "Soundproof",
-    "name_es": "Insonorizar",
-    "generation": 3,
-    "description_es": "Es inmune a movimientos de sonido.",
-    "triggers": [
+    "abilityId": "soundproof",
+    "name": "Insonorizar",
+    "nameEn": "Soundproof",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "grant_move_group_immunity",
+        "phase": "receive_move",
+        "effectType": "grant_move_group_immunity",
+        "handlerKey": "grant_move_group_immunity",
         "target": "self",
         "conditions": [
           {
@@ -969,22 +1448,34 @@
             "value": "sound"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Es inmune a movimientos de sonido."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5180"
+      "$oid": "6a0b2b71ea122e5cb42929b8"
     },
-    "name_en": "Sturdy",
-    "name_es": "Robustez",
-    "generation": 3,
-    "description_es": "Protege de ciertos movimientos fulminantes.",
-    "triggers": [
+    "abilityId": "sturdy",
+    "name": "Robustez",
+    "nameEn": "Sturdy",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "grant_move_group_immunity",
+        "phase": "receive_move",
+        "effectType": "grant_move_group_immunity",
+        "handlerKey": "grant_move_group_immunity",
         "target": "self",
         "conditions": [
           {
@@ -992,40 +1483,62 @@
             "value": "ohko"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Protege de ciertos movimientos fulminantes."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5181"
+      "$oid": "6a0b2b71ea122e5cb42929b9"
     },
-    "name_en": "Suction Cups",
-    "name_es": "Ventosas",
-    "generation": 3,
-    "description_es": "Evita ser arrastrado o cambiado.",
-    "triggers": [
+    "abilityId": "suction-cups",
+    "name": "Ventosas",
+    "nameEn": "Suction Cups",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_forced_switch_attempt",
-        "handler": "block_forced_switch",
+        "phase": "on_forced_switch_attempt",
+        "effectType": "block_forced_switch",
+        "handlerKey": "block_forced_switch",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Evita ser arrastrado o cambiado."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5185"
+      "$oid": "6a0b2b71ea122e5cb42929ba"
     },
-    "name_en": "Thick Fat",
-    "name_es": "Sebo",
-    "generation": 3,
-    "description_es": "Reduce el daño de fuego y hielo.",
-    "triggers": [
+    "abilityId": "thick-fat",
+    "name": "Sebo",
+    "nameEn": "Thick Fat",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_damage_calc",
-        "handler": "modify_damage_taken",
+        "phase": "damage",
+        "effectType": "modify_damage_taken",
+        "handlerKey": "modify_damage_taken",
         "target": "self",
         "conditions": [
           {
@@ -1038,22 +1551,34 @@
         ],
         "params": {
           "multiplier": 0.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Reduce el daño de fuego y hielo."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5186"
+      "$oid": "6a0b2b71ea122e5cb42929bb"
     },
-    "name_en": "Torrent",
-    "name_es": "Torrente",
-    "generation": 3,
-    "description_es": "Potencia los movimientos de agua cuando le quedan pocos PS.",
-    "triggers": [
+    "abilityId": "torrent",
+    "name": "Torrente",
+    "nameEn": "Torrent",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_power_calc",
-        "handler": "modify_move_power",
+        "phase": "move_power",
+        "effectType": "modify_move_power",
+        "handlerKey": "modify_move_power",
         "target": "self",
         "conditions": [
           {
@@ -1067,22 +1592,34 @@
         ],
         "params": {
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia los movimientos de agua cuando le quedan pocos PS."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518d"
+      "$oid": "6a0b2b71ea122e5cb42929bc"
     },
-    "name_en": "Wonder Guard",
-    "name_es": "Superguarda",
-    "generation": 3,
-    "description_es": "Solo recibe daño de ataques muy eficaces.",
-    "triggers": [
+    "abilityId": "wonder-guard",
+    "name": "Superguarda",
+    "nameEn": "Wonder Guard",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "block_damage_if_not_supereffective",
+        "phase": "receive_move",
+        "effectType": "block_damage_if_not_supereffective",
+        "handlerKey": "block_damage_if_not_supereffective",
         "target": "self",
         "conditions": [
           {
@@ -1090,22 +1627,34 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Solo recibe daño de ataques muy eficaces."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518e"
+      "$oid": "6a0b2b71ea122e5cb42929bd"
     },
-    "name_en": "Vital Spirit",
-    "name_es": "Espíritu Vital",
-    "generation": 3,
-    "description_es": "Evita quedarse dormido.",
-    "triggers": [
+    "abilityId": "vital-spirit",
+    "name": "Espíritu Vital",
+    "nameEn": "Vital Spirit",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -1113,22 +1662,35 @@
             "value": "sleep"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita quedarse dormido."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518f"
+      "$oid": "6a0b2b71ea122e5cb42929be"
     },
-    "name_en": "Pickup",
-    "name_es": "Recogida",
-    "generation": 3,
-    "description_es": "Puede recoger objetos tras el combate.",
-    "triggers": [
+    "abilityId": "pickup",
+    "name": "Recogida",
+    "nameEn": "Pickup",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_battle_end",
-        "handler": "pickup_field_item_after_battle",
+        "phase": "on_battle_end",
+        "effectType": "pickup_field_item_after_battle",
+        "handlerKey": "pickup_field_item_after_battle",
         "target": "self",
         "conditions": [
           {
@@ -1139,70 +1701,113 @@
             ]
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related",
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede recoger objetos tras el combate."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a3"
+      "$oid": "6a0b2b71ea122e5cb42929bf"
     },
-    "name_en": "Normalize",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "normalize",
+    "name": "Normalize",
+    "nameEn": "Normalize",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a5"
+      "$oid": "6a0b2b71ea122e5cb42929c0"
     },
-    "name_en": "Slow Start",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "slow-start",
+    "name": "Slow Start",
+    "nameEn": "Slow Start",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a9"
+      "$oid": "6a0b2b71ea122e5cb42929c1"
     },
-    "name_en": "Super Luck",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "super-luck",
+    "name": "Super Luck",
+    "nameEn": "Super Luck",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514b"
+      "$oid": "6a0b2b71ea122e5cb42929c2"
     },
-    "name_en": "Cloud Nine",
-    "name_es": "Aclimatación",
-    "generation": 3,
-    "description_es": "Anula los efectos del clima.",
-    "triggers": [
+    "abilityId": "cloud-nine",
+    "name": "Aclimatación",
+    "nameEn": "Cloud Nine",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_battle_state_check",
-        "handler": "suppress_weather_effects",
+        "phase": "on_battle_state_check",
+        "effectType": "suppress_weather_effects",
+        "handlerKey": "suppress_weather_effects",
         "target": "battle",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Anula los efectos del clima."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514e"
+      "$oid": "6a0b2b71ea122e5cb42929c3"
     },
-    "name_en": "Cute Charm",
-    "name_es": "Gran Encanto",
-    "generation": 3,
-    "description_es": "Puede enamorar al rival al contacto.",
-    "triggers": [
+    "abilityId": "cute-charm",
+    "name": "Gran Encanto",
+    "nameEn": "Cute Charm",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "apply_status_chance",
+        "phase": "on_contact_taken",
+        "effectType": "apply_status_chance",
+        "handlerKey": "apply_status_chance",
         "target": "move_source",
         "conditions": [
           {
@@ -1213,22 +1818,35 @@
         "params": {
           "status": "infatuation",
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede enamorar al rival al contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515b"
+      "$oid": "6a0b2b71ea122e5cb42929c4"
     },
-    "name_en": "Immunity",
-    "name_es": "Inmunidad",
-    "generation": 3,
-    "description_es": "Evita ser envenenado.",
-    "triggers": [
+    "abilityId": "immunity",
+    "name": "Inmunidad",
+    "nameEn": "Immunity",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -1236,22 +1854,35 @@
             "value": "poison"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita ser envenenado."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515d"
+      "$oid": "6a0b2b71ea122e5cb42929c5"
     },
-    "name_en": "Insomnia",
-    "name_es": "Insomnio",
-    "generation": 3,
-    "description_es": "Evita quedarse dormido.",
-    "triggers": [
+    "abilityId": "insomnia",
+    "name": "Insomnio",
+    "nameEn": "Insomnia",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -1259,22 +1890,35 @@
             "value": "sleep"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita quedarse dormido."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5160"
+      "$oid": "6a0b2b71ea122e5cb42929c6"
     },
-    "name_en": "Levitate",
-    "name_es": "Levitación",
-    "generation": 3,
-    "description_es": "Es inmune a los movimientos de tipo tierra.",
-    "triggers": [
+    "abilityId": "levitate",
+    "name": "Levitación",
+    "nameEn": "Levitate",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "grant_move_immunity",
+        "phase": "receive_move",
+        "effectType": "grant_move_immunity",
+        "handlerKey": "grant_move_immunity",
         "target": "self",
         "conditions": [
           {
@@ -1282,22 +1926,34 @@
             "value": "ground"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Es inmune a los movimientos de tipo tierra."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5166"
+      "$oid": "6a0b2b71ea122e5cb42929c7"
     },
-    "name_en": "Marvel Scale",
-    "name_es": "Escama Especial",
-    "generation": 3,
-    "description_es": "Aumenta la Defensa cuando tiene un problema de estado.",
-    "triggers": [
+    "abilityId": "marvel-scale",
+    "name": "Escama Especial",
+    "nameEn": "Marvel Scale",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -1308,22 +1964,35 @@
         "params": {
           "stat": "defense",
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta la Defensa cuando tiene un problema de estado."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5167"
+      "$oid": "6a0b2b71ea122e5cb42929c8"
     },
-    "name_en": "Minus",
-    "name_es": "Menos",
-    "generation": 3,
-    "description_es": "Potencia al Pokémon si combate junto a uno con Más.",
-    "triggers": [
+    "abilityId": "minus",
+    "name": "Menos",
+    "nameEn": "Minus",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -1334,40 +2003,64 @@
         "params": {
           "stat": "special_attack",
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia al Pokémon si combate junto a uno con Más."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5168"
+      "$oid": "6a0b2b71ea122e5cb42929c9"
     },
-    "name_en": "Natural Cure",
-    "name_es": "Cura Natural",
-    "generation": 3,
-    "description_es": "Cura sus estados al ser cambiado.",
-    "triggers": [
+    "abilityId": "natural-cure",
+    "name": "Cura Natural",
+    "nameEn": "Natural Cure",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_switch_out",
-        "handler": "cure_major_status",
+        "phase": "on_switch_out",
+        "effectType": "cure_major_status",
+        "handlerKey": "cure_major_status",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Cura sus estados al ser cambiado."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5169"
+      "$oid": "6a0b2b71ea122e5cb42929ca"
     },
-    "name_en": "Oblivious",
-    "name_es": "Despiste",
-    "generation": 3,
-    "description_es": "Evita el enamoramiento.",
-    "triggers": [
+    "abilityId": "oblivious",
+    "name": "Despiste",
+    "nameEn": "Oblivious",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -1375,22 +2068,35 @@
             "value": "infatuation"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita el enamoramiento."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5173"
+      "$oid": "6a0b2b71ea122e5cb42929cb"
     },
-    "name_en": "Run Away",
-    "name_es": "Fuga",
-    "generation": 3,
-    "description_es": "Facilita huir de combates salvajes.",
-    "triggers": [
+    "abilityId": "run-away",
+    "name": "Fuga",
+    "nameEn": "Run Away",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_escape_attempt",
-        "handler": "guarantee_escape",
+        "phase": "escape_attempt",
+        "effectType": "guarantee_escape",
+        "handlerKey": "guarantee_escape",
         "target": "self",
         "conditions": [
           {
@@ -1398,40 +2104,62 @@
             "value": "wild"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Facilita huir de combates salvajes."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517e"
+      "$oid": "6a0b2b71ea122e5cb42929cc"
     },
-    "name_en": "Stench",
-    "name_es": "Hedor",
-    "generation": 3,
-    "description_es": "Ayuda a mantener alejados a los Pokémon salvajes.",
-    "triggers": [
+    "abilityId": "stench",
+    "name": "Hedor",
+    "nameEn": "Stench",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_field_check",
-        "handler": "reduce_wild_encounters",
+        "phase": "field_check",
+        "effectType": "reduce_wild_encounters",
+        "handlerKey": "reduce_wild_encounters",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Ayuda a mantener alejados a los Pokémon salvajes."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5184"
+      "$oid": "6a0b2b71ea122e5cb42929cd"
     },
-    "name_en": "Synchronize",
-    "name_es": "Sincronía",
-    "generation": 3,
-    "description_es": "Transmite su estado al rival.",
-    "triggers": [
+    "abilityId": "synchronize",
+    "name": "Sincronía",
+    "nameEn": "Synchronize",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_applied",
-        "handler": "reflect_status_to_source",
+        "phase": "on_status_applied",
+        "effectType": "reflect_status_to_source",
+        "handlerKey": "reflect_status_to_source",
         "target": "status_source",
         "conditions": [
           {
@@ -1443,58 +2171,91 @@
             ]
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Transmite su estado al rival."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5187"
+      "$oid": "6a0b2b71ea122e5cb42929ce"
     },
-    "name_en": "Trace",
-    "name_es": "Rastro",
-    "generation": 3,
-    "description_es": "Copia la habilidad del rival.",
-    "triggers": [
+    "abilityId": "trace",
+    "name": "Rastro",
+    "nameEn": "Trace",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_enter_battle",
-        "handler": "copy_opponent_ability",
+        "phase": "enter_battle",
+        "effectType": "copy_opponent_ability",
+        "handlerKey": "copy_opponent_ability",
         "target": "opponent",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Copia la habilidad del rival."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5188"
+      "$oid": "6a0b2b71ea122e5cb42929cf"
     },
-    "name_en": "Truant",
-    "name_es": "Ausente",
-    "generation": 3,
-    "description_es": "Solo actúa un turno de cada dos.",
-    "triggers": [
+    "abilityId": "truant",
+    "name": "Ausente",
+    "nameEn": "Truant",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_before_move",
-        "handler": "skip_turn_every_other_turn",
+        "phase": "before_move",
+        "effectType": "skip_turn_every_other_turn",
+        "handlerKey": "skip_turn_every_other_turn",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Solo actúa un turno de cada dos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f518c"
+      "$oid": "6a0b2b71ea122e5cb42929d0"
     },
-    "name_en": "White Smoke",
-    "name_es": "Humo Blanco",
-    "generation": 3,
-    "description_es": "Evita que le bajen las características.",
-    "triggers": [
+    "abilityId": "white-smoke",
+    "name": "Humo Blanco",
+    "nameEn": "White Smoke",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_drop_attempt",
-        "handler": "block_stat_drop",
+        "phase": "on_stat_drop_attempt",
+        "effectType": "block_stat_drop",
+        "handlerKey": "block_stat_drop",
         "target": "self",
         "conditions": [
           {
@@ -1502,197 +2263,313 @@
             "value": true
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita que le bajen las características."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5191"
+      "$oid": "6a0b2b71ea122e5cb42929d1"
     },
-    "name_en": "Stench",
-    "name_es": "Hedor",
-    "generation": 3,
-    "description_es": "Ayuda a mantener alejados a los Pokémon salvajes.",
-    "triggers": [
+    "abilityId": "stench",
+    "name": "Hedor",
+    "nameEn": "Stench",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_field_check",
-        "handler": "reduce_wild_encounters",
+        "phase": "field_check",
+        "effectType": "reduce_wild_encounters",
+        "handlerKey": "reduce_wild_encounters",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Ayuda a mantener alejados a los Pokémon salvajes."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5197"
+      "$oid": "6a0b2b71ea122e5cb42929d2"
     },
-    "name_en": "Aftermath",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "aftermath",
+    "name": "Aftermath",
+    "nameEn": "Aftermath",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519a"
+      "$oid": "6a0b2b71ea122e5cb42929d3"
     },
-    "name_en": "Dry Skin",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "dry-skin",
+    "name": "Dry Skin",
+    "nameEn": "Dry Skin",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519d"
+      "$oid": "6a0b2b71ea122e5cb42929d4"
     },
-    "name_en": "Filter",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "filter",
+    "name": "Filter",
+    "nameEn": "Filter",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519f"
+      "$oid": "6a0b2b71ea122e5cb42929d5"
     },
-    "name_en": "Sniper",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "sniper",
+    "name": "Sniper",
+    "nameEn": "Sniper",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a0"
+      "$oid": "6a0b2b71ea122e5cb42929d6"
     },
-    "name_en": "Tinted Lens",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "tinted-lens",
+    "name": "Tinted Lens",
+    "nameEn": "Tinted Lens",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51ab"
+      "$oid": "6a0b2b71ea122e5cb42929d7"
     },
-    "name_en": "Anger Point",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "anger-point",
+    "name": "Anger Point",
+    "nameEn": "Anger Point",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5145"
+      "$oid": "6a0b2b71ea122e5cb42929d8"
     },
-    "name_en": "Air Lock",
-    "name_es": "Bucle Aire",
-    "generation": 3,
-    "description_es": "Anula los efectos del clima.",
-    "triggers": [
+    "abilityId": "air-lock",
+    "name": "Bucle Aire",
+    "nameEn": "Air Lock",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_battle_state_check",
-        "handler": "suppress_weather_effects",
+        "phase": "on_battle_state_check",
+        "effectType": "suppress_weather_effects",
+        "handlerKey": "suppress_weather_effects",
         "target": "battle",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Anula los efectos del clima."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5147"
+      "$oid": "6a0b2b71ea122e5cb42929d9"
     },
-    "name_en": "Battle Armor",
-    "name_es": "Armadura Batalla",
-    "generation": 3,
-    "description_es": "Bloquea los golpes críticos.",
-    "triggers": [
+    "abilityId": "battle-armor",
+    "name": "Armadura Batalla",
+    "nameEn": "Battle Armor",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_critical_check",
-        "handler": "prevent_critical_hit",
+        "phase": "on_critical_check",
+        "effectType": "prevent_critical_hit",
+        "handlerKey": "prevent_critical_hit",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "critical_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Bloquea los golpes críticos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f514d"
+      "$oid": "6a0b2b71ea122e5cb42929da"
     },
-    "name_en": "Compound Eyes",
-    "name_es": "Ojo Compuesto",
-    "generation": 3,
-    "description_es": "Aumenta la precisión.",
-    "triggers": [
+    "abilityId": "compound-eyes",
+    "name": "Ojo Compuesto",
+    "nameEn": "Compound Eyes",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_accuracy_calc",
-        "handler": "modify_accuracy",
+        "phase": "accuracy",
+        "effectType": "modify_accuracy",
+        "handlerKey": "modify_accuracy",
         "target": "self",
         "conditions": [],
         "params": {
           "multiplier": 1.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta la precisión."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5150"
+      "$oid": "6a0b2b71ea122e5cb42929db"
     },
-    "name_en": "Drizzle",
-    "name_es": "Llovizna",
-    "generation": 3,
-    "description_es": "Hace que llueva al entrar en combate.",
-    "triggers": [
+    "abilityId": "drizzle",
+    "name": "Llovizna",
+    "nameEn": "Drizzle",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_enter_battle",
-        "handler": "set_weather",
+        "phase": "enter_battle",
+        "effectType": "set_weather",
+        "handlerKey": "set_weather",
         "target": "battle",
         "conditions": [],
         "params": {
           "weather": "rain",
           "duration": null
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Hace que llueva al entrar en combate."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5152"
+      "$oid": "6a0b2b71ea122e5cb42929dc"
     },
-    "name_en": "Early Bird",
-    "name_es": "Madrugador",
-    "generation": 3,
-    "description_es": "Se despierta antes de los sueños.",
-    "triggers": [
+    "abilityId": "early-bird",
+    "name": "Madrugador",
+    "nameEn": "Early Bird",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_sleep_turns_calc",
-        "handler": "reduce_sleep_duration",
+        "phase": "on_sleep_turns_calc",
+        "effectType": "reduce_sleep_duration",
+        "handlerKey": "reduce_sleep_duration",
         "target": "self",
         "conditions": [],
         "params": {
           "multiplier": 0.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Se despierta antes de los sueños."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5157"
+      "$oid": "6a0b2b71ea122e5cb42929dd"
     },
-    "name_en": "Guts",
-    "name_es": "Agallas",
-    "generation": 3,
-    "description_es": "Aumenta el Ataque cuando sufre un problema de estado.",
-    "triggers": [
+    "abilityId": "guts",
+    "name": "Agallas",
+    "nameEn": "Guts",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_calc",
-        "handler": "modify_stat",
+        "phase": "stat",
+        "effectType": "modify_stat",
+        "handlerKey": "modify_stat",
         "target": "self",
         "conditions": [
           {
@@ -1703,29 +2580,45 @@
         "params": {
           "stat": "attack",
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       },
       {
-        "event": "on_burn_attack_penalty_check",
-        "handler": "suppress_burn_attack_penalty",
+        "phase": "on_burn_attack_penalty_check",
+        "effectType": "suppress_burn_attack_penalty",
+        "handlerKey": "suppress_burn_attack_penalty",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Aumenta el Ataque cuando sufre un problema de estado."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515a"
+      "$oid": "6a0b2b71ea122e5cb42929de"
     },
-    "name_en": "Hyper Cutter",
-    "name_es": "Corte Fuerte",
-    "generation": 3,
-    "description_es": "Evita que baje su Ataque.",
-    "triggers": [
+    "abilityId": "hyper-cutter",
+    "name": "Corte Fuerte",
+    "nameEn": "Hyper Cutter",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_drop_attempt",
-        "handler": "block_specific_stat_drop",
+        "phase": "on_stat_drop_attempt",
+        "effectType": "block_specific_stat_drop",
+        "handlerKey": "block_specific_stat_drop",
         "target": "self",
         "conditions": [
           {
@@ -1735,22 +2628,34 @@
         ],
         "params": {
           "stat": "attack"
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita que baje su Ataque."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f515f"
+      "$oid": "6a0b2b71ea122e5cb42929df"
     },
-    "name_en": "Keen Eye",
-    "name_es": "Vista Lince",
-    "generation": 3,
-    "description_es": "Evita que baje su Precisión.",
-    "triggers": [
+    "abilityId": "keen-eye",
+    "name": "Vista Lince",
+    "nameEn": "Keen Eye",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_stat_drop_attempt",
-        "handler": "block_specific_stat_drop",
+        "phase": "on_stat_drop_attempt",
+        "effectType": "block_specific_stat_drop",
+        "handlerKey": "block_specific_stat_drop",
         "target": "self",
         "conditions": [
           {
@@ -1760,22 +2665,34 @@
         ],
         "params": {
           "stat": "accuracy"
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita que baje su Precisión."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516b"
+      "$oid": "6a0b2b71ea122e5cb42929e0"
     },
-    "name_en": "Own Tempo",
-    "name_es": "Ritmo Propio",
-    "generation": 3,
-    "description_es": "Evita la confusión.",
-    "triggers": [
+    "abilityId": "own-tempo",
+    "name": "Ritmo Propio",
+    "nameEn": "Own Tempo",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_status_attempt",
-        "handler": "block_status",
+        "phase": "status_attempt",
+        "effectType": "block_status",
+        "handlerKey": "block_status",
         "target": "self",
         "conditions": [
           {
@@ -1783,218 +2700,340 @@
             "value": "confusion"
           }
         ],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Evita la confusión."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f516d"
+      "$oid": "6a0b2b71ea122e5cb42929e1"
     },
-    "name_en": "Poison Point",
-    "name_es": "Punto Tóxico",
-    "generation": 3,
-    "description_es": "Puede envenenar al rival al contacto.",
-    "triggers": [
+    "abilityId": "poison-point",
+    "name": "Punto Tóxico",
+    "nameEn": "Poison Point",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "apply_status_chance",
+        "phase": "on_contact_taken",
+        "effectType": "apply_status_chance",
+        "handlerKey": "apply_status_chance",
         "target": "move_source",
         "conditions": [],
         "params": {
           "status": "poison",
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede envenenar al rival al contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5171"
+      "$oid": "6a0b2b71ea122e5cb42929e2"
     },
-    "name_en": "Rock Head",
-    "name_es": "Cabeza Roca",
-    "generation": 3,
-    "description_es": "Evita daño de retroceso.",
-    "triggers": [
+    "abilityId": "rock-head",
+    "name": "Cabeza Roca",
+    "nameEn": "Rock Head",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_recoil_check",
-        "handler": "prevent_recoil_damage",
+        "phase": "on_recoil_check",
+        "effectType": "prevent_recoil_damage",
+        "handlerKey": "prevent_recoil_damage",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Evita daño de retroceso."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5172"
+      "$oid": "6a0b2b71ea122e5cb42929e3"
     },
-    "name_en": "Rough Skin",
-    "name_es": "Piel Tosca",
-    "generation": 3,
-    "description_es": "Daña al rival al contacto.",
-    "triggers": [
+    "abilityId": "rough-skin",
+    "name": "Piel Tosca",
+    "nameEn": "Rough Skin",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "deal_fraction_max_hp_damage",
+        "phase": "on_contact_taken",
+        "effectType": "deal_fraction_max_hp_damage",
+        "handlerKey": "deal_fraction_max_hp_damage",
         "target": "move_source",
         "conditions": [],
         "params": {
           "fraction": 0.0625
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Daña al rival al contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5174"
+      "$oid": "6a0b2b71ea122e5cb42929e4"
     },
-    "name_en": "Sand Stream",
-    "name_es": "Chorro Arena",
-    "generation": 3,
-    "description_es": "Crea una tormenta de arena al entrar en combate.",
-    "triggers": [
+    "abilityId": "sand-stream",
+    "name": "Chorro Arena",
+    "nameEn": "Sand Stream",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_enter_battle",
-        "handler": "set_weather",
+        "phase": "enter_battle",
+        "effectType": "set_weather",
+        "handlerKey": "set_weather",
         "target": "battle",
         "conditions": [],
         "params": {
           "weather": "sandstorm",
           "duration": null
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "weather_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Crea una tormenta de arena al entrar en combate."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5176"
+      "$oid": "6a0b2b71ea122e5cb42929e5"
     },
-    "name_en": "Serene Grace",
-    "name_es": "Dicha",
-    "generation": 3,
-    "description_es": "Aumenta la probabilidad de efectos secundarios.",
-    "triggers": [
+    "abilityId": "serene-grace",
+    "name": "Dicha",
+    "nameEn": "Serene Grace",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_secondary_effect_chance_calc",
-        "handler": "modify_secondary_effect_chance",
+        "phase": "on_secondary_effect_chance_calc",
+        "effectType": "modify_secondary_effect_chance",
+        "handlerKey": "modify_secondary_effect_chance",
         "target": "self",
         "conditions": [],
         "params": {
           "multiplier": 2
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta la probabilidad de efectos secundarios."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5179"
+      "$oid": "6a0b2b71ea122e5cb42929e6"
     },
-    "name_en": "Shell Armor",
-    "name_es": "Caparazón",
-    "generation": 3,
-    "description_es": "Bloquea los golpes críticos.",
-    "triggers": [
+    "abilityId": "shell-armor",
+    "name": "Caparazón",
+    "nameEn": "Shell Armor",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_critical_check",
-        "handler": "prevent_critical_hit",
+        "phase": "on_critical_check",
+        "effectType": "prevent_critical_hit",
+        "handlerKey": "prevent_critical_hit",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "critical_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Bloquea los golpes críticos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517a"
+      "$oid": "6a0b2b71ea122e5cb42929e7"
     },
-    "name_en": "Shield Dust",
-    "name_es": "Polvo Escudo",
-    "generation": 3,
-    "description_es": "Bloquea efectos secundarios de ataques.",
-    "triggers": [
+    "abilityId": "shield-dust",
+    "name": "Polvo Escudo",
+    "nameEn": "Shield Dust",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_secondary_effect_attempt",
-        "handler": "block_secondary_effects_from_moves",
+        "phase": "on_secondary_effect_attempt",
+        "effectType": "block_secondary_effects_from_moves",
+        "handlerKey": "block_secondary_effects_from_moves",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Bloquea efectos secundarios de ataques."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517c"
+      "$oid": "6a0b2b71ea122e5cb42929e8"
     },
-    "name_en": "Speed Boost",
-    "name_es": "Impulso",
-    "generation": 3,
-    "description_es": "Aumenta la Velocidad con el tiempo.",
-    "triggers": [
+    "abilityId": "speed-boost",
+    "name": "Impulso",
+    "nameEn": "Speed Boost",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_turn_end",
-        "handler": "apply_stat_stage_change",
+        "phase": "turn_end",
+        "effectType": "apply_stat_stage_change",
+        "handlerKey": "apply_stat_stage_change",
         "target": "self",
         "conditions": [],
         "params": {
           "stat": "speed",
           "stages": 1
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Aumenta la Velocidad con el tiempo."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517d"
+      "$oid": "6a0b2b71ea122e5cb42929e9"
     },
-    "name_en": "Static",
-    "name_es": "Electricidad Estática",
-    "generation": 3,
-    "description_es": "Puede paralizar al rival al contacto.",
-    "triggers": [
+    "abilityId": "static",
+    "name": "Electricidad Estática",
+    "nameEn": "Static",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_contact_taken",
-        "handler": "apply_status_chance",
+        "phase": "on_contact_taken",
+        "effectType": "apply_status_chance",
+        "handlerKey": "apply_status_chance",
         "target": "move_source",
         "conditions": [],
         "params": {
           "status": "paralysis",
           "chance": 0.3
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "status_related",
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Puede paralizar al rival al contacto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f517f"
+      "$oid": "6a0b2b71ea122e5cb42929ea"
     },
-    "name_en": "Sticky Hold",
-    "name_es": "Viscosidad",
-    "generation": 3,
-    "description_es": "Evita que le quiten el objeto.",
-    "triggers": [
+    "abilityId": "sticky-hold",
+    "name": "Viscosidad",
+    "nameEn": "Sticky Hold",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_item_remove_attempt",
-        "handler": "block_item_removal",
+        "phase": "on_item_remove_attempt",
+        "effectType": "block_item_removal",
+        "handlerKey": "block_item_removal",
         "target": "self",
         "conditions": [],
-        "params": {}
+        "params": {},
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [],
+    "enabled": true,
+    "descriptionEs": "Evita que le quiten el objeto."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5182"
+      "$oid": "6a0b2b71ea122e5cb42929eb"
     },
-    "name_en": "Swarm",
-    "name_es": "Enjambre",
-    "generation": 3,
-    "description_es": "Potencia los movimientos de bicho cuando le quedan pocos PS.",
-    "triggers": [
+    "abilityId": "swarm",
+    "name": "Enjambre",
+    "nameEn": "Swarm",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_move_power_calc",
-        "handler": "modify_move_power",
+        "phase": "move_power",
+        "effectType": "modify_move_power",
+        "handlerKey": "modify_move_power",
         "target": "self",
         "conditions": [
           {
@@ -2008,22 +3047,34 @@
         ],
         "params": {
           "multiplier": 1.5
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Potencia los movimientos de bicho cuando le quedan pocos PS."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5189"
+      "$oid": "6a0b2b71ea122e5cb42929ec"
     },
-    "name_en": "Volt Absorb",
-    "name_es": "Absorbe Elec.",
-    "generation": 3,
-    "description_es": "Recupera PS si recibe ataques eléctricos.",
-    "triggers": [
+    "abilityId": "volt-absorb",
+    "name": "Absorbe Elec.",
+    "nameEn": "Volt Absorb",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [
       {
-        "event": "on_receive_move",
-        "handler": "heal_on_type_hit",
+        "phase": "receive_move",
+        "effectType": "heal_on_type_hit",
+        "handlerKey": "heal_on_type_hit",
         "target": "self",
         "conditions": [
           {
@@ -2034,68 +3085,111 @@
         "params": {
           "fraction": 0.25,
           "grant_immunity": true
-        }
+        },
+        "priority": 0,
+        "stacking": "replace"
       }
-    ]
+    ],
+    "flags": [
+      "type_related"
+    ],
+    "enabled": true,
+    "descriptionEs": "Recupera PS si recibe ataques eléctricos."
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5195"
+      "$oid": "6a0b2b71ea122e5cb42929ed"
     },
-    "name_en": "Bad Dreams",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "bad-dreams",
+    "name": "Bad Dreams",
+    "nameEn": "Bad Dreams",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f5198"
+      "$oid": "6a0b2b71ea122e5cb42929ee"
     },
-    "name_en": "Anticipation",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "anticipation",
+    "name": "Anticipation",
+    "nameEn": "Anticipation",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f519b"
+      "$oid": "6a0b2b71ea122e5cb42929ef"
     },
-    "name_en": "Leaf Guard",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "leaf-guard",
+    "name": "Leaf Guard",
+    "nameEn": "Leaf Guard",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a1"
+      "$oid": "6a0b2b71ea122e5cb42929f0"
     },
-    "name_en": "Unaware",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "unaware",
+    "name": "Unaware",
+    "nameEn": "Unaware",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51a6"
+      "$oid": "6a0b2b71ea122e5cb42929f1"
     },
-    "name_en": "Technician",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "technician",
+    "name": "Technician",
+    "nameEn": "Technician",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   },
   {
     "_id": {
-      "$oid": "69f062a09a42cface88f51ac"
+      "$oid": "6a0b2b71ea122e5cb42929f2"
     },
-    "name_en": "Mold Breaker",
-    "name_es": "",
-    "generation": 3,
-    "description_es": "",
-    "triggers": []
+    "abilityId": "mold-breaker",
+    "name": "Mold Breaker",
+    "nameEn": "Mold Breaker",
+    "game": {
+      "generation": 3,
+      "ruleset": "frlg",
+      "sourceVersion": "frlg"
+    },
+    "hooks": [],
+    "flags": [],
+    "enabled": true
   }
 ]

@@ -32,5 +32,22 @@
     "Role": "user",
     "Pokes": 800000,
     "FichasCasino": 781987
+  },
+  {
+    "_id": {
+      "$oid": "6a14100577390dea68e30cd1"
+    },
+    "Nombre": "kao",
+    "Apellido": "kao",
+    "Username": "KAO",
+    "Correo": "kao@gmail.com",
+    "Pokemon": 0,
+    "Password": "$2a$11$2HFSy8wM.c98PEoLysAz7O3Mvdirf1fR52yQ4UKetJJ29Qz54AVfu",
+    "Birthdate": {
+      "$date": "2026-05-07T22:00:00Z"
+    },
+    "Role": "user",
+    "Pokes": 500,
+    "FichasCasino": 499998500
   }
 ]
