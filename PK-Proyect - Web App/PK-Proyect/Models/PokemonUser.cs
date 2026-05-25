@@ -6,9 +6,8 @@ namespace PK_Proyect.Models
     [BsonIgnoreExtraElements]
     public class PokemonUser
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string numero_pokedex { get; set; }
+        [BsonElement("numero_pokedex")]
+        public int numero_pokedex { get; set; }
 
         public string UserId { get; set; }
         public string Username { get; set; }

@@ -7,11 +7,7 @@ namespace PK_Proyect.Models
     [BsonIgnoreExtraElements]
     public class PokemonZona
     {
-
-
-
         [BsonElement("numero_pokedex")]
-        [BsonRepresentation(BsonType.Int32)]
         public int numero_pokedex { get; set; }
 
         [BsonElement("prob")]
