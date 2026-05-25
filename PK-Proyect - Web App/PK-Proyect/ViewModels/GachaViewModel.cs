@@ -164,16 +164,16 @@ namespace PK_Proyect.ViewModels.Banners
             // Cargar Pokémon
             foreach (var p in zona.Pokemon)
             {
-                var poke = _pokedexRepo.ObtenerPorId(p.PokemonId);
+                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
                 if (poke == null)
                     continue;
 
                 PokemonDisponibles.Add(new PokemonZonaViewModel
                 {
-                    Id = p.PokemonId,
+                    Id = p.numero_pokedex,
                     Nombre = poke.Nombre,
-                    Tipo1 = poke.Tipo1,
-                    Tipo2 = poke.Tipo2,
+                    TipoPrincipal = poke.TipoPrincipal,
+                    TipoSecundario = poke.TipoSecundario,
                     Probabilidad = p.prob
                 });
             }
@@ -237,17 +237,18 @@ namespace PK_Proyect.ViewModels.Banners
 
             var resultado = _pokemonUserService.ObtenerPokemon(
                 Usuario.Id,
-                poke.Id,
+                poke.numero_pokedex,
                 poke.Nombre,
-                poke.Tipo1,
-                poke.Tipo2
+                poke.TipoPrincipal,
+                poke.TipoSecundario,
+                poke.EstadisticasBase[0]
             );
 
             var repoHist = new HistoricoTiradasRepository();
             repoHist.RegistrarTirada(new HistoricoTirada
             {
                 UserId = Usuario.Id,
-                PokemonId = poke.Id,
+                PokemonId = poke.numero_pokedex,
                 NombrePokemon = poke.Nombre,
                 Zona = NombreZona,
                 TipoTirada = "single",
@@ -309,10 +310,11 @@ namespace PK_Proyect.ViewModels.Banners
 
                 var resultado = _pokemonUserService.ObtenerPokemon(
                     Usuario.Id,
-                    poke.Id,
+                    poke.numero_pokedex,
                     poke.Nombre,
-                    poke.Tipo1,
-                    poke.Tipo2
+                    poke.TipoPrincipal,
+                    poke.TipoSecundario,
+                    poke.EstadisticasBase[0]
                 );
 
                 resultadosMulti.Add(resultado);
@@ -322,7 +324,7 @@ namespace PK_Proyect.ViewModels.Banners
                 repoHist.RegistrarTirada(new HistoricoTirada
                 {
                     UserId = Usuario.Id,
-                    PokemonId = poke.Id,
+                    PokemonId = poke.numero_pokedex,
                     NombrePokemon = poke.Nombre,
                     Zona = NombreZona,
                     TipoTirada = "multi",
@@ -358,8 +360,8 @@ namespace PK_Proyect.ViewModels.Banners
         //        Usuario.Id,
         //        poke.Id,
         //        poke.Nombre,
-        //        poke.Tipo1,
-        //        poke.Tipo2
+        //        poke.TipoPrincipal,
+        //        poke.TipoSecundario
         //    );
 
         //    MessageBox.Show(
@@ -396,11 +398,11 @@ namespace PK_Proyect.ViewModels.Banners
 
             foreach (var p in zona.Pokemon)
             {
-                var poke = _pokedexRepo.ObtenerPorId(p.PokemonId);
+                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
 
                 if (poke == null)
                 {
-                    lista += $"ID {p.PokemonId} (No encontrado en Pokédex) - Prob: {p.prob}%\n";
+                    lista += $"ID {p.numero_pokedex} (No encontrado en Pokédex) - Prob: {p.prob}%\n";
                     continue;
                 }
 
@@ -430,10 +432,11 @@ namespace PK_Proyect.ViewModels.Banners
             // 2. Guardar o actualizar el Pokémon en la colección del usuario
             var resultado = _pokemonUserService.ObtenerPokemon(
                 Usuario.Id,
-                poke.Id,
+                poke.numero_pokedex,
                 poke.Nombre,
-                poke.Tipo1,
-                poke.Tipo2
+                poke.TipoPrincipal,
+                poke.TipoSecundario,
+                poke.EstadisticasBase[0]
             );
 
             // 3. Mostrar mensaje
@@ -520,9 +523,9 @@ namespace PK_Proyect.ViewModels.Banners
 
     foreach (var p in zona.Pokemon)
     {
-        lista += $"ID en Zona: {p.PokemonId} → ";
+        lista += $"ID en Zona: {p.numero_pokedex} → ";
 
-        var poke = _pokedexRepo.ObtenerPorId(p.PokemonId);
+        var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
 
         if (poke == null)
         {
@@ -530,7 +533,7 @@ namespace PK_Proyect.ViewModels.Banners
         }
         else
         {
-            lista += $"{poke.Nombre} (ID real: {poke.Id})\n";
+            lista += $"{poke.Nombre} (ID real: {poke.numero_pokedex})\n";
         }
     }
 
@@ -552,7 +555,7 @@ namespace PK_Proyect.ViewModels.Banners
 
             foreach (var p in todos)
             {
-                lista += $"ID {p.Id} → {p.Nombre}\n";
+                lista += $"ID {p.numero_pokedex} → {p.Nombre}\n";
             }
 
             System.Windows.MessageBox.Show(lista, "Pokédex completa");

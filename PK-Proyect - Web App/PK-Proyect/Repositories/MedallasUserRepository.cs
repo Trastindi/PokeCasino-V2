@@ -9,7 +9,7 @@ namespace PK_Proyect.Repositories
 
         public MedallasUserRepository()
         {
-            var client = new MongoClient("mongodb://localhost:27017");
+            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
             var db = client.GetDatabase("PokemonDB");
             _collection = db.GetCollection<MedallasUser>("MedallasUser");
         }

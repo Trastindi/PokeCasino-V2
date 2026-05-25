@@ -1016,19 +1016,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\usuario\\.nuget\\packages\\": {}
+    "C:\\Users\\marco\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\PK-Proyect.csproj",
+      "projectUniqueName": "C:\\Users\\marco\\Desktop\\PokeCasino-V2\\PK-Proyect - Web App\\PK-Proyect\\PK-Proyect.csproj",
       "projectName": "PK-Proyect",
-      "projectPath": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\PK-Proyect.csproj",
-      "packagesPath": "C:\\Users\\usuario\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\usuario\\Documents\\PokemonProyect\\PK_PROYECT_050326\\PK-Proyect\\PK-Proyect\\obj\\",
+      "projectPath": "C:\\Users\\marco\\Desktop\\PokeCasino-V2\\PK-Proyect - Web App\\PK-Proyect\\PK-Proyect.csproj",
+      "packagesPath": "C:\\Users\\marco\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\marco\\Desktop\\PokeCasino-V2\\PK-Proyect - Web App\\PK-Proyect\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\marco\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1096,7 +1096,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.314/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

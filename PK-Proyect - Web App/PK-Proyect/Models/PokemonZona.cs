@@ -10,9 +10,9 @@ namespace PK_Proyect.Models
 
 
 
-        [BsonElement("PokemonId")]
+        [BsonElement("numero_pokedex")]
         [BsonRepresentation(BsonType.Int32)]
-        public int PokemonId { get; set; }
+        public int numero_pokedex { get; set; }
 
         [BsonElement("prob")]
         public int prob { get; set; }

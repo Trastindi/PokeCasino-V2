@@ -16,11 +16,11 @@ namespace PK_Proyect.Services
             _userRepo = new UserRepository();
         }
 
-        public PokemonUser ObtenerPokemon(string userId, int pokemonId, string nombre, string tipo1, string tipo2)
+        public PokemonUser ObtenerPokemon(string userId, int pokemonId, string nombre, string tipo1, string tipo2, int currentHp)
         {
             var existente = _repo.GetPokemon(userId, pokemonId);
             var user = _userRepo.GetUserById(userId);
-
+            Random random = new Random();
             if (existente == null)
             {
                 var nuevo = new PokemonUser
@@ -33,7 +33,10 @@ namespace PK_Proyect.Services
                     TipoSecundario = tipo2,
                     Nivel = 1,
                     Cantidad = 1,
-                    FechaObtenido = DateTime.Now
+                    FechaObtenido = DateTime.Now,
+                    HiddenPowerSeed = Random.Shared.Next(0, 16),
+                    HiddenPowerPower = (Random.Shared.Next(31, 71) + Random.Shared.Next(31, 71)) / 2,
+                    CurrentHp = currentHp,
                 };
 
                 _repo.InsertPokemon(nuevo);

@@ -9,14 +9,14 @@ namespace PK_Proyect.Repositories
 
         public PokedexRepository()
         {
-            var client = new MongoClient("mongodb://localhost:27017");
+            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
             var database = client.GetDatabase("PokemonDB");
             _pokedex = database.GetCollection<Pokemon>("Pokedex");
         }
 
         public Pokemon ObtenerPorId(int Id)
         {
-            return _pokedex.Find(p => p.Id == Id).FirstOrDefault();
+            return _pokedex.Find(p => p.numero_pokedex == Id).FirstOrDefault();
         }
 
         public List<Pokemon> ObtenerTodos() { return _pokedex.Find(p => true).ToList(); }

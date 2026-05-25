@@ -14,7 +14,7 @@
 
 //        static PokemonService()
 //        {
-//            var client = new MongoClient("mongodb://localhost:27017");
+//            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
 //            var db = client.GetDatabase("PokemonDB");
 //            _pokemon = db.GetCollection<Pokemon>("Pokedex");
 //        }
@@ -26,7 +26,7 @@
 
 //        public static Pokemon GetById(int id)
 //        {
-//            return _pokemon.Find(p => p.Id == id).FirstOrDefault();
+//            return _pokemon.Find(p => p.Numero_pokedex == id).FirstOrDefault();
 //        }
 
 //        public static void InsertMany(List<Pokemon> lista)

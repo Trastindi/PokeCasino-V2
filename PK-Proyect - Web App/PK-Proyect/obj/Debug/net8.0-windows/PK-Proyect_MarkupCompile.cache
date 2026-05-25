@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\usuario\Documents\PokemonProyect\PK_PROYECT_050326\PK-Proyect\PK-Proyect\obj\Debug\net8.0-windows\
+C:\Users\marco\Desktop\PokeCasino-V2\PK-Proyect - Web App\PK-Proyect\obj\Debug\net8.0-windows\
 PK_Proyect
 none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-C:\Users\usuario\Documents\PokemonProyect\PK_PROYECT_050326\PK-Proyect\PK-Proyect\App.xaml
+C:\Users\marco\Desktop\PokeCasino-V2\PK-Proyect - Web App\PK-Proyect\App.xaml
 28-496023050
 4660335020
 951108101073
-2231235520267
+223-570672671
 CustomControls\BindablePassword.xaml;MainWindow.xaml;View\AdminMenuView.xaml;View\Banners\Ciudades\CiudadAzulonaView.xaml;View\Banners\Ciudades\CiudadCanelaView.xaml;View\Banners\Ciudades\CiudadCarminView.xaml;View\Banners\Ciudades\CiudadCelesteView.xaml;View\Banners\HistoricoTiradasView.xaml;View\Banners\LaboratorioView.xaml;View\Banners\Lugares\BosqueVerdeView.xaml;View\Banners\Lugares\CuevaCelesteView.xaml;View\Banners\Lugares\IslasEspumaView.xaml;View\Banners\Lugares\MonteMoonView.xaml;View\Banners\ResultadosMultiView.xaml;View\Banners\Rutas\Ruta24View.xaml;View\ChangePasswordView.xaml;View\ComprarFichasView.xaml;View\EquipoPokemonView.xaml;View\ForgotPasswordView.xaml;View\LoginView.xaml;View\MainMenuView.xaml;View\MapaKantoView.xaml;View\MedallasView.xaml;View\PerfilUserView.xaml;View\PokemonObtenidosView.xaml;View\SignupView.xaml;View\SlotMachineView.xaml;View\TrainerDataView.xaml;
 
 False

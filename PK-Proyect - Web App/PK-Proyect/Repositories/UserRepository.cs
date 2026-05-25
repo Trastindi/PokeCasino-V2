@@ -10,7 +10,7 @@ namespace PK_Proyect.Repositories
 
         public UserRepository()
         {
-            var client = new MongoClient("mongodb://localhost:27017");
+            var client = new MongoClient("mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net");
             var database = client.GetDatabase("PokemonDB");
             _users = database.GetCollection<User>("Users");
         }
