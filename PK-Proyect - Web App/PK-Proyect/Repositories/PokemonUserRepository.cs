@@ -27,10 +27,21 @@ namespace PK_Proyect.Repositories
             _collection.InsertOne(pokemon);
         }
 
-        public void UpdatePokemon(PokemonUser pokemon)
+        /// <summary>
+        /// Reemplaza el documento identificado por (userId, pokemonIdOriginal).
+        /// Usar pokemonIdOriginal cuando el pokemon puede haber evolucionado
+        /// y su PokemonId ya fue cambiado al de la evolucion.
+        /// </summary>
+        public void UpdatePokemon(PokemonUser pokemon, int pokemonIdOriginal)
         {
-            _collection.ReplaceOne(p => p.numero_pokedex == pokemon.numero_pokedex, pokemon);
+            _collection.ReplaceOne(
+                p => p.UserId == pokemon.UserId && p.PokemonId == pokemonIdOriginal,
+                pokemon);
         }
+
+        // Sobrecarga sin cambio de id (casos donde no hay evolucion)
+        public void UpdatePokemon(PokemonUser pokemon)
+            => UpdatePokemon(pokemon, pokemon.PokemonId);
 
         public int CountByType(string userId, string tipo)
         {

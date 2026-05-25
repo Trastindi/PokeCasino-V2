@@ -19,9 +19,6 @@ namespace PK_Proyect.Services
             _pokedexRepo = new PokedexRepository();
         }
 
-        // ----------------------------------------------------------------
-        // Punto de entrada principal: llamado desde GachaViewModel
-        // ----------------------------------------------------------------
         public LevelUpResultado ObtenerPokemon(
             string userId, int pokemonId, string nombre,
             string tipo1, string tipo2, int currentHp)
@@ -30,7 +27,7 @@ namespace PK_Proyect.Services
             var user      = _userRepo.GetUserById(userId);
             var existente = _repo.GetPokemon(userId, pokemonId);
 
-            // ── NUEVO ────────────────────────────────────────────────────
+            // -- NUEVO -------------------------------------------------------
             if (existente == null)
             {
                 var nuevo = new PokemonUser
@@ -51,35 +48,30 @@ namespace PK_Proyect.Services
                     MoveSet        = new List<string>()
                 };
 
-                // Movimientos de nivel 1
                 var datosPokedex = _pokedexRepo.ObtenerPorId(pokemonId);
                 if (datosPokedex?.Movimientos != null)
                 {
-                    var movsNivel1 = datosPokedex.Movimientos
+                    foreach (var mov in datosPokedex.Movimientos
                         .Where(m => m.Metodo == "nivel" && m.Nivel == 1)
-                        .Select(m => m.Nombre)
-                        .ToList();
-
-                    foreach (var mov in movsNivel1)
+                        .Select(m => m.Nombre))
                     {
-                        if (nuevo.MoveSet.Count < 4)
-                            nuevo.MoveSet.Add(mov);
+                        if (nuevo.MoveSet.Count < 4) nuevo.MoveSet.Add(mov);
                     }
                 }
 
                 _repo.InsertPokemon(nuevo);
                 RecalcularPokemon(userId);
-
                 resultado.Pokemon = nuevo;
                 return resultado;
             }
 
-            // ── EXISTENTE: subir nivel ────────────────────────────────────
+            // -- EXISTENTE: guardar id original ANTES de cualquier cambio ----
+            int idOriginal = existente.PokemonId;
+
             existente.Cantidad++;
             existente.Nivel++;
             existente.Username = user.Username;
 
-            // Backfill campos antiguos
             if (existente.HiddenPowerSeed == 0 && existente.HiddenPowerPower == 0)
             {
                 existente.HiddenPowerSeed  = Random.Shared.Next(0, 16);
@@ -88,8 +80,8 @@ namespace PK_Proyect.Services
             if (existente.CurrentHp == 0) existente.CurrentHp = currentHp;
             if (existente.MoveSet == null) existente.MoveSet = new List<string>();
 
-            // ── 1. MOVIMIENTO NUEVO POR NIVEL ─────────────────────────────
-            var pokedex = _pokedexRepo.ObtenerPorId(pokemonId);
+            // -- 1. MOVIMIENTO NUEVO POR NIVEL --------------------------------
+            var pokedex  = _pokedexRepo.ObtenerPorId(pokemonId);
             var movNuevo = pokedex?.Movimientos
                 ?.FirstOrDefault(m =>
                     m.Metodo == "nivel" &&
@@ -99,7 +91,6 @@ namespace PK_Proyect.Services
             if (movNuevo != null)
             {
                 resultado.MovimientoAprendido = movNuevo.Nombre;
-
                 if (existente.MoveSet.Count < 4)
                 {
                     existente.MoveSet.Add(movNuevo.Nombre);
@@ -107,13 +98,11 @@ namespace PK_Proyect.Services
                 }
                 else
                 {
-                    // moveset lleno → el ViewModel preguntará qué borrar
                     resultado.MovimientoAprendidoDirectamente = false;
-                    // NO añadimos aún; lo añade el ViewModel tras la elección
                 }
             }
 
-            // ── 2. EVOLUCIÓN ──────────────────────────────────────────────
+            // -- 2. EVOLUCION -------------------------------------------------
             var evo = pokedex?.Evolucion;
             bool debeEvolucionar = evo != null
                 && evo.Metodo == "subida_nivel"
@@ -122,21 +111,20 @@ namespace PK_Proyect.Services
 
             if (debeEvolucionar)
             {
-                // Buscar datos de la evolución en Pokédex por nombre
                 var datosEvo = _pokedexRepo.ObtenerPorNombre(evo.Nombre);
 
-                existente.Nombre        = evo.Nombre;
-                existente.PokemonId     = datosEvo?.numero_pokedex ?? existente.PokemonId;
+                // Actualizar datos al de la evolucion
+                existente.Nombre         = evo.Nombre;
+                existente.PokemonId      = datosEvo?.numero_pokedex ?? existente.PokemonId;
                 existente.numero_pokedex = datosEvo?.numero_pokedex ?? existente.numero_pokedex;
                 existente.TipoPrincipal  = datosEvo?.TipoPrincipal  ?? existente.TipoPrincipal;
                 existente.TipoSecundario = datosEvo?.TipoSecundario ?? existente.TipoSecundario;
                 if (datosEvo?.EstadisticasBase != null)
                     existente.CurrentHp = datosEvo.EstadisticasBase.Ps;
 
-                resultado.Evoluciono    = true;
+                resultado.Evoluciono      = true;
                 resultado.NombreEvolucion = evo.Nombre;
 
-                // Movimiento de nivel 1 de la evolución que aún no tenga
                 var movEvo = datosEvo?.Movimientos
                     ?.FirstOrDefault(m =>
                         m.Metodo == "nivel" &&
@@ -146,7 +134,6 @@ namespace PK_Proyect.Services
                 if (movEvo != null)
                 {
                     resultado.MovimientoEvolucion = movEvo.Nombre;
-
                     if (existente.MoveSet.Count < 4)
                     {
                         existente.MoveSet.Add(movEvo.Nombre);
@@ -159,34 +146,28 @@ namespace PK_Proyect.Services
                 }
             }
 
-            // Persistir (si el moveset estaba lleno el MoveSet aún no tiene el nuevo;
-            // el ViewModel lo añadirá y llamará a AplicarMovimiento())
-            _repo.UpdatePokemon(existente);
+            // Persistir usando el id ORIGINAL como filtro de busqueda
+            _repo.UpdatePokemon(existente, idOriginal);
             RecalcularPokemon(userId);
 
             resultado.Pokemon = existente;
             return resultado;
         }
 
-        // ----------------------------------------------------------------
-        // Llamado por el ViewModel cuando el usuario elige qué borrar
-        // ----------------------------------------------------------------
         public void AplicarMovimiento(PokemonUser pokemon, int indiceABorrar, string movimientoNuevo)
         {
             if (indiceABorrar >= 0 && indiceABorrar < pokemon.MoveSet.Count)
                 pokemon.MoveSet[indiceABorrar] = movimientoNuevo;
             else
-                pokemon.MoveSet.Add(movimientoNuevo);   // fallback seguro
+                pokemon.MoveSet.Add(movimientoNuevo);
 
             _repo.UpdatePokemon(pokemon);
         }
 
-        // ----------------------------------------------------------------
         private void RecalcularPokemon(string userId)
         {
-            var pokes = _repo.GetPokemonsByUser(userId);
-            var user  = _userRepo.GetUserById(userId);
-            user.Pokemon = pokes.Count;
+            var user = _userRepo.GetUserById(userId);
+            user.Pokemon = _repo.GetPokemonsByUser(userId).Count;
             _userRepo.UpdateUser(user);
         }
 
