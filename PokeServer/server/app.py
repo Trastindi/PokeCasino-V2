@@ -3,14 +3,14 @@ from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo.errors import OperationFailure
+import bcrypt
 import jwt
 import datetime
 import random
 import string
-import re
+import os
 from functools import wraps
 from bson import ObjectId
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 CORS(app)
@@ -18,9 +18,26 @@ CORS(app)
 app.config["SECRET_KEY"] = "super_secret_key"  # cámbiala en producción
 
 # -------------------------
+# HELPERS BCRYPT
+# -------------------------
+
+def hash_password(plain: str) -> str:
+    """Devuelve el hash bcrypt de la contraseña en texto plano."""
+    return bcrypt.hashpw(plain.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    """Comprueba si plain coincide con el hash almacenado."""
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except Exception:
+        return False
+
+
+# -------------------------
 # CONEXIÓN MONGODB
 # -------------------------
-import os
+
 uri = os.environ.get(
     "MONGO_URI",
     "mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net/?retryWrites=true&w=majority&appName=PokeCasino"
@@ -29,11 +46,11 @@ uri = os.environ.get(
 try:
     client = MongoClient(uri, server_api=ServerApi("1"))
     db = client["PokemonPyDB"]
-    usuarios      = db["usuarios"]
-    premios_col   = db["premios"]
-    pokedex_col   = db["pokedex"]
+    usuarios         = db["usuarios"]
+    premios_col      = db["premios"]
+    pokedex_col      = db["pokedex"]
     pokemon_user_col = db["PokemonUser"]
-    medallas_col  = db["medallas_user"]
+    medallas_col     = db["medallas_user"]
     print("Colecciones disponibles:", db.list_collection_names())
 except OperationFailure as e:
     if e.code == 8000 or "bad auth" in str(e).lower():
@@ -129,7 +146,7 @@ def register():
         "edad":           int(data.get("edad", 0)),
         "email":          email,
         "email_lower":    email.lower(),
-        "password":       generate_password_hash(password),
+        "password":       hash_password(password),
         "rol":            "usuario",
         "fichas":         300,
         "pokes":          0
@@ -155,7 +172,7 @@ def login():
             ]
         })
 
-        if not usuario or not check_password_hash(usuario["password"], password):
+        if not usuario or not verify_password(password, usuario["password"]):
             return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
 
         token = generate_token(usuario["_id"], usuario.get("rol", "usuario"))
@@ -188,7 +205,6 @@ def me(current_user):
 @app.post("/auth/cambiar_password")
 @token_required
 def cambiar_password(current_user):
-    """El usuario cambia su propia contraseña verificando la actual."""
     data            = request.json or {}
     password_actual = data.get("password_actual", "")
     nueva           = data.get("nueva_password", "")
@@ -196,7 +212,7 @@ def cambiar_password(current_user):
     if not password_actual or not nueva:
         return jsonify({"error": "Faltan campos"}), 400
 
-    if not check_password_hash(current_user["password"], password_actual):
+    if not verify_password(password_actual, current_user["password"]):
         return jsonify({"error": "Contraseña actual incorrecta"}), 401
 
     if len(nueva) < 6:
@@ -204,14 +220,13 @@ def cambiar_password(current_user):
 
     usuarios.update_one(
         {"_id": current_user["_id"]},
-        {"$set": {"password": generate_password_hash(nueva)}}
+        {"$set": {"password": hash_password(nueva)}}
     )
     return jsonify({"mensaje": "Contraseña actualizada correctamente"}), 200
 
 
 @app.post("/auth/recuperar_password")
 def recuperar_password():
-    """Genera una contraseña aleatoria y la envía por email (simulado en logs)."""
     data     = request.json or {}
     email    = data.get("email", "").strip()
     username = data.get("username", "").strip()
@@ -229,12 +244,11 @@ def recuperar_password():
     nueva = _generar_password_aleatoria()
     usuarios.update_one(
         {"_id": usuario["_id"]},
-        {"$set": {"password": generate_password_hash(nueva)}}
+        {"$set": {"password": hash_password(nueva)}}
     )
 
     # TODO: integrar envío de email real (smtplib / SendGrid)
     print(f"[EMAIL] Para {email}: tu nueva contraseña es '{nueva}'")
-
     return jsonify({"mensaje": "Se ha enviado una nueva contraseña al correo indicado"}), 200
 
 
@@ -288,7 +302,7 @@ def crear_usuario(current_user):
         "email":          data["email"],
         "email_lower":    data["email"].lower(),
         "edad":           int(data["edad"]),
-        "password":       generate_password_hash(data["password"]),
+        "password":       hash_password(data["password"]),
         "rol":            data["rol"],
         "fichas":         int(data.get("fichas", 0)),
         "pokes":          int(data.get("pokes", 0))
@@ -312,7 +326,6 @@ def modificar_usuario(current_user, id):
     if not update:
         return jsonify({"error": "No se enviaron datos para actualizar"}), 400
 
-    # Sincronizar campos _lower si vienen
     if "email" in update:
         update["email_lower"] = update["email"].lower()
     if "username" in update:
@@ -349,14 +362,13 @@ def reset_password(current_user, id):
 
     nueva = (request.json or {}).get("password", "")
     if not nueva:
-        # Si no se pasa contraseña, se genera una por defecto y se "envía por email"
         nueva = _generar_password_aleatoria()
         usuario = usuarios.find_one({"_id": obj_id})
         if not usuario:
             return jsonify({"error": "Usuario no encontrado"}), 404
         print(f"[EMAIL] Para {usuario.get('email')}: contraseña reseteada a '{nueva}'")
 
-    r = usuarios.update_one({"_id": obj_id}, {"$set": {"password": generate_password_hash(nueva)}})
+    r = usuarios.update_one({"_id": obj_id}, {"$set": {"password": hash_password(nueva)}})
     if r.matched_count == 0:
         return jsonify({"error": "Usuario no encontrado"}), 404
     return jsonify({"msg": "Contraseña reseteada"}), 200
@@ -369,7 +381,6 @@ def reset_password(current_user, id):
 @app.get("/usuarios/<id>/pokemon")
 @token_required
 def pokemon_de_usuario(current_user, id):
-    """Lista todos los Pokémon de un usuario concreto."""
     lista = list(pokemon_user_col.find({"UserId": id}))
     for p in lista:
         p["_id"] = str(p["_id"])
@@ -379,7 +390,6 @@ def pokemon_de_usuario(current_user, id):
 @app.get("/usuarios/mis_pokemon")
 @token_required
 def mis_pokemon(current_user):
-    """Lista los Pokémon del usuario autenticado."""
     user_id = str(current_user["_id"])
     lista   = list(pokemon_user_col.find({"UserId": user_id}))
     for p in lista:
@@ -390,11 +400,6 @@ def mis_pokemon(current_user):
 @app.post("/pokemon/obtener")
 @token_required
 def obtener_pokemon(current_user):
-    """
-    Lógica de obtención / subida de nivel / evolución.
-    Body: { pokemon_id, nombre, tipo1, tipo2, current_hp }
-    Replica la lógica de PokemonUserService.ObtenerPokemon del cliente .NET.
-    """
     try:
         data       = request.json or {}
         pokemon_id = int(data.get("pokemon_id"))
@@ -491,8 +496,8 @@ def obtener_pokemon(current_user):
                 and existente["Nivel"] >= evo["nivel"]):
 
             datos_evo = pokedex_col.find_one({"nombre": evo["nombre"]})
-            existente["Nombre"]       = evo["nombre"]
-            existente["PokemonId"]    = datos_evo["numero_pokedex"] if datos_evo else existente["PokemonId"]
+            existente["Nombre"]         = evo["nombre"]
+            existente["PokemonId"]      = datos_evo["numero_pokedex"] if datos_evo else existente["PokemonId"]
             existente["numero_pokedex"] = existente["PokemonId"]
 
             if datos_evo and datos_evo.get("tipos"):
@@ -521,7 +526,6 @@ def obtener_pokemon(current_user):
                     else:
                         resultado["movimiento_evolucion_directamente"] = False
 
-        # Persistir usando id original como filtro
         pk_id = existente.pop("_id")
         pokemon_user_col.replace_one(
             {"UserId": user_id, "PokemonId": id_original},
@@ -540,16 +544,12 @@ def obtener_pokemon(current_user):
 @app.put("/pokemon/movimiento")
 @token_required
 def aplicar_movimiento(current_user):
-    """
-    Sustituye un movimiento del moveset de un Pokémon.
-    Body: { pokemon_id, indice_a_borrar (-1 para añadir), movimiento_nuevo }
-    """
     try:
-        data          = request.json or {}
-        pokemon_id    = int(data.get("pokemon_id"))
-        indice        = int(data.get("indice_a_borrar", -1))
-        mov_nuevo     = data.get("movimiento_nuevo", "")
-        user_id       = str(current_user["_id"])
+        data       = request.json or {}
+        pokemon_id = int(data.get("pokemon_id"))
+        indice     = int(data.get("indice_a_borrar", -1))
+        mov_nuevo  = data.get("movimiento_nuevo", "")
+        user_id    = str(current_user["_id"])
 
         if not mov_nuevo:
             return jsonify({"error": "Falta movimiento_nuevo"}), 400
@@ -590,7 +590,6 @@ def _recalcular_pokes(user_id):
 @app.post("/medallas/otorgar")
 @token_required
 def otorgar_medalla(current_user):
-    """Otorga una medalla al usuario autenticado si no la tiene ya."""
     data    = request.json or {}
     tipo    = data.get("tipo", "").strip()
     user_id = str(current_user["_id"])
@@ -598,8 +597,7 @@ def otorgar_medalla(current_user):
     if not tipo:
         return jsonify({"error": "Falta el tipo de medalla"}), 400
 
-    existente = medallas_col.find_one({"UserId": user_id, "Tipo": tipo})
-    if existente:
+    if medallas_col.find_one({"UserId": user_id, "Tipo": tipo}):
         return jsonify({"error": "El usuario ya tiene esta medalla"}), 409
 
     medallas_col.insert_one({
@@ -613,7 +611,6 @@ def otorgar_medalla(current_user):
 @app.get("/medallas")
 @token_required
 def mis_medallas(current_user):
-    """Lista las medallas del usuario autenticado."""
     user_id = str(current_user["_id"])
     lista   = list(medallas_col.find({"UserId": user_id}))
     for m in lista:
@@ -679,8 +676,8 @@ def jugar(current_user):
         if current_user["fichas"] < apuesta:
             return jsonify({"error": "No tienes fichas suficientes"}), 400
 
-        payout, lineas  = comprobar_ganar(tablero, apuesta)
-        fichas_final    = current_user["fichas"] - apuesta + payout
+        payout, lineas = comprobar_ganar(tablero, apuesta)
+        fichas_final   = current_user["fichas"] - apuesta + payout
 
         usuarios.update_one(
             {"_id": current_user["_id"]},
@@ -715,7 +712,7 @@ def listar_premios(current_user):
 @app.post("/premios/comprar/<int:pokemon_id>")
 @token_required
 def comprar_pokemon(current_user, pokemon_id):
-    premio  = premios_col.find_one({"pokemon_id": pokemon_id})
+    premio = premios_col.find_one({"pokemon_id": pokemon_id})
     if not premio:
         return jsonify({"error": "Pokémon no disponible como premio"}), 404
 
@@ -750,7 +747,6 @@ def comprar_pokemon(current_user, pokemon_id):
         "Status":           None
     }
 
-    # Añadir movimientos de nivel 1
     for m in poke_data.get("movimientos", []):
         if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(nuevo_pokemon["MoveSet"]) < 4:
             nuevo_pokemon["MoveSet"].append(m["nombre"])
