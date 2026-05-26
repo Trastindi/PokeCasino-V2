@@ -1,66 +1,42 @@
-using MongoDB.Driver;
-using MongoDB.Bson;
 using PK_Proyect.Models;
+using System.Collections.Generic;
 
 namespace PK_Proyect.Repositories
 {
+    /// <summary>
+    /// Acceso a usuarios a través del servidor Flask. Ya no habla con MongoDB directamente.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
-        private readonly IMongoCollection<User> _users;
-
-        public UserRepository()
-        {
-            _users = MongoDbContext.GetCollection<User>("Users");
-        }
-
         public User GetUserById(string id)
-        {
-            return _users.Find(u => u.Id == id).FirstOrDefault();
-        }
+            => ApiClient.Get<User>($"/usuarios/{id}");
 
         public User GetUserByUsername(string username)
         {
-            username = username.Trim();
-            var filter = Builders<User>.Filter.Regex(
-                u => u.Username,
-                new BsonRegularExpression($"^{username}$", "i")
-            );
-            return _users.Find(filter).FirstOrDefault();
+            // El servidor Flask busca por username_lower en /auth/login;
+            // para búsquedas de perfil usamos el listado filtrado en cliente.
+            var todos = GetAllUsers();
+            return todos.Find(u =>
+                string.Equals(u.Username, username, System.StringComparison.OrdinalIgnoreCase));
         }
 
         public User GetUserByEmail(string email)
         {
-            email = email.Trim();
-            var filter = Builders<User>.Filter.Regex(
-                u => u.Correo,
-                new BsonRegularExpression($"^{email}$", "i")
-            );
-            return _users.Find(filter).FirstOrDefault();
+            var todos = GetAllUsers();
+            return todos.Find(u =>
+                string.Equals(u.Correo, email, System.StringComparison.OrdinalIgnoreCase));
         }
 
         public bool Exists(string username)
-        {
-            username = username.Trim();
-            var filter = Builders<User>.Filter.Regex(
-                u => u.Username,
-                new BsonRegularExpression($"^{username}$", "i")
-            );
-            return _users.Find(filter).Any();
-        }
+            => GetUserByUsername(username) != null;
 
         public void CreateUser(User user)
-        {
-            _users.InsertOne(user);
-        }
+            => ApiClient.Post<object>("/usuarios", user);
 
         public void UpdateUser(User user)
-        {
-            _users.ReplaceOne(u => u.Id == user.Id, user);
-        }
+            => ApiClient.Put<object>($"/usuarios/{user.Id}", user);
 
         public List<User> GetAllUsers()
-        {
-            return _users.Find(_ => true).ToList();
-        }
+            => ApiClient.Get<List<User>>("/usuarios");
     }
 }

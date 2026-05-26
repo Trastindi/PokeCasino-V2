@@ -1,177 +1,75 @@
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PK_Proyect.Services
 {
     public class PokemonUserService
     {
-        private readonly PokemonUserRepository _repo;
-        private readonly UserRepository _userRepo;
-        private readonly PokedexRepository _pokedexRepo;
-
-        public PokemonUserService()
-        {
-            _repo        = new PokemonUserRepository();
-            _userRepo    = new UserRepository();
-            _pokedexRepo = new PokedexRepository();
-        }
-
+        /// <summary>
+        /// Delega toda la lógica de obtención / subida de nivel / evolución al servidor Flask.
+        /// El servidor devuelve un LevelUpResultado serializado.
+        /// </summary>
         public LevelUpResultado ObtenerPokemon(
             string userId, int pokemonId, string nombre,
             string tipo1, string tipo2, int currentHp)
         {
-            var resultado = new LevelUpResultado();
-            var user      = _userRepo.GetUserById(userId);
-            var existente = _repo.GetPokemon(userId, pokemonId);
-
-            // -- NUEVO -------------------------------------------------------
-            if (existente == null)
+            try
             {
-                var nuevo = new PokemonUser
+                var resp = ApiClient.Post<LevelUpResultadoDto>("/pokemon/obtener", new
                 {
-                    UserId         = userId,
-                    Username       = user.Username,
-                    PokemonId      = pokemonId,
-                    numero_pokedex = pokemonId,
-                    Nombre         = nombre,
-                    TipoPrincipal  = tipo1,
-                    TipoSecundario = tipo2,
-                    Nivel          = 1,
-                    Cantidad       = 1,
-                    FechaObtenido  = DateTime.Now,
-                    HiddenPowerSeed  = Random.Shared.Next(0, 16),
-                    HiddenPowerPower = (Random.Shared.Next(31, 71) + Random.Shared.Next(31, 71)) / 2,
-                    CurrentHp      = currentHp,
-                    MoveSet        = new List<string>()
+                    pokemon_id = pokemonId,
+                    nombre     = nombre,
+                    tipo1      = tipo1,
+                    tipo2      = tipo2,
+                    current_hp = currentHp
+                });
+
+                return new LevelUpResultado
+                {
+                    Pokemon                          = resp.Pokemon,
+                    MovimientoAprendido              = resp.MovimientoAprendido,
+                    MovimientoAprendidoDirectamente  = resp.MovimientoAprendidoDirectamente,
+                    MovimientoEvolucion              = resp.MovimientoEvolucion,
+                    MovimientoEvolucionDirectamente  = resp.MovimientoEvolucionDirectamente,
+                    Evoluciono                       = resp.Evoluciono,
+                    NombreEvolucion                  = resp.NombreEvolucion
                 };
-
-                var datosPokedex = _pokedexRepo.ObtenerPorId(pokemonId);
-                if (datosPokedex?.Movimientos != null)
-                {
-                    foreach (var mov in datosPokedex.Movimientos
-                        .Where(m => m.Metodo == "nivel" && m.Nivel == 1)
-                        .Select(m => m.Nombre))
-                    {
-                        if (nuevo.MoveSet.Count < 4) nuevo.MoveSet.Add(mov);
-                    }
-                }
-
-                _repo.InsertPokemon(nuevo);
-                RecalcularPokemon(userId);
-                resultado.Pokemon = nuevo;
-                return resultado;
             }
-
-            // -- EXISTENTE: guardar id original ANTES de cualquier cambio ----
-            int idOriginal = existente.PokemonId;
-
-            existente.Cantidad++;
-            existente.Nivel++;
-            existente.Username = user.Username;
-
-            if (existente.HiddenPowerSeed == 0 && existente.HiddenPowerPower == 0)
+            catch
             {
-                existente.HiddenPowerSeed  = Random.Shared.Next(0, 16);
-                existente.HiddenPowerPower = (Random.Shared.Next(31, 71) + Random.Shared.Next(31, 71)) / 2;
+                return new LevelUpResultado();
             }
-            if (existente.CurrentHp == 0) existente.CurrentHp = currentHp;
-            if (existente.MoveSet == null) existente.MoveSet = new List<string>();
-
-            // -- 1. MOVIMIENTO NUEVO POR NIVEL --------------------------------
-            var pokedex  = _pokedexRepo.ObtenerPorId(pokemonId);
-            var movNuevo = pokedex?.Movimientos
-                ?.FirstOrDefault(m =>
-                    m.Metodo == "nivel" &&
-                    m.Nivel  == existente.Nivel &&
-                    !existente.MoveSet.Contains(m.Nombre));
-
-            if (movNuevo != null)
-            {
-                resultado.MovimientoAprendido = movNuevo.Nombre;
-                if (existente.MoveSet.Count < 4)
-                {
-                    existente.MoveSet.Add(movNuevo.Nombre);
-                    resultado.MovimientoAprendidoDirectamente = true;
-                }
-                else
-                {
-                    resultado.MovimientoAprendidoDirectamente = false;
-                }
-            }
-
-            // -- 2. EVOLUCION -------------------------------------------------
-            var evo = pokedex?.Evolucion;
-            bool debeEvolucionar = evo != null
-                && evo.Metodo == "subida_nivel"
-                && evo.Nivel.HasValue
-                && existente.Nivel >= evo.Nivel.Value;
-
-            if (debeEvolucionar)
-            {
-                var datosEvo = _pokedexRepo.ObtenerPorNombre(evo.Nombre);
-
-                // Actualizar datos al de la evolucion
-                existente.Nombre         = evo.Nombre;
-                existente.PokemonId      = datosEvo?.numero_pokedex ?? existente.PokemonId;
-                existente.numero_pokedex = datosEvo?.numero_pokedex ?? existente.numero_pokedex;
-                existente.TipoPrincipal  = datosEvo?.TipoPrincipal  ?? existente.TipoPrincipal;
-                existente.TipoSecundario = datosEvo?.TipoSecundario ?? existente.TipoSecundario;
-                if (datosEvo?.EstadisticasBase != null)
-                    existente.CurrentHp = datosEvo.EstadisticasBase.Ps;
-
-                resultado.Evoluciono      = true;
-                resultado.NombreEvolucion = evo.Nombre;
-
-                var movEvo = datosEvo?.Movimientos
-                    ?.FirstOrDefault(m =>
-                        m.Metodo == "nivel" &&
-                        m.Nivel  == 1 &&
-                        !existente.MoveSet.Contains(m.Nombre));
-
-                if (movEvo != null)
-                {
-                    resultado.MovimientoEvolucion = movEvo.Nombre;
-                    if (existente.MoveSet.Count < 4)
-                    {
-                        existente.MoveSet.Add(movEvo.Nombre);
-                        resultado.MovimientoEvolucionDirectamente = true;
-                    }
-                    else
-                    {
-                        resultado.MovimientoEvolucionDirectamente = false;
-                    }
-                }
-            }
-
-            // Persistir usando el id ORIGINAL como filtro de busqueda
-            _repo.UpdatePokemon(existente, idOriginal);
-            RecalcularPokemon(userId);
-
-            resultado.Pokemon = existente;
-            return resultado;
         }
 
         public void AplicarMovimiento(PokemonUser pokemon, int indiceABorrar, string movimientoNuevo)
         {
-            if (indiceABorrar >= 0 && indiceABorrar < pokemon.MoveSet.Count)
-                pokemon.MoveSet[indiceABorrar] = movimientoNuevo;
-            else
-                pokemon.MoveSet.Add(movimientoNuevo);
-
-            _repo.UpdatePokemon(pokemon);
-        }
-
-        private void RecalcularPokemon(string userId)
-        {
-            var user = _userRepo.GetUserById(userId);
-            user.Pokemon = _repo.GetPokemonsByUser(userId).Count;
-            _userRepo.UpdateUser(user);
+            ApiClient.Put<object>("/pokemon/movimiento", new
+            {
+                pokemon_id       = pokemon.PokemonId,
+                indice_a_borrar  = indiceABorrar,
+                movimiento_nuevo = movimientoNuevo
+            });
         }
 
         public int ContarPorTipo(string userId, string tipo)
-            => _repo.CountByType(userId, tipo);
+        {
+            var lista = ApiClient.Get<List<PokemonUser>>($"/usuarios/{userId}/pokemon");
+            return lista.FindAll(p => p.TipoPrincipal == tipo).Count;
+        }
+
+        // DTO interno para deserializar la respuesta Flask
+        private class LevelUpResultadoDto
+        {
+            [JsonPropertyName("pokemon")]                           public PokemonUser Pokemon                         { get; set; }
+            [JsonPropertyName("movimiento_aprendido")]              public string      MovimientoAprendido             { get; set; }
+            [JsonPropertyName("movimiento_aprendido_directamente")] public bool        MovimientoAprendidoDirectamente { get; set; }
+            [JsonPropertyName("movimiento_evolucion")]              public string      MovimientoEvolucion             { get; set; }
+            [JsonPropertyName("movimiento_evolucion_directamente")] public bool        MovimientoEvolucionDirectamente { get; set; }
+            [JsonPropertyName("evoluciono")]                        public bool        Evoluciono                      { get; set; }
+            [JsonPropertyName("nombre_evolucion")]                  public string      NombreEvolucion                 { get; set; }
+        }
     }
 }

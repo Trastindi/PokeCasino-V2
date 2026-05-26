@@ -1,53 +1,30 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Repositories;
+using System.Collections.Generic;
 
 namespace PK_Proyect.Services
 {
     public class AdminService
     {
-        private readonly IAdminRepository _adminRepo;
-        private readonly UserService _userService;
-
-        public AdminService(IAdminRepository adminRepo, UserService userService)
-        {
-            _adminRepo = adminRepo;
-            _userService = userService;
-        }
+        private readonly AdminRepository _adminRepo = new();
 
         public List<User> GetAllUsers()
-        {
-            return _adminRepo.GetAllUsers();
-        }
+            => _adminRepo.GetAllUsers();
 
         public void DeleteUser(string id)
-        {
-            _adminRepo.DeleteUser(id);
-        }
+            => _adminRepo.DeleteUser(id);
 
         public void ChangeRole(User user, string newRole)
-        {
-            user.Role = newRole;
-            _adminRepo.UpdateUser(user);
-        }
+            => _adminRepo.ChangeRole(user.Id, newRole);
 
+        /// <summary>
+        /// El servidor Flask genera la contraseña y envía el email.
+        /// Solo necesitamos llamar al endpoint con password vacío.
+        /// </summary>
         public void ResetPassword(User user)
-        {
-            string newPassword = "1234";
-            string hashed = BCrypt.Net.BCrypt.HashPassword(newPassword);
-
-            user.Password = hashed;
-            _adminRepo.UpdateUser(user);
-
-            EmailService.Send(
-                user.Correo,
-                "Contraseña restablecida",
-                $"Hola {user.Username}, tu nueva contraseña es: {newPassword}"
-            );
-        }
+            => ApiClient.Put<object>($"/usuarios/{user.Id}/reset_password", new { });
 
         public void UpdateUser(User user)
-        {
-            _adminRepo.UpdateUser(user);
-        }
+            => _adminRepo.UpdateUser(user);
     }
 }

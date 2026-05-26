@@ -1,25 +1,25 @@
-using MongoDB.Driver;
 using PK_Proyect.Models;
+using System.Collections.Generic;
 
 namespace PK_Proyect.Repositories
 {
+    /// <summary>
+    /// Acceso a la Pokédex a través del servidor Flask.
+    /// </summary>
     public class PokedexRepository
     {
-        private readonly IMongoCollection<Pokemon> _pokedex;
+        public Pokemon ObtenerPorId(int id)
+            => ApiClient.Get<Pokemon>($"/pokedex/{id}");
 
-        public PokedexRepository()
+        public Pokemon ObtenerPorNombre(string nombre)
         {
-            _pokedex = MongoDbContext.GetCollection<Pokemon>("Pokedex");
-        }
-
-        public Pokemon ObtenerPorId(int Id)
-        {
-            return _pokedex.Find(p => p.numero_pokedex == Id).FirstOrDefault();
+            // Búsqueda local tras obtener todos (no hay endpoint de búsqueda por nombre aún)
+            var todos = ObtenerTodos();
+            return todos.Find(p =>
+                string.Equals(p.Nombre, nombre, System.StringComparison.OrdinalIgnoreCase));
         }
 
         public List<Pokemon> ObtenerTodos()
-        {
-            return _pokedex.Find(p => true).ToList();
-        }
+            => ApiClient.Get<List<Pokemon>>("/pokedex");
     }
 }

@@ -1,4 +1,4 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 using System.Collections.Generic;
 
@@ -6,23 +6,13 @@ namespace PK_Proyect.Services
 {
     public class UserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly UserRepository _repo = new();
 
-        public UserService(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
-
-        public User GetUserById(string id) => _userRepository.GetUserById(id);
-
-        public User GetUserByUsername(string username) => _userRepository.GetUserByUsername(username);
-
-        public User GetUserByEmail(string email) => _userRepository.GetUserByEmail(email);
-
-        public void CreateUser(User user) => _userRepository.CreateUser(user);
-
-        public void UpdateUser(User user) => _userRepository.UpdateUser(user);
-
-        public List<User> GetAllUsers() => _userRepository.GetAllUsers();
+        public User GetUserById(string id)       => _repo.GetUserById(id);
+        public User GetUserByUsername(string u)  => _repo.GetUserByUsername(u);
+        public User GetUserByEmail(string e)     => _repo.GetUserByEmail(e);
+        public void CreateUser(User user)        => _repo.CreateUser(user);
+        public void UpdateUser(User user)        => _repo.UpdateUser(user);
+        public List<User> GetAllUsers()          => _repo.GetAllUsers();
     }
 }

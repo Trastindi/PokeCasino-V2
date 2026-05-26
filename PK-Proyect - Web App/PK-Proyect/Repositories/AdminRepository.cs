@@ -1,42 +1,27 @@
-using MongoDB.Driver;
 using PK_Proyect.Models;
+using System.Collections.Generic;
 
 namespace PK_Proyect.Repositories
 {
+    /// <summary>
+    /// Operaciones de administración a través del servidor Flask.
+    /// </summary>
     public class AdminRepository : IAdminRepository
     {
-        private readonly IMongoCollection<User> _collection;
-
-        public AdminRepository()
-        {
-            _collection = MongoDbContext.GetCollection<User>("Users");
-        }
-
         public List<User> GetAllUsers()
-        {
-            return _collection.Find(_ => true).ToList();
-        }
+            => ApiClient.Get<List<User>>("/usuarios");
 
         public void DeleteUser(string id)
-        {
-            _collection.DeleteOne(u => u.Id == id);
-        }
+            => ApiClient.Delete($"/usuarios/{id}");
 
         public void UpdateUser(User user)
-        {
-            _collection.ReplaceOne(u => u.Id == user.Id, user);
-        }
+            => ApiClient.Put<object>($"/usuarios/{user.Id}", user);
 
         public void ChangeRole(string id, string newRole)
-        {
-            var update = Builders<User>.Update.Set(u => u.Role, newRole);
-            _collection.UpdateOne(u => u.Id == id, update);
-        }
+            => ApiClient.Put<object>($"/usuarios/{id}", new { rol = newRole });
 
         public void ResetPassword(string id, string newHashedPassword)
-        {
-            var update = Builders<User>.Update.Set(u => u.Password, newHashedPassword);
-            _collection.UpdateOne(u => u.Id == id, update);
-        }
+            // Flask hashea internamente; enviamos la contraseña en texto plano
+            => ApiClient.Put<object>($"/usuarios/{id}/reset_password", new { password = newHashedPassword });
     }
 }
