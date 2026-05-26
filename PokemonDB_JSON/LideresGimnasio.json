@@ -1,0 +1,133 @@
+[
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f1",
+    "numero": 1,
+    "lider": "Brock",
+    "ciudad": "Ciudad Plateada",
+    "tipoEspecialidad": "Roca",
+    "medalla": "Medalla Roca",
+    "MT": "MT39",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 74, "nombre": "Geodude", "nivel": 12 },
+      { "PokemonId": 95, "nombre": "Onix", "nivel": 14 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f2",
+    "numero": 2,
+    "lider": "Misty",
+    "ciudad": "Ciudad Celeste",
+    "tipoEspecialidad": "Agua",
+    "medalla": "Medalla Cascada",
+    "MT": "MT03",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 120, "nombre": "Staryu", "nivel": 18 },
+      { "PokemonId": 121, "nombre": "Starmie", "nivel": 21 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f3",
+    "numero": 3,
+    "lider": "Lt. Surge",
+    "ciudad": "Ciudad Carmín",
+    "tipoEspecialidad": "Eléctrico",
+    "medalla": "Medalla Trueno",
+    "MT": "MT34",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 100, "nombre": "Voltorb", "nivel": 21 },
+      { "PokemonId": 25, "nombre": "Pikachu", "nivel": 18 },
+      { "PokemonId": 26, "nombre": "Raichu", "nivel": 24 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f4",
+    "numero": 4,
+    "lider": "Erika",
+    "ciudad": "Ciudad Celadón",
+    "tipoEspecialidad": "Planta",
+    "medalla": "Medalla Arcoíris",
+    "MT": "MT19",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 71, "nombre": "Victreebel", "nivel": 29 },
+      { "PokemonId": 114, "nombre": "Tangela", "nivel": 24 },
+      { "PokemonId": 45, "nombre": "Vileplume", "nivel": 29 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f5",
+    "numero": 5,
+    "lider": "Koga",
+    "ciudad": "Ciudad Fucsia",
+    "tipoEspecialidad": "Veneno",
+    "medalla": "Medalla Alma",
+    "MT": "MT06",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 109, "nombre": "Koffing", "nivel": 37 },
+      { "PokemonId": 89, "nombre": "Muk", "nivel": 39 },
+      { "PokemonId": 109, "nombre": "Koffing", "nivel": 37 },
+      { "PokemonId": 110, "nombre": "Weezing", "nivel": 43 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f6",
+    "numero": 6,
+    "lider": "Sabrina",
+    "ciudad": "Ciudad Azafrán",
+    "tipoEspecialidad": "Psíquico",
+    "medalla": "Medalla Pantano",
+    "MT": "MT04",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 64, "nombre": "Kadabra", "nivel": 38 },
+      { "PokemonId": 122, "nombre": "Mr. Mime", "nivel": 37 },
+      { "PokemonId": 49, "nombre": "Venomoth", "nivel": 38 },
+      { "PokemonId": 65, "nombre": "Alakazam", "nivel": 43 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f7",
+    "numero": 7,
+    "lider": "Blaine",
+    "ciudad": "Isla Canela",
+    "tipoEspecialidad": "Fuego",
+    "medalla": "Medalla Volcán",
+    "MT": "MT38",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 58, "nombre": "Growlithe", "nivel": 42 },
+      { "PokemonId": 77, "nombre": "Ponyta", "nivel": 40 },
+      { "PokemonId": 78, "nombre": "Rapidash", "nivel": 42 },
+      { "PokemonId": 59, "nombre": "Arcanine", "nivel": 47 }
+    ]
+  },
+  {
+    "_id": "a1b2c3d4e5f6a1b2c3d4e5f8",
+    "numero": 8,
+    "lider": "Giovanni",
+    "ciudad": "Ciudad Verde",
+    "tipoEspecialidad": "Tierra",
+    "medalla": "Medalla Tierra",
+    "MT": "MT26",
+    "region": "Kanto",
+    "juego": "FR/LG",
+    "equipo": [
+      { "PokemonId": 111, "nombre": "Rhyhorn", "nivel": 45 },
+      { "PokemonId": 51, "nombre": "Dugtrio", "nivel": 42 },
+      { "PokemonId": 31, "nombre": "Nidoqueen", "nivel": 44 },
+      { "PokemonId": 34, "nombre": "Nidoking", "nivel": 45 },
+      { "PokemonId": 111, "nombre": "Rhyhorn", "nivel": 50 }
+    ]
+  }
+]
