@@ -187,7 +187,7 @@ namespace PK_Proyect.View
             while (payout > 0)
             {
                 creditos++;
-                _casinoService.ActualizarFichas(_user, creditos);
+                _casinoService.ActualizarFichas(_user.Nombre, creditos);
                 payout--;
                 DrawCreditNumbers();
                 DrawPayOutNumbers();
@@ -299,7 +299,7 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                             Coin_2.Visibility = Visibility.Collapsed;
                             Coin_3.Visibility = Visibility.Collapsed;
                             creditos -= coin;
-                            _casinoService.ActualizarFichas(_user, creditos);
+                            _casinoService.ActualizarFichas(_user.Nombre, creditos);
 
                             if (creditos <= 0)
                             {

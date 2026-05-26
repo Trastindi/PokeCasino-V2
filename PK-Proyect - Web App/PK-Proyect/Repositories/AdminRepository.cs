@@ -21,7 +21,6 @@ namespace PK_Proyect.Repositories
             => ApiClient.Put<object>($"/usuarios/{id}", new { rol = newRole });
 
         public void ResetPassword(string id, string newHashedPassword)
-            // Flask hashea internamente; enviamos la contraseña en texto plano
             => ApiClient.Put<object>($"/usuarios/{id}/reset_password", new { password = newHashedPassword });
     }
 }

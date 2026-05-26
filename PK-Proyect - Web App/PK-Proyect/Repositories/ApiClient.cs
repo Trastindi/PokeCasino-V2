@@ -16,7 +16,7 @@ namespace PK_Proyect.Repositories
     public static class ApiClient
     {
         // Cambia esta URL si el servidor corre en otra dirección
-        public static string BaseUrl { get; set; } = "http://localhost:5000";
+        public static string BaseUrl { get; set; } = "pokecasino.dpdns.org";
 
         private static string _token = null;
         private static readonly HttpClient _http = new HttpClient();
