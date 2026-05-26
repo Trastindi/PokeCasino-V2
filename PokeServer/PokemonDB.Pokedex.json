@@ -1,0 +1,1970 @@
+[{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1823c"
+  },
+  "Id": 1,
+  "Nombre": "Bulbasaur",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Nace con una semilla en el lomo que crece con él.",
+  "Evoluciones": [
+    2,
+    3
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1823d"
+  },
+  "Id": 2,
+  "Nombre": "Ivysaur",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "La semilla de su espalda florece al evolucionar.",
+  "Evoluciones": [
+    3
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1823e"
+  },
+  "Id": 3,
+  "Nombre": "Venusaur",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "La flor de su espalda libera un aroma calmante.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1823f"
+  },
+  "Id": 4,
+  "Nombre": "Charmander",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "La llama de su cola indica su estado vital.",
+  "Evoluciones": [
+    5,
+    6
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18240"
+  },
+  "Id": 5,
+  "Nombre": "Charmeleon",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cola arde con más fuerza cuando combate.",
+  "Evoluciones": [
+    6
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18241"
+  },
+  "Id": 6,
+  "Nombre": "Charizard",
+  "Tipo1": "Fuego",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Escupe fuego capaz de derretir rocas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18242"
+  },
+  "Id": 7,
+  "Nombre": "Squirtle",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se protege en su caparazón y dispara agua.",
+  "Evoluciones": [
+    8,
+    9
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18243"
+  },
+  "Id": 8,
+  "Nombre": "Wartortle",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cola peluda simboliza longevidad.",
+  "Evoluciones": [
+    9
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18244"
+  },
+  "Id": 9,
+  "Nombre": "Blastoise",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus cañones pueden perforar acero.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18245"
+  },
+  "Id": 10,
+  "Nombre": "Caterpie",
+  "Tipo1": "Bicho",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su olor repele a los depredadores.",
+  "Evoluciones": [
+    11,
+    12
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18246"
+  },
+  "Id": 11,
+  "Nombre": "Metapod",
+  "Tipo1": "Bicho",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su coraza es extremadamente dura.",
+  "Evoluciones": [
+    12
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18247"
+  },
+  "Id": 12,
+  "Nombre": "Butterfree",
+  "Tipo1": "Bicho",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Sus alas esparcen polvos paralizantes.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18248"
+  },
+  "Id": 13,
+  "Nombre": "Weedle",
+  "Tipo1": "Bicho",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Tiene un aguijón venenoso en la cabeza.",
+  "Evoluciones": [
+    14,
+    15
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18249"
+  },
+  "Id": 14,
+  "Nombre": "Kakuna",
+  "Tipo1": "Bicho",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Apenas puede moverse mientras evoluciona.",
+  "Evoluciones": [
+    15
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824a"
+  },
+  "Id": 15,
+  "Nombre": "Beedrill",
+  "Tipo1": "Bicho",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Ataca con sus aguijones múltiples.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824b"
+  },
+  "Id": 16,
+  "Nombre": "Pidgey",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Muy dócil, evita los combates.",
+  "Evoluciones": [
+    17,
+    18
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824c"
+  },
+  "Id": 17,
+  "Nombre": "Pidgeotto",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Defiende su territorio ferozmente.",
+  "Evoluciones": [
+    18
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824d"
+  },
+  "Id": 18,
+  "Nombre": "Pidgeot",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Puede volar a velocidades increíbles.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824e"
+  },
+  "Id": 19,
+  "Nombre": "Rattata",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Roedor muy territorial.",
+  "Evoluciones": [
+    20
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1824f"
+  },
+  "Id": 20,
+  "Nombre": "Raticate",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus incisivos crecen constantemente.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18250"
+  },
+  "Id": 21,
+  "Nombre": "Spearow",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Grita para intimidar enemigos.",
+  "Evoluciones": [
+    22
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18251"
+  },
+  "Id": 22,
+  "Nombre": "Fearow",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Vuela durante horas sin descansar.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18252"
+  },
+  "Id": 23,
+  "Nombre": "Ekans",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se enrolla para descansar.",
+  "Evoluciones": [
+    24
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18253"
+  },
+  "Id": 24,
+  "Nombre": "Arbok",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su patrón intimida a sus enemigos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18254"
+  },
+  "Id": 25,
+  "Nombre": "Pikachu",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Acumula electricidad en sus mejillas.",
+  "Evoluciones": [
+    26
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18255"
+  },
+  "Id": 26,
+  "Nombre": "Raichu",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Descarga electricidad de alto voltaje.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18256"
+  },
+  "Id": 27,
+  "Nombre": "Sandshrew",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se enrolla para protegerse.",
+  "Evoluciones": [
+    28
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18257"
+  },
+  "Id": 28,
+  "Nombre": "Sandslash",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus púas son extremadamente duras.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18258"
+  },
+  "Id": 29,
+  "Nombre": "Nidoran♀",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus orejas detectan sonidos lejanos.",
+  "Evoluciones": [
+    30,
+    31
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18259"
+  },
+  "Id": 30,
+  "Nombre": "Nidorina",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Más dócil que Nidoran♀.",
+  "Evoluciones": [
+    31
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825a"
+  },
+  "Id": 31,
+  "Nombre": "Nidoqueen",
+  "Tipo1": "Veneno",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo es extremadamente resistente.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825b"
+  },
+  "Id": 32,
+  "Nombre": "Nidoran♂",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus cuernos contienen veneno.",
+  "Evoluciones": [
+    33,
+    34
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825c"
+  },
+  "Id": 33,
+  "Nombre": "Nidorino",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Ataca con su cuerno venenoso.",
+  "Evoluciones": [
+    34
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825d"
+  },
+  "Id": 34,
+  "Nombre": "Nidoking",
+  "Tipo1": "Veneno",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Su fuerza es descomunal.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825e"
+  },
+  "Id": 35,
+  "Nombre": "Clefairy",
+  "Tipo1": "Hada",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Baila bajo la luz de la luna.",
+  "Evoluciones": [
+    36
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1825f"
+  },
+  "Id": 36,
+  "Nombre": "Clefable",
+  "Tipo1": "Hada",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Muy tímido, evita a los humanos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18260"
+  },
+  "Id": 37,
+  "Nombre": "Vulpix",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cola se divide al crecer.",
+  "Evoluciones": [
+    38
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18261"
+  },
+  "Id": 38,
+  "Nombre": "Ninetales",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se dice que vive mil años.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18262"
+  },
+  "Id": 39,
+  "Nombre": "Jigglypuff",
+  "Tipo1": "Normal",
+  "Tipo2": "Hada",
+  "Region": "Kanto",
+  "Descripcion": "Canta para dormir a sus enemigos.",
+  "Evoluciones": [
+    40
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18263"
+  },
+  "Id": 40,
+  "Nombre": "Wigglytuff",
+  "Tipo1": "Normal",
+  "Tipo2": "Hada",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo es extremadamente suave.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18264"
+  },
+  "Id": 41,
+  "Nombre": "Zubat",
+  "Tipo1": "Veneno",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Navega usando ultrasonidos.",
+  "Evoluciones": [
+    42
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18265"
+  },
+  "Id": 42,
+  "Nombre": "Golbat",
+  "Tipo1": "Veneno",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Absorbe la sangre de sus presas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18266"
+  },
+  "Id": 43,
+  "Nombre": "Oddish",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Se entierra durante el día.",
+  "Evoluciones": [
+    44,
+    45
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18267"
+  },
+  "Id": 44,
+  "Nombre": "Gloom",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Su olor puede ser tóxico.",
+  "Evoluciones": [
+    45
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18268"
+  },
+  "Id": 45,
+  "Nombre": "Vileplume",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Sus pétalos contienen polen venenoso.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d18269"
+  },
+  "Id": 46,
+  "Nombre": "Paras",
+  "Tipo1": "Bicho",
+  "Tipo2": "Planta",
+  "Region": "Kanto",
+  "Descripcion": "Los hongos controlan su cuerpo.",
+  "Evoluciones": [
+    47
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1826a"
+  },
+  "Id": 47,
+  "Nombre": "Parasect",
+  "Tipo1": "Bicho",
+  "Tipo2": "Planta",
+  "Region": "Kanto",
+  "Descripcion": "El hongo domina completamente al huésped.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1826b"
+  },
+  "Id": 48,
+  "Nombre": "Venonat",
+  "Tipo1": "Bicho",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Sus ojos brillan en la oscuridad.",
+  "Evoluciones": [
+    49
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1826c"
+  },
+  "Id": 49,
+  "Nombre": "Venomoth",
+  "Tipo1": "Bicho",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Sus alas esparcen polvo tóxico.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca4fb53c50a2f90d1826d"
+  },
+  "Id": 50,
+  "Nombre": "Diglett",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Vive bajo tierra y rara vez se ve su cuerpo.",
+  "Evoluciones": [
+    51
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1826f"
+  },
+  "Id": 51,
+  "Nombre": "Dugtrio",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Tres Diglett que trabajan en equipo bajo tierra.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18270"
+  },
+  "Id": 52,
+  "Nombre": "Meowth",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Le encanta coleccionar objetos brillantes.",
+  "Evoluciones": [
+    53
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18271"
+  },
+  "Id": 53,
+  "Nombre": "Persian",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Elegante y ágil, pero muy temperamental.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18272"
+  },
+  "Id": 54,
+  "Nombre": "Psyduck",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sufre dolores de cabeza que liberan poderes psíquicos.",
+  "Evoluciones": [
+    55
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18273"
+  },
+  "Id": 55,
+  "Nombre": "Golduck",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Nada a gran velocidad usando sus membranas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18274"
+  },
+  "Id": 56,
+  "Nombre": "Mankey",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se enfada con facilidad y ataca sin pensar.",
+  "Evoluciones": [
+    57
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18275"
+  },
+  "Id": 57,
+  "Nombre": "Primeape",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su furia es incontrolable cuando combate.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18276"
+  },
+  "Id": 58,
+  "Nombre": "Growlithe",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Muy leal a su entrenador.",
+  "Evoluciones": [
+    59
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18277"
+  },
+  "Id": 59,
+  "Nombre": "Arcanine",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Corre a velocidades legendarias.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18278"
+  },
+  "Id": 60,
+  "Nombre": "Poliwag",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su espiral indica su estado de salud.",
+  "Evoluciones": [
+    61,
+    62
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18279"
+  },
+  "Id": 61,
+  "Nombre": "Poliwhirl",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su piel húmeda le permite respirar fuera del agua.",
+  "Evoluciones": [
+    62
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827a"
+  },
+  "Id": 62,
+  "Nombre": "Poliwrath",
+  "Tipo1": "Agua",
+  "Tipo2": "Lucha",
+  "Region": "Kanto",
+  "Descripcion": "Sus músculos son extremadamente fuertes.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827b"
+  },
+  "Id": 63,
+  "Nombre": "Abra",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Duerme 18 horas al día y se teletransporta al azar.",
+  "Evoluciones": [
+    64,
+    65
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827c"
+  },
+  "Id": 64,
+  "Nombre": "Kadabra",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cuchara amplifica sus poderes psíquicos.",
+  "Evoluciones": [
+    65
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827d"
+  },
+  "Id": 65,
+  "Nombre": "Alakazam",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cerebro es una supercomputadora.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827e"
+  },
+  "Id": 66,
+  "Nombre": "Machop",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Entrena constantemente para fortalecerse.",
+  "Evoluciones": [
+    67,
+    68
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1827f"
+  },
+  "Id": 67,
+  "Nombre": "Machoke",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su fuerza es tan grande que debe usar un cinturón especial.",
+  "Evoluciones": [
+    68
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18280"
+  },
+  "Id": 68,
+  "Nombre": "Machamp",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus cuatro brazos le permiten atacar sin descanso.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18281"
+  },
+  "Id": 69,
+  "Nombre": "Bellsprout",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo flexible le permite esquivar ataques.",
+  "Evoluciones": [
+    70,
+    71
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18282"
+  },
+  "Id": 70,
+  "Nombre": "Weepinbell",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Segrega un ácido que derrite casi todo.",
+  "Evoluciones": [
+    71
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18283"
+  },
+  "Id": 71,
+  "Nombre": "Victreebel",
+  "Tipo1": "Planta",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Atrae presas con un dulce aroma.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18284"
+  },
+  "Id": 72,
+  "Nombre": "Tentacool",
+  "Tipo1": "Agua",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Flota a la deriva en el mar.",
+  "Evoluciones": [
+    73
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18285"
+  },
+  "Id": 73,
+  "Nombre": "Tentacruel",
+  "Tipo1": "Agua",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Sus tentáculos pueden extenderse enormemente.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18286"
+  },
+  "Id": 74,
+  "Nombre": "Geodude",
+  "Tipo1": "Roca",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Se confunde fácilmente con una roca común.",
+  "Evoluciones": [
+    75,
+    76
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18287"
+  },
+  "Id": 75,
+  "Nombre": "Graveler",
+  "Tipo1": "Roca",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Rueda cuesta abajo para desplazarse.",
+  "Evoluciones": [
+    76
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18288"
+  },
+  "Id": 76,
+  "Nombre": "Golem",
+  "Tipo1": "Roca",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo es tan duro como el diamante.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18289"
+  },
+  "Id": 77,
+  "Nombre": "Ponyta",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus patas se fortalecen al correr.",
+  "Evoluciones": [
+    78
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828a"
+  },
+  "Id": 78,
+  "Nombre": "Rapidash",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Corre tan rápido que parece desaparecer.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828b"
+  },
+  "Id": 79,
+  "Nombre": "Slowpoke",
+  "Tipo1": "Agua",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Reacciona con varios segundos de retraso.",
+  "Evoluciones": [
+    80
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828c"
+  },
+  "Id": 80,
+  "Nombre": "Slowbro",
+  "Tipo1": "Agua",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Un Shellder mordió su cola y evolucionó.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828d"
+  },
+  "Id": 81,
+  "Nombre": "Magnemite",
+  "Tipo1": "Eléctrico",
+  "Tipo2": "Acero",
+  "Region": "Kanto",
+  "Descripcion": "Flota usando magnetismo.",
+  "Evoluciones": [
+    82
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828e"
+  },
+  "Id": 82,
+  "Nombre": "Magneton",
+  "Tipo1": "Eléctrico",
+  "Tipo2": "Acero",
+  "Region": "Kanto",
+  "Descripcion": "Tres Magnemite unidos por magnetismo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1828f"
+  },
+  "Id": 83,
+  "Nombre": "Farfetch'd",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Siempre lleva un puerro que usa como arma.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18290"
+  },
+  "Id": 84,
+  "Nombre": "Doduo",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Tiene dos cabezas que piensan distinto.",
+  "Evoluciones": [
+    85
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18291"
+  },
+  "Id": 85,
+  "Nombre": "Dodrio",
+  "Tipo1": "Normal",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Sus tres cabezas coordinan ataques veloces.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18292"
+  },
+  "Id": 86,
+  "Nombre": "Seel",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Nada en aguas heladas sin esfuerzo.",
+  "Evoluciones": [
+    87
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18293"
+  },
+  "Id": 87,
+  "Nombre": "Dewgong",
+  "Tipo1": "Agua",
+  "Tipo2": "Hielo",
+  "Region": "Kanto",
+  "Descripcion": "Le encanta dormir en el hielo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18294"
+  },
+  "Id": 88,
+  "Nombre": "Grimer",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo está hecho de lodo tóxico.",
+  "Evoluciones": [
+    89
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18295"
+  },
+  "Id": 89,
+  "Nombre": "Muk",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su olor es extremadamente desagradable.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18296"
+  },
+  "Id": 90,
+  "Nombre": "Shellder",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su concha es casi indestructible.",
+  "Evoluciones": [
+    91
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18297"
+  },
+  "Id": 91,
+  "Nombre": "Cloyster",
+  "Tipo1": "Agua",
+  "Tipo2": "Hielo",
+  "Region": "Kanto",
+  "Descripcion": "Su interior es un misterio.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18298"
+  },
+  "Id": 92,
+  "Nombre": "Gastly",
+  "Tipo1": "Fantasma",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo es un gas venenoso.",
+  "Evoluciones": [
+    93,
+    94
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d18299"
+  },
+  "Id": 93,
+  "Nombre": "Haunter",
+  "Tipo1": "Fantasma",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Puede atravesar paredes.",
+  "Evoluciones": [
+    94
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829a"
+  },
+  "Id": 94,
+  "Nombre": "Gengar",
+  "Tipo1": "Fantasma",
+  "Tipo2": "Veneno",
+  "Region": "Kanto",
+  "Descripcion": "Se esconde en las sombras para atacar.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829b"
+  },
+  "Id": 95,
+  "Nombre": "Onix",
+  "Tipo1": "Roca",
+  "Tipo2": "Tierra",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo está formado por rocas gigantes.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829c"
+  },
+  "Id": 96,
+  "Nombre": "Drowzee",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se alimenta de los sueños de la gente.",
+  "Evoluciones": [
+    97
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829d"
+  },
+  "Id": 97,
+  "Nombre": "Hypno",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Usa su péndulo para hipnotizar.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829e"
+  },
+  "Id": 98,
+  "Nombre": "Krabby",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus pinzas son muy fuertes.",
+  "Evoluciones": [
+    99
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d1829f"
+  },
+  "Id": 99,
+  "Nombre": "Kingler",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su pinza gigante puede aplastar rocas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca56e53c50a2f90d182a0"
+  },
+  "Id": 100,
+  "Nombre": "Voltorb",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se parece sospechosamente a una Poké Ball.",
+  "Evoluciones": [
+    101
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a2"
+  },
+  "Id": 101,
+  "Nombre": "Electrode",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Explota al menor estímulo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a3"
+  },
+  "Id": 102,
+  "Nombre": "Exeggcute",
+  "Tipo1": "Planta",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Un grupo de seis huevos que actúan como uno.",
+  "Evoluciones": [
+    103
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a4"
+  },
+  "Id": 103,
+  "Nombre": "Exeggutor",
+  "Tipo1": "Planta",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Cada cabeza piensa de forma independiente.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a5"
+  },
+  "Id": 104,
+  "Nombre": "Cubone",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Llora por su madre perdida.",
+  "Evoluciones": [
+    105
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a6"
+  },
+  "Id": 105,
+  "Nombre": "Marowak",
+  "Tipo1": "Tierra",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se vuelve fuerte tras superar su tristeza.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a7"
+  },
+  "Id": 106,
+  "Nombre": "Hitmonlee",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus piernas se estiran para golpear a distancia.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a8"
+  },
+  "Id": 107,
+  "Nombre": "Hitmonchan",
+  "Tipo1": "Lucha",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus puñetazos son extremadamente rápidos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182a9"
+  },
+  "Id": 108,
+  "Nombre": "Lickitung",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su lengua es más larga que su cuerpo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182aa"
+  },
+  "Id": 109,
+  "Nombre": "Koffing",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Flota gracias a los gases tóxicos que contiene.",
+  "Evoluciones": [
+    110
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ab"
+  },
+  "Id": 110,
+  "Nombre": "Weezing",
+  "Tipo1": "Veneno",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Dos Koffing fusionados por gases tóxicos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ac"
+  },
+  "Id": 111,
+  "Nombre": "Rhyhorn",
+  "Tipo1": "Tierra",
+  "Tipo2": "Roca",
+  "Region": "Kanto",
+  "Descripcion": "Corre sin pensar y destruye todo a su paso.",
+  "Evoluciones": [
+    112
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ad"
+  },
+  "Id": 112,
+  "Nombre": "Rhydon",
+  "Tipo1": "Tierra",
+  "Tipo2": "Roca",
+  "Region": "Kanto",
+  "Descripcion": "Camina erguido y es muy resistente.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ae"
+  },
+  "Id": 113,
+  "Nombre": "Chansey",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus huevos son nutritivos y muy apreciados.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182af"
+  },
+  "Id": 114,
+  "Nombre": "Tangela",
+  "Tipo1": "Planta",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo está cubierto de lianas azules.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b0"
+  },
+  "Id": 115,
+  "Nombre": "Kangaskhan",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Protege ferozmente a su cría.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b1"
+  },
+  "Id": 116,
+  "Nombre": "Horsea",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Nada con gran agilidad.",
+  "Evoluciones": [
+    117
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b2"
+  },
+  "Id": 117,
+  "Nombre": "Seadra",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Sus púas contienen veneno.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b3"
+  },
+  "Id": 118,
+  "Nombre": "Goldeen",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Nada con gracia y velocidad.",
+  "Evoluciones": [
+    119
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b4"
+  },
+  "Id": 119,
+  "Nombre": "Seaking",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Excava nidos en los ríos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b5"
+  },
+  "Id": 120,
+  "Nombre": "Staryu",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su núcleo brilla en la oscuridad.",
+  "Evoluciones": [
+    121
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b6"
+  },
+  "Id": 121,
+  "Nombre": "Starmie",
+  "Tipo1": "Agua",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Emite señales misteriosas al espacio.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b7"
+  },
+  "Id": 122,
+  "Nombre": "Mr. Mime",
+  "Tipo1": "Psíquico",
+  "Tipo2": "Hada",
+  "Region": "Kanto",
+  "Descripcion": "Crea barreras invisibles con sus manos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b8"
+  },
+  "Id": 123,
+  "Nombre": "Scyther",
+  "Tipo1": "Bicho",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Se mueve tan rápido que parece teletransportarse.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182b9"
+  },
+  "Id": 124,
+  "Nombre": "Jynx",
+  "Tipo1": "Hielo",
+  "Tipo2": "Psíquico",
+  "Region": "Kanto",
+  "Descripcion": "Se comunica mediante movimientos de baile.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ba"
+  },
+  "Id": 125,
+  "Nombre": "Electabuzz",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Aparece durante tormentas eléctricas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182bb"
+  },
+  "Id": 126,
+  "Nombre": "Magmar",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Vive cerca de volcanes activos.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182bc"
+  },
+  "Id": 127,
+  "Nombre": "Pinsir",
+  "Tipo1": "Bicho",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Aplasta a sus enemigos con sus pinzas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182bd"
+  },
+  "Id": 128,
+  "Nombre": "Tauros",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Embiste sin detenerse.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182be"
+  },
+  "Id": 129,
+  "Nombre": "Magikarp",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Es débil, pero muy resistente.",
+  "Evoluciones": [
+    130
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182bf"
+  },
+  "Id": 130,
+  "Nombre": "Gyarados",
+  "Tipo1": "Agua",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Su furia es legendaria.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c0"
+  },
+  "Id": 131,
+  "Nombre": "Lapras",
+  "Tipo1": "Agua",
+  "Tipo2": "Hielo",
+  "Region": "Kanto",
+  "Descripcion": "Muy inteligente y amable.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c1"
+  },
+  "Id": 132,
+  "Nombre": "Ditto",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Puede transformarse en cualquier Pokémon.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c2"
+  },
+  "Id": 133,
+  "Nombre": "Eevee",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su ADN inestable permite múltiples evoluciones.",
+  "Evoluciones": [
+    134,
+    135,
+    136
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c3"
+  },
+  "Id": 134,
+  "Nombre": "Vaporeon",
+  "Tipo1": "Agua",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Se disuelve en el agua para ocultarse.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c4"
+  },
+  "Id": 135,
+  "Nombre": "Jolteon",
+  "Tipo1": "Eléctrico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su pelaje genera electricidad estática.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c5"
+  },
+  "Id": 136,
+  "Nombre": "Flareon",
+  "Tipo1": "Fuego",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo almacena calor extremo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c6"
+  },
+  "Id": 137,
+  "Nombre": "Porygon",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Un Pokémon creado por computadora.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c7"
+  },
+  "Id": 138,
+  "Nombre": "Omanyte",
+  "Tipo1": "Roca",
+  "Tipo2": "Agua",
+  "Region": "Kanto",
+  "Descripcion": "Un fósil revivido.",
+  "Evoluciones": [
+    139
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c8"
+  },
+  "Id": 139,
+  "Nombre": "Omastar",
+  "Tipo1": "Roca",
+  "Tipo2": "Agua",
+  "Region": "Kanto",
+  "Descripcion": "Sus tentáculos atrapan a sus presas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182c9"
+  },
+  "Id": 140,
+  "Nombre": "Kabuto",
+  "Tipo1": "Roca",
+  "Tipo2": "Agua",
+  "Region": "Kanto",
+  "Descripcion": "Un antiguo Pokémon fósil.",
+  "Evoluciones": [
+    141
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ca"
+  },
+  "Id": 141,
+  "Nombre": "Kabutops",
+  "Tipo1": "Roca",
+  "Tipo2": "Agua",
+  "Region": "Kanto",
+  "Descripcion": "Sus cuchillas son letales.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182cb"
+  },
+  "Id": 142,
+  "Nombre": "Aerodactyl",
+  "Tipo1": "Roca",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Un Pokémon prehistórico muy agresivo.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182cc"
+  },
+  "Id": 143,
+  "Nombre": "Snorlax",
+  "Tipo1": "Normal",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Duerme casi todo el día.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182cd"
+  },
+  "Id": 144,
+  "Nombre": "Articuno",
+  "Tipo1": "Hielo",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Controla el hielo y la nieve.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182ce"
+  },
+  "Id": 145,
+  "Nombre": "Zapdos",
+  "Tipo1": "Eléctrico",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Aparece durante tormentas eléctricas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182cf"
+  },
+  "Id": 146,
+  "Nombre": "Moltres",
+  "Tipo1": "Fuego",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Su cuerpo arde con llamas eternas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182d0"
+  },
+  "Id": 147,
+  "Nombre": "Dratini",
+  "Tipo1": "Dragón",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Vive en aguas profundas.",
+  "Evoluciones": [
+    148,
+    149
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182d1"
+  },
+  "Id": 148,
+  "Nombre": "Dragonair",
+  "Tipo1": "Dragón",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Controla el clima con su energía.",
+  "Evoluciones": [
+    149
+  ]
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182d2"
+  },
+  "Id": 149,
+  "Nombre": "Dragonite",
+  "Tipo1": "Dragón",
+  "Tipo2": "Volador",
+  "Region": "Kanto",
+  "Descripcion": "Puede dar la vuelta al mundo en 16 horas.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182d3"
+  },
+  "Id": 150,
+  "Nombre": "Mewtwo",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Creado mediante ingeniería genética.",
+  "Evoluciones": []
+},
+{
+  "_id": {
+    "$oid": "698ca5dd53c50a2f90d182d4"
+  },
+  "Id": 151,
+  "Nombre": "Mew",
+  "Tipo1": "Psíquico",
+  "Tipo2": null,
+  "Region": "Kanto",
+  "Descripcion": "Contiene el ADN de todos los Pokémon.",
+  "Evoluciones": []
+}]

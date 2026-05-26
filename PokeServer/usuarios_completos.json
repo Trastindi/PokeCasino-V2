@@ -1,0 +1,54 @@
+[
+    {
+        "_id": "cea7d1f0-17e6-4997-aea9-0e030421ea84",
+        "apellido": "Saez",
+        "dni": "46573847Y",
+        "edad": 20,
+        "email": "pedraez@hola.com",
+        "fichas": 300,
+        "nombre": "Pedro",
+        "pokemon": [],
+        "pokes": 1000,
+        "rol": "user",
+        "username": "Pedraez"
+    },
+    {
+        "_id": "0b8731f6-954a-4bd0-8dcb-9e645ba2a1f5",
+        "apellido": "",
+        "dni": "768457563T",
+        "edad": 50,
+        "email": "Prof.Oak@Pokemon.com",
+        "fichas": 10000000,
+        "nombre": "Oak",
+        "pokemon": [],
+        "pokes": 100000000,
+        "rol": "admin",
+        "username": "Prof.Oak"
+    },
+    {
+        "_id": "9467d6c2-02c9-42de-a788-f219750c4182",
+        "apellido": "para",
+        "dni": "9876543Y",
+        "edad": 20,
+        "email": "ooo@ooo.es",
+        "fichas": 300,
+        "nombre": "Prueba",
+        "pokemon": [],
+        "pokes": 1000,
+        "rol": "user",
+        "username": "Pruebas"
+    },
+    {
+        "_id": "d7e15996-5695-4d90-b3bb-cbdda017b976",
+        "apellido": "perez",
+        "dni": "36475362A",
+        "edad": 22,
+        "email": "paquito@lolo.es",
+        "fichas": 300,
+        "nombre": "paco",
+        "pokemon": [],
+        "pokes": 1000,
+        "rol": "user",
+        "username": "Paquito"
+    }
+]
