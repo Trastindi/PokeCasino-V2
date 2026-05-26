@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PK_Proyect.ViewModels
+namespace PK_Proyect.Commands
 {
     /// <summary>
-    /// RelayCommand que soporta tanto acciones síncronas como asíncronas (Func&lt;object, Task&gt;).
+    /// RelayCommand que soporta acciones síncronas y asíncronas (Func&lt;object, Task&gt;).
     /// </summary>
     public class RelayCommand : ICommand
     {
@@ -20,7 +20,7 @@ namespace PK_Proyect.ViewModels
             _canExecute   = canExecute;
         }
 
-        // Constructor de compatibilidad para acciones síncronas existentes
+        // Constructor de compatibilidad para acciones síncronas existentes (no rompe ningún ViewModel)
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
             : this(p => { execute(p); return Task.CompletedTask; }, canExecute)
         {

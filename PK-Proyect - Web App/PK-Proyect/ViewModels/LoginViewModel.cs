@@ -1,5 +1,7 @@
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Services;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -40,8 +42,10 @@ namespace PK_Proyect.ViewModels
         public LoginViewModel(AuthService authService)
         {
             _auth = authService;
-            // CanExecute deshabilita el botón mientras hay una petición en curso
-            LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => !IsLoading);
+            LoginCommand = new RelayCommand(
+                async _ => await LoginAsync(),
+                _ => !IsLoading
+            );
         }
 
         private async Task LoginAsync()
@@ -55,7 +59,7 @@ namespace PK_Proyect.ViewModels
             IsLoading = true;
             try
             {
-                // Ejecutar la llamada HTTP en un hilo de fondo para no bloquear el hilo UI
+                // Task.Run saca la llamada HTTP del hilo UI -> evita el deadlock
                 var usuario = await Task.Run(() => _auth.Login(Username, Password));
 
                 if (usuario == null)
