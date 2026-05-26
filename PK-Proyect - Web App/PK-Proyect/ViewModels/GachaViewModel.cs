@@ -52,12 +52,11 @@ namespace PK_Proyect.ViewModels.Banners
             _pokedexRepo = new PokedexRepository();
             PokemonDisponibles = new ObservableCollection<PokemonZonaViewModel>();
 
-            Tirar1Command         = new RelayCommand(TiradaSingle);
-            Tirar10Command        = new RelayCommand(TiradaMulti);
-            MostrarPokemonCommand = new RelayCommand(MostrarPokemon);
-            MostrarZonasCommand   = new RelayCommand(MostrarZonasBD);
-            HistorialCommand      = new RelayCommand(MostrarHistorial);
-
+            Tirar1Command         = new RelayCommand(_ => TiradaSingle());
+            Tirar10Command        = new RelayCommand(_ => TiradaMulti());
+            MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
+            MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
+            HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
             _pokemonUserService = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
             CargarZona();
