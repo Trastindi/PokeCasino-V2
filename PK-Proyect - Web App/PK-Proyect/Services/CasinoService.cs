@@ -23,6 +23,19 @@ namespace PK_Proyect.Services
             }
             catch { return null; }
         }
+
+        /// <summary>
+        /// Actualiza las fichas del usuario directamente llamando al endpoint de modificar usuario.
+        /// Usado por SlotMachineView tras cada tirada.
+        /// </summary>
+        public void ActualizarFichas(string userId, int fichas)
+        {
+            try
+            {
+                ApiClient.Put<object>($"/usuarios/{userId}", new { fichas = fichas });
+            }
+            catch { /* silencioso, las fichas se actualizan igualmente en /casino/jugar */ }
+        }
     }
 
     public class CasinoResultado

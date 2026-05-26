@@ -8,23 +8,13 @@ namespace PK_Proyect.Services
     {
         private readonly AdminRepository _adminRepo = new();
 
-        public List<User> GetAllUsers()
-            => _adminRepo.GetAllUsers();
+        public List<User> GetAllUsers()          => _adminRepo.GetAllUsers();
+        public void DeleteUser(string id)        => _adminRepo.DeleteUser(id);
+        public void ChangeRole(User user, string newRole) => _adminRepo.ChangeRole(user.Id, newRole);
+        public void UpdateUser(User user)        => _adminRepo.UpdateUser(user);
 
-        public void DeleteUser(string id)
-            => _adminRepo.DeleteUser(id);
-
-        public void ChangeRole(User user, string newRole)
-            => _adminRepo.ChangeRole(user.Id, newRole);
-
-        /// <summary>
-        /// El servidor Flask genera la contraseña y envía el email.
-        /// Solo necesitamos llamar al endpoint con password vacío.
-        /// </summary>
+        /// <summary>El servidor Flask genera la contraseña y envía el email.</summary>
         public void ResetPassword(User user)
             => ApiClient.Put<object>($"/usuarios/{user.Id}/reset_password", new { });
-
-        public void UpdateUser(User user)
-            => _adminRepo.UpdateUser(user);
     }
 }

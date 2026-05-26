@@ -1,7 +1,8 @@
-﻿using PK_Proyect.Services;
+using PK_Proyect.Services;
+using PK_Proyect.Commands;
+using System;
 using System.Windows;
 using System.Windows.Input;
-using PK_Proyect.Commands;
 
 namespace PK_Proyect.ViewModels
 {
@@ -9,18 +10,18 @@ namespace PK_Proyect.ViewModels
     {
         private readonly PasswordService _passwordService = new PasswordService();
 
-        public string Email { get; set; }
+        public string Email    { get; set; }
         public string Username { get; set; }
 
         public ICommand RecuperarCommand { get; }
-        public ICommand CancelarCommand { get; }
+        public ICommand CancelarCommand  { get; }
 
         public event Action CerrarVentanaRequested;
 
         public ForgotPasswordViewModel()
         {
             RecuperarCommand = new RelayCommand(_ => Recuperar());
-            CancelarCommand = new RelayCommand(_ => CerrarVentanaRequested?.Invoke());
+            CancelarCommand  = new RelayCommand(_ => CerrarVentanaRequested?.Invoke());
         }
 
         private void Recuperar()
@@ -31,11 +32,12 @@ namespace PK_Proyect.ViewModels
                 return;
             }
 
-            string nuevaPass = _passwordService.ForgotPassword(Email, Username);
+            // ForgotPassword ahora devuelve bool (true = éxito, false = error)
+            bool ok = _passwordService.ForgotPassword(Email, Username);
 
-            if (nuevaPass == null)
+            if (!ok)
             {
-                MessageBox.Show("Los datos no coinciden con ninguna cuenta.");
+                MessageBox.Show("Los datos no coinciden con ninguna cuenta o ha ocurrido un error.");
                 return;
             }
 

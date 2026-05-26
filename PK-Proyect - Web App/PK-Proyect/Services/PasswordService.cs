@@ -1,4 +1,3 @@
-using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 
 namespace PK_Proyect.Services
@@ -27,8 +26,8 @@ namespace PK_Proyect.Services
             {
                 ApiClient.Post<object>("/auth/cambiar_password", new
                 {
-                    password_actual  = passwordActual,
-                    nueva_password   = nuevaPassword
+                    password_actual = passwordActual,
+                    nueva_password  = nuevaPassword
                 });
                 return true;
             }
