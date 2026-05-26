@@ -1,37 +1,53 @@
-﻿using System;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PK_Proyect.Commands
+namespace PK_Proyect.ViewModels
 {
+    /// <summary>
+    /// RelayCommand que soporta tanto acciones síncronas como asíncronas (Func&lt;object, Task&gt;).
+    /// </summary>
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _execute;
+        private readonly Func<object, Task> _executeAsync;
         private readonly Func<object, bool> _canExecute;
+        private bool _isExecuting;
 
-        // Constructor para comandos CON parámetro
+        // Constructor para acciones asíncronas
+        public RelayCommand(Func<object, Task> executeAsync, Func<object, bool> canExecute = null)
+        {
+            _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+            _canExecute   = canExecute;
+        }
+
+        // Constructor de compatibilidad para acciones síncronas existentes
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+            : this(p => { execute(p); return Task.CompletedTask; }, canExecute)
         {
-            _execute = execute;
-            _canExecute = canExecute;
         }
 
-        // Constructor para comandos SIN parámetro
-        public RelayCommand(Action execute)
+        public bool CanExecute(object parameter)
+            => !_isExecuting && (_canExecute == null || _canExecute(parameter));
+
+        public async void Execute(object parameter)
         {
-            _execute = _ => execute();
-            _canExecute = null;
+            if (!CanExecute(parameter)) return;
+
+            _isExecuting = true;
+            RaiseCanExecuteChanged();
+            try
+            {
+                await _executeAsync(parameter);
+            }
+            finally
+            {
+                _isExecuting = false;
+                RaiseCanExecuteChanged();
+            }
         }
 
-        public bool CanExecute(object parameter) =>
-            _canExecute == null || _canExecute(parameter);
-
-        public void Execute(object parameter) =>
-            _execute(parameter);
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
+        public event EventHandler CanExecuteChanged;
+        public void RaiseCanExecuteChanged()
+            => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

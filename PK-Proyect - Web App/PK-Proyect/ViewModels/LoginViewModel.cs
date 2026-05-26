@@ -1,9 +1,9 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
-using PK_Proyect.Commands;
 using System.Windows.Input;
 
 namespace PK_Proyect.ViewModels
@@ -26,6 +26,13 @@ namespace PK_Proyect.ViewModels
             set { _password = value; OnPropertyChanged(); }
         }
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
+        }
+
         public ICommand LoginCommand { get; }
 
         public event Action<User> LoginSuccess;
@@ -33,10 +40,11 @@ namespace PK_Proyect.ViewModels
         public LoginViewModel(AuthService authService)
         {
             _auth = authService;
-            LoginCommand = new RelayCommand(Login);
+            // CanExecute deshabilita el botón mientras hay una petición en curso
+            LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => !IsLoading);
         }
 
-        private void Login(object obj)
+        private async Task LoginAsync()
         {
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
@@ -44,15 +52,24 @@ namespace PK_Proyect.ViewModels
                 return;
             }
 
-            var usuario = _auth.Login(Username, Password);
-
-            if (usuario == null)
+            IsLoading = true;
+            try
             {
-                MessageBox.Show("Usuario o contraseña incorrectos.");
-                return;
-            }
+                // Ejecutar la llamada HTTP en un hilo de fondo para no bloquear el hilo UI
+                var usuario = await Task.Run(() => _auth.Login(Username, Password));
 
-            LoginSuccess?.Invoke(usuario);
+                if (usuario == null)
+                {
+                    MessageBox.Show("Usuario o contraseña incorrectos.");
+                    return;
+                }
+
+                LoginSuccess?.Invoke(usuario);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
