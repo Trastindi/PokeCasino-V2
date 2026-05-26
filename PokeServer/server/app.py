@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from pymongo.errors import OperationFailure
 import uuid
 import jwt
 import datetime
@@ -20,12 +21,21 @@ app.config["SECRET_KEY"] = "super_secret_key"  # cámbiala en producción
 # -------------------------
 # CONEXIÓN MONGODB
 # -------------------------
-uri = "mongodb+srv://marcosemiliorodriguezmartin_db_user:dpoPg74YCtl147mX@pokecasino.asaeily.mongodb.net/?retryWrites=true&w=majority&appName=PokeCasino"
-client = MongoClient(uri, server_api=ServerApi("1"))
-db = client["PokemonPyDB"]
-usuarios = db["usuarios"]
-premios = db["premios"]
-pokedex = db["pokedex"]
+uri = "mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net/?retryWrites=true&w=majority&appName=PokeCasino"
+
+try:
+    client = MongoClient(uri, server_api=ServerApi("1"))
+    db = client["PokemonPyDB"]
+    usuarios = db["usuarios"]
+    premios = db["premios"]
+    pokedex = db["pokedex"]
+    print("Collections in app.py:", db.list_collection_names())
+except OperationFailure as e:
+    if e.code == 8000 or "bad auth" in str(e).lower():
+        print("ERROR: URI inválida — las credenciales de MongoDB Atlas son incorrectas. Revisa usuario y contraseña en la URI.")
+    else:
+        print(f"ERROR de MongoDB: {e}")
+    exit(1)
 
 print("Collections in app.py:", db.list_collection_names())
 
