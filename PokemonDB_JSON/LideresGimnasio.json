@@ -10,8 +10,28 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 74, "nombre": "Geodude", "nivel": 12 },
-      { "PokemonId": 95, "nombre": "Onix", "nivel": 14 }
+      {
+        "PokemonId": 74,
+        "nombre": "Geodude",
+        "nivel": 12,
+        "TipoPrincipal": "Roca",
+        "TipoSecundario": "Tierra",
+        "AbilityNombre": "Cabeza Roca",
+        "ItemId": null,
+        "MoveSet": ["Placaje", "Rizo Defensa"],
+        "Status": null
+      },
+      {
+        "PokemonId": 95,
+        "nombre": "Onix",
+        "nivel": 14,
+        "TipoPrincipal": "Roca",
+        "TipoSecundario": "Tierra",
+        "AbilityNombre": "Cabeza Roca",
+        "ItemId": null,
+        "MoveSet": ["Placaje", "Fortaleza", "Constricción", "Tumba Rocas"],
+        "Status": null
+      }
     ]
   },
   {
@@ -25,8 +45,28 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 120, "nombre": "Staryu", "nivel": 18 },
-      { "PokemonId": 121, "nombre": "Starmie", "nivel": 21 }
+      {
+        "PokemonId": 120,
+        "nombre": "Staryu",
+        "nivel": 18,
+        "TipoPrincipal": "Agua",
+        "TipoSecundario": null,
+        "AbilityNombre": "Cura Natural",
+        "ItemId": null,
+        "MoveSet": ["Placaje", "Fortaleza", "Recuperación", "Pistola Agua"],
+        "Status": null
+      },
+      {
+        "PokemonId": 121,
+        "nombre": "Starmie",
+        "nivel": 21,
+        "TipoPrincipal": "Agua",
+        "TipoSecundario": "Psíquico",
+        "AbilityNombre": "Cura Natural",
+        "ItemId": null,
+        "MoveSet": ["Giro Rápido", "Veloz", "Recuperación", "Pistola Agua"],
+        "Status": null
+      }
     ]
   },
   {
@@ -40,9 +80,39 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 100, "nombre": "Voltorb", "nivel": 21 },
-      { "PokemonId": 25, "nombre": "Pikachu", "nivel": 18 },
-      { "PokemonId": 26, "nombre": "Raichu", "nivel": 24 }
+      {
+        "PokemonId": 100,
+        "nombre": "Voltorb",
+        "nivel": 21,
+        "TipoPrincipal": "Eléctrico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Estática",
+        "ItemId": null,
+        "MoveSet": ["Ataque Rápido", "Pantalla de Luz", "Sónico", "Chispa"],
+        "Status": null
+      },
+      {
+        "PokemonId": 25,
+        "nombre": "Pikachu",
+        "nivel": 18,
+        "TipoPrincipal": "Eléctrico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Estática",
+        "ItemId": null,
+        "MoveSet": ["Ataque Rápido", "Gruñido", "Impactrueno", "Cola de Hierro"],
+        "Status": null
+      },
+      {
+        "PokemonId": 26,
+        "nombre": "Raichu",
+        "nivel": 24,
+        "TipoPrincipal": "Eléctrico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Estática",
+        "ItemId": null,
+        "MoveSet": ["Ataque Rápido", "Gruñido", "Impactrueno", "Trueno"],
+        "Status": null
+      }
     ]
   },
   {
@@ -56,9 +126,39 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 71, "nombre": "Victreebel", "nivel": 29 },
-      { "PokemonId": 114, "nombre": "Tangela", "nivel": 24 },
-      { "PokemonId": 45, "nombre": "Vileplume", "nivel": 29 }
+      {
+        "PokemonId": 71,
+        "nombre": "Victreebel",
+        "nivel": 29,
+        "TipoPrincipal": "Planta",
+        "TipoSecundario": "Veneno",
+        "AbilityNombre": "Clorofila",
+        "ItemId": null,
+        "MoveSet": ["Látigo Cepa", "Corte", "Drenadoras", "Dulce Aroma"],
+        "Status": null
+      },
+      {
+        "PokemonId": 114,
+        "nombre": "Tangela",
+        "nivel": 24,
+        "TipoPrincipal": "Planta",
+        "TipoSecundario": null,
+        "AbilityNombre": "Clorofila",
+        "ItemId": null,
+        "MoveSet": ["Constricción", "Drenadoras", "Megaagotar", "Polvo Veneno"],
+        "Status": null
+      },
+      {
+        "PokemonId": 45,
+        "nombre": "Vileplume",
+        "nivel": 29,
+        "TipoPrincipal": "Planta",
+        "TipoSecundario": "Veneno",
+        "AbilityNombre": "Efecto Espora",
+        "ItemId": null,
+        "MoveSet": ["Absorber", "Drenadoras", "Megaagotar", "Polvo Veneno"],
+        "Status": null
+      }
     ]
   },
   {
@@ -72,10 +172,50 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 109, "nombre": "Koffing", "nivel": 37 },
-      { "PokemonId": 89, "nombre": "Muk", "nivel": 39 },
-      { "PokemonId": 109, "nombre": "Koffing", "nivel": 37 },
-      { "PokemonId": 110, "nombre": "Weezing", "nivel": 43 }
+      {
+        "PokemonId": 109,
+        "nombre": "Koffing",
+        "nivel": 37,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": null,
+        "AbilityNombre": "Levitación",
+        "ItemId": null,
+        "MoveSet": ["Polvo Veneno", "Neblina", "Bomba Lodo", "Minimizar"],
+        "Status": null
+      },
+      {
+        "PokemonId": 89,
+        "nombre": "Muk",
+        "nivel": 39,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": null,
+        "AbilityNombre": "Viscosidad",
+        "ItemId": null,
+        "MoveSet": ["Bomba Lodo", "Minimizar", "Neblina", "Amnesia"],
+        "Status": null
+      },
+      {
+        "PokemonId": 109,
+        "nombre": "Koffing",
+        "nivel": 37,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": null,
+        "AbilityNombre": "Levitación",
+        "ItemId": null,
+        "MoveSet": ["Polvo Veneno", "Neblina", "Bomba Lodo", "Minimizar"],
+        "Status": null
+      },
+      {
+        "PokemonId": 110,
+        "nombre": "Weezing",
+        "nivel": 43,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": null,
+        "AbilityNombre": "Levitación",
+        "ItemId": null,
+        "MoveSet": ["Bomba Lodo", "Humo", "Neblina", "Explosión"],
+        "Status": null
+      }
     ]
   },
   {
@@ -89,10 +229,50 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 64, "nombre": "Kadabra", "nivel": 38 },
-      { "PokemonId": 122, "nombre": "Mr. Mime", "nivel": 37 },
-      { "PokemonId": 49, "nombre": "Venomoth", "nivel": 38 },
-      { "PokemonId": 65, "nombre": "Alakazam", "nivel": 43 }
+      {
+        "PokemonId": 64,
+        "nombre": "Kadabra",
+        "nivel": 38,
+        "TipoPrincipal": "Psíquico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Sincronía",
+        "ItemId": null,
+        "MoveSet": ["Teletransportación", "Confusión", "Recuperación", "Psíquico"],
+        "Status": null
+      },
+      {
+        "PokemonId": 122,
+        "nombre": "Mr. Mime",
+        "nivel": 37,
+        "TipoPrincipal": "Psíquico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Pantalla Sónica",
+        "ItemId": null,
+        "MoveSet": ["Barrera", "Confusión", "Pantalla de Luz", "Psíquico"],
+        "Status": null
+      },
+      {
+        "PokemonId": 49,
+        "nombre": "Venomoth",
+        "nivel": 38,
+        "TipoPrincipal": "Bicho",
+        "TipoSecundario": "Veneno",
+        "AbilityNombre": "Polvo Escudo",
+        "ItemId": null,
+        "MoveSet": ["Polvo Veneno", "Psíquico", "Neblina", "Drenadoras"],
+        "Status": null
+      },
+      {
+        "PokemonId": 65,
+        "nombre": "Alakazam",
+        "nivel": 43,
+        "TipoPrincipal": "Psíquico",
+        "TipoSecundario": null,
+        "AbilityNombre": "Sincronía",
+        "ItemId": null,
+        "MoveSet": ["Teletransportación", "Confusión", "Recuperación", "Psíquico"],
+        "Status": null
+      }
     ]
   },
   {
@@ -106,10 +286,50 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 58, "nombre": "Growlithe", "nivel": 42 },
-      { "PokemonId": 77, "nombre": "Ponyta", "nivel": 40 },
-      { "PokemonId": 78, "nombre": "Rapidash", "nivel": 42 },
-      { "PokemonId": 59, "nombre": "Arcanine", "nivel": 47 }
+      {
+        "PokemonId": 58,
+        "nombre": "Growlithe",
+        "nivel": 42,
+        "TipoPrincipal": "Fuego",
+        "TipoSecundario": null,
+        "AbilityNombre": "Intimidación",
+        "ItemId": null,
+        "MoveSet": ["Mordisco", "Rugido", "Llamerada", "Ascuas"],
+        "Status": null
+      },
+      {
+        "PokemonId": 77,
+        "nombre": "Ponyta",
+        "nivel": 40,
+        "TipoPrincipal": "Fuego",
+        "TipoSecundario": null,
+        "AbilityNombre": "Flash Fire",
+        "ItemId": null,
+        "MoveSet": ["Placaje", "Velocidad", "Ascuas", "Llamerada"],
+        "Status": null
+      },
+      {
+        "PokemonId": 78,
+        "nombre": "Rapidash",
+        "nivel": 42,
+        "TipoPrincipal": "Fuego",
+        "TipoSecundario": null,
+        "AbilityNombre": "Flash Fire",
+        "ItemId": null,
+        "MoveSet": ["Ataque Rápido", "Velocidad", "Ascuas", "Llamerada"],
+        "Status": null
+      },
+      {
+        "PokemonId": 59,
+        "nombre": "Arcanine",
+        "nivel": 47,
+        "TipoPrincipal": "Fuego",
+        "TipoSecundario": null,
+        "AbilityNombre": "Intimidación",
+        "ItemId": null,
+        "MoveSet": ["Cabezazo", "Rugido", "Llamerada", "Extremevelocidad"],
+        "Status": null
+      }
     ]
   },
   {
@@ -123,11 +343,61 @@
     "region": "Kanto",
     "juego": "FR/LG",
     "equipo": [
-      { "PokemonId": 111, "nombre": "Rhyhorn", "nivel": 45 },
-      { "PokemonId": 51, "nombre": "Dugtrio", "nivel": 42 },
-      { "PokemonId": 31, "nombre": "Nidoqueen", "nivel": 44 },
-      { "PokemonId": 34, "nombre": "Nidoking", "nivel": 45 },
-      { "PokemonId": 111, "nombre": "Rhyhorn", "nivel": 50 }
+      {
+        "PokemonId": 111,
+        "nombre": "Rhyhorn",
+        "nivel": 45,
+        "TipoPrincipal": "Tierra",
+        "TipoSecundario": "Roca",
+        "AbilityNombre": "Cabeza Roca",
+        "ItemId": null,
+        "MoveSet": ["Cornada", "Impresionar", "Terremoto", "Cuerpo Pesado"],
+        "Status": null
+      },
+      {
+        "PokemonId": 51,
+        "nombre": "Dugtrio",
+        "nivel": 42,
+        "TipoPrincipal": "Tierra",
+        "TipoSecundario": null,
+        "AbilityNombre": "Trampa Arena",
+        "ItemId": null,
+        "MoveSet": ["Ataque Arena", "Excavar", "Fisura", "Terremoto"],
+        "Status": null
+      },
+      {
+        "PokemonId": 31,
+        "nombre": "Nidoqueen",
+        "nivel": 44,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": "Tierra",
+        "AbilityNombre": "Punto Veneno",
+        "ItemId": null,
+        "MoveSet": ["Doble Filo", "Terremoto", "Bombardeo", "Superdiente"],
+        "Status": null
+      },
+      {
+        "PokemonId": 34,
+        "nombre": "Nidoking",
+        "nivel": 45,
+        "TipoPrincipal": "Veneno",
+        "TipoSecundario": "Tierra",
+        "AbilityNombre": "Punto Veneno",
+        "ItemId": null,
+        "MoveSet": ["Doble Filo", "Terremoto", "Megacuerno", "Superdiente"],
+        "Status": null
+      },
+      {
+        "PokemonId": 111,
+        "nombre": "Rhyhorn",
+        "nivel": 50,
+        "TipoPrincipal": "Tierra",
+        "TipoSecundario": "Roca",
+        "AbilityNombre": "Cabeza Roca",
+        "ItemId": null,
+        "MoveSet": ["Cornada", "Impresionar", "Terremoto", "Cuerpo Pesado"],
+        "Status": null
+      }
     ]
   }
 ]
