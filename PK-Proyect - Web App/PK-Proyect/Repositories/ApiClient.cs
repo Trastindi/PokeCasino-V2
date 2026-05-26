@@ -1,22 +1,19 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace PK_Proyect.Repositories
 {
     /// <summary>
     /// Cliente HTTP centralizado para comunicarse con el servidor Flask.
-    /// Todos los repositories usan esta clase en lugar de conectarse directamente a MongoDB.
+    /// Todos los services usan esta clase en lugar de conectarse directamente a MongoDB.
     /// </summary>
     public static class ApiClient
     {
-        // Cambia esta URL si el servidor corre en otra dirección
-        public static string BaseUrl { get; set; } = "pokecasino.dpdns.org";
+        // URL base del servidor Flask. Incluye el esquema https://
+        public static string BaseUrl { get; set; } = "https://pokecasino.dpdns.org";
 
         private static string _token = null;
         private static readonly HttpClient _http = new HttpClient();
@@ -35,7 +32,7 @@ namespace PK_Proyect.Repositories
             _http.DefaultRequestHeaders.Authorization = null;
         }
 
-        // ── Helpers ─────────────────────────────────────────────────────────
+        // ── Helpers ──────────────────────────────────────────────────────────
 
         private static StringContent Json(object body)
             => new StringContent(
@@ -43,34 +40,36 @@ namespace PK_Proyect.Repositories
                 Encoding.UTF8,
                 "application/json");
 
-        public static async Task<T> GetAsync<T>(string path)
+        // ── Versiones asíncronas ──────────────────────────────────────────────
+
+        public static async System.Threading.Tasks.Task<T> GetAsync<T>(string path)
         {
             var resp = await _http.GetAsync(BaseUrl + path);
             resp.EnsureSuccessStatusCode();
             return await resp.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task<T> PostAsync<T>(string path, object body)
+        public static async System.Threading.Tasks.Task<T> PostAsync<T>(string path, object body)
         {
             var resp = await _http.PostAsync(BaseUrl + path, Json(body));
             resp.EnsureSuccessStatusCode();
             return await resp.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task<T> PutAsync<T>(string path, object body)
+        public static async System.Threading.Tasks.Task<T> PutAsync<T>(string path, object body)
         {
             var resp = await _http.PutAsync(BaseUrl + path, Json(body));
             resp.EnsureSuccessStatusCode();
             return await resp.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task DeleteAsync(string path)
+        public static async System.Threading.Tasks.Task DeleteAsync(string path)
         {
             var resp = await _http.DeleteAsync(BaseUrl + path);
             resp.EnsureSuccessStatusCode();
         }
 
-        // ── Versiones síncronas (para mantener compatibilidad con el código WPF existente) ──
+        // ── Versiones síncronas (compatibilidad con código WPF existente) ─────
 
         public static T Get<T>(string path)
             => GetAsync<T>(path).GetAwaiter().GetResult();
