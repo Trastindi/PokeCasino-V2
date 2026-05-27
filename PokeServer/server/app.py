@@ -66,15 +66,26 @@ _uri = os.environ.get(
 )
 
 try:
+    # Colecciones: ['Naturalezas', 'Battle_requests', 'Movimientos', 'ObjetosPoke', 'Pokedex', 'MaquinasOcultas', 'LideresGimnasio', 'Habilidades', 'ObjetosEvo', 'TablaTipos', 'HistoricoTiradas', 'Battles', 'Users', 'PokemonUser', 'Zonas', 'Tipos', 'MaquinasTecnicas', 'MedallasUser']
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
     _db              = _client["PokemonDB"]
-    usuarios         = _db["Users"]
+    naturalezas      = _db["Naturalezas"]
     battle_requests  = _db["Battle_requests"]
-    objetos_evo      = _db["ObjetosEvo"]
+    movimientos      = _db["Movimientos"]
     oobjetos_pokemon = _db["ObjetosPoke"]
     pokedex          = _db["Pokedex"]
-    pokemon_user_col = _db["PokemonUser"]
-    medallas_col     = _db["medallas_user"]
+    maquinas_ocultas = _db["MaquinasOcultas"]
+    lideres_gimnasio = _db["LideresGimnasio"]
+    habilidades      = _db["Habilidades"]
+    objetos_evo      = _db["ObjetosEvo"]
+    tabla_tipos       = _db["TablaTipos"]
+    historico_tiradas = _db["HistoricoTiradas"]
+    battles           = _db["Battles"]
+    usuarios         = _db["Users"]
+    pokemon_user     = _db["PokemonUser"]
+    zonas             = _db["Zonas"]
+    tipos             = _db["Tipos"]
+    maquinas_tecnicas = _db["MaquinasTecnicas"]
     print("Colecciones:", _db.list_collection_names())
 except OperationFailure as e:
     print(f"ERROR MongoDB: {e}")
