@@ -66,25 +66,24 @@ _uri = os.environ.get(
 )
 
 try:
-    # Colecciones: ['Naturalezas', 'Battle_requests', 'Movimientos', 'ObjetosPoke', 'Pokedex', 'MaquinasOcultas', 'LideresGimnasio', 'Habilidades', 'ObjetosEvo', 'TablaTipos', 'HistoricoTiradas', 'Battles', 'Users', 'PokemonUser', 'Zonas', 'Tipos', 'MaquinasTecnicas', 'MedallasUser']
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
     _db              = _client["PokemonDB"]
     naturalezas      = _db["Naturalezas"]
     battle_requests  = _db["Battle_requests"]
     movimientos      = _db["Movimientos"]
-    oobjetos_pokemon = _db["ObjetosPoke"]
+    objetos_pokemon  = _db["ObjetosPoke"]
     pokedex          = _db["Pokedex"]
     maquinas_ocultas = _db["MaquinasOcultas"]
     lideres_gimnasio = _db["LideresGimnasio"]
     habilidades      = _db["Habilidades"]
     objetos_evo      = _db["ObjetosEvo"]
-    tabla_tipos       = _db["TablaTipos"]
+    tabla_tipos      = _db["TablaTipos"]
     historico_tiradas = _db["HistoricoTiradas"]
-    battles           = _db["Battles"]
+    battles          = _db["Battles"]
     usuarios         = _db["Users"]
     pokemon_user     = _db["PokemonUser"]
-    zonas             = _db["Zonas"]
-    tipos             = _db["Tipos"]
+    zonas            = _db["Zonas"]
+    tipos            = _db["Tipos"]
     maquinas_tecnicas = _db["MaquinasTecnicas"]
     print("Colecciones:", _db.list_collection_names())
 except OperationFailure as e:
@@ -179,6 +178,7 @@ def register():
         "rol":            "usuario",
         "fichas":         300,
         "pokes":          0,
+        "medallas":       [],
     }
     usuarios.insert_one(doc)
     return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
@@ -202,11 +202,12 @@ def login():
         if not pwd_hash or not verify_password(password, pwd_hash):
             return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
 
-        rol    = gf(usuario, "rol",    "Role",         default="usuario")
-        fichas = gf(usuario, "fichas", "FichasCasino", default=0)
-        pokes  = gf(usuario, "pokes",  "Pokemon",      default=0)
-        uname  = gf(usuario, "username", "Username",   default="")
-        email  = gf(usuario, "email",    "Correo",      default="")
+        rol      = gf(usuario, "rol",    "Role",         default="usuario")
+        fichas   = gf(usuario, "fichas", "FichasCasino", default=0)
+        pokes    = gf(usuario, "pokes",  "Pokemon",      default=0)
+        uname    = gf(usuario, "username", "Username",   default="")
+        email    = gf(usuario, "email",    "Correo",      default="")
+        medallas = usuario.get("medallas", [])
 
         return jsonify({
             "mensaje":  "Login correcto",
@@ -217,6 +218,7 @@ def login():
             "rol":      rol,
             "fichas":   fichas,
             "pokes":    pokes,
+            "medallas": medallas,
         }), 200
 
     except Exception:
@@ -284,6 +286,7 @@ def recuperar_password():
 
 @app.get("/usuarios")
 @token_required
+@admin_required
 def listar_usuarios(current_user):
     return jsonify([_serialize(u) for u in usuarios.find()]), 200
 
@@ -324,6 +327,7 @@ def crear_usuario(current_user):
         "rol":            data["rol"],
         "fichas":         int(data.get("fichas", 0)),
         "pokes":          int(data.get("pokes",  0)),
+        "medallas":       [],
     }
     usuarios.insert_one(doc)
     return jsonify({"msg": "Usuario creado"}), 201
@@ -390,14 +394,14 @@ def reset_password(current_user, id):
 # ---------------------------------------------------------------------------
 
 def _recalcular_pokes(user_id: str):
-    n = pokemon_user_col.count_documents({"UserId": user_id})
+    n = pokemon_user.count_documents({"UserId": user_id})
     usuarios.update_one({"_id": ObjectId(user_id)}, {"$set": {"pokes": n}})
 
 
 @app.get("/usuarios/<id>/pokemon")
 @token_required
 def pokemon_de_usuario(current_user, id):
-    lista = list(pokemon_user_col.find({"UserId": id}))
+    lista = list(pokemon_user.find({"UserId": id}))
     for p in lista: p["_id"] = str(p["_id"])
     return jsonify(lista), 200
 
@@ -406,7 +410,7 @@ def pokemon_de_usuario(current_user, id):
 @token_required
 def mis_pokemon(current_user):
     uid   = str(current_user["_id"])
-    lista = list(pokemon_user_col.find({"UserId": uid}))
+    lista = list(pokemon_user.find({"UserId": uid}))
     for p in lista: p["_id"] = str(p["_id"])
     return jsonify(lista), 200
 
@@ -424,7 +428,7 @@ def obtener_pokemon(current_user):
         uid        = str(current_user["_id"])
         uname      = gf(current_user, "username", "Username", default="")
 
-        existente = pokemon_user_col.find_one({"UserId": uid, "PokemonId": pokemon_id})
+        existente = pokemon_user.find_one({"UserId": uid, "PokemonId": pokemon_id})
 
         resultado = {
             "movimiento_aprendido":              None,
@@ -438,7 +442,7 @@ def obtener_pokemon(current_user):
 
         # ---------- NUEVO POKÉMON ----------
         if existente is None:
-            pdex    = pokedex_col.find_one({"numero_pokedex": pokemon_id})
+            pdex    = pokedex.find_one({"numero_pokedex": pokemon_id})
             moveset = []
             if pdex:
                 for m in pdex.get("movimientos", []):
@@ -455,7 +459,7 @@ def obtener_pokemon(current_user):
                 "CurrentHp": current_hp, "MoveSet": moveset,
                 "AbilityId": None, "ItemId": None, "Status": None,
             }
-            pokemon_user_col.insert_one(nuevo)
+            pokemon_user.insert_one(nuevo)
             _recalcular_pokes(uid)
             nuevo["_id"] = str(nuevo["_id"])
             resultado["pokemon"] = nuevo
@@ -474,7 +478,7 @@ def obtener_pokemon(current_user):
         if existente.get("MoveSet") is None:
             existente["MoveSet"] = []
 
-        pdex = pokedex_col.find_one({"numero_pokedex": pokemon_id})
+        pdex = pokedex.find_one({"numero_pokedex": pokemon_id})
 
         if pdex:
             mov = next((m for m in pdex.get("movimientos", [])
@@ -492,14 +496,14 @@ def obtener_pokemon(current_user):
                 and evo.get("nivel") is not None
                 and existente["Nivel"] >= evo["nivel"]):
 
-            datos_evo = pokedex_col.find_one({"nombre": evo["nombre"]})
+            datos_evo = pokedex.find_one({"nombre": evo["nombre"]})
             existente["Nombre"]         = evo["nombre"]
             existente["PokemonId"]      = datos_evo["numero_pokedex"] if datos_evo else existente["PokemonId"]
             existente["numero_pokedex"] = existente["PokemonId"]
             if datos_evo:
-                tipos = datos_evo.get("tipos", [])
-                existente["TipoPrincipal"]  = tipos[0] if tipos else existente["TipoPrincipal"]
-                existente["TipoSecundario"] = tipos[1] if len(tipos) > 1 else None
+                tipos_evo = datos_evo.get("tipos", [])
+                existente["TipoPrincipal"]  = tipos_evo[0] if tipos_evo else existente["TipoPrincipal"]
+                existente["TipoSecundario"] = tipos_evo[1] if len(tipos_evo) > 1 else None
                 existente["CurrentHp"]      = datos_evo.get("estadisticas_base", {}).get("ps", existente["CurrentHp"])
             resultado["evoluciono"]       = True
             resultado["nombre_evolucion"] = evo["nombre"]
@@ -515,7 +519,7 @@ def obtener_pokemon(current_user):
                         resultado["movimiento_evolucion_directamente"] = True
 
         pk_id = existente.pop("_id")
-        pokemon_user_col.replace_one({"UserId": uid, "PokemonId": id_orig}, existente)
+        pokemon_user.replace_one({"UserId": uid, "PokemonId": id_orig}, existente)
         existente["_id"] = str(pk_id)
         _recalcular_pokes(uid)
         resultado["pokemon"] = existente
@@ -539,7 +543,7 @@ def aplicar_movimiento(current_user):
         if not mov_nuevo:
             return jsonify({"error": "Falta movimiento_nuevo"}), 400
 
-        poke = pokemon_user_col.find_one({"UserId": uid, "PokemonId": pokemon_id})
+        poke = pokemon_user.find_one({"UserId": uid, "PokemonId": pokemon_id})
         if not poke:
             return jsonify({"error": "Pokémon no encontrado"}), 404
 
@@ -551,7 +555,7 @@ def aplicar_movimiento(current_user):
         else:
             return jsonify({"error": "Moveset lleno; indica un índice a reemplazar"}), 400
 
-        pokemon_user_col.update_one({"UserId": uid, "PokemonId": pokemon_id}, {"$set": {"MoveSet": moveset}})
+        pokemon_user.update_one({"UserId": uid, "PokemonId": pokemon_id}, {"$set": {"MoveSet": moveset}})
         return jsonify({"msg": "Movimiento aplicado", "moveset": moveset}), 200
 
     except Exception:
@@ -560,29 +564,26 @@ def aplicar_movimiento(current_user):
 
 
 # ---------------------------------------------------------------------------
-# MEDALLAS
+# MEDALLAS  (almacenadas en Users.medallas como lista de strings)
 # ---------------------------------------------------------------------------
 
 @app.post("/medallas/otorgar")
 @token_required
 def otorgar_medalla(current_user):
     tipo = (request.json or {}).get("tipo", "").strip()
-    uid  = str(current_user["_id"])
     if not tipo:
         return jsonify({"error": "Falta el tipo de medalla"}), 400
-    if medallas_col.find_one({"UserId": uid, "Tipo": tipo}):
+    medallas_actuales = current_user.get("medallas", [])
+    if tipo in medallas_actuales:
         return jsonify({"error": "El usuario ya tiene esta medalla"}), 409
-    medallas_col.insert_one({"UserId": uid, "Tipo": tipo, "Fecha": datetime.datetime.utcnow().isoformat()})
+    usuarios.update_one({"_id": current_user["_id"]}, {"$push": {"medallas": tipo}})
     return jsonify({"msg": f"Medalla '{tipo}' otorgada"}), 201
 
 
 @app.get("/medallas")
 @token_required
 def mis_medallas(current_user):
-    uid   = str(current_user["_id"])
-    lista = list(medallas_col.find({"UserId": uid}))
-    for m in lista: m["_id"] = str(m["_id"])
-    return jsonify(lista), 200
+    return jsonify(current_user.get("medallas", [])), 200
 
 
 # ---------------------------------------------------------------------------
@@ -639,73 +640,19 @@ def jugar(current_user):
 
 
 # ---------------------------------------------------------------------------
-# PREMIOS / TIENDA
-# ---------------------------------------------------------------------------
-
-@app.get("/premios")
-@token_required
-def listar_premios(current_user):
-    return jsonify(list(premios_col.find({}, {"_id": 0}))), 200
-
-
-@app.post("/premios/comprar/<int:pokemon_id>")
-@token_required
-def comprar_pokemon(current_user, pokemon_id):
-    premio = premios_col.find_one({"pokemon_id": pokemon_id})
-    if not premio:
-        return jsonify({"error": "Pokémon no disponible como premio"}), 404
-
-    fichas = gf(current_user, "fichas", "FichasCasino", default=0)
-    if fichas < premio["precio"]:
-        return jsonify({"error": "No tienes suficientes fichas"}), 400
-
-    pdex = pokedex_col.find_one({"numero_pokedex": pokemon_id})
-    if not pdex:
-        return jsonify({"error": "Pokémon no encontrado en la Pokédex"}), 404
-
-    uid   = str(current_user["_id"])
-    uname = gf(current_user, "username", "Username", default="")
-    tipos = pdex.get("tipos", [])
-
-    nuevo = {
-        "UserId": uid, "Username": uname,
-        "PokemonId": pokemon_id, "numero_pokedex": pokemon_id,
-        "Nombre": pdex.get("nombre", ""),
-        "TipoPrincipal":  tipos[0] if tipos else "",
-        "TipoSecundario": tipos[1] if len(tipos) > 1 else None,
-        "Nivel": 1, "Cantidad": 1,
-        "FechaObtenido": datetime.datetime.utcnow().isoformat(),
-        "HiddenPowerSeed":  random.randint(0, 15),
-        "HiddenPowerPower": (random.randint(31, 70) + random.randint(31, 70)) // 2,
-        "CurrentHp": pdex.get("estadisticas_base", {}).get("ps", 0),
-        "MoveSet": [], "AbilityId": None, "ItemId": None, "Status": None,
-    }
-    for m in pdex.get("movimientos", []):
-        if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(nuevo["MoveSet"]) < 4:
-            nuevo["MoveSet"].append(m["nombre"])
-
-    pokemon_user_col.insert_one(nuevo)
-    campo = "FichasCasino" if "FichasCasino" in current_user else "fichas"
-    usuarios.update_one({"_id": current_user["_id"]}, {"$inc": {campo: -premio["precio"]}})
-    _recalcular_pokes(uid)
-    nuevo["_id"] = str(nuevo["_id"])
-    return jsonify({"msg": "Pokémon obtenido", "pokemon": nuevo}), 200
-
-
-# ---------------------------------------------------------------------------
 # POKÉDEX
 # ---------------------------------------------------------------------------
 
 @app.get("/pokedex")
 @token_required
 def get_pokedex(current_user):
-    return jsonify(list(pokedex_col.find({}, {"_id": 0}))), 200
+    return jsonify(list(pokedex.find({}, {"_id": 0}))), 200
 
 
 @app.get("/pokedex/<int:pokemon_id>")
 @token_required
 def get_pokemon(current_user, pokemon_id):
-    doc = pokedex_col.find_one({"numero_pokedex": pokemon_id}, {"_id": 0})
+    doc = pokedex.find_one({"numero_pokedex": pokemon_id}, {"_id": 0})
     if not doc:
         return jsonify({"error": "Pokémon no encontrado"}), 404
     return jsonify(doc), 200
