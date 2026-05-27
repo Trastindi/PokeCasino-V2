@@ -67,10 +67,12 @@ _uri = os.environ.get(
 
 try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
-    _db              = _client["PokemonPyDB"]
-    usuarios         = _db["usuarios"]
-    premios_col      = _db["premios"]
-    pokedex_col      = _db["pokedex"]
+    _db              = _client["PokemonDB"]
+    usuarios         = _db["Users"]
+    battle_requests  = _db["Battle_requests"]
+    objetos_evo      = _db["ObjetosEvo"]
+    oobjetos_pokemon = _db["ObjetosPoke"]
+    pokedex          = _db["Pokedex"]
     pokemon_user_col = _db["PokemonUser"]
     medallas_col     = _db["medallas_user"]
     print("Colecciones:", _db.list_collection_names())
