@@ -59,12 +59,28 @@ namespace PK_Proyect.View
                 DragMove();
         }
 
+
+        //-----------------CIUDADES-----------------//
+
+        //Faltan por añadir
+        
         private void AbrirLaboratorio_Click(object sender, MouseButtonEventArgs e)
         {
             LaboratorioView ventana = new LaboratorioView(usuarioActual);
             ventana.ShowDialog();
         }
 
+        // private void AbrirCiudadVerde_Click(object sender, MouseButtonEventArgs e)
+        // {
+        //     CiudadVerdeView ventana = new CiudadVerdeView(usuarioActual);
+        //     ventana.ShowDialog();
+        // }
+
+        // private void AbrirCiudadPlateada_Click(object sender, MouseButtonEventArgs e)
+        // {
+        //     CiudadPlateadaView ventana = new CiudadPlateadaView(usuarioActual);
+        //     ventana.ShowDialog();
+        // }
        
 
         private void AbrirCiudadCeleste_Click(object sender, MouseButtonEventArgs e)
@@ -85,11 +101,28 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
+        // private void AbrirCiudadAzafran_Click(object sender, MouseButtonEventArgs e)
+        // {
+        //     CiudadAzafranView ventana = new CiudadAzafranView(usuarioActual);
+        //     ventana.ShowDialog();
+        // }
+
+        // private void AbrirCiudadFucsia_Click(object sender, MouseButtonEventArgs e)
+        // {
+        //     CiudadFucsiaView ventana = new CiudadFucsiaView(usuarioActual);
+        //     ventana.ShowDialog();
+        // }
+
+
+        // cambiar nombre de CiudadCanela a IslaCanela
         private void AbrirCiudadCanela_Click(object sender, MouseButtonEventArgs e)
         {
             CiudadCanelaView ventana = new CiudadCanelaView(usuarioActual);
             ventana.ShowDialog();
         }
+
+            
+        //-----------------RUTAS-----------------//
 
         //private void AbrirRuta1_Click(object sender, MouseButtonEventArgs e)
         //{
@@ -234,12 +267,17 @@ namespace PK_Proyect.View
             Ruta24View ventana = new Ruta24View(usuarioActual);
             ventana.ShowDialog();
         }
+        
 
         //private void AbrirRuta25_Click(object sender, MouseButtonEventArgs e)
         //{
         //    Ruta25View ventana = new Ruta25View(usuarioActual);
         //    ventana.ShowDialog();
         //}
+
+        
+        //-----------------LUGARES-----------------//
+
 
         private void AbrirBosqueVerde_Click(object sender, MouseButtonEventArgs e)
         {
