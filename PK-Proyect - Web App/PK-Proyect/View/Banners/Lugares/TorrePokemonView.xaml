@@ -16,7 +16,7 @@
             </Grid.RowDefinitions>
 
             <!-- TÍTULO RETRO -->
-            <TextBlock Text="Torre Pokemon"
+            <TextBlock Text="Torre Pokémon"
                        FontSize="26"
                        FontFamily="{StaticResource PokemonClassic}"
                        FontWeight="Bold"
