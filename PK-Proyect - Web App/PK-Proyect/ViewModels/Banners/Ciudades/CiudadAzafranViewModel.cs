@@ -5,7 +5,7 @@ namespace PK_Proyect.ViewModels.Banners.Ciudades
     public class CiudadAzafranViewModel : GachaViewModel
     {
         public CiudadAzafranViewModel(User usuario)
-            : base(usuario, "Ciudad Azafran")
+            : base(usuario, "Ciudad Azafrán")
         {
         }
     }
