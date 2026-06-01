@@ -291,11 +291,11 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
-        //private void AbrirTunelRoca_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    TunelRocaView ventana = new TunelRocaView(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirTunelRoca_Click(object sender, MouseButtonEventArgs e)
+        {
+           TunelRocaView ventana = new TunelRocaView(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         //private void AbrirTorrePokemon_Click(object sender, MouseButtonEventArgs e)
         //{
