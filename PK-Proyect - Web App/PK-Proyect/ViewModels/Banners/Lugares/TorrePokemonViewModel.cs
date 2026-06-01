@@ -5,7 +5,7 @@ namespace PK_Proyect.ViewModels.Banners.Lugares
     public class TorrePokemonViewModel : GachaViewModel
     {
         public TorrePokemonView(User usuario)
-            : base(usuario, "Torre Pokemon")
+            : base(usuario, "Torre Pokémon")
         {
         }
     }
