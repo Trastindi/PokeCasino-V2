@@ -10,7 +10,7 @@ namespace PK_Proyect.View.Banners.Lugares
         public CalleVictoriaView(User usuario)
         {
             InitializeComponent();
-            DataContext = new CalleVictoriaView(usuario);
+            DataContext = new CalleVictoriaViewModel(usuario);
         }
     }
 }
