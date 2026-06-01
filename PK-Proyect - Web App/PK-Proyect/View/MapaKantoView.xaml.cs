@@ -70,11 +70,11 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
-        // private void AbrirCiudadVerde_Click(object sender, MouseButtonEventArgs e)
-        // {
-        //     CiudadVerdeView ventana = new CiudadVerdeView(usuarioActual);
-        //     ventana.ShowDialog();
-        // }
+        private void AbrirCiudadVerde_Click(object sender, MouseButtonEventArgs e)
+        {
+            CiudadVerdeView ventana = new CiudadVerdeView(usuarioActual);
+            ventana.ShowDialog();
+        }
 
         // private void AbrirCiudadPlateada_Click(object sender, MouseButtonEventArgs e)
         // {
