@@ -16,7 +16,7 @@
             </Grid.RowDefinitions>
 
             <!-- TÍTULO RETRO -->
-            <TextBlock Text="Ciudad Carmin"
+            <TextBlock Text="Ciudad Carmín"
                        FontSize="26"
                        FontFamily="{StaticResource PokemonClassic}"
                        FontWeight="Bold"
