@@ -303,11 +303,11 @@ namespace PK_Proyect.View
            ventana.ShowDialog();
         }
 
-        //private void AbrirMansionPokemon_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    MansionPokemonView ventana = new MansionPokemonView(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirMansionPokemon_Click(object sender, MouseButtonEventArgs e)
+        {
+           MansionPokemonView ventana = new MansionPokemonView(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         //private void AbrirZonaSafari_Click(object sender, MouseButtonEventArgs e)
         //{
