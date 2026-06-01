@@ -9,7 +9,7 @@ namespace PK_Proyect.View.Banners.Ciudades
         public CiudadCarminView(User usuario)
         {
             InitializeComponent();
-            DataContext = new CiudadCelesteViewModel(usuario);
+            DataContext = new CiudadCarminViewModel(usuario);
         }
     }
 }
