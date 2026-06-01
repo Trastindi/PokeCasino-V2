@@ -124,143 +124,143 @@ namespace PK_Proyect.View
             
         //-----------------RUTAS-----------------//
 
-        //private void AbrirRuta1_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta1View ventana = new Ruta1View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta1_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta1View ventana = new Ruta1View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta2_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta2View ventana = new Ruta2View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta2_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta2View ventana = new Ruta2View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta3_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta3View ventana = new Ruta3View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta3_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta3View ventana = new Ruta3View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta4_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta4View ventana = new Ruta4View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta4_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta4View ventana = new Ruta4View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta5_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta5View ventana = new Ruta5View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta5_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta5View ventana = new Ruta5View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta6_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta6View ventana = new Ruta6View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta6_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta6View ventana = new Ruta6View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta7_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta7View ventana = new Ruta7View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta7_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta7View ventana = new Ruta7View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta8_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta8View ventana = new Ruta8View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta8_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta8View ventana = new Ruta8View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta9_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta9View ventana = new Ruta9View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta9_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta9View ventana = new Ruta9View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta10_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta10View ventana = new Ruta10View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta10_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta10View ventana = new Ruta10View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta11_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta11View ventana = new Ruta11View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta11_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta11View ventana = new Ruta11View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta12_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta12View ventana = new Ruta12View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta12_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta12View ventana = new Ruta12View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta13_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta13View ventana = new Ruta13View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta13_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta13View ventana = new Ruta13View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta14_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta14View ventana = new Ruta14View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta14_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta14View ventana = new Ruta14View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta15_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta15View ventana = new Ruta15View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta15_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta15View ventana = new Ruta15View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta16_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta16View ventana = new Ruta16View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta16_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta16View ventana = new Ruta16View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta17_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta17View ventana = new Ruta17View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta17_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta17View ventana = new Ruta17View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta18_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta18View ventana = new Ruta18View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta18_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta18View ventana = new Ruta18View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta19_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta19View ventana = new Ruta19View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta19_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta19View ventana = new Ruta19View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta20_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta20View ventana = new Ruta20View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta20_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta20View ventana = new Ruta20View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta21_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta21View ventana = new Ruta21View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta21_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta21View ventana = new Ruta21View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta22_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta22View ventana = new Ruta22View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta22_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta22View ventana = new Ruta22View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
-        //private void AbrirRuta23_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta23View ventana = new Ruta23View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta23_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta23View ventana = new Ruta23View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         private void AbrirRuta24_Click(object sender, MouseButtonEventArgs e)
         {
@@ -269,11 +269,11 @@ namespace PK_Proyect.View
         }
         
 
-        //private void AbrirRuta25_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    Ruta25View ventana = new Ruta25View(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirRuta25_Click(object sender, MouseButtonEventArgs e)
+        {
+           Ruta25View ventana = new Ruta25View(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         
         //-----------------LUGARES-----------------//
