@@ -133,7 +133,7 @@
                         <!--   CIUDADES (botones rojos) -->
                         <!-- ========================= -->
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="83" Canvas.Top="160" ToolTip="Pueblo Paleta"/>
-                        <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="83" Canvas.Top="125" ToolTip="Ciudad Verde"/>
+                        <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="83" Canvas.Top="125" ToolTip="Ciudad Verde" MouseLeftButtonDown="AbrirCiudadVerde_Click"/>
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="85" Canvas.Top="83" ToolTip="Ciudad Plateada"/>
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="190" Canvas.Top="74" ToolTip="Ciudad Celeste" MouseLeftButtonDown="AbrirCiudadCeleste_Click"/>
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="190" Canvas.Top="137" ToolTip="Ciudad Carmín" MouseLeftButtonDown="AbrirCiudadCarmin_Click"/>
