@@ -101,11 +101,11 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
-        // private void AbrirCiudadAzafran_Click(object sender, MouseButtonEventArgs e)
-        // {
-        //     CiudadAzafranView ventana = new CiudadAzafranView(usuarioActual);
-        //     ventana.ShowDialog();
-        // }
+        private void AbrirCiudadAzafran_Click(object sender, MouseButtonEventArgs e)
+        {
+            CiudadAzafranView ventana = new CiudadAzafranView(usuarioActual);
+            ventana.ShowDialog();
+        }
 
         // private void AbrirCiudadFucsia_Click(object sender, MouseButtonEventArgs e)
         // {
