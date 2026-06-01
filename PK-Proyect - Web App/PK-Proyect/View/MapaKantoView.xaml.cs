@@ -321,11 +321,11 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
-        //private void AbrirCalleVictoria_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    CalleVictoriaView ventana = new CalleVictoriaView(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirCalleVictoria_Click(object sender, MouseButtonEventArgs e)
+        {
+           CalleVictoriaView ventana = new CalleVictoriaView(usuarioActual);
+           ventana.ShowDialog();
+        }
 
 
         private void AbrirCuevaCeleste_Click(object sender, MouseButtonEventArgs e)
