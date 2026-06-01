@@ -297,11 +297,11 @@ namespace PK_Proyect.View
            ventana.ShowDialog();
         }
 
-        //private void AbrirTorrePokemon_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    TorrePokemonView ventana = new TorrePokemonView(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirTorrePokemon_Click(object sender, MouseButtonEventArgs e)
+        {
+           TorrePokemonView ventana = new TorrePokemonView(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         //private void AbrirMansionPokemon_Click(object sender, MouseButtonEventArgs e)
         //{
