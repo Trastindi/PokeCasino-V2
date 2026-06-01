@@ -107,11 +107,11 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
-        // private void AbrirCiudadFucsia_Click(object sender, MouseButtonEventArgs e)
-        // {
-        //     CiudadFucsiaView ventana = new CiudadFucsiaView(usuarioActual);
-        //     ventana.ShowDialog();
-        // }
+        private void AbrirCiudadFucsia_Click(object sender, MouseButtonEventArgs e)
+        {
+            CiudadFucsiaView ventana = new CiudadFucsiaView(usuarioActual);
+            ventana.ShowDialog();
+        }
 
 
         // cambiar nombre de CiudadCanela a IslaCanela
