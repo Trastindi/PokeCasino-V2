@@ -309,11 +309,11 @@ namespace PK_Proyect.View
            ventana.ShowDialog();
         }
 
-        //private void AbrirZonaSafari_Click(object sender, MouseButtonEventArgs e)
-        //{
-        //    ZonaSafariView ventana = new ZonaSafariView(usuarioActual);
-        //    ventana.ShowDialog();
-        //}
+        private void AbrirZonaSafari_Click(object sender, MouseButtonEventArgs e)
+        {
+           ZonaSafariView ventana = new ZonaSafariView(usuarioActual);
+           ventana.ShowDialog();
+        }
 
         private void AbrirIslasEspuma_Click(object sender, MouseButtonEventArgs e)
         {
