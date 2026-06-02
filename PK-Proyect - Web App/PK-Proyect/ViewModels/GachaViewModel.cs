@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -43,6 +44,13 @@ namespace PK_Proyect.ViewModels.Banners
             set { _fichas = value; OnPropertyChanged(nameof(Fichas)); }
         }
 
+        private bool _cargando;
+        public bool Cargando
+        {
+            get => _cargando;
+            set { _cargando = value; OnPropertyChanged(nameof(Cargando)); }
+        }
+
         public GachaViewModel(User usuario, string nombreZona)
         {
             Usuario   = usuario;
@@ -59,7 +67,12 @@ namespace PK_Proyect.ViewModels.Banners
             HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
             _pokemonUserService = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
-            CargarZona();
+
+            // Fire-and-forget: carga la zona en background sin bloquear el UI Thread.
+            // ANTES: CargarZona() era síncrono y bloqueaba el UI Thread con llamadas
+            // a MongoDB Atlas y a la API Flask (N peticiones HTTP en serie), causando
+            // que la ventana se congelara hasta que terminaban todas.
+            _ = CargarZonaAsync();
         }
 
         // ----------------------------------------------------------------
@@ -72,47 +85,79 @@ namespace PK_Proyect.ViewModels.Banners
             ventana.ShowDialog();
         }
 
-        public void CargarZona()
+        /// <summary>
+        /// Carga los Pokémon de la zona en un hilo de fondo para no bloquear el UI Thread.
+        /// Toda la I/O de red (MongoDB Atlas + API Flask) se ejecuta dentro de Task.Run.
+        /// Al terminar, vuelve al UI Thread para actualizar PokemonDisponibles.
+        /// </summary>
+        public async Task CargarZonaAsync()
         {
+            Cargando = true;
             PokemonDisponibles.Clear();
-            var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
 
-            if (zona == null)
+            try
             {
-                var todas = _zonaRepo.ObtenerTodas();
-                zona = todas.FirstOrDefault(z => z.Nombre.Trim().ToLower() == NombreZona.Trim().ToLower())
-                    ?? todas.FirstOrDefault(z => z.Nombre.Trim().ToLower().Contains(NombreZona.Trim().ToLower()));
-            }
-
-            if (zona == null)
-            {
-                MessageBox.Show($"No se encontró la zona '{NombreZona}'.",
-                    "Zona no encontrada", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (zona.Pokemon == null || zona.Pokemon.Count == 0)
-            {
-                MessageBox.Show($"La zona '{zona.Nombre}' no tiene Pokémon registrados.",
-                    "Zona vacía", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            foreach (var p in zona.Pokemon)
-            {
-                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-                if (poke == null) continue;
-
-                PokemonDisponibles.Add(new PokemonZonaViewModel
+                var (zona, entradas) = await Task.Run(() =>
                 {
-                    Id           = p.numero_pokedex,
-                    Nombre       = poke.Nombre,
-                    TipoPrincipal  = poke.TipoPrincipal,
-                    TipoSecundario = poke.TipoSecundario,
-                    Probabilidad = p.prob
+                    var z = _zonaRepo.ObtenerPorNombre(NombreZona);
+
+                    if (z == null)
+                    {
+                        var todas = _zonaRepo.ObtenerTodas();
+                        z = todas.FirstOrDefault(x => x.Nombre.Trim().ToLower() == NombreZona.Trim().ToLower())
+                         ?? todas.FirstOrDefault(x => x.Nombre.Trim().ToLower().Contains(NombreZona.Trim().ToLower()));
+                    }
+
+                    if (z == null) return (null, (List<(ZonaPokemonEntry entrada, Pokemon poke)>)null);
+                    if (z.Pokemon == null || z.Pokemon.Count == 0) return (z, (List<(ZonaPokemonEntry, Pokemon)>)null);
+
+                    var lista = z.Pokemon
+                        .Select(p => (entrada: p, poke: _pokedexRepo.ObtenerPorId(p.numero_pokedex)))
+                        .Where(x => x.poke != null)
+                        .ToList();
+
+                    return (z, lista);
                 });
+
+                if (zona == null)
+                {
+                    MessageBox.Show($"No se encontró la zona '{NombreZona}'.",
+                        "Zona no encontrada", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (entradas == null)
+                {
+                    MessageBox.Show($"La zona '{zona.Nombre}' no tiene Pokémon registrados.",
+                        "Zona vacía", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                foreach (var (p, poke) in entradas)
+                {
+                    PokemonDisponibles.Add(new PokemonZonaViewModel
+                    {
+                        Id             = p.numero_pokedex,
+                        Nombre         = poke.Nombre,
+                        TipoPrincipal  = poke.TipoPrincipal,
+                        TipoSecundario = poke.TipoSecundario,
+                        Probabilidad   = p.prob
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar la zona: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Cargando = false;
             }
         }
+
+        /// <summary>Alias síncrono para compatibilidad con subclases existentes.</summary>
+        public void CargarZona() => _ = CargarZonaAsync();
 
         // ----------------------------------------------------------------
         // Gacha
@@ -155,7 +200,6 @@ namespace PK_Proyect.ViewModels.Banners
                 poke.TipoPrincipal, poke.TipoSecundario,
                 poke.EstadisticasBase?.Ps ?? 0);
 
-            // Registrar historial
             new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
             {
                 UserId       = Usuario.Id,
@@ -227,7 +271,6 @@ namespace PK_Proyect.ViewModels.Banners
         // ----------------------------------------------------------------
         private void ProcesarLevelUp(LevelUpResultado resultado)
         {
-            // 1. Movimiento nuevo del nivel
             if (resultado.MovimientoAprendido != null)
             {
                 if (resultado.MovimientoAprendidoDirectamente)
@@ -238,7 +281,6 @@ namespace PK_Proyect.ViewModels.Banners
                 }
                 else
                 {
-                    // Moveset lleno → preguntar qué olvidar
                     var ventana = new ElegirMovimientoWindow(
                         resultado.MovimientoAprendido,
                         resultado.Pokemon.MoveSet);
@@ -250,18 +292,15 @@ namespace PK_Proyect.ViewModels.Banners
                             ventana.IndiceElegido,
                             resultado.MovimientoAprendido);
                     }
-                    // Si cierra sin elegir, simplemente no aprende el movimiento
                 }
             }
 
-            // 2. Evolución
             if (resultado.Evoluciono)
             {
                 MessageBox.Show(
                     $"¡Enhorabuena! ¡Tu Pokémon ha evolucionado a {resultado.NombreEvolucion}!",
                     "¡Evolución!", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Movimiento de la evolución
                 if (resultado.MovimientoEvolucion != null)
                 {
                     if (resultado.MovimientoEvolucionDirectamente)
