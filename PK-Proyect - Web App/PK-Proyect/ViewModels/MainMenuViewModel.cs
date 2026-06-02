@@ -3,6 +3,7 @@ using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.View;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -42,11 +43,23 @@ namespace PK_Proyect.ViewModels
             ventana.ShowDialog();
         }
 
-        private void AbrirCasino()
+        private async void AbrirCasino()
         {
-            var userActualizado = _userService.GetUserById(UsuarioConectado.Id);
-            var casino = new SlotMachineView(userActualizado, new CasinoService());
-            casino.ShowDialog();
+            try
+            {
+                // Cargar usuario en background para no bloquear UI
+                var userActualizado = await Task.Run(() => _userService.GetUserById(UsuarioConectado.Id));
+                
+                if (userActualizado != null)
+                {
+                    var casino = new SlotMachineView(userActualizado, new CasinoService());
+                    casino.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir el casino: {ex.Message}");
+            }
         }
 
         private void AbrirEquipo()
