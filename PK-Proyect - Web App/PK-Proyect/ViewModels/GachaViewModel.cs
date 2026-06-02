@@ -60,8 +60,8 @@ namespace PK_Proyect.ViewModels.Banners
             _pokedexRepo = new PokedexRepository();
             PokemonDisponibles = new ObservableCollection<PokemonZonaViewModel>();
 
-            Tirar1Command         = new RelayCommand(_ => TiradaSingle());
-            Tirar10Command        = new RelayCommand(_ => TiradaMulti());
+            Tirar1Command         = new AsyncRelayCommand(async () => await TiradaSingleAsync());
+            Tirar10Command        = new AsyncRelayCommand(async () => await TiradaMultiAsync());
             MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
@@ -188,7 +188,7 @@ namespace PK_Proyect.ViewModels.Banners
             return null;
         }
 
-        private void TiradaSingle()
+        private async Task TiradaSingleAsync()
         {
             const int COSTE = 300;
             if (Usuario.FichasCasino < COSTE)
@@ -198,41 +198,49 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            ActualizarFichas();
-
-            var sorteo = Tirar();
-            if (sorteo == null) return;
-
-            var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-            if (poke == null) return;
-
-            var resultado = _pokemonUserService.ObtenerPokemon(
-                Usuario.Id, poke.numero_pokedex, poke.Nombre,
-                poke.TipoPrincipal, poke.TipoSecundario,
-                poke.EstadisticasBase?.Ps ?? 0);
-
-            new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
+            // Ejecutar en background para no bloquear UI
+            await Task.Run(async () =>
             {
-                UserId       = Usuario.Id,
-                PokemonId    = poke.numero_pokedex,
-                NombrePokemon = poke.Nombre,
-                Zona         = NombreZona,
-                TipoTirada   = "single",
-                Fecha        = DateTime.Now
+                Usuario.FichasCasino -= COSTE;
+                new UserRepository().UpdateUser(Usuario);
+
+                var sorteo = Tirar();
+                if (sorteo == null) return;
+
+                var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
+                if (poke == null) return;
+
+                var resultado = _pokemonUserService.ObtenerPokemon(
+                    Usuario.Id, poke.numero_pokedex, poke.Nombre,
+                    poke.TipoPrincipal, poke.TipoSecundario,
+                    poke.EstadisticasBase?.Ps ?? 0);
+
+                new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
+                {
+                    UserId       = Usuario.Id,
+                    PokemonId    = poke.numero_pokedex,
+                    NombrePokemon = poke.Nombre,
+                    Zona         = NombreZona,
+                    TipoTirada   = "single",
+                    Fecha        = DateTime.Now
+                });
+
+                ProcesarLevelUp(resultado);
+
+                // Mostrar resultado en el UI Thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ActualizarFichas();
+                    MessageBox.Show(
+                        $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
+                        $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
+                        $"Nivel actual: {resultado.Pokemon.Nivel}",
+                        "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
+                });
             });
-
-            ProcesarLevelUp(resultado);
-
-            MessageBox.Show(
-                $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
-                $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
-                $"Nivel actual: {resultado.Pokemon.Nivel}",
-                "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void TiradaMulti()
+        private async Task TiradaMultiAsync()
         {
             const int COSTE = 3000;
             if (Usuario.FichasCasino < COSTE)
@@ -242,41 +250,49 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            ActualizarFichas();
-
-            var resultadosMulti = new List<PokemonUser>();
-            var repoHist = new HistoricoTiradasRepository();
-
-            for (int i = 0; i < 10; i++)
+            // Ejecutar en background para no bloquear UI
+            await Task.Run(async () =>
             {
-                var sorteo = Tirar();
-                if (sorteo == null) continue;
+                Usuario.FichasCasino -= COSTE;
+                new UserRepository().UpdateUser(Usuario);
 
-                var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-                if (poke == null) continue;
+                var resultadosMulti = new List<PokemonUser>();
+                var repoHist = new HistoricoTiradasRepository();
 
-                var resultado = _pokemonUserService.ObtenerPokemon(
-                    Usuario.Id, poke.numero_pokedex, poke.Nombre,
-                    poke.TipoPrincipal, poke.TipoSecundario,
-                    poke.EstadisticasBase?.Ps ?? 0);
-
-                repoHist.RegistrarTirada(new HistoricoTirada
+                for (int i = 0; i < 10; i++)
                 {
-                    UserId        = Usuario.Id,
-                    PokemonId     = poke.numero_pokedex,
-                    NombrePokemon = poke.Nombre,
-                    Zona          = NombreZona,
-                    TipoTirada    = "multi",
-                    Fecha         = DateTime.Now
+                    var sorteo = Tirar();
+                    if (sorteo == null) continue;
+
+                    var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
+                    if (poke == null) continue;
+
+                    var resultado = _pokemonUserService.ObtenerPokemon(
+                        Usuario.Id, poke.numero_pokedex, poke.Nombre,
+                        poke.TipoPrincipal, poke.TipoSecundario,
+                        poke.EstadisticasBase?.Ps ?? 0);
+
+                    repoHist.RegistrarTirada(new HistoricoTirada
+                    {
+                        UserId        = Usuario.Id,
+                        PokemonId     = poke.numero_pokedex,
+                        NombrePokemon = poke.Nombre,
+                        Zona          = NombreZona,
+                        TipoTirada    = "multi",
+                        Fecha         = DateTime.Now
+                    });
+
+                    ProcesarLevelUp(resultado);
+                    resultadosMulti.Add(resultado.Pokemon);
+                }
+
+                // Mostrar resultado en el UI Thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ActualizarFichas();
+                    new ResultadosMultiView(resultadosMulti).ShowDialog();
                 });
-
-                ProcesarLevelUp(resultado);
-                resultadosMulti.Add(resultado.Pokemon);
-            }
-
-            new ResultadosMultiView(resultadosMulti).ShowDialog();
+            });
         }
 
         // ----------------------------------------------------------------
