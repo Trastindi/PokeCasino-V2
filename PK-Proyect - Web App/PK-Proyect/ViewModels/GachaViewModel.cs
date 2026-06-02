@@ -69,9 +69,6 @@ namespace PK_Proyect.ViewModels.Banners
             Fichas = Usuario.FichasCasino;
 
             // Fire-and-forget: carga la zona en background sin bloquear el UI Thread.
-            // ANTES: CargarZona() era síncrono y bloqueaba el UI Thread con llamadas
-            // a MongoDB Atlas y a la API Flask (N peticiones HTTP en serie), causando
-            // que la ventana se congelara hasta que terminaban todas.
             _ = CargarZonaAsync();
         }
 
@@ -97,44 +94,60 @@ namespace PK_Proyect.ViewModels.Banners
 
             try
             {
-                var (zona, entradas) = await Task.Run(() =>
+                // --- toda la I/O en hilo de fondo ---
+                Zona zonaEncontrada = null;
+                Dictionary<int, Pokemon> pokesEncontrados = null;
+
+                await Task.Run(() =>
                 {
-                    var z = _zonaRepo.ObtenerPorNombre(NombreZona);
+                    Zona z = _zonaRepo.ObtenerPorNombre(NombreZona);
 
                     if (z == null)
                     {
-                        var todas = _zonaRepo.ObtenerTodas();
+                        List<Zona> todas = _zonaRepo.ObtenerTodas();
                         z = todas.FirstOrDefault(x => x.Nombre.Trim().ToLower() == NombreZona.Trim().ToLower())
                          ?? todas.FirstOrDefault(x => x.Nombre.Trim().ToLower().Contains(NombreZona.Trim().ToLower()));
                     }
 
-                    if (z == null) return (null, (List<(ZonaPokemonEntry entrada, Pokemon poke)>)null);
-                    if (z.Pokemon == null || z.Pokemon.Count == 0) return (z, (List<(ZonaPokemonEntry, Pokemon)>)null);
+                    if (z == null || z.Pokemon == null || z.Pokemon.Count == 0)
+                    {
+                        zonaEncontrada = z;
+                        return;
+                    }
 
-                    var lista = z.Pokemon
-                        .Select(p => (entrada: p, poke: _pokedexRepo.ObtenerPorId(p.numero_pokedex)))
-                        .Where(x => x.poke != null)
-                        .ToList();
+                    zonaEncontrada = z;
 
-                    return (z, lista);
+                    // Consultar la API por cada Pokémon de la zona
+                    var mapa = new Dictionary<int, Pokemon>();
+                    foreach (PokemonZona p in z.Pokemon)
+                    {
+                        Pokemon poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
+                        if (poke != null)
+                            mapa[p.numero_pokedex] = poke;
+                    }
+                    pokesEncontrados = mapa;
                 });
 
-                if (zona == null)
+                // --- de vuelta al UI Thread ---
+                if (zonaEncontrada == null)
                 {
                     MessageBox.Show($"No se encontró la zona '{NombreZona}'.",
                         "Zona no encontrada", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                if (entradas == null)
+                if (zonaEncontrada.Pokemon == null || zonaEncontrada.Pokemon.Count == 0)
                 {
-                    MessageBox.Show($"La zona '{zona.Nombre}' no tiene Pokémon registrados.",
+                    MessageBox.Show($"La zona '{zonaEncontrada.Nombre}' no tiene Pokémon registrados.",
                         "Zona vacía", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
-                foreach (var (p, poke) in entradas)
+                foreach (PokemonZona p in zonaEncontrada.Pokemon)
                 {
+                    if (pokesEncontrados == null || !pokesEncontrados.TryGetValue(p.numero_pokedex, out Pokemon poke))
+                        continue;
+
                     PokemonDisponibles.Add(new PokemonZonaViewModel
                     {
                         Id             = p.numero_pokedex,
@@ -156,7 +169,7 @@ namespace PK_Proyect.ViewModels.Banners
             }
         }
 
-        /// <summary>Alias síncrono para compatibilidad con subclases existentes.</summary>
+        /// <summary>Alias público síncrono para compatibilidad con subclases existentes.</summary>
         public void CargarZona() => _ = CargarZonaAsync();
 
         // ----------------------------------------------------------------
