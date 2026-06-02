@@ -121,6 +121,12 @@ namespace PK_Proyect.View
             ventana.ShowDialog();
         }
 
+        private void AbrirMesetaAnil_Click(object sender, MouseButtonEventArgs e)
+        {
+            MesetaAnilView ventana = new MesetaAnil(usuarioActual);
+            ventana.ShowDialog();
+        }
+
             
         //-----------------RUTAS-----------------//
 
