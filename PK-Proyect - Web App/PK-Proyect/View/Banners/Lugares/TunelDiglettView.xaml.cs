@@ -4,12 +4,12 @@ using PK_Proyect.Models;
 
 namespace PK_Proyect.View.Banners.Rutas
 {
-    public partial class TunelDiglettBView : Window
+    public partial class TunelDiglettView : Window
     {
-        public TunelDiglettBView(User usuario)
+        public TunelDiglettView(User usuario)
         {
             InitializeComponent();
-            DataContext = new TunelDiglettBViewModel(usuario);
+            DataContext = new TunelDiglettViewModel(usuario);
         }
 
 
