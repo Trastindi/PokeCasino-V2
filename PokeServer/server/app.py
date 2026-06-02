@@ -1,3 +1,5 @@
+from pyexpat.errors import messages
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
@@ -69,7 +71,7 @@ try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
     _db              = _client["PokemonDB"]
     naturalezas      = _db["Naturalezas"]
-    battle_requests  = _db["Battle_requests"]
+    menssages        = _db["Menssages"]
     movimientos      = _db["Movimientos"]
     objetos_pokemon  = _db["ObjetosPoke"]
     pokedex          = _db["Pokedex"]
@@ -179,6 +181,17 @@ def register():
         "fichas":         300,
         "pokes":          0,
         "medallas":       [],
+        "messages":       [
+            {
+                "messageid": 0,
+                "foreignid": 0,
+                "text": "Welcome",
+                "date": {
+                    "$date": datetime.datetime.utcnow().isoformat()
+                },
+                "read": false
+            }
+        ],
     }
     usuarios.insert_one(doc)
     return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
@@ -657,6 +670,35 @@ def get_pokemon(current_user, pokemon_id):
         return jsonify({"error": "Pokémon no encontrado"}), 404
     return jsonify(doc), 200
 
+# ---------------------------------------------------------------------------
+# Hacer peticiones de batalla
+# ---------------------------------------------------------------------------
+
+@app.post("/battle_requests")
+@token_required
+def make_battle_request(current_user, rival_id):
+    # Implementation for making battle requests
+    rival = usuarios.find_one({"_id": ObjectId(rival_id)})
+    user = usuarios.find_one({"_id": current_user["_id"]})
+    message = {
+        "id": str(messages.count_documents({})) + 1,
+        "from": user["Username"],
+        "message": f"{current_user['username']} te ha retado a una batalla Pokémon. ¿Aceptas?",
+        type: "battle_request",
+        date: datetime.datetime.utcnow(),
+    }
+    message_rival = {
+        "messageid": rival["messages"][-1]["messageid"] + 1 if rival.get("messages") else 1,
+        "foreignid": message["id"],
+        "text": message["message"],
+        "date": message["date"],
+        "read": False
+    }
+    messages.insert_one(message)
+    rival.messages.append(message_rival)
+    usuarios.update_one({"_id": rival["_id"]}, {"$set": {"messages": rival["messages"]}})
+    return jsonify({"msg": "Battle request sent"}), 200
+    pass
 
 # ---------------------------------------------------------------------------
 # MAIN
