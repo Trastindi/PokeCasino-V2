@@ -327,6 +327,12 @@ namespace PK_Proyect.View
            ventana.ShowDialog();
         }
 
+        private void AbrirCentralElectrica_Click(object sender, MouseButtonEventArgs e)
+        {
+            CentralElectricaView ventana = new CentralElectricaView(usuarioActual);
+            ventana.ShowDialog();
+        }
+
 
         private void AbrirCuevaCeleste_Click(object sender, MouseButtonEventArgs e)
         {
