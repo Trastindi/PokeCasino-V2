@@ -1,7 +1,8 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace PK_Proyect.ViewModels
@@ -12,7 +13,6 @@ namespace PK_Proyect.ViewModels
 
         public ObservableCollection<MedallaItem> Medallas { get; set; }
 
-      
         private readonly Dictionary<string, int> requisitos = new()
         {
             { "Normal", 5 },
@@ -37,11 +37,26 @@ namespace PK_Proyect.ViewModels
             _repo = new PokemonUserRepository();
             Medallas = new ObservableCollection<MedallaItem>();
 
-            CargarMedallas(userId);
+            // Cargar medallas de forma asincrónica sin bloquear UI
+            _ = CargarMedallasAsync(userId);
         }
 
-        private void CargarMedallas(string userId)
+        private async Task CargarMedallasAsync(string userId)
         {
+            // Cargar datos en background thread
+            var medallas = await Task.Run(() => GenerarMedallas(userId));
+
+            // Actualizar UI desde el thread principal
+            foreach (var medalla in medallas)
+            {
+                Medallas.Add(medalla);
+            }
+        }
+
+        private List<MedallaItem> GenerarMedallas(string userId)
+        {
+            var resultado = new List<MedallaItem>();
+
             foreach (var tipo in requisitos.Keys)
             {
                 int cantidad = _repo.CountByType(userId, tipo);
@@ -49,16 +64,18 @@ namespace PK_Proyect.ViewModels
 
                 bool desbloqueada = cantidad >= requerido;
 
-                Medallas.Add(new MedallaItem
+                resultado.Add(new MedallaItem
                 {
                     Nombre = tipo,
-                    Icono = desbloqueada ? "★" : "?", // Más adelante será una imagen
+                    Icono = desbloqueada ? "★" : "?",
                     ColorFondo = desbloqueada ? Brushes.LightGoldenrodYellow : Brushes.Gray,
                     Tooltip = desbloqueada
                         ? $"Medalla de {tipo} conseguida."
                         : $"Necesitas {requerido} Pokémon de tipo {tipo}."
                 });
             }
+
+            return resultado;
         }
     }
 
