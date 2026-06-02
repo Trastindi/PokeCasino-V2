@@ -2,9 +2,9 @@ using PK_Proyect.Models;
 
 namespace PK_Proyect.ViewModels.Banners.Rutas
 {
-    public class TunelDiglettBViewModel : GachaViewModel
+    public class TunelDiglettViewModel : GachaViewModel
     {
-        public TunelDiglettBViewModel(User usuario)
+        public TunelDiglettViewModel(User usuario)
             : base(usuario, "Túnel Diglett")
         {
         }
