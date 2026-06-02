@@ -142,7 +142,7 @@
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="190" Canvas.Top="105" ToolTip="Ciudad Azafrán" MouseLeftButtonDown="AbrirCiudadAzafran_Click"/>
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="170" Canvas.Top="169" ToolTip="Ciudad Fucsia" MouseLeftButtonDown="AbrirCiudadFucsia_Click"/>
                         <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="83" Canvas.Top="190" ToolTip="Isla Canela" MouseLeftButtonDown="AbrirCiudadCanela_Click"/>
-                        <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="62" Canvas.Top="74" ToolTip="Meseta Añil"/>
+                        <Border Style="{StaticResource PuntoMapaStyle}" Width="14" Height="14" Background="Red" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Canvas.Left="62" Canvas.Top="74" ToolTip="Meseta Añil" MouseLeftButtonDown="AbrirMesetaAnil_Click"/>
 
                         <!-- ========================= -->
                         <!--  BOSQUES / CUEVAS / ZONAS -->
