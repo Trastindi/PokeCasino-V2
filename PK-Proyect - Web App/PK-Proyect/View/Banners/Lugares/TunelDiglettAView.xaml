@@ -17,7 +17,7 @@
             </Grid.RowDefinitions>
 
             <!-- TÍTULO RETRO -->
-            <TextBlock Text="Tunel Diglett"
+            <TextBlock Text="Túnel Diglett"
                        FontSize="26"
                        FontFamily="{StaticResource PokemonClassic}"
                        FontWeight="Bold"
