@@ -4,7 +4,7 @@ namespace PK_Proyect.ViewModels.Banners.Lugares
 {
     public class ZonaSafariViewModel : GachaViewModel
     {
-        public ZonaSafariView(User usuario)
+        public ZonaSafariViewModel(User usuario)
             : base(usuario, "Zona Safari")
         {
         }

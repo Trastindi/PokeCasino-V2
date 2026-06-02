@@ -7,7 +7,7 @@ namespace PK_Proyect.View.Banners.Lugares
  
     public partial class MansionPokemonView : Window
     {
-        public MansionPokemon(User usuario)
+        public MansionPokemonView(User usuario)
         {
             InitializeComponent();
             DataContext = new MansionPokemonViewModel(usuario);
