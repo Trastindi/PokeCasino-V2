@@ -5,7 +5,7 @@ namespace PK_Proyect.ViewModels.Banners.Rutas
     public class TunelDiglettAViewModel : GachaViewModel
     {
         public TunelDiglettAViewModel(User usuario)
-            : base(usuario, "Tunel Diglett")
+            : base(usuario, "Túnel Diglett")
         {
         }
     }
