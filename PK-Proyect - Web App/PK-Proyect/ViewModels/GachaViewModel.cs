@@ -68,13 +68,9 @@ namespace PK_Proyect.ViewModels.Banners
             _pokemonUserService = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
 
-            // Fire-and-forget: carga la zona en background sin bloquear el UI Thread.
             _ = CargarZonaAsync();
         }
 
-        // ----------------------------------------------------------------
-        // Zona
-        // ----------------------------------------------------------------
         private void MostrarHistorial()
         {
             var vm = new HistoricoTiradasViewModel(Usuario.Id);
@@ -82,11 +78,6 @@ namespace PK_Proyect.ViewModels.Banners
             ventana.ShowDialog();
         }
 
-        /// <summary>
-        /// Carga los Pokémon de la zona en un hilo de fondo para no bloquear el UI Thread.
-        /// Toda la I/O de red (MongoDB Atlas + API Flask) se ejecuta dentro de Task.Run.
-        /// Al terminar, vuelve al UI Thread para actualizar PokemonDisponibles.
-        /// </summary>
         public async Task CargarZonaAsync()
         {
             Cargando = true;
@@ -94,7 +85,6 @@ namespace PK_Proyect.ViewModels.Banners
 
             try
             {
-                // --- toda la I/O en hilo de fondo ---
                 Zona zonaEncontrada = null;
                 Dictionary<int, Pokemon> pokesEncontrados = null;
 
@@ -116,52 +106,44 @@ namespace PK_Proyect.ViewModels.Banners
                     }
 
                     zonaEncontrada = z;
+                    pokesEncontrados = new Dictionary<int, Pokemon>();
 
-                    // Consultar la API por cada Pokémon de la zona
-                    var mapa = new Dictionary<int, Pokemon>();
-                    foreach (PokemonZona p in z.Pokemon)
+                    foreach (var p in z.Pokemon)
                     {
-                        Pokemon poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
+                        var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
                         if (poke != null)
-                            mapa[p.numero_pokedex] = poke;
+                            pokesEncontrados[p.numero_pokedex] = poke;
                     }
-                    pokesEncontrados = mapa;
                 });
 
-                // --- de vuelta al UI Thread ---
                 if (zonaEncontrada == null)
                 {
-                    MessageBox.Show($"No se encontró la zona '{NombreZona}'.",
-                        "Zona no encontrada", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"No se encontró la zona '{NombreZona}' en Mongo.");
                     return;
                 }
 
                 if (zonaEncontrada.Pokemon == null || zonaEncontrada.Pokemon.Count == 0)
                 {
-                    MessageBox.Show($"La zona '{zonaEncontrada.Nombre}' no tiene Pokémon registrados.",
-                        "Zona vacía", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"La zona '{NombreZona}' no tiene Pokémon configurados.");
                     return;
                 }
 
-                foreach (PokemonZona p in zonaEncontrada.Pokemon)
+                foreach (var p in zonaEncontrada.Pokemon)
                 {
-                    if (pokesEncontrados == null || !pokesEncontrados.TryGetValue(p.numero_pokedex, out Pokemon poke))
-                        continue;
-
-                    PokemonDisponibles.Add(new PokemonZonaViewModel
+                    if (pokesEncontrados != null && pokesEncontrados.TryGetValue(p.numero_pokedex, out var poke))
                     {
-                        Id             = p.numero_pokedex,
-                        Nombre         = poke.Nombre,
-                        TipoPrincipal  = poke.TipoPrincipal,
-                        TipoSecundario = poke.TipoSecundario,
-                        Probabilidad   = p.prob
-                    });
+                        PokemonDisponibles.Add(new PokemonZonaViewModel
+                        {
+                            NumeroPokedex = p.numero_pokedex,
+                            Nombre = poke.Nombre,
+                            Rareza = p.rareza
+                        });
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar la zona: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error cargando la zona: " + ex.Message);
             }
             finally
             {
@@ -169,242 +151,119 @@ namespace PK_Proyect.ViewModels.Banners
             }
         }
 
-        /// <summary>Alias público síncrono para compatibilidad con subclases existentes.</summary>
-        public void CargarZona() => _ = CargarZonaAsync();
-
-        // ----------------------------------------------------------------
-        // Gacha
-        // ----------------------------------------------------------------
-        private PokemonZonaViewModel Tirar()
+        private async void TiradaSingle()
         {
-            var totalProb = PokemonDisponibles.Sum(p => p.Probabilidad);
-            var rnd = new Random().Next(1, totalProb + 1);
-            int acumulado = 0;
-            foreach (var p in PokemonDisponibles)
-            {
-                acumulado += p.Probabilidad;
-                if (rnd <= acumulado) return p;
-            }
-            return null;
+            await EjecutarTiradaAsync(1);
         }
 
-        private void TiradaSingle()
+        private async void TiradaMulti()
         {
-            const int COSTE = 300;
-            if (Usuario.FichasCasino < COSTE)
-            {
-                var compra = new ComprarFichasWindow(Usuario);
-                if (compra.ShowDialog() != true) return;
-                Fichas = Usuario.FichasCasino;
-            }
-
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            ActualizarFichas();
-
-            var sorteo = Tirar();
-            if (sorteo == null) return;
-
-            var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-            if (poke == null) return;
-
-            var resultado = _pokemonUserService.ObtenerPokemon(
-                Usuario.Id, poke.numero_pokedex, poke.Nombre,
-                poke.TipoPrincipal, poke.TipoSecundario,
-                poke.EstadisticasBase?.Ps ?? 0);
-
-            new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
-            {
-                UserId       = Usuario.Id,
-                PokemonId    = poke.numero_pokedex,
-                NombrePokemon = poke.Nombre,
-                Zona         = NombreZona,
-                TipoTirada   = "single",
-                Fecha        = DateTime.Now
-            });
-
-            ProcesarLevelUp(resultado);
-
-            MessageBox.Show(
-                $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
-                $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
-                $"Nivel actual: {resultado.Pokemon.Nivel}",
-                "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
+            await EjecutarTiradaAsync(10);
         }
 
-        private void TiradaMulti()
+        private async Task EjecutarTiradaAsync(int cantidad)
         {
-            const int COSTE = 3000;
-            if (Usuario.FichasCasino < COSTE)
+            if (Cargando) return;
+
+            int coste = cantidad == 1 ? 1 : 10;
+            if (Fichas < coste)
             {
-                var compra = new ComprarFichasWindow(Usuario);
-                if (compra.ShowDialog() != true) return;
-                Fichas = Usuario.FichasCasino;
+                MessageBox.Show("No tienes suficientes fichas.");
+                return;
             }
 
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            ActualizarFichas();
-
-            var resultadosMulti = new List<PokemonUser>();
-            var repoHist = new HistoricoTiradasRepository();
-
-            for (int i = 0; i < 10; i++)
+            try
             {
-                var sorteo = Tirar();
-                if (sorteo == null) continue;
+                Cargando = true;
+                var resultados = new List<LevelUpResultado>();
 
-                var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-                if (poke == null) continue;
-
-                var resultado = _pokemonUserService.ObtenerPokemon(
-                    Usuario.Id, poke.numero_pokedex, poke.Nombre,
-                    poke.TipoPrincipal, poke.TipoSecundario,
-                    poke.EstadisticasBase?.Ps ?? 0);
-
-                repoHist.RegistrarTirada(new HistoricoTirada
+                await Task.Run(() =>
                 {
-                    UserId        = Usuario.Id,
-                    PokemonId     = poke.numero_pokedex,
-                    NombrePokemon = poke.Nombre,
-                    Zona          = NombreZona,
-                    TipoTirada    = "multi",
-                    Fecha         = DateTime.Now
+                    var random = new Random();
+                    for (int i = 0; i < cantidad; i++)
+                    {
+                        var elegido = ElegirPokemonAleatorio(random);
+                        if (elegido == null) continue;
+
+                        var poke = _pokedexRepo.ObtenerPorId(elegido.NumeroPokedex);
+                        if (poke == null) continue;
+
+                        var resultado = _pokemonUserService.ObtenerPokemon(
+                            Usuario.Id,
+                            poke.Id,
+                            poke.Nombre,
+                            poke.Tipo1,
+                            poke.Tipo2,
+                            poke.CurrentHp
+                        );
+
+                        if (resultado != null)
+                            resultados.Add(resultado);
+                    }
                 });
 
-                ProcesarLevelUp(resultado);
-                resultadosMulti.Add(resultado.Pokemon);
+                Fichas -= coste;
+                Usuario.FichasCasino = Fichas;
+
+                if (resultados.Count == 0)
+                {
+                    MessageBox.Show("No se pudo obtener ningún Pokémon.");
+                    return;
+                }
+
+                string resumen = string.Join(Environment.NewLine, resultados
+                    .Where(r => r.Pokemon != null)
+                    .Select(r => $"- {r.Pokemon.Nombre} Nv.{r.Pokemon.Nivel}"));
+
+                MessageBox.Show($"Has obtenido:{Environment.NewLine}{resumen}");
             }
-
-            new ResultadosMultiView(resultadosMulti).ShowDialog();
-        }
-
-        // ----------------------------------------------------------------
-        // Procesar resultado de subida de nivel (movimiento + evolución)
-        // ----------------------------------------------------------------
-        private void ProcesarLevelUp(LevelUpResultado resultado)
-        {
-            if (resultado.MovimientoAprendido != null)
+            catch (Exception ex)
             {
-                if (resultado.MovimientoAprendidoDirectamente)
-                {
-                    MessageBox.Show(
-                        $"¡{resultado.Pokemon.Nombre} ha aprendido {resultado.MovimientoAprendido}!",
-                        "Nuevo movimiento", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    var ventana = new ElegirMovimientoWindow(
-                        resultado.MovimientoAprendido,
-                        resultado.Pokemon.MoveSet);
-
-                    if (ventana.ShowDialog() == true)
-                    {
-                        _pokemonUserService.AplicarMovimiento(
-                            resultado.Pokemon,
-                            ventana.IndiceElegido,
-                            resultado.MovimientoAprendido);
-                    }
-                }
+                MessageBox.Show("Error durante la tirada: " + ex.Message);
             }
-
-            if (resultado.Evoluciono)
+            finally
             {
-                MessageBox.Show(
-                    $"¡Enhorabuena! ¡Tu Pokémon ha evolucionado a {resultado.NombreEvolucion}!",
-                    "¡Evolución!", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                if (resultado.MovimientoEvolucion != null)
-                {
-                    if (resultado.MovimientoEvolucionDirectamente)
-                    {
-                        MessageBox.Show(
-                            $"¡{resultado.NombreEvolucion} ha aprendido {resultado.MovimientoEvolucion}!",
-                            "Nuevo movimiento", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        var ventana = new ElegirMovimientoWindow(
-                            resultado.MovimientoEvolucion,
-                            resultado.Pokemon.MoveSet);
-
-                        if (ventana.ShowDialog() == true)
-                        {
-                            _pokemonUserService.AplicarMovimiento(
-                                resultado.Pokemon,
-                                ventana.IndiceElegido,
-                                resultado.MovimientoEvolucion);
-                        }
-                    }
-                }
+                Cargando = false;
             }
         }
 
-        // ----------------------------------------------------------------
-        // Helpers
-        // ----------------------------------------------------------------
-        private void ActualizarFichas()
+        private PokemonZonaViewModel ElegirPokemonAleatorio(Random random)
         {
-            Usuario = new UserRepository().GetUserById(Usuario.Id);
-            Fichas  = Usuario.FichasCasino;
+            if (PokemonDisponibles == null || PokemonDisponibles.Count == 0)
+                return null;
+
+            var pesos = PokemonDisponibles.Select(p => Math.Max(1, 101 - p.Rareza)).ToList();
+            int total = pesos.Sum();
+            int tirada = random.Next(1, total + 1);
+            int acumulado = 0;
+
+            for (int i = 0; i < PokemonDisponibles.Count; i++)
+            {
+                acumulado += pesos[i];
+                if (tirada <= acumulado)
+                    return PokemonDisponibles[i];
+            }
+
+            return PokemonDisponibles.LastOrDefault();
         }
 
         private void MostrarPokemon()
         {
-            var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
-            if (zona == null) { MessageBox.Show($"No se encontró '{NombreZona}'.", "Zona no encontrada"); return; }
-            if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show($"Zona vacía.", "Zona vacía"); return; }
+            MessageBox.Show(string.Join(Environment.NewLine,
+                PokemonDisponibles.Select(p => $"#{p.NumeroPokedex} {p.Nombre} (Rareza {p.Rareza})")));
+        }
 
-            string lista = "";
-            foreach (var p in zona.Pokemon)
+        private void MostrarZonasBD()
+        {
+            try
             {
-                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-                lista += poke == null
-                    ? $"ID {p.numero_pokedex} (No encontrado) - Prob: {p.prob}%\n"
-                    : $"{poke.Nombre} - Prob: {p.prob}%\n";
+                var zonas = _zonaRepo.ObtenerTodas();
+                MessageBox.Show(string.Join(Environment.NewLine, zonas.Select(z => z.Nombre)));
             }
-            MessageBox.Show(lista, $"Pokémon disponibles en {zona.Nombre}");
-        }
-
-        public void MostrarZonasBD()
-        {
-            var zonas = _zonaRepo.ObtenerTodas();
-            if (zonas == null || zonas.Count == 0)
-            { MessageBox.Show("No hay zonas.", "Zonas", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
-            MessageBox.Show(string.Join("\n", zonas.Select(z => z.Nombre)),
-                "Zonas disponibles", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        public void DebugBuscarZona()
-        {
-            var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
-            if (zona == null)
-            { MessageBox.Show($"No encontrada: \"{NombreZona}\"", "Zona no encontrada", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
-            MessageBox.Show($"Nombre: {zona.Nombre}\nRegión: {zona.Region}\nTipo: {zona.Tipo}\nPokémon: {zona.Pokemon?.Count}",
-                "Zona encontrada", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        public void DebugMostrarIdYNombre()
-        {
-            var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
-            if (zona == null) { MessageBox.Show("Zona no encontrada."); return; }
-            if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show("Sin Pokémon."); return; }
-            string lista = "";
-            foreach (var p in zona.Pokemon)
+            catch (Exception ex)
             {
-                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-                lista += poke == null
-                    ? $"ID {p.numero_pokedex} → NO ENCONTRADO\n"
-                    : $"ID {p.numero_pokedex} → {poke.Nombre} (real: {poke.numero_pokedex})\n";
+                MessageBox.Show("Error mostrando zonas: " + ex.Message);
             }
-            MessageBox.Show(lista, "Relación Zona → Pokédex");
-        }
-
-        public void DebugMostrarPokedex()
-        {
-            var todos = _pokedexRepo.ObtenerTodos();
-            if (todos == null || todos.Count == 0) { MessageBox.Show("Pokédex vacía."); return; }
-            MessageBox.Show(string.Join("\n", todos.Select(p => $"ID {p.numero_pokedex} → {p.Nombre}")), "Pokédex completa");
         }
     }
 }

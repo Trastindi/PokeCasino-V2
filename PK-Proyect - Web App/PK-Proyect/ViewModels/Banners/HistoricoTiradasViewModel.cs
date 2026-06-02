@@ -1,6 +1,9 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Repositories;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace PK_Proyect.ViewModels
@@ -16,20 +19,23 @@ namespace PK_Proyect.ViewModels
             _repo = new HistoricoTiradasRepository();
             Tiradas = new ObservableCollection<HistoricoTirada>();
 
-            CargarHistorial(userId);
+            _ = CargarHistorialAsync(userId);
         }
 
-        private void CargarHistorial(string userId)
+        private async Task CargarHistorialAsync(string userId)
         {
-            Tiradas.Clear();
+            try
+            {
+                Tiradas.Clear();
+                var lista = await Task.Run(() => _repo.ObtenerPorUsuario(userId));
 
-            var lista = _repo.ObtenerPorUsuario(userId);
-
-            MessageBox.Show("Tiradas encontradas: " + lista.Count);
-
-            foreach (var t in lista)
-                Tiradas.Add(t);
+                foreach (var t in lista.OrderByDescending(x => x.Fecha))
+                    Tiradas.Add(t);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error cargando histórico: " + ex.Message);
+            }
         }
-
     }
 }

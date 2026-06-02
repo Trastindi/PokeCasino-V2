@@ -1,4 +1,4 @@
-﻿using PK_Proyect.Commands;
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.View;
@@ -8,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -51,19 +52,20 @@ namespace PK_Proyect.ViewModels
             UsuarioConectado = usuario;
             _adminService = adminService;
 
-            Usuarios = new ObservableCollection<User>(_adminService.GetAllUsers());
+            Usuarios = new ObservableCollection<User>();
+            _ = ActualizarListaAsync(false);
 
             VerPokemonObtenidosCommand = new RelayCommand(_ => VerPokemonObtenidos());
             VerEquipoCommand = new RelayCommand(_ => VerEquipoPokemon());
             VerMedallasCommand = new RelayCommand(_ => VerMedallas());
             EditarCommand = new RelayCommand(_ => Pendiente("Editar usuario"));
-            EliminarCommand = new RelayCommand(_ => EliminarUsuario());
-            CambiarRolCommand = new RelayCommand(_ => CambiarRol());
-            ResetPassCommand = new RelayCommand(_ => ResetearPassword());
-            VerPokesCommand = new RelayCommand(_ => EditarPokes());
-            VerFichasCasinoCommand = new RelayCommand(_ => EditarFichasCasino());
+            EliminarCommand = new RelayCommand(async _ => await EliminarUsuarioAsync());
+            CambiarRolCommand = new RelayCommand(async _ => await CambiarRolAsync());
+            ResetPassCommand = new RelayCommand(async _ => await ResetearPasswordAsync());
+            VerPokesCommand = new RelayCommand(async _ => await EditarPokesAsync());
+            VerFichasCasinoCommand = new RelayCommand(async _ => await EditarFichasCasinoAsync());
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesion());
-            ActualizarCommand = new RelayCommand(_ => ActualizarLista());
+            ActualizarCommand = new RelayCommand(async _ => await ActualizarListaAsync(true));
         }
 
         private void Pendiente(string msg)
@@ -97,7 +99,7 @@ namespace PK_Proyect.ViewModels
             ventana.ShowDialog();
         }
 
-        private void EliminarUsuario()
+        private async Task EliminarUsuarioAsync()
         {
             if (UsuarioSeleccionado == null)
             {
@@ -115,13 +117,13 @@ namespace PK_Proyect.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            _adminService.DeleteUser(UsuarioSeleccionado.Id);
+            await Task.Run(() => _adminService.DeleteUser(UsuarioSeleccionado.Id));
 
             MessageBox.Show("Usuario eliminado correctamente.");
-            ActualizarLista();
+            await ActualizarListaAsync(false);
         }
 
-        private void CambiarRol()
+        private async Task CambiarRolAsync()
         {
             if (UsuarioSeleccionado == null)
             {
@@ -130,14 +132,13 @@ namespace PK_Proyect.ViewModels
             }
 
             string nuevoRol = UsuarioSeleccionado.Role == "admin" ? "user" : "admin";
-
-            _adminService.ChangeRole(UsuarioSeleccionado, nuevoRol);
+            await Task.Run(() => _adminService.ChangeRole(UsuarioSeleccionado, nuevoRol));
 
             MessageBox.Show($"Rol cambiado a: {nuevoRol}");
-            ActualizarLista();
+            await ActualizarListaAsync(false);
         }
 
-        private void ResetearPassword()
+        private async Task ResetearPasswordAsync()
         {
             if (UsuarioSeleccionado == null)
             {
@@ -145,12 +146,11 @@ namespace PK_Proyect.ViewModels
                 return;
             }
 
-            _adminService.ResetPassword(UsuarioSeleccionado);
-
+            await Task.Run(() => _adminService.ResetPassword(UsuarioSeleccionado));
             MessageBox.Show("Contraseña reseteada y correo enviado.");
         }
 
-        private void EditarPokes()
+        private async Task EditarPokesAsync()
         {
             if (UsuarioSeleccionado == null)
             {
@@ -167,10 +167,10 @@ namespace PK_Proyect.ViewModels
             if (int.TryParse(input, out int nuevoValor))
             {
                 UsuarioSeleccionado.Pokes = nuevoValor;
-                _adminService.UpdateUser(UsuarioSeleccionado);
+                await Task.Run(() => _adminService.UpdateUser(UsuarioSeleccionado));
 
                 MessageBox.Show("Pokes actualizados correctamente.");
-                ActualizarLista();
+                await ActualizarListaAsync(false);
             }
             else
             {
@@ -178,7 +178,7 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        private void EditarFichasCasino()
+        private async Task EditarFichasCasinoAsync()
         {
             if (UsuarioSeleccionado == null)
             {
@@ -195,10 +195,10 @@ namespace PK_Proyect.ViewModels
             if (int.TryParse(input, out int nuevoValor))
             {
                 UsuarioSeleccionado.FichasCasino = nuevoValor;
-                _adminService.UpdateUser(UsuarioSeleccionado);
+                await Task.Run(() => _adminService.UpdateUser(UsuarioSeleccionado));
 
                 MessageBox.Show("Fichas actualizadas correctamente.");
-                ActualizarLista();
+                await ActualizarListaAsync(false);
             }
             else
             {
@@ -206,14 +206,23 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        private void ActualizarLista()
+        private async Task ActualizarListaAsync(bool mostrarMensaje)
         {
-            Usuarios.Clear();
+            try
+            {
+                var usuarios = await Task.Run(() => _adminService.GetAllUsers());
 
-            foreach (var u in _adminService.GetAllUsers())
-                Usuarios.Add(u);
+                Usuarios.Clear();
+                foreach (var u in usuarios)
+                    Usuarios.Add(u);
 
-            MessageBox.Show("Lista de usuarios actualizada.");
+                if (mostrarMensaje)
+                    MessageBox.Show("Lista de usuarios actualizada.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error actualizando lista: " + ex.Message);
+            }
         }
 
         private void CerrarSesion()
@@ -224,9 +233,6 @@ namespace PK_Proyect.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-
-
 
         private void VerMedallas()
         {
@@ -240,13 +246,5 @@ namespace PK_Proyect.ViewModels
             var ventana = new MedallasView(vm);
             ventana.ShowDialog();
         }
-
-
-
     }
-
-
-
-
-
 }

@@ -3,6 +3,7 @@ using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.View;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -28,11 +29,11 @@ namespace PK_Proyect.ViewModels
             UsuarioConectado = usuario;
             _userService     = userService;
 
-            AbrirCasinoCommand   = new RelayCommand(_ => AbrirCasino());
+            AbrirCasinoCommand   = new RelayCommand(async _ => await AbrirCasinoAsync());
             AbrirMapaCommand     = new RelayCommand(_ => AbrirMapa());
             AbrirEquipoCommand   = new RelayCommand(_ => AbrirEquipo());
             AbrirMedallasCommand = new RelayCommand(_ => AbrirMedallas());
-            AbrirPerfilCommand   = new RelayCommand(_ => AbrirPerfil());
+            AbrirPerfilCommand   = new RelayCommand(async _ => await AbrirPerfilAsync());
             CerrarSesionCommand  = new RelayCommand(_ => CerrarSesion());
         }
 
@@ -42,11 +43,18 @@ namespace PK_Proyect.ViewModels
             ventana.ShowDialog();
         }
 
-        private void AbrirCasino()
+        private async Task AbrirCasinoAsync()
         {
-            var userActualizado = _userService.GetUserById(UsuarioConectado.Id);
-            var casino = new SlotMachineView(userActualizado, new CasinoService());
-            casino.ShowDialog();
+            try
+            {
+                var userActualizado = await Task.Run(() => _userService.GetUserById(UsuarioConectado.Id));
+                var casino = new SlotMachineView(userActualizado, new CasinoService());
+                casino.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error abriendo casino: " + ex.Message);
+            }
         }
 
         private void AbrirEquipo()
@@ -62,10 +70,18 @@ namespace PK_Proyect.ViewModels
             CerrarSesionRequested?.Invoke();
         }
 
-        private void AbrirPerfil()
+        private async Task AbrirPerfilAsync()
         {
-            var perfil = new PerfilUserView(UsuarioConectado, new UserService());
-            perfil.Show();
+            try
+            {
+                var perfil = new PerfilUserView(UsuarioConectado, new UserService());
+                await Task.Yield();
+                perfil.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error abriendo perfil: " + ex.Message);
+            }
         }
 
         private void AbrirMapa()
