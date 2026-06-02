@@ -303,6 +303,12 @@ namespace PK_Proyect.View
            ventana.ShowDialog();
         }
 
+        private void AbrirTunelDiglett_Click(object sender, MouseButtonEventArgs e)
+        {
+           TunelDiglettView ventana = new TunelDiglettView(usuarioActual);
+           ventana.ShowDialog();
+        }
+
         private void AbrirTorrePokemon_Click(object sender, MouseButtonEventArgs e)
         {
            TorrePokemonView ventana = new TorrePokemonView(usuarioActual);
