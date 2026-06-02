@@ -1,5 +1,6 @@
 using PK_Proyect.Models;
 using PK_Proyect.Services;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -44,7 +45,20 @@ namespace PK_Proyect.ViewModels
                     Apellido = refreshedUser.Apellido;
                     Username = refreshedUser.Username;
                     Correo = refreshedUser.Correo;
-                    Birthdate = refreshedUser.Birthdate.ToString("dd/MM/yyyy");
+                    
+                    // Manejar el formato de fecha de forma segura
+                    try
+                    {
+                        if (refreshedUser.Birthdate != null && refreshedUser.Birthdate != DateTime.MinValue)
+                            Birthdate = refreshedUser.Birthdate.ToString("dd/MM/yyyy");
+                        else
+                            Birthdate = "No especificada";
+                    }
+                    catch
+                    {
+                        Birthdate = "Formato inválido";
+                    }
+                    
                     Pokes = refreshedUser.Pokes;
                     FichasCasino = refreshedUser.FichasCasino;
                 }
