@@ -348,7 +348,6 @@ def crear_usuario(current_user):
 
 @app.put("/usuarios/<id>")
 @token_required
-@admin_required
 def modificar_usuario(current_user, id):
     try:
         oid = ObjectId(id)
