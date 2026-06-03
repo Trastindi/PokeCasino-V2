@@ -123,7 +123,7 @@ namespace PK_Proyect.View
 
         private void AbrirMesetaAnil_Click(object sender, MouseButtonEventArgs e)
         {
-            MesetaAnilView ventana = new MesetaAnil(usuarioActual);
+            MesetaAnilView ventana = new MesetaAnilView(usuarioActual);
             ventana.ShowDialog();
         }
 
