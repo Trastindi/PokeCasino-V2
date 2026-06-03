@@ -1,4 +1,5 @@
 using PK_Proyect.Models;
+using PK_Proyect.Services;
 using PK_Proyect.View;
 using PK_Proyect.ViewModels;
 using System.Windows;
@@ -20,7 +21,7 @@ namespace PK_Proyect.View
             // Tras registro exitoso → MainMenuView con el usuario ya autenticado
             vm.NavigateToMainMenuRequested += (user) =>
             {
-                var menu = new MainMenuView(user);
+                var menu = new MainMenuView(user, new UserService());
                 menu.Show();
                 this.Close();
             };
