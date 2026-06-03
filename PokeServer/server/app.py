@@ -1,5 +1,3 @@
-from pyexpat.errors import messages
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
@@ -129,7 +127,7 @@ def token_required(f):
 def admin_required(f):
     @wraps(f)
     def wrapper(current_user, *args, **kwargs):
-        if gf(current_user, "rol", "Role", default="") not in ("admin", "Admin"):
+        if gf(current_user, "Role", "rol", default="") not in ("admin", "Admin"):
             return jsonify({"error": "Permisos insuficientes"}), 403
         return f(current_user, *args, **kwargs)
     return wrapper
@@ -161,6 +159,9 @@ def register():
     username = data.get("username", "").strip()
     email    = data.get("email",    "").strip()
     password = data.get("password", "")
+    nombre   = data.get("nombre",   "").strip()
+    apellido = data.get("apellido", "").strip()
+    birthdate_str = data.get("birthdate", None)
 
     if not username or not email or not password:
         return jsonify({"error": "Faltan campos obligatorios"}), 400
@@ -168,28 +169,32 @@ def register():
     if _find_user(username) or _find_user(email):
         return jsonify({"error": "El usuario o email ya están registrados"}), 400
 
+    try:
+        birthdate = datetime.datetime.fromisoformat(birthdate_str) if birthdate_str else datetime.datetime.utcnow()
+    except Exception:
+        birthdate = datetime.datetime.utcnow()
+
     doc = {
-        "username":       username,
+        "Nombre":         nombre,
+        "Apellido":       apellido,
+        "Username":       username,
         "username_lower": username.lower(),
-        "nombre":         data.get("nombre",   ""),
-        "apellido":       data.get("apellido", ""),
-        "edad":           int(data.get("edad", 0)),
-        "email":          email,
+        "Correo":         email,
         "email_lower":    email.lower(),
-        "password":       hash_password(password),
-        "rol":            "usuario",
-        "fichas":         300,
-        "pokes":          0,
-        "medallas":       [],
-        "messages":       [
+        "Pokemon":        0,
+        "Password":       hash_password(password),
+        "Birthdate":      birthdate,
+        "Role":           "user",
+        "Pokes":          300,
+        "FichasCasino":   0,
+        "Medallas":       [],
+        "Messages":       [
             {
                 "messageid": 0,
                 "foreignid": 0,
                 "text": "Welcome",
-                "date": {
-                    "$date": datetime.datetime.utcnow().isoformat()
-                },
-                "read": false
+                "date": datetime.datetime.utcnow(),
+                "read": False
             }
         ],
     }
@@ -211,16 +216,18 @@ def login():
         if not usuario:
             return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
 
-        pwd_hash = gf(usuario, "password", "Password", default="")
+        pwd_hash = gf(usuario, "Password", "password", default="")
         if not pwd_hash or not verify_password(password, pwd_hash):
             return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
 
-        rol      = gf(usuario, "rol",    "Role",         default="usuario")
-        fichas   = gf(usuario, "fichas", "FichasCasino", default=0)
-        pokes    = gf(usuario, "pokes",  "Pokemon",      default=0)
-        uname    = gf(usuario, "username", "Username",   default="")
-        email    = gf(usuario, "email",    "Correo",      default="")
-        medallas = usuario.get("medallas", [])
+        rol      = gf(usuario, "Role",         "rol",      default="user")
+        fichas   = gf(usuario, "FichasCasino", "fichas",   default=0)
+        # Pokes = PokeDólares (moneda); Pokemon = cantidad total de Pokémon
+        pokes    = gf(usuario, "Pokes",        "pokes",    default=0)
+        pokemon  = gf(usuario, "Pokemon",                  default=0)
+        uname    = gf(usuario, "Username",     "username", default="")
+        email    = gf(usuario, "Correo",       "email",    default="")
+        medallas = gf(usuario, "Medallas",     "medallas", default=[])
 
         return jsonify({
             "mensaje":  "Login correcto",
@@ -231,6 +238,7 @@ def login():
             "rol":      rol,
             "fichas":   fichas,
             "pokes":    pokes,
+            "pokemon":  pokemon,
             "medallas": medallas,
         }), 200
 
@@ -259,14 +267,13 @@ def cambiar_password(current_user):
     if not actual or not nueva:
         return jsonify({"error": "Faltan campos"}), 400
 
-    if not verify_password(actual, gf(current_user, "password", "Password", default="")):
+    if not verify_password(actual, gf(current_user, "Password", "password", default="")):
         return jsonify({"error": "Contraseña actual incorrecta"}), 401
 
     if len(nueva) < 6:
         return jsonify({"error": "La nueva contraseña debe tener al menos 6 caracteres"}), 400
 
-    campo = "Password" if "Password" in current_user else "password"
-    usuarios.update_one({"_id": current_user["_id"]}, {"$set": {campo: hash_password(nueva)}})
+    usuarios.update_one({"_id": current_user["_id"]}, {"$set": {"Password": hash_password(nueva)}})
     return jsonify({"mensaje": "Contraseña actualizada"}), 200
 
 
@@ -283,12 +290,11 @@ def recuperar_password():
     if not usuario:
         return jsonify({"error": "No se encontró ningún usuario con ese email"}), 404
 
-    if gf(usuario, "username", "Username", default="").lower() != username.lower():
+    if gf(usuario, "Username", "username", default="").lower() != username.lower():
         return jsonify({"error": "El username no coincide con el email"}), 400
 
     nueva = _random_password()
-    campo = "Password" if "Password" in usuario else "password"
-    usuarios.update_one({"_id": usuario["_id"]}, {"$set": {campo: hash_password(nueva)}})
+    usuarios.update_one({"_id": usuario["_id"]}, {"$set": {"Password": hash_password(nueva)}})
     print(f"[DEV] Nueva contraseña para {email}: {nueva}")
     return jsonify({"mensaje": "Se ha enviado una nueva contraseña al correo indicado"}), 200
 
@@ -321,26 +327,33 @@ def obtener_usuario(current_user, id):
 @admin_required
 def crear_usuario(current_user):
     data = request.json or {}
-    for k in ["nombre", "apellido", "username", "email", "password", "edad", "rol"]:
+    for k in ["Nombre", "Apellido", "Username", "Correo", "Password", "Birthdate", "Role"]:
         if k not in data:
             return jsonify({"error": f"Falta el campo '{k}'"}), 400
 
-    if _find_user(data["email"]) or _find_user(data["username"]):
-        return jsonify({"error": "Email o username ya registrado"}), 400
+    if _find_user(data["Correo"]) or _find_user(data["Username"]):
+        return jsonify({"error": "Correo o Username ya registrado"}), 400
+
+    try:
+        birthdate = datetime.datetime.fromisoformat(data["Birthdate"])
+    except Exception:
+        return jsonify({"error": "Formato de Birthdate inválido (ISO 8601)"}), 400
 
     doc = {
-        "username":       data["username"],
-        "username_lower": data["username"].lower(),
-        "nombre":         data["nombre"],
-        "apellido":       data["apellido"],
-        "email":          data["email"],
-        "email_lower":    data["email"].lower(),
-        "edad":           int(data["edad"]),
-        "password":       hash_password(data["password"]),
-        "rol":            data["rol"],
-        "fichas":         int(data.get("fichas", 0)),
-        "pokes":          int(data.get("pokes",  0)),
-        "medallas":       [],
+        "Nombre":         data["Nombre"],
+        "Apellido":       data["Apellido"],
+        "Username":       data["Username"],
+        "username_lower": data["Username"].lower(),
+        "Correo":         data["Correo"],
+        "email_lower":    data["Correo"].lower(),
+        "Pokemon":        0,
+        "Password":       hash_password(data["Password"]),
+        "Birthdate":      birthdate,
+        "Role":           data["Role"],
+        "Pokes":          int(data.get("Pokes", 300)),
+        "FichasCasino":   int(data.get("FichasCasino", 0)),
+        "Medallas":       [],
+        "Messages":       [],
     }
     usuarios.insert_one(doc)
     return jsonify({"msg": "Usuario creado"}), 201
@@ -355,12 +368,12 @@ def modificar_usuario(current_user, id):
         return jsonify({"error": "ID inválido"}), 400
 
     data   = request.json or {}
-    update = {k: data[k] for k in ["nombre","apellido","email","rol","fichas","pokes","edad","username"] if k in data}
+    update = {k: data[k] for k in ["Nombre", "Apellido", "Correo", "Role", "FichasCasino", "Pokes", "Birthdate", "Username"] if k in data}
     if not update:
         return jsonify({"error": "No se enviaron datos para actualizar"}), 400
 
-    if "email"    in update: update["email_lower"]    = update["email"].lower()
-    if "username" in update: update["username_lower"] = update["username"].lower()
+    if "Correo"   in update: update["email_lower"]    = update["Correo"].lower()
+    if "Username" in update: update["username_lower"] = update["Username"].lower()
 
     r = usuarios.update_one({"_id": oid}, {"$set": update})
     if r.matched_count == 0:
@@ -395,9 +408,8 @@ def reset_password(current_user, id):
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     nueva = (request.json or {}).get("password") or _random_password()
-    campo = "Password" if "Password" in usuario else "password"
-    usuarios.update_one({"_id": oid}, {"$set": {campo: hash_password(nueva)}})
-    print(f"[DEV] Reset para {gf(usuario,'email','Correo')}: {nueva}")
+    usuarios.update_one({"_id": oid}, {"$set": {"Password": hash_password(nueva)}})
+    print(f"[DEV] Reset para {gf(usuario,'Correo','email')}: {nueva}")
     return jsonify({"msg": "Contraseña reseteada"}), 200
 
 
@@ -406,8 +418,9 @@ def reset_password(current_user, id):
 # ---------------------------------------------------------------------------
 
 def _recalcular_pokes(user_id: str):
+    """Actualiza Users.Pokemon con el recuento real de documentos en PokemonUser."""
     n = pokemon_user.count_documents({"UserId": user_id})
-    usuarios.update_one({"_id": ObjectId(user_id)}, {"$set": {"pokes": n}})
+    usuarios.update_one({"_id": ObjectId(user_id)}, {"$set": {"Pokemon": n}})
 
 
 @app.get("/usuarios/<id>/pokemon")
@@ -438,7 +451,7 @@ def obtener_pokemon(current_user):
         tipo2      = data.get("tipo2",      "")
         current_hp = int(data.get("current_hp", 0))
         uid        = str(current_user["_id"])
-        uname      = gf(current_user, "username", "Username", default="")
+        uname      = gf(current_user, "Username", "username", default="")
 
         existente = pokemon_user.find_one({"UserId": uid, "PokemonId": pokemon_id})
 
@@ -576,7 +589,7 @@ def aplicar_movimiento(current_user):
 
 
 # ---------------------------------------------------------------------------
-# MEDALLAS  (almacenadas en Users.medallas como lista de strings)
+# MEDALLAS  (almacenadas en Users.Medallas como lista de strings)
 # ---------------------------------------------------------------------------
 
 @app.post("/medallas/otorgar")
@@ -585,17 +598,17 @@ def otorgar_medalla(current_user):
     tipo = (request.json or {}).get("tipo", "").strip()
     if not tipo:
         return jsonify({"error": "Falta el tipo de medalla"}), 400
-    medallas_actuales = current_user.get("medallas", [])
+    medallas_actuales = gf(current_user, "Medallas", "medallas", default=[])
     if tipo in medallas_actuales:
         return jsonify({"error": "El usuario ya tiene esta medalla"}), 409
-    usuarios.update_one({"_id": current_user["_id"]}, {"$push": {"medallas": tipo}})
+    usuarios.update_one({"_id": current_user["_id"]}, {"$push": {"Medallas": tipo}})
     return jsonify({"msg": f"Medalla '{tipo}' otorgada"}), 201
 
 
 @app.get("/medallas")
 @token_required
 def mis_medallas(current_user):
-    return jsonify(current_user.get("medallas", [])), 200
+    return jsonify(gf(current_user, "Medallas", "medallas", default=[])), 200
 
 
 # ---------------------------------------------------------------------------
@@ -634,14 +647,13 @@ def jugar(current_user):
         if not tablero:
             return jsonify({"error": "Falta el tablero"}), 400
 
-        fichas = gf(current_user, "fichas", "FichasCasino", default=0)
+        fichas = gf(current_user, "FichasCasino", "fichas", default=0)
         if fichas < apuesta:
             return jsonify({"error": "No tienes fichas suficientes"}), 400
 
         payout, lineas = _comprobar_ganar(tablero, apuesta)
         fichas_final   = fichas - apuesta + payout
-        campo          = "FichasCasino" if "FichasCasino" in current_user else "fichas"
-        usuarios.update_one({"_id": current_user["_id"]}, {"$set": {campo: fichas_final}})
+        usuarios.update_one({"_id": current_user["_id"]}, {"$set": {"FichasCasino": fichas_final}})
 
         return jsonify({"tablero": tablero, "simbolos": SYMBOLS, "apuesta": apuesta,
                         "payout": payout, "lineas_ganadoras": lineas,
@@ -669,6 +681,7 @@ def get_pokemon(current_user, pokemon_id):
         return jsonify({"error": "Pokémon no encontrado"}), 404
     return jsonify(doc), 200
 
+
 # ---------------------------------------------------------------------------
 # Hacer peticiones de batalla
 # ---------------------------------------------------------------------------
@@ -676,28 +689,9 @@ def get_pokemon(current_user, pokemon_id):
 @app.post("/battle_requests")
 @token_required
 def make_battle_request(current_user, rival_id):
-    # Implementation for making battle requests
-    rival = usuarios.find_one({"_id": ObjectId(rival_id)})
-    user = usuarios.find_one({"_id": current_user["_id"]})
-    message = {
-        "id": str(messages.count_documents({})) + 1,
-        "from": user["Username"],
-        "message": f"{current_user['username']} te ha retado a una batalla Pokémon. ¿Aceptas?",
-        type: "battle_request",
-        date: datetime.datetime.utcnow(),
-    }
-    message_rival = {
-        "messageid": rival["messages"][-1]["messageid"] + 1 if rival.get("messages") else 1,
-        "foreignid": message["id"],
-        "text": message["message"],
-        "date": message["date"],
-        "read": False
-    }
-    messages.insert_one(message)
-    rival.messages.append(message_rival)
-    usuarios.update_one({"_id": rival["_id"]}, {"$set": {"messages": rival["messages"]}})
-    return jsonify({"msg": "Battle request sent"}), 200
+    # TODO: implementar lógica de batalla
     pass
+
 
 # ---------------------------------------------------------------------------
 # MAIN

@@ -34,7 +34,8 @@ namespace PK_Proyect.Services
                     Correo       = resp.Email,
                     Role         = resp.Rol,
                     FichasCasino = resp.Fichas,
-                    Pokemon      = resp.Pokes
+                    Pokes        = resp.Pokes,   // PokeDólares
+                    Pokemon      = resp.Pokemon, // Cantidad total de Pokémon
                 };
             }
             catch
@@ -52,6 +53,7 @@ namespace PK_Proyect.Services
             [JsonPropertyName("rol")]      public string Rol      { get; set; }
             [JsonPropertyName("fichas")]   public int    Fichas   { get; set; }
             [JsonPropertyName("pokes")]    public int    Pokes    { get; set; }
+            [JsonPropertyName("pokemon")]  public int    Pokemon  { get; set; }
         }
     }
 }
