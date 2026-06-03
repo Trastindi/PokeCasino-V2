@@ -61,8 +61,22 @@ namespace PK_Proyect.ViewModels.Banners
             _pokedexRepo = new PokedexRepository();
             PokemonDisponibles = new ObservableCollection<PokemonZonaViewModel>();
 
-            Tirar1Command         = new AsyncRelayCommand(async () => await TiradaSingleAsync());
-            Tirar10Command        = new AsyncRelayCommand(async () => await TiradaMultiAsync());
+            // Tirar1Command         = new AsyncRelayCommand(async () => await TiradaSingleAsync());
+            // Tirar10Command        = new AsyncRelayCommand(async () => await TiradaMultiAsync());
+
+            //Temporalmente para probar
+            Tirar1Command         = new RelayCommand(_ => 
+            {
+                Debug.WriteLine("[TEST] Tirar1Command fue ejecutado");
+                _ = TiradaSingleAsync();
+            });
+            Tirar10Command        = new RelayCommand(_ => 
+            {
+                Debug.WriteLine("[TEST] Tirar10Command fue ejecutado");
+                _ = TiradaMultiAsync();
+            });
+
+            
             MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
