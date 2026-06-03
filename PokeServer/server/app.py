@@ -181,17 +181,6 @@ def register():
         "fichas":         300,
         "pokes":          0,
         "medallas":       [],
-        "messages":       [
-            {
-                "messageid": 0,
-                "foreignid": 0,
-                "text": "Welcome",
-                "date": {
-                    "$date": datetime.datetime.utcnow().isoformat()
-                },
-                "read": false
-            }
-        ],
     }
     usuarios.insert_one(doc)
     return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
@@ -289,31 +278,32 @@ def recuperar_password():
     nueva = _random_password()
     campo = "Password" if "Password" in usuario else "password"
     usuarios.update_one({"_id": usuario["_id"]}, {"$set": {campo: hash_password(nueva)}})
-    print(f"[DEV] Nueva contraseña para {email}: {nueva}")
-    return jsonify({"mensaje": "Se ha enviado una nueva contraseña al correo indicado"}), 200
+    print(f"[DEV] Reset para {gf(usuario,'email','Correo')}: {nueva}")
+    return jsonify({"msg": "Contraseña reseteada", "nueva_password": nueva}), 200
 
 
 # ---------------------------------------------------------------------------
-# CRUD USUARIOS (admin)
+# USUARIOS (CRUD)
 # ---------------------------------------------------------------------------
 
 @app.get("/usuarios")
 @token_required
 @admin_required
 def listar_usuarios(current_user):
-    return jsonify([_serialize(u) for u in usuarios.find()]), 200
+    docs = list(usuarios.find())
+    return jsonify([_serialize(d) for d in docs]), 200
 
 
 @app.get("/usuarios/<id>")
 @token_required
 def obtener_usuario(current_user, id):
     try:
-        u = usuarios.find_one({"_id": ObjectId(id)})
+        doc = usuarios.find_one({"_id": ObjectId(id)})
     except Exception:
         return jsonify({"error": "ID inválido"}), 400
-    if not u:
+    if not doc:
         return jsonify({"error": "Usuario no encontrado"}), 404
-    return jsonify(_serialize(u)), 200
+    return jsonify(_serialize(doc)), 200
 
 
 @app.post("/usuarios")
@@ -321,34 +311,53 @@ def obtener_usuario(current_user, id):
 @admin_required
 def crear_usuario(current_user):
     data = request.json or {}
-    for k in ["nombre", "apellido", "username", "email", "password", "edad", "rol"]:
-        if k not in data:
-            return jsonify({"error": f"Falta el campo '{k}'"}), 400
+    if not data.get("username") or not data.get("email") or not data.get("password"):
+        return jsonify({"error": "Faltan campos obligatorios"}), 400
 
-    if _find_user(data["email"]) or _find_user(data["username"]):
-        return jsonify({"error": "Email o username ya registrado"}), 400
+    if _find_user(data["username"]) or _find_user(data["email"]):
+        return jsonify({"error": "Usuario o email ya registrados"}), 400
 
     doc = {
         "username":       data["username"],
         "username_lower": data["username"].lower(),
-        "nombre":         data["nombre"],
-        "apellido":       data["apellido"],
+        "nombre":         data.get("nombre",   ""),
+        "apellido":       data.get("apellido", ""),
+        "edad":           int(data.get("edad", 0)),
         "email":          data["email"],
         "email_lower":    data["email"].lower(),
-        "edad":           int(data["edad"]),
         "password":       hash_password(data["password"]),
-        "rol":            data["rol"],
-        "fichas":         int(data.get("fichas", 0)),
-        "pokes":          int(data.get("pokes",  0)),
+        "rol":            data.get("rol", "usuario"),
+        "fichas":         int(data.get("fichas", 300)),
+        "pokes":          0,
         "medallas":       [],
     }
     usuarios.insert_one(doc)
     return jsonify({"msg": "Usuario creado"}), 201
 
 
+# Mapeo PascalCase (cliente C#/Kotlin) -> snake_case (MongoDB)
+_USER_FIELD_MAP = {
+    "Nombre":       "nombre",
+    "Apellido":     "apellido",
+    "Correo":       "email",
+    "Username":     "username",
+    "Role":         "rol",
+    "FichasCasino": "fichas",
+    "Pokes":        "pokes",
+    "Edad":         "edad",
+    # snake_case nativo (Android / admin)
+    "nombre":    "nombre",
+    "apellido":  "apellido",
+    "email":     "email",
+    "username":  "username",
+    "rol":       "rol",
+    "fichas":    "fichas",
+    "pokes":     "pokes",
+    "edad":      "edad",
+}
+
 @app.put("/usuarios/<id>")
 @token_required
-@admin_required
 def modificar_usuario(current_user, id):
     try:
         oid = ObjectId(id)
@@ -356,7 +365,8 @@ def modificar_usuario(current_user, id):
         return jsonify({"error": "ID inválido"}), 400
 
     data   = request.json or {}
-    update = {k: data[k] for k in ["nombre","apellido","email","rol","fichas","pokes","edad","username"] if k in data}
+    update = {_USER_FIELD_MAP[k]: data[k] for k in data if k in _USER_FIELD_MAP}
+
     if not update:
         return jsonify({"error": "No se enviaron datos para actualizar"}), 400
 
@@ -413,10 +423,9 @@ def _recalcular_pokes(user_id: str):
 
 @app.get("/usuarios/<id>/pokemon")
 @token_required
-def pokemon_de_usuario(current_user, id):
+def pokemon_del_usuario(current_user, id):
     lista = list(pokemon_user.find({"UserId": id}))
-    for p in lista: p["_id"] = str(p["_id"])
-    return jsonify(lista), 200
+    return jsonify([{**p, "_id": str(p["_id"])} for p in lista]), 200
 
 
 @app.get("/usuarios/mis_pokemon")
@@ -424,8 +433,7 @@ def pokemon_de_usuario(current_user, id):
 def mis_pokemon(current_user):
     uid   = str(current_user["_id"])
     lista = list(pokemon_user.find({"UserId": uid}))
-    for p in lista: p["_id"] = str(p["_id"])
-    return jsonify(lista), 200
+    return jsonify([{**p, "_id": str(p["_id"])} for p in lista]), 200
 
 
 @app.post("/pokemon/obtener")
@@ -543,113 +551,106 @@ def obtener_pokemon(current_user):
         return jsonify({"error": "Error interno del servidor"}), 500
 
 
+# ---------------------------------------------------------------------------
+# MOVIMIENTOS
+# ---------------------------------------------------------------------------
+
 @app.put("/pokemon/movimiento")
 @token_required
-def aplicar_movimiento(current_user):
+def actualizar_movimiento(current_user):
     try:
         data       = request.json or {}
         pokemon_id = int(data.get("pokemon_id"))
-        indice     = int(data.get("indice_a_borrar", -1))
-        mov_nuevo  = data.get("movimiento_nuevo", "")
+        slot       = int(data.get("slot", 0))
+        movimiento = data.get("movimiento", "")
         uid        = str(current_user["_id"])
 
-        if not mov_nuevo:
-            return jsonify({"error": "Falta movimiento_nuevo"}), 400
+        if slot < 0 or slot > 3:
+            return jsonify({"error": "Slot inválido (0-3)"}), 400
 
         poke = pokemon_user.find_one({"UserId": uid, "PokemonId": pokemon_id})
         if not poke:
             return jsonify({"error": "Pokémon no encontrado"}), 404
 
-        moveset = poke.get("MoveSet", [])
-        if 0 <= indice < len(moveset):
-            moveset[indice] = mov_nuevo
-        elif len(moveset) < 4:
-            moveset.append(mov_nuevo)
-        else:
-            return jsonify({"error": "Moveset lleno; indica un índice a reemplazar"}), 400
+        moveset = poke.get("MoveSet") or []
+        while len(moveset) <= slot:
+            moveset.append(None)
+        moveset[slot] = movimiento
 
         pokemon_user.update_one({"UserId": uid, "PokemonId": pokemon_id}, {"$set": {"MoveSet": moveset}})
-        return jsonify({"msg": "Movimiento aplicado", "moveset": moveset}), 200
+        return jsonify({"msg": "Movimiento actualizado", "moveset": moveset}), 200
 
     except Exception:
         import traceback; traceback.print_exc()
-        return jsonify({"error": "Error interno del servidor"}), 500
+        return jsonify({"error": "Error interno"}), 500
 
 
 # ---------------------------------------------------------------------------
-# MEDALLAS  (almacenadas en Users.medallas como lista de strings)
+# MEDALLAS
 # ---------------------------------------------------------------------------
 
 @app.post("/medallas/otorgar")
 @token_required
 def otorgar_medalla(current_user):
-    tipo = (request.json or {}).get("tipo", "").strip()
-    if not tipo:
-        return jsonify({"error": "Falta el tipo de medalla"}), 400
-    medallas_actuales = current_user.get("medallas", [])
-    if tipo in medallas_actuales:
-        return jsonify({"error": "El usuario ya tiene esta medalla"}), 409
-    usuarios.update_one({"_id": current_user["_id"]}, {"$push": {"medallas": tipo}})
-    return jsonify({"msg": f"Medalla '{tipo}' otorgada"}), 201
+    data     = request.json or {}
+    user_id  = data.get("user_id")
+    medalla  = data.get("medalla")
+
+    if not user_id or not medalla:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    try:
+        usuarios.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$addToSet": {"medallas": medalla}}
+        )
+    except Exception:
+        return jsonify({"error": "ID inválido"}), 400
+
+    return jsonify({"msg": f"Medalla '{medalla}' otorgada"}), 200
 
 
 @app.get("/medallas")
 @token_required
 def mis_medallas(current_user):
-    return jsonify(current_user.get("medallas", [])), 200
+    medallas = current_user.get("medallas", [])
+    return jsonify({"medallas": medallas}), 200
 
 
 # ---------------------------------------------------------------------------
 # CASINO
 # ---------------------------------------------------------------------------
 
-SYMBOLS = ["Bar", "Meowth", "Koffing", "Arbok", "Cherry", "Seven"]
-PAYOUTS = {"Seven": 300, "Bar": 100, "Meowth": 15, "Koffing": 15, "Arbok": 15, "Cherry": 8}
-
-
-def _comprobar_ganar(tablero, apuesta):
-    lineas = []
-    f0 = tablero[0][0] == tablero[1][0] == tablero[2][0]
-    f1 = tablero[0][1] == tablero[1][1] == tablero[2][1]
-    f2 = tablero[0][2] == tablero[1][2] == tablero[2][2]
-    d1 = tablero[0][0] == tablero[1][1] == tablero[2][2]
-    d2 = tablero[0][2] == tablero[1][1] == tablero[2][0]
-    if apuesta >= 1 and f1: lineas.append(SYMBOLS[tablero[1][1]])
-    if apuesta == 3 and f0: lineas.append(SYMBOLS[tablero[1][0]])
-    if apuesta == 3 and f2: lineas.append(SYMBOLS[tablero[1][2]])
-    if apuesta >= 2 and d1: lineas.append(SYMBOLS[tablero[1][1]])
-    if apuesta >= 2 and d2: lineas.append(SYMBOLS[tablero[1][1]])
-    return sum(PAYOUTS.get(s, 0) for s in lineas), lineas
-
-
 @app.post("/casino/jugar")
 @token_required
-def jugar(current_user):
+def jugar_casino(current_user):
     try:
-        data    = request.json or {}
-        apuesta = int(data.get("apuesta", 1))
-        tablero = data.get("tablero")
-
-        if apuesta not in (1, 2, 3):
-            return jsonify({"error": "Apuesta inválida (1, 2 o 3)"}), 400
-        if not tablero:
-            return jsonify({"error": "Falta el tablero"}), 400
-
+        uid    = str(current_user["_id"])
         fichas = gf(current_user, "fichas", "FichasCasino", default=0)
-        if fichas < apuesta:
+
+        if fichas < 1:
             return jsonify({"error": "No tienes fichas suficientes"}), 400
 
-        payout, lineas = _comprobar_ganar(tablero, apuesta)
-        fichas_final   = fichas - apuesta + payout
-        campo          = "FichasCasino" if "FichasCasino" in current_user else "fichas"
-        usuarios.update_one({"_id": current_user["_id"]}, {"$set": {campo: fichas_final}})
+        simbolos  = ["🍒", "🍋", "🔔", "⭐", "7️⃣"]
+        resultado = [random.choice(simbolos) for _ in range(3)]
+        ganancia  = 0
 
-        return jsonify({"tablero": tablero, "simbolos": SYMBOLS, "apuesta": apuesta,
-                        "payout": payout, "lineas_ganadoras": lineas,
-                        "fichas_final": fichas_final}), 200
+        if resultado[0] == resultado[1] == resultado[2]:
+            ganancia = 10 if resultado[0] == "7️⃣" else 5
+
+        nuevo_saldo = fichas - 1 + ganancia
+        campo_fichas = "fichas" if "fichas" in current_user else "FichasCasino"
+        usuarios.update_one({"_id": current_user["_id"]}, {"$set": {campo_fichas: nuevo_saldo}})
+
+        return jsonify({
+            "resultado": resultado,
+            "ganancia":  ganancia,
+            "fichas":    nuevo_saldo,
+        }), 200
+
     except Exception:
         import traceback; traceback.print_exc()
-        return jsonify({"error": "Error interno del servidor"}), 500
+        return jsonify({"error": "Error interno"}), 500
 
 
 # ---------------------------------------------------------------------------
@@ -658,47 +659,112 @@ def jugar(current_user):
 
 @app.get("/pokedex")
 @token_required
-def get_pokedex(current_user):
-    return jsonify(list(pokedex.find({}, {"_id": 0}))), 200
+def listar_pokedex(current_user):
+    docs = list(pokedex.find({}, {"_id": 0}))
+    return jsonify(docs), 200
 
 
 @app.get("/pokedex/<int:pokemon_id>")
 @token_required
-def get_pokemon(current_user, pokemon_id):
+def obtener_pokemon_pokedex(current_user, pokemon_id):
     doc = pokedex.find_one({"numero_pokedex": pokemon_id}, {"_id": 0})
     if not doc:
         return jsonify({"error": "Pokémon no encontrado"}), 404
     return jsonify(doc), 200
 
+
 # ---------------------------------------------------------------------------
-# Hacer peticiones de batalla
+# BATALLAS
 # ---------------------------------------------------------------------------
 
 @app.post("/battle_requests")
 @token_required
-def make_battle_request(current_user, rival_id):
-    # Implementation for making battle requests
-    rival = usuarios.find_one({"_id": ObjectId(rival_id)})
-    user = usuarios.find_one({"_id": current_user["_id"]})
-    message = {
-        "id": str(messages.count_documents({})) + 1,
-        "from": user["Username"],
-        "message": f"{current_user['username']} te ha retado a una batalla Pokémon. ¿Aceptas?",
-        type: "battle_request",
-        date: datetime.datetime.utcnow(),
+def crear_batalla(current_user):
+    data = request.json or {}
+    uid  = str(current_user["_id"])
+
+    doc = {
+        "challenger_id": uid,
+        "opponent_id":   data.get("opponent_id"),
+        "status":        "pending",
+        "created_at":    datetime.datetime.utcnow().isoformat(),
     }
-    message_rival = {
-        "messageid": rival["messages"][-1]["messageid"] + 1 if rival.get("messages") else 1,
-        "foreignid": message["id"],
-        "text": message["message"],
-        "date": message["date"],
-        "read": False
+    battles.insert_one(doc)
+    doc["_id"] = str(doc["_id"])
+    return jsonify(doc), 201
+
+
+@app.get("/battle_requests")
+@token_required
+def listar_batallas(current_user):
+    uid  = str(current_user["_id"])
+    docs = list(battles.find({"$or": [{"challenger_id": uid}, {"opponent_id": uid}]}))
+    return jsonify([{**d, "_id": str(d["_id"])} for d in docs]), 200
+
+
+@app.put("/battle_requests/<id>")
+@token_required
+def actualizar_batalla(current_user, id):
+    data   = request.json or {}
+    status = data.get("status")
+    if not status:
+        return jsonify({"error": "Falta el campo status"}), 400
+    try:
+        battles.update_one({"_id": ObjectId(id)}, {"$set": {"status": status}})
+    except Exception:
+        return jsonify({"error": "ID inválido"}), 400
+    return jsonify({"msg": "Batalla actualizada"}), 200
+
+
+# ---------------------------------------------------------------------------
+# ZONAS
+# ---------------------------------------------------------------------------
+
+@app.get("/zonas")
+@token_required
+def listar_zonas(current_user):
+    docs = list(zonas.find({}, {"_id": 0}))
+    return jsonify(docs), 200
+
+
+@app.get("/zonas/<nombre>")
+@token_required
+def obtener_zona(current_user, nombre):
+    doc = zonas.find_one({"nombre": {"$regex": f"^{nombre}$", "$options": "i"}}, {"_id": 0})
+    if not doc:
+        return jsonify({"error": "Zona no encontrada"}), 404
+    return jsonify(doc), 200
+
+
+# ---------------------------------------------------------------------------
+# HISTORICO TIRADAS
+# ---------------------------------------------------------------------------
+
+@app.post("/historico_tiradas")
+@token_required
+def registrar_tirada(current_user):
+    data = request.json or {}
+    uid  = str(current_user["_id"])
+
+    doc = {
+        "UserId":     uid,
+        "PokemonId":  data.get("pokemon_id"),
+        "Nombre":     data.get("nombre", ""),
+        "Zona":       data.get("zona",   ""),
+        "Fecha":      datetime.datetime.utcnow().isoformat(),
     }
-    messages.insert_one(message)
-    rival.messages.append(message_rival)
-    usuarios.update_one({"_id": rival["_id"]}, {"$set": {"messages": rival["messages"]}})
-    return jsonify({"msg": "Battle request sent"}), 200
-    pass
+    historico_tiradas.insert_one(doc)
+    doc["_id"] = str(doc["_id"])
+    return jsonify(doc), 201
+
+
+@app.get("/historico_tiradas")
+@token_required
+def mis_tiradas(current_user):
+    uid  = str(current_user["_id"])
+    docs = list(historico_tiradas.find({"UserId": uid}))
+    return jsonify([{**d, "_id": str(d["_id"])} for d in docs]), 200
+
 
 # ---------------------------------------------------------------------------
 # MAIN
