@@ -103,7 +103,7 @@ namespace PK_Proyect.ViewModels
                 // Volver al hilo UI para asignar propiedades
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Id       = refreshedUser.Id;
+                    Id       = user.Id;
                     Nombre   = refreshedUser.Nombre;
                     Apellido = refreshedUser.Apellido;
                     Username = refreshedUser.Username;
