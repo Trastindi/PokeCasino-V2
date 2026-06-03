@@ -1,6 +1,7 @@
 using PK_Proyect.ViewModels;
 using System.Windows;
 using PK_Proyect.Models;
+using PK_Proyect.ViewModels.Banners;
 
 namespace PK_Proyect.View.Banners
 {
