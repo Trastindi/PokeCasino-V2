@@ -1,4 +1,4 @@
-﻿using PK_Proyect.ViewModels;
+using PK_Proyect.ViewModels;
 using PK_Proyect.Services;
 using PK_Proyect.Models;
 using System.Windows;
@@ -13,16 +13,11 @@ namespace PK_Proyect.View
         public PerfilUserView(User user, UserService userService)
         {
             InitializeComponent();
-
             _usuarioActual = user;
-
             DataContext = new PerfilUserViewModel(user, userService);
         }
 
-        private void BtnCerrar_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void BtnCerrar_Click(object sender, RoutedEventArgs e) => Close();
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -34,6 +29,17 @@ namespace PK_Proyect.View
         {
             var ventana = new ChangePasswordView(_usuarioActual);
             ventana.ShowDialog();
+        }
+
+        private void BtnCopyId_Click(object sender, RoutedEventArgs e)
+        {
+            var id = TxtId.Text;
+            if (!string.IsNullOrWhiteSpace(id) && id != "Cargando...")
+            {
+                Clipboard.SetText(id);
+                MessageBox.Show("ID copiado al portapapeles.", "Copiado",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }
