@@ -1,4 +1,6 @@
-﻿using PK_Proyect.ViewModels;
+using PK_Proyect.Models;
+using PK_Proyect.View;
+using PK_Proyect.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,15 +16,15 @@ namespace PK_Proyect.View
             DataContext = vm;
 
             vm.CloseRequested += () => this.Close();
-            vm.NavigateToLoginRequested += () =>
+
+            // Tras registro exitoso → MainMenuView con el usuario ya autenticado
+            vm.NavigateToMainMenuRequested += (user) =>
             {
-                var login = new LoginView();
-                login.Show();
+                var menu = new MainMenuView(user);
+                menu.Show();
                 this.Close();
             };
         }
-
-
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
@@ -36,9 +38,6 @@ namespace PK_Proyect.View
                 vm.PasswordConfirm = ((PasswordBox)sender).Password;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void Button_Click(object sender, RoutedEventArgs e) { }
     }
 }

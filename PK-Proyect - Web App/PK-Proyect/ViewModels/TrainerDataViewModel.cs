@@ -1,5 +1,6 @@
-﻿using PK_Proyect.Models;
+using PK_Proyect.Models;
 using PK_Proyect.Services;
+using PK_Proyect.View;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -14,12 +15,12 @@ namespace PK_Proyect.ViewModels
         private readonly TrainerService _service = new();
 
         public event Action CloseRequested;
-        public event Action NavigateToLoginRequested;
+        public event Action<User> NavigateToMainMenuRequested;
 
         public TrainerDataViewModel(string username)
         {
             Username = username;
-            GuardarCommand = new RelayCommand(Guardar);
+            GuardarCommand  = new RelayCommand(Guardar);
             CancelarCommand = new RelayCommand(_ => CloseRequested?.Invoke());
         }
 
@@ -80,7 +81,7 @@ namespace PK_Proyect.ViewModels
         // COMANDOS
         // ============================
 
-        public ICommand GuardarCommand { get; }
+        public ICommand GuardarCommand  { get; }
         public ICommand CancelarCommand { get; }
 
         // ============================
@@ -89,11 +90,11 @@ namespace PK_Proyect.ViewModels
 
         private void Guardar(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Nombre) ||
-                string.IsNullOrWhiteSpace(Apellido) ||
-                string.IsNullOrWhiteSpace(Correo) ||
-                Birthdate == null ||
-                string.IsNullOrWhiteSpace(Password) ||
+            if (string.IsNullOrWhiteSpace(Nombre)    ||
+                string.IsNullOrWhiteSpace(Apellido)  ||
+                string.IsNullOrWhiteSpace(Correo)    ||
+                Birthdate == null                     ||
+                string.IsNullOrWhiteSpace(Password)  ||
                 string.IsNullOrWhiteSpace(PasswordConfirm))
             {
                 System.Windows.MessageBox.Show("Por favor, completa todos los campos.");
@@ -102,7 +103,13 @@ namespace PK_Proyect.ViewModels
 
             if (!ValidarPassword(Password))
             {
-                System.Windows.MessageBox.Show("La contraseña debe tener:\n- Mínimo 8 caracteres\n- Mayúscula\n- Minúscula\n- Número\n- Carácter especial");
+                System.Windows.MessageBox.Show(
+                    "La contraseña debe tener:\n" +
+                    "- Mínimo 8 caracteres\n" +
+                    "- Mayúscula\n" +
+                    "- Minúscula\n" +
+                    "- Número\n" +
+                    "- Carácter especial");
                 return;
             }
 
@@ -114,23 +121,27 @@ namespace PK_Proyect.ViewModels
 
             User nuevo = new User
             {
-                Nombre = Nombre,
-                Apellido = Apellido,
-                Username = Username,
-                Password = Password,
-                Correo = Correo,
-                Birthdate = Birthdate.Value,
-                Role = "user",
-                Pokes = 500,
-                FichasCasino = 50
+                Nombre    = Nombre,
+                Apellido  = Apellido,
+                Username  = Username,
+                Password  = Password,   // el servidor hace el hash
+                Correo    = Correo,
+                Birthdate = Birthdate.Value
             };
 
-            _service.CreateUser(nuevo);
+            User creado = _service.CreateUser(nuevo);
 
-            System.Windows.MessageBox.Show("Datos guardados correctamente.");
+            if (creado == null)
+            {
+                System.Windows.MessageBox.Show(
+                    "No se pudo completar el registro.\n" +
+                    "El nombre de usuario o email ya están en uso, o el servidor no está disponible.");
+                return;
+            }
 
-            NavigateToLoginRequested?.Invoke();
-            
+            // Navegar directamente al menú principal con el usuario ya autenticado
+            NavigateToMainMenuRequested?.Invoke(creado);
+            CloseRequested?.Invoke();
         }
 
         private bool ValidarPassword(string pass)
