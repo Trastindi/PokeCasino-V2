@@ -8,8 +8,8 @@ namespace PK_Proyect.Services
     public class CasinoService
     {
         /// <summary>
-        /// Envía el tablero al servidor y recibe el resultado validado.
-        /// El servidor descuenta/suma fichas directamente en BD.
+        /// Envía el tablero y la apuesta al servidor.
+        /// El servidor calcula el payout, actualiza fichas en BD y devuelve el resultado.
         /// </summary>
         public CasinoResultado Jugar(List<List<int>> tablero, int apuesta)
         {
@@ -22,19 +22,6 @@ namespace PK_Proyect.Services
                 });
             }
             catch { return null; }
-        }
-
-        /// <summary>
-        /// Actualiza las fichas del usuario directamente llamando al endpoint de modificar usuario.
-        /// Usado por SlotMachineView tras cada tirada.
-        /// </summary>
-        public void ActualizarFichas(string userId, int fichas)
-        {
-            try
-            {
-                ApiClient.Put<object>($"/usuarios/{userId}", new { fichas = fichas });
-            }
-            catch { /* silencioso, las fichas se actualizan igualmente en /casino/jugar */ }
         }
     }
 

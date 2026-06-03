@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -96,15 +96,12 @@ namespace PK_Proyect.View
         private void CrearSlotMachineSymbols()
         {
             SlotMachineSymbols.Clear();
-
             try
             {
                 var ruta = "../../../Images/SlotMachineSymbols.png";
                 var spritesheet = new BitmapImage(new Uri(ruta, UriKind.Relative));
-
                 const int filas = 6;
                 const int ancho = 79, alto = 79;
-
                 for (int f = 0; f < filas; f++)
                 {
                     Int32Rect rect = new(0 * ancho, f * alto, ancho, alto);
@@ -120,24 +117,19 @@ namespace PK_Proyect.View
         private void CrearSlotMachineNumbers()
         {
             SlotMachineNumbers.Clear();
-
             try
             {
                 var ruta = "../../../Images/SlotMachineNumbers.png";
                 var spritesheet = new BitmapImage(new Uri(ruta, UriKind.Relative));
-
                 const int filas = 2;
                 const int columnas = 5;
                 const int ancho = 41, alto = 41;
-
                 for (int f = 0; f < filas; f++)
-                {
                     for (int c = 0; c < columnas; c++)
                     {
                         Int32Rect rect = new(c * ancho, f * alto, ancho, alto);
                         SlotMachineNumbers.Add(new CroppedBitmap(spritesheet, rect));
                     }
-                }
             }
             catch (Exception ex)
             {
@@ -148,15 +140,10 @@ namespace PK_Proyect.View
         private void DrawCreditNumbers()
         {
             int valuec = creditos;
-
-            int c4 = valuec % 10;
-            valuec /= 10;
-            int c3 = valuec % 10;
-            valuec /= 10;
-            int c2 = valuec % 10;
-            valuec /= 10;
+            int c4 = valuec % 10; valuec /= 10;
+            int c3 = valuec % 10; valuec /= 10;
+            int c2 = valuec % 10; valuec /= 10;
             int c1 = valuec % 10;
-
             Credit_1.Source = SlotMachineNumbers[c1];
             Credit_2.Source = SlotMachineNumbers[c2];
             Credit_3.Source = SlotMachineNumbers[c3];
@@ -166,28 +153,27 @@ namespace PK_Proyect.View
         private void DrawPayOutNumbers()
         {
             int valuep = payout;
-
-            int p4 = valuep % 10;
-            valuep /= 10;
-            int p3 = valuep % 10;
-            valuep /= 10;
-            int p2 = valuep % 10;
-            valuep /= 10;
+            int p4 = valuep % 10; valuep /= 10;
+            int p3 = valuep % 10; valuep /= 10;
+            int p2 = valuep % 10; valuep /= 10;
             int p1 = valuep % 10;
-
             PayOut_1.Source = SlotMachineNumbers[p1];
             PayOut_2.Source = SlotMachineNumbers[p2];
             PayOut_3.Source = SlotMachineNumbers[p3];
             PayOut_4.Source = SlotMachineNumbers[p4];
         }
 
+        /// <summary>
+        /// Transfiere el payout a créditos de forma animada (tick a tick).
+        /// Las fichas ya están actualizadas en BD desde /casino/jugar;
+        /// aquí solo se mueve el contador visual.
+        /// </summary>
         private async void DrawPayOutToCredit()
         {
             int delay = 50;
             while (payout > 0)
             {
                 creditos++;
-                _casinoService.ActualizarFichas(_user.Nombre, creditos);
                 payout--;
                 DrawCreditNumbers();
                 DrawPayOutNumbers();
@@ -208,7 +194,6 @@ namespace PK_Proyect.View
         {
             for (int i = 0; i < 4; i++)
                 roll[i] = roll[i + 1];
-
             roll[4] = rng.Next(0, SlotMachineSymbols.Count);
         }
 
@@ -242,12 +227,8 @@ namespace PK_Proyect.View
             tablero[2, 2] = roll3[3];
         }
 
-        
-
-
-private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-
             if (textoMostrandose) return;
 
             if (!pagando)
@@ -260,7 +241,6 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                             if (coin < 3)
                             {
                                 coin++;
-
                                 if (coin == 2)
                                 {
                                     Coin_2.Visibility = Visibility.Visible;
@@ -278,7 +258,6 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                             if (coin > 1)
                             {
                                 coin--;
-
                                 if (coin == 2)
                                 {
                                     Coin_2.Visibility = Visibility.Visible;
@@ -298,12 +277,14 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                             Coin_1.Visibility = Visibility.Collapsed;
                             Coin_2.Visibility = Visibility.Collapsed;
                             Coin_3.Visibility = Visibility.Collapsed;
+
+                            // El descuento real lo hace el servidor en /casino/jugar.
+                            // Aquí solo actualizamos el contador visual anticipado.
                             creditos -= coin;
-                            _casinoService.ActualizarFichas(_user.Nombre, creditos);
 
                             if (creditos <= 0)
                             {
-                                //TO DO ventana recargar
+                                // TO DO: ventana recargar fichas
                                 creditos = 3;
                             }
                             else
@@ -331,7 +312,6 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                     timer.Start();
                     break;
                 case 1:
-
                     estado = 2;
                     break;
                 case 2:
@@ -341,66 +321,53 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
                     timer.Stop();
                     estado = 0;
                     ComprobarGanar();
-                    
                     break;
             }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            if (estado <= 1)
-            {
-                UpdateRoll(roll1);
-                DrawRoll1();
-            }
-            if (estado <= 2)
-            {
-                UpdateRoll(roll2);
-                DrawRoll2();
-            }
-            if (estado <= 3)
-            {
-                UpdateRoll(roll3);
-                DrawRoll3();
-            }
+            if (estado <= 1) { UpdateRoll(roll1); DrawRoll1(); }
+            if (estado <= 2) { UpdateRoll(roll2); DrawRoll2(); }
+            if (estado <= 3) { UpdateRoll(roll3); DrawRoll3(); }
         }
 
+        /// <summary>
+        /// Envía el tablero al servidor y usa su respuesta para actualizar la UI.
+        /// Toda la lógica de premios y fichas reside exclusivamente en el servidor.
+        /// </summary>
         private async void ComprobarGanar()
         {
-            var lineasGanadoras = new List<string>(); // símbolo de cada línea ganadora
-            int payoutTotal = 0;
-
-            // horizontales
-            bool arriba = tablero[0, 0] == tablero[1, 0] && tablero[0, 0] == tablero[2, 0];
-            bool centro = tablero[0, 1] == tablero[1, 1] && tablero[0, 1] == tablero[2, 1];
-            bool abajo = tablero[0, 2] == tablero[1, 2] && tablero[0, 2] == tablero[2, 2];
-
-            // diagonales
-            bool diag1 = tablero[0, 0] == tablero[1, 1] && tablero[0, 0] == tablero[2, 2];
-            bool diag2 = tablero[0, 2] == tablero[1, 1] && tablero[0, 2] == tablero[2, 0];
-
-            // según coin, qué líneas están activas
-            if (coin >= 1 && centro)
-                lineasGanadoras.Add(SlotMachineIcons[tablero[1, 1]]);
-            if (coin == 3 && arriba)
-                lineasGanadoras.Add(SlotMachineIcons[tablero[1, 0]]);
-            if (coin == 3 && abajo)
-                lineasGanadoras.Add(SlotMachineIcons[tablero[1, 2]]);
-            if (coin >= 2 && diag1)
-                lineasGanadoras.Add(SlotMachineIcons[tablero[1, 1]]);
-            if (coin >= 2 && diag2)
-                lineasGanadoras.Add(SlotMachineIcons[tablero[1, 1]]);
-
-            // calcular payout total
-            foreach (var premio in lineasGanadoras)
-                payoutTotal += GetPayoutForSymbol(premio);
-
-            if (lineasGanadoras.Count == 0)
+            // Construir tablero como List<List<int>> para la serialización JSON
+            var tableroLista = new List<List<int>>
             {
-                // sin premio
-                payout = 0;
-                DrawPayOutNumbers();
-                
+                new() { tablero[0, 0], tablero[0, 1], tablero[0, 2] },
+                new() { tablero[1, 0], tablero[1, 1], tablero[1, 2] },
+                new() { tablero[2, 0], tablero[2, 1], tablero[2, 2] }
+            };
+
+            var resultado = _casinoService.Jugar(tableroLista, coin);
+
+            if (resultado == null)
+            {
+                MessageBox.Show("Error al conectar con el servidor. Inténtalo de nuevo.");
+                coinSeleceted = false;
+                coin = 1;
+                ImgCoinSelector.Visibility = Visibility.Visible;
+                Coin_1.Visibility = Visibility.Visible;
+                return;
+            }
+
+            // Sincronizar fichas con el valor autoritativo del servidor
+            creditos = resultado.FichasFinal;
+            payout   = resultado.Payout;
+
+            DrawCreditNumbers();
+            DrawPayOutNumbers();
+
+            if (resultado.LineasGanadoras == null || resultado.LineasGanadoras.Count == 0)
+            {
+                // Sin premio
                 ImgCoinSelector.Visibility = Visibility.Visible;
                 Coin_1.Visibility = Visibility.Visible;
                 Coin_2.Visibility = Visibility.Collapsed;
@@ -408,49 +375,24 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
             }
             else
             {
-                payout += payoutTotal;
-                DrawPayOutNumbers();
-
-                string mensaje = CrearMensajeVictoria(lineasGanadoras, payoutTotal);
+                string mensaje = CrearMensajeVictoria(resultado.LineasGanadoras, resultado.Payout);
                 await ResultadoTexto(mensaje);
 
                 pagando = true;
                 DrawPayOutToCredit();
-                
             }
 
-            // reset selección
-            
             coinSeleceted = false;
             coin = 1;
-            
-
-        }
-
-        private int GetPayoutForSymbol(string premio)
-        {
-            return premio switch
-            {
-                "Seven" => 300,
-                "Bar" => 100,
-                "Meowth" => 15,
-                "Koffing" => 15,
-                "Arbok" => 15,
-                "Cherry" => 8,
-                _ => 0
-            };
         }
 
         private string CrearMensajeVictoria(List<string> lineasGanadoras, int payoutTotal)
         {
-            // comprobar jackpot: 9 símbolos iguales
             bool jackpot = EsJackpot();
             if (jackpot)
                 return $"Jackpot, has ganado {payoutTotal} fichas.";
 
-            // construir lista de iconos (p.ej. \"Seven, Cherry\")
             string iconos = string.Join(", ", lineasGanadoras.Distinct());
-
             return lineasGanadoras.Count switch
             {
                 1 => $"Premio por línea simple con {iconos}, has ganado {payoutTotal} fichas.",
@@ -465,18 +407,14 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
             int primero = tablero[0, 0];
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++)
-                    if (tablero[x, y] != primero)
-                        return false;
+                    if (tablero[x, y] != primero) return false;
             return true;
         }
-
-
 
         private async Task ResultadoTexto(string texto)
         {
             textoMostrandose = true;
             LblTextContent.Text = "";
-            
             foreach (char c in texto)
             {
                 LblTextContent.Text += c;
@@ -484,99 +422,66 @@ private void Window_KeyDown(object sender, KeyEventArgs e)
             }
         }
 
-
         private void BackgroundMusic_MediaEnded(object sender, RoutedEventArgs e)
         {
             var media = sender as MediaElement;
-
-            media.Position = TimeSpan.Zero; // reinicia desde el inicio
+            media.Position = TimeSpan.Zero;
             media.Play();
-
         }
-
 
         private void BackgroundMusic_Loaded(object sender, RoutedEventArgs e)
         {
             var media = sender as MediaElement;
-
-            // Dejamos que arranque automáticamente (LoadedBehavior="Play")
-            // y luego lo pasamos a Manual en cuanto el Dispatcher lo permita
             Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Background,
                 new System.Windows.Threading.DispatcherOperationCallback(CambiarAManual),
-                media
-            );
+                media);
         }
 
         private object CambiarAManual(object arg)
         {
             var media = arg as MediaElement;
-
             media.LoadedBehavior = MediaState.Manual;
             FinalizarSegundosAntes(media);
-
             return null;
         }
 
         private void BackgroundMusic_MediaOpened(object sender, RoutedEventArgs e)
         {
-           
             BackgroundMusic.Play();
-
-            // Activamos el sistema de corte anticipado
             FinalizarSegundosAntes(BackgroundMusic);
         }
 
-
-
         private void LoopTimer_Tick(object sender, EventArgs e)
         {
-            if (mediaGlobal == null)
-                return;
-
-
+            if (mediaGlobal == null) return;
             if (!mediaGlobal.NaturalDuration.HasTimeSpan) return;
-
             Debug.WriteLine(mediaGlobal.Position);
-
-            // Si estamos a menos de 8 segundos del final, reiniciar
-            if (mediaGlobal.Position >= puntoCorte - margen) { 
-                
-                mediaGlobal.Position = inicioLoop; 
-                mediaGlobal.Play(); 
+            if (mediaGlobal.Position >= puntoCorte - margen)
+            {
+                mediaGlobal.Position = inicioLoop;
+                mediaGlobal.Play();
             }
-
-            
-
         }
 
         private void FinalizarSegundosAntes(MediaElement media)
         {
             mediaGlobal = media;
-
             LoopTimer = new DispatcherTimer();
             LoopTimer.Interval = TimeSpan.FromSeconds(2);
             LoopTimer.Tick += LoopTimer_Tick;
             LoopTimer.Start();
         }
 
-
         private void SlotMachineView_Closed(object sender, EventArgs e)
         {
             try
             {
-                // Detener música
                 BackgroundMusic.Stop();
                 BackgroundMusic.Close();
-
-                // Detener loop manual
-                if (LoopTimer != null)
-                    LoopTimer.Stop();
+                if (LoopTimer != null) LoopTimer.Stop();
             }
             catch { }
         }
-
-
-
     }
 }
