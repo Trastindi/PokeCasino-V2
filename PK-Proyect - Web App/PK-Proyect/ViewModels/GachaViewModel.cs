@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -201,19 +202,46 @@ namespace PK_Proyect.ViewModels.Banners
             // Ejecutar en background para no bloquear UI
             await Task.Run(async () =>
             {
+                Debug.WriteLine($"[TIRADA SINGLE] Usuario ID: '{Usuario.Id}'");
+                Debug.WriteLine($"[TIRADA SINGLE] Usuario Nombre: '{Usuario.Nombre}'");
+                Debug.WriteLine($"[TIRADA SINGLE] Fichas antes: {Usuario.FichasCasino}");
+
                 Usuario.FichasCasino -= COSTE;
-                new UserRepository().UpdateUser(Usuario);
+                Debug.WriteLine($"[TIRADA SINGLE] Fichas después de restar: {Usuario.FichasCasino}");
+                
+                try
+                {
+                    new UserRepository().UpdateUser(Usuario);
+                    Debug.WriteLine($"[TIRADA SINGLE] Usuario actualizado en BD");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[TIRADA SINGLE] ERROR al actualizar usuario: {ex.Message}");
+                    throw;
+                }
 
                 var sorteo = Tirar();
-                if (sorteo == null) return;
+                if (sorteo == null)
+                {
+                    Debug.WriteLine($"[TIRADA SINGLE] No se obtuvo ningún Pokémon");
+                    return;
+                }
 
                 var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-                if (poke == null) return;
+                if (poke == null)
+                {
+                    Debug.WriteLine($"[TIRADA SINGLE] Pokémon ID {sorteo.Id} no encontrado en Pokédex");
+                    return;
+                }
+
+                Debug.WriteLine($"[TIRADA SINGLE] Pokémon obtenido: {poke.Nombre}");
 
                 var resultado = _pokemonUserService.ObtenerPokemon(
                     Usuario.Id, poke.numero_pokedex, poke.Nombre,
                     poke.TipoPrincipal, poke.TipoSecundario,
                     poke.EstadisticasBase?.Ps ?? 0);
+
+                Debug.WriteLine($"[TIRADA SINGLE] Resultado obtenido del servicio");
 
                 new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
                 {
@@ -224,6 +252,8 @@ namespace PK_Proyect.ViewModels.Banners
                     TipoTirada   = "single",
                     Fecha        = DateTime.Now
                 });
+
+                Debug.WriteLine($"[TIRADA SINGLE] Tirada registrada en historial");
 
                 ProcesarLevelUp(resultado);
 
@@ -253,8 +283,23 @@ namespace PK_Proyect.ViewModels.Banners
             // Ejecutar en background para no bloquear UI
             await Task.Run(async () =>
             {
+                Debug.WriteLine($"[TIRADA MULTI] Usuario ID: '{Usuario.Id}'");
+                Debug.WriteLine($"[TIRADA MULTI] Usuario Nombre: '{Usuario.Nombre}'");
+                Debug.WriteLine($"[TIRADA MULTI] Fichas antes: {Usuario.FichasCasino}");
+
                 Usuario.FichasCasino -= COSTE;
-                new UserRepository().UpdateUser(Usuario);
+                Debug.WriteLine($"[TIRADA MULTI] Fichas después de restar: {Usuario.FichasCasino}");
+
+                try
+                {
+                    new UserRepository().UpdateUser(Usuario);
+                    Debug.WriteLine($"[TIRADA MULTI] Usuario actualizado en BD");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[TIRADA MULTI] ERROR al actualizar usuario: {ex.Message}");
+                    throw;
+                }
 
                 var resultadosMulti = new List<PokemonUser>();
                 var repoHist = new HistoricoTiradasRepository();
@@ -285,6 +330,8 @@ namespace PK_Proyect.ViewModels.Banners
                     ProcesarLevelUp(resultado);
                     resultadosMulti.Add(resultado.Pokemon);
                 }
+
+                Debug.WriteLine($"[TIRADA MULTI] {resultadosMulti.Count} Pokémon obtenidos");
 
                 // Mostrar resultado en el UI Thread
                 Application.Current.Dispatcher.Invoke(() =>
