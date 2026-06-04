@@ -31,8 +31,8 @@ namespace PK_Proyect.ViewModels.Banners
 
         public ObservableCollection<PokemonZonaViewModel> PokemonDisponibles { get; set; }
 
-        public ICommand Tirar1Command   { get; }
-        public ICommand Tirar10Command  { get; }
+        public ICommand Tirar1Command         { get; }
+        public ICommand Tirar10Command        { get; }
         public ICommand MostrarPokemonCommand  { get; }
         public ICommand MostrarZonasCommand    { get; }
         public ICommand HistorialCommand       { get; }
@@ -68,16 +68,19 @@ namespace PK_Proyect.ViewModels.Banners
 
             MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
-            HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
+            // HistorialCommand ahora es async para no bloquear el UI thread
+            HistorialCommand      = new AsyncRelayCommand(async () => await MostrarHistorialAsync());
             _pokemonUserService   = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
 
             _ = CargarZonaAsync();
         }
 
-        private void MostrarHistorial()
+        private async Task MostrarHistorialAsync()
         {
             var vm = new HistoricoTiradasViewModel(Usuario.Id);
+            // CargarAsync carga el historial desde la API sin bloquear el UI thread
+            await vm.CargarAsync();
             var ventana = new HistoricoTiradasView(vm);
             ventana.ShowDialog();
         }
@@ -189,8 +192,9 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            LevelUpResultado resultado = null;
-            await Task.Run(() =>
+            PokemonUser pokemon = null;
+
+            await Task.Run(async () =>
             {
                 Debug.WriteLine($"[TIRADA SINGLE] Fichas antes: {Usuario.FichasCasino}");
                 Usuario.FichasCasino -= COSTE;
@@ -202,8 +206,8 @@ namespace PK_Proyect.ViewModels.Banners
                 var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
                 if (poke == null) return;
 
-                resultado = _pokemonUserService.ObtenerPokemon(
-                    Usuario.Id, poke.numero_pokedex, poke.Nombre,
+                pokemon = await _pokemonUserService.ObtenerPokemonAsync(
+                    poke.numero_pokedex, poke.Nombre,
                     poke.TipoPrincipal, poke.TipoSecundario,
                     poke.EstadisticasBase?.Ps ?? 0);
 
@@ -218,18 +222,13 @@ namespace PK_Proyect.ViewModels.Banners
                 });
             });
 
-            if (resultado == null) return;
+            if (pokemon == null) return;
 
-            // ActualizarFichas ahora es async: no bloquea el UI Thread
             await ActualizarFichasAsync();
 
             MessageBox.Show(
-                $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
-                $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
-                $"Nivel actual: {resultado.Pokemon.Nivel}",
+                $"¡Has obtenido a {pokemon.Nombre}!",
                 "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            ProcesarLevelUp(resultado);
         }
 
         private async Task TiradaMultiAsync()
@@ -242,10 +241,9 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            var resultadosMulti   = new List<PokemonUser>();
-            var resultadosLevelUp = new List<LevelUpResultado>();
+            var pokemonesObtenidos = new List<PokemonUser>();
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Debug.WriteLine($"[TIRADA MULTI] Fichas antes: {Usuario.FichasCasino}");
                 Usuario.FichasCasino -= COSTE;
@@ -261,8 +259,8 @@ namespace PK_Proyect.ViewModels.Banners
                     var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
                     if (poke == null) continue;
 
-                    var resultado = _pokemonUserService.ObtenerPokemon(
-                        Usuario.Id, poke.numero_pokedex, poke.Nombre,
+                    var obtenido = await _pokemonUserService.ObtenerPokemonAsync(
+                        poke.numero_pokedex, poke.Nombre,
                         poke.TipoPrincipal, poke.TipoSecundario,
                         poke.EstadisticasBase?.Ps ?? 0);
 
@@ -276,88 +274,19 @@ namespace PK_Proyect.ViewModels.Banners
                         Fecha         = DateTime.Now
                     });
 
-                    resultadosMulti.Add(resultado.Pokemon);
-                    resultadosLevelUp.Add(resultado);
+                    if (obtenido != null)
+                        pokemonesObtenidos.Add(obtenido);
                 }
             });
 
-            // ActualizarFichas async: no bloquea el UI Thread
             await ActualizarFichasAsync();
-            new ResultadosMultiView(resultadosMulti).ShowDialog();
-
-            foreach (var r in resultadosLevelUp)
-                ProcesarLevelUp(r);
-        }
-
-        // ----------------------------------------------------------------
-        // Procesar level-up (siempre en UI Thread)
-        // ----------------------------------------------------------------
-        private void ProcesarLevelUp(LevelUpResultado resultado)
-        {
-            if (resultado.MovimientoAprendido != null)
-            {
-                if (resultado.MovimientoAprendidoDirectamente)
-                {
-                    MessageBox.Show(
-                        $"¡{resultado.Pokemon.Nombre} ha aprendido {resultado.MovimientoAprendido}!",
-                        "Nuevo movimiento", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    var ventana = new ElegirMovimientoWindow(
-                        resultado.MovimientoAprendido,
-                        resultado.Pokemon.MoveSet);
-
-                    if (ventana.ShowDialog() == true)
-                    {
-                        _pokemonUserService.AplicarMovimiento(
-                            resultado.Pokemon,
-                            ventana.IndiceElegido,
-                            resultado.MovimientoAprendido);
-                    }
-                }
-            }
-
-            if (resultado.Evoluciono)
-            {
-                MessageBox.Show(
-                    $"¡Enhorabuena! ¡Tu Pokémon ha evolucionado a {resultado.NombreEvolucion}!",
-                    "¡Evolución!", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                if (resultado.MovimientoEvolucion != null)
-                {
-                    if (resultado.MovimientoEvolucionDirectamente)
-                    {
-                        MessageBox.Show(
-                            $"¡{resultado.NombreEvolucion} ha aprendido {resultado.MovimientoEvolucion}!",
-                            "Nuevo movimiento", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        var ventana = new ElegirMovimientoWindow(
-                            resultado.MovimientoEvolucion,
-                            resultado.Pokemon.MoveSet);
-
-                        if (ventana.ShowDialog() == true)
-                        {
-                            _pokemonUserService.AplicarMovimiento(
-                                resultado.Pokemon,
-                                ventana.IndiceElegido,
-                                resultado.MovimientoEvolucion);
-                        }
-                    }
-                }
-            }
+            new ResultadosMultiView(pokemonesObtenidos).ShowDialog();
         }
 
         // ----------------------------------------------------------------
         // Helpers
         // ----------------------------------------------------------------
 
-        /// <summary>
-        /// Recarga el usuario desde el servidor de forma asíncrona.
-        /// Llamar siempre con await, nunca en un hilo de fondo.
-        /// </summary>
         private async Task ActualizarFichasAsync()
         {
             Usuario = await ApiClient.GetAsync<User>($"/usuarios/{Usuario.Id}");

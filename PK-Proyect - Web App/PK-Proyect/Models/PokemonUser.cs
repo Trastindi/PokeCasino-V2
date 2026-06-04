@@ -9,7 +9,6 @@ namespace PK_Proyect.Models
     [BsonIgnoreExtraElements]
     public class PokemonUser
     {
-        // El servidor almacena y devuelve el campo como "numero_pokedex"
         [BsonElement("numero_pokedex")]
         [JsonPropertyName("numero_pokedex")]
         public int numero_pokedex { get; set; }
@@ -61,5 +60,12 @@ namespace PK_Proyect.Models
 
         [JsonPropertyName("HiddenPowerPower")]
         public int HiddenPowerPower { get; set; } = 0;
+
+        /// <summary>
+        /// Moneda de fragmentos. Reservado para uso futuro.
+        /// Se obtiene acumulando Pokémon duplicados u otras acciones.
+        /// </summary>
+        [JsonPropertyName("Shards")]
+        public int Shards { get; set; } = 0;
     }
 }

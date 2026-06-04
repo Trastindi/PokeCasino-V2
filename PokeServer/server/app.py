@@ -442,6 +442,11 @@ def mis_pokemon(current_user):
 @app.post("/pokemon/obtener")
 @token_required
 def obtener_pokemon(current_user):
+    """
+    Siempre crea un nuevo documento PokemonUser a nivel 1.
+    Nunca sube de nivel ni evoluciona: cada tirada es una carta nueva.
+    El campo 'Shards' queda reservado para uso futuro.
+    """
     try:
         data       = request.json or {}
         pokemon_id = int(data.get("pokemon_id"))
@@ -452,102 +457,37 @@ def obtener_pokemon(current_user):
         uid        = str(current_user["_id"])
         uname      = gf(current_user, "Username", "username", default="")
 
-        existente = pokemon_user.find_one({"UserId": uid, "PokemonId": pokemon_id})
-
-        resultado = {
-            "movimiento_aprendido":              None,
-            "movimiento_aprendido_directamente": False,
-            "movimiento_evolucion":              None,
-            "movimiento_evolucion_directamente": False,
-            "evoluciono":      False,
-            "nombre_evolucion": None,
-            "pokemon":          None,
-        }
-
-        # ---------- NUEVO POKÉMON ----------
-        if existente is None:
-            pdex    = pokedex.find_one({"numero_pokedex": pokemon_id})
-            moveset = []
-            if pdex:
-                for m in pdex.get("movimientos", []):
-                    if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(moveset) < 4:
-                        moveset.append(m["nombre"])
-            nuevo = {
-                "UserId": uid, "Username": uname,
-                "PokemonId": pokemon_id, "numero_pokedex": pokemon_id,
-                "Nombre": nombre, "TipoPrincipal": tipo1, "TipoSecundario": tipo2,
-                "Nivel": 1, "Cantidad": 1,
-                "FechaObtenido": datetime.datetime.utcnow().isoformat(),
-                "HiddenPowerSeed":  random.randint(0, 15),
-                "HiddenPowerPower": (random.randint(31, 70) + random.randint(31, 70)) // 2,
-                "CurrentHp": current_hp, "MoveSet": moveset,
-                "AbilityId": None, "ItemId": None, "Status": None,
-            }
-            pokemon_user.insert_one(nuevo)
-            _recalcular_pokes(uid)
-            nuevo["_id"] = str(nuevo["_id"])
-            resultado["pokemon"] = nuevo
-            return jsonify(resultado), 201
-
-        # ---------- SUBIDA DE NIVEL ----------
-        id_orig = existente["PokemonId"]
-        existente["Cantidad"]  += 1
-        existente["Nivel"]     += 1
-        existente["Username"]   = uname
-        if not existente.get("HiddenPowerSeed"):
-            existente["HiddenPowerSeed"]  = random.randint(0, 15)
-            existente["HiddenPowerPower"] = (random.randint(31, 70) + random.randint(31, 70)) // 2
-        if not existente.get("CurrentHp"):
-            existente["CurrentHp"] = current_hp
-        if existente.get("MoveSet") is None:
-            existente["MoveSet"] = []
-
-        pdex = pokedex.find_one({"numero_pokedex": pokemon_id})
-
+        pdex    = pokedex.find_one({"numero_pokedex": pokemon_id})
+        moveset = []
         if pdex:
-            mov = next((m for m in pdex.get("movimientos", [])
-                        if m.get("metodo") == "nivel"
-                        and m.get("nivel") == existente["Nivel"]
-                        and m["nombre"] not in existente["MoveSet"]), None)
-            if mov:
-                resultado["movimiento_aprendido"] = mov["nombre"]
-                if len(existente["MoveSet"]) < 4:
-                    existente["MoveSet"].append(mov["nombre"])
-                    resultado["movimiento_aprendido_directamente"] = True
+            for m in pdex.get("movimientos", []):
+                if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(moveset) < 4:
+                    moveset.append(m["nombre"])
 
-        evo = pdex.get("evolucion") if pdex else None
-        if (evo and evo.get("metodo") == "subida_nivel"
-                and evo.get("nivel") is not None
-                and existente["Nivel"] >= evo["nivel"]):
-
-            datos_evo = pokedex.find_one({"nombre": evo["nombre"]})
-            existente["Nombre"]         = evo["nombre"]
-            existente["PokemonId"]      = datos_evo["numero_pokedex"] if datos_evo else existente["PokemonId"]
-            existente["numero_pokedex"] = existente["PokemonId"]
-            if datos_evo:
-                tipos_evo = datos_evo.get("tipos", [])
-                existente["TipoPrincipal"]  = tipos_evo[0] if tipos_evo else existente["TipoPrincipal"]
-                existente["TipoSecundario"] = tipos_evo[1] if len(tipos_evo) > 1 else None
-                existente["CurrentHp"]      = datos_evo.get("estadisticas_base", {}).get("ps", existente["CurrentHp"])
-            resultado["evoluciono"]       = True
-            resultado["nombre_evolucion"] = evo["nombre"]
-
-            if datos_evo:
-                mov_evo = next((m for m in datos_evo.get("movimientos", [])
-                                if m.get("metodo") == "nivel" and m.get("nivel") == 1
-                                and m["nombre"] not in existente["MoveSet"]), None)
-                if mov_evo:
-                    resultado["movimiento_evolucion"] = mov_evo["nombre"]
-                    if len(existente["MoveSet"]) < 4:
-                        existente["MoveSet"].append(mov_evo["nombre"])
-                        resultado["movimiento_evolucion_directamente"] = True
-
-        pk_id = existente.pop("_id")
-        pokemon_user.replace_one({"UserId": uid, "PokemonId": id_orig}, existente)
-        existente["_id"] = str(pk_id)
+        nuevo = {
+            "UserId":          uid,
+            "Username":        uname,
+            "PokemonId":       pokemon_id,
+            "numero_pokedex":  pokemon_id,
+            "Nombre":          nombre,
+            "TipoPrincipal":   tipo1,
+            "TipoSecundario":  tipo2,
+            "Nivel":           1,
+            "Cantidad":        1,
+            "FechaObtenido":   datetime.datetime.utcnow().isoformat(),
+            "HiddenPowerSeed":  random.randint(0, 15),
+            "HiddenPowerPower": (random.randint(31, 70) + random.randint(31, 70)) // 2,
+            "CurrentHp":       current_hp,
+            "MoveSet":         moveset,
+            "AbilityId":       None,
+            "ItemId":          None,
+            "Status":          None,
+            "Shards":          0,
+        }
+        pokemon_user.insert_one(nuevo)
         _recalcular_pokes(uid)
-        resultado["pokemon"] = existente
-        return jsonify(resultado), 200
+        nuevo["_id"] = str(nuevo["_id"])
+        return jsonify(nuevo), 201
 
     except Exception:
         import traceback; traceback.print_exc()

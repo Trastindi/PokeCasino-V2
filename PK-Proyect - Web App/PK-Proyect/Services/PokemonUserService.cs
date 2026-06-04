@@ -1,24 +1,23 @@
 using PK_Proyect.Models;
-using PK_Proyect.Repositories;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace PK_Proyect.Services
 {
     public class PokemonUserService
     {
         /// <summary>
-        /// Delega toda la lógica de obtención / subida de nivel / evolución al servidor Flask.
-        /// El servidor devuelve un LevelUpResultado serializado.
+        /// Llama al servidor para crear un nuevo PokemonUser a nivel 1.
+        /// El servidor siempre inserta un documento nuevo (nunca sube de nivel).
+        /// Devuelve el PokemonUser creado, o null si falla.
         /// </summary>
-        public LevelUpResultado ObtenerPokemon(
-            string userId, int pokemonId, string nombre,
+        public async Task<PokemonUser> ObtenerPokemonAsync(
+            int pokemonId, string nombre,
             string tipo1, string tipo2, int currentHp)
         {
             try
             {
-                var resp = ApiClient.Post<LevelUpResultadoDto>("/pokemon/obtener", new
+                return await ApiClient.PostAsync<PokemonUser>("/pokemon/obtener", new
                 {
                     pokemon_id = pokemonId,
                     nombre     = nombre,
@@ -26,21 +25,10 @@ namespace PK_Proyect.Services
                     tipo2      = tipo2,
                     current_hp = currentHp
                 });
-
-                return new LevelUpResultado
-                {
-                    Pokemon                          = resp.Pokemon,
-                    MovimientoAprendido              = resp.MovimientoAprendido,
-                    MovimientoAprendidoDirectamente  = resp.MovimientoAprendidoDirectamente,
-                    MovimientoEvolucion              = resp.MovimientoEvolucion,
-                    MovimientoEvolucionDirectamente  = resp.MovimientoEvolucionDirectamente,
-                    Evoluciono                       = resp.Evoluciono,
-                    NombreEvolucion                  = resp.NombreEvolucion
-                };
             }
             catch
             {
-                return new LevelUpResultado();
+                return null;
             }
         }
 
@@ -58,18 +46,6 @@ namespace PK_Proyect.Services
         {
             var lista = ApiClient.Get<List<PokemonUser>>($"/usuarios/{userId}/pokemon");
             return lista.FindAll(p => p.TipoPrincipal == tipo).Count;
-        }
-
-        // DTO interno para deserializar la respuesta Flask
-        private class LevelUpResultadoDto
-        {
-            [JsonPropertyName("pokemon")]                           public PokemonUser Pokemon                         { get; set; }
-            [JsonPropertyName("movimiento_aprendido")]              public string      MovimientoAprendido             { get; set; }
-            [JsonPropertyName("movimiento_aprendido_directamente")] public bool        MovimientoAprendidoDirectamente { get; set; }
-            [JsonPropertyName("movimiento_evolucion")]              public string      MovimientoEvolucion             { get; set; }
-            [JsonPropertyName("movimiento_evolucion_directamente")] public bool        MovimientoEvolucionDirectamente { get; set; }
-            [JsonPropertyName("evoluciono")]                        public bool        Evoluciono                      { get; set; }
-            [JsonPropertyName("nombre_evolucion")]                  public string      NombreEvolucion                 { get; set; }
         }
     }
 }
