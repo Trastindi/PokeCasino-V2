@@ -27,16 +27,20 @@ namespace PK_Proyect.ViewModels.Banners
 
         public User Usuario { get; set; }
         public string NombreZona { get; set; }
+
+        // Alias para el binding del XAML ({Binding ZonaNombre})
+        public string ZonaNombre => NombreZona;
+
         public ObservableCollection<PokemonZonaViewModel> PokemonDisponibles { get; set; }
 
         public ICommand Tirar1Command   { get; }
         public ICommand Tirar10Command  { get; }
-        public ICommand MostrarPokemonCommand { get; }
-        public ICommand MostrarZonasCommand   { get; }
-        public ICommand HistorialCommand      { get; }
-        public ICommand DebugBuscarZonaCommand  { get; }
-        public ICommand DebugIdNombreCommand    { get; }
-        public ICommand DebugPokedexCommand     { get; }
+        public ICommand MostrarPokemonCommand  { get; }
+        public ICommand MostrarZonasCommand    { get; }
+        public ICommand HistorialCommand       { get; }
+        public ICommand DebugBuscarZonaCommand { get; }
+        public ICommand DebugIdNombreCommand   { get; }
+        public ICommand DebugPokedexCommand    { get; }
 
         private int _fichas;
         public int Fichas
@@ -61,29 +65,15 @@ namespace PK_Proyect.ViewModels.Banners
             _pokedexRepo = new PokedexRepository();
             PokemonDisponibles = new ObservableCollection<PokemonZonaViewModel>();
 
-            Tirar1Command         = new AsyncRelayCommand(async () => await TiradaSingleAsync());
-            Tirar10Command        = new AsyncRelayCommand(async () => await TiradaMultiAsync());
+            Tirar1Command  = new AsyncRelayCommand(async () => await TiradaSingleAsync());
+            Tirar10Command = new AsyncRelayCommand(async () => await TiradaMultiAsync());
 
-            // //Temporalmente para probar
-            // Tirar1Command         = new RelayCommand(_ => 
-            // {
-            //     Debug.WriteLine("[TEST] Tirar1Command fue ejecutado");
-            //     _ = TiradaSingleAsync();
-            // });
-            // Tirar10Command        = new RelayCommand(_ => 
-            // {
-            //     Debug.WriteLine("[TEST] Tirar10Command fue ejecutado");
-            //     _ = TiradaMultiAsync();
-            // });
-
-            
             MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new RelayCommand(_ => MostrarHistorial());
-            _pokemonUserService = new PokemonUserService();
+            _pokemonUserService   = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
 
-            // Fire-and-forget: carga la zona en background sin bloquear el UI Thread.
             _ = CargarZonaAsync();
         }
 
@@ -97,11 +87,6 @@ namespace PK_Proyect.ViewModels.Banners
             ventana.ShowDialog();
         }
 
-        /// <summary>
-        /// Carga los Pokémon de la zona en un hilo de fondo para no bloquear el UI Thread.
-        /// Toda la I/O de red (MongoDB Atlas + API Flask) se ejecuta dentro de Task.Run.
-        /// Al terminar, vuelve al UI Thread para actualizar PokemonDisponibles.
-        /// </summary>
         public async Task CargarZonaAsync()
         {
             Cargando = true;
@@ -109,7 +94,6 @@ namespace PK_Proyect.ViewModels.Banners
 
             try
             {
-                // --- toda la I/O en hilo de fondo ---
                 Zona zonaEncontrada = null;
                 Dictionary<int, Pokemon> pokesEncontrados = null;
 
@@ -132,7 +116,6 @@ namespace PK_Proyect.ViewModels.Banners
 
                     zonaEncontrada = z;
 
-                    // Consultar la API por cada Pokémon de la zona
                     var mapa = new Dictionary<int, Pokemon>();
                     foreach (PokemonZona p in z.Pokemon)
                     {
@@ -143,7 +126,6 @@ namespace PK_Proyect.ViewModels.Banners
                     pokesEncontrados = mapa;
                 });
 
-                // --- de vuelta al UI Thread ---
                 if (zonaEncontrada == null)
                 {
                     MessageBox.Show($"No se encontró la zona '{NombreZona}'.",
@@ -184,7 +166,6 @@ namespace PK_Proyect.ViewModels.Banners
             }
         }
 
-        /// <summary>Alias público síncrono para compatibilidad con subclases existentes.</summary>
         public void CargarZona() => _ = CargarZonaAsync();
 
         // ----------------------------------------------------------------
@@ -213,75 +194,49 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            // Ejecutar en background para no bloquear UI
-            await Task.Run(async () =>
+            // --- I/O en hilo de fondo ---
+            LevelUpResultado resultado = null;
+            await Task.Run(() =>
             {
-                Debug.WriteLine($"[TIRADA SINGLE] Usuario ID: '{Usuario.Id}'");
-                Debug.WriteLine($"[TIRADA SINGLE] Usuario Nombre: '{Usuario.Nombre}'");
                 Debug.WriteLine($"[TIRADA SINGLE] Fichas antes: {Usuario.FichasCasino}");
-
                 Usuario.FichasCasino -= COSTE;
-                Debug.WriteLine($"[TIRADA SINGLE] Fichas después de restar: {Usuario.FichasCasino}");
-                
-                try
-                {
-                    new UserRepository().UpdateUser(Usuario);
-                    Debug.WriteLine($"[TIRADA SINGLE] Usuario actualizado en BD");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[TIRADA SINGLE] ERROR al actualizar usuario: {ex.Message}");
-                    throw;
-                }
+
+                new UserRepository().UpdateUser(Usuario);
 
                 var sorteo = Tirar();
-                if (sorteo == null)
-                {
-                    Debug.WriteLine($"[TIRADA SINGLE] No se obtuvo ningún Pokémon");
-                    return;
-                }
+                if (sorteo == null) return;
 
                 var poke = _pokedexRepo.ObtenerPorId(sorteo.Id);
-                if (poke == null)
-                {
-                    Debug.WriteLine($"[TIRADA SINGLE] Pokémon ID {sorteo.Id} no encontrado en Pokédex");
-                    return;
-                }
+                if (poke == null) return;
 
-                Debug.WriteLine($"[TIRADA SINGLE] Pokémon obtenido: {poke.Nombre}");
-
-                var resultado = _pokemonUserService.ObtenerPokemon(
+                resultado = _pokemonUserService.ObtenerPokemon(
                     Usuario.Id, poke.numero_pokedex, poke.Nombre,
                     poke.TipoPrincipal, poke.TipoSecundario,
                     poke.EstadisticasBase?.Ps ?? 0);
 
-                Debug.WriteLine($"[TIRADA SINGLE] Resultado obtenido del servicio");
-
                 new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
                 {
-                    UserId       = Usuario.Id,
-                    PokemonId    = poke.numero_pokedex,
+                    UserId        = Usuario.Id,
+                    PokemonId     = poke.numero_pokedex,
                     NombrePokemon = poke.Nombre,
-                    Zona         = NombreZona,
-                    TipoTirada   = "single",
-                    Fecha        = DateTime.Now
-                });
-
-                Debug.WriteLine($"[TIRADA SINGLE] Tirada registrada en historial");
-
-                ProcesarLevelUp(resultado);
-
-                // Mostrar resultado en el UI Thread
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    ActualizarFichas();
-                    MessageBox.Show(
-                        $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
-                        $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
-                        $"Nivel actual: {resultado.Pokemon.Nivel}",
-                        "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Zona          = NombreZona,
+                    TipoTirada    = "single",
+                    Fecha         = DateTime.Now
                 });
             });
+
+            // --- De vuelta al UI Thread: todo lo que abre ventanas o MessageBox ---
+            if (resultado == null) return;
+
+            ActualizarFichas();
+
+            MessageBox.Show(
+                $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
+                $"Cantidad total: {resultado.Pokemon.Cantidad}\n" +
+                $"Nivel actual: {resultado.Pokemon.Nivel}",
+                "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            ProcesarLevelUp(resultado);
         }
 
         private async Task TiradaMultiAsync()
@@ -294,28 +249,17 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            // Ejecutar en background para no bloquear UI
-            await Task.Run(async () =>
+            // --- I/O en hilo de fondo ---
+            var resultadosMulti   = new List<PokemonUser>();
+            var resultadosLevelUp = new List<LevelUpResultado>();
+
+            await Task.Run(() =>
             {
-                Debug.WriteLine($"[TIRADA MULTI] Usuario ID: '{Usuario.Id}'");
-                Debug.WriteLine($"[TIRADA MULTI] Usuario Nombre: '{Usuario.Nombre}'");
                 Debug.WriteLine($"[TIRADA MULTI] Fichas antes: {Usuario.FichasCasino}");
-
                 Usuario.FichasCasino -= COSTE;
-                Debug.WriteLine($"[TIRADA MULTI] Fichas después de restar: {Usuario.FichasCasino}");
 
-                try
-                {
-                    new UserRepository().UpdateUser(Usuario);
-                    Debug.WriteLine($"[TIRADA MULTI] Usuario actualizado en BD");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[TIRADA MULTI] ERROR al actualizar usuario: {ex.Message}");
-                    throw;
-                }
+                new UserRepository().UpdateUser(Usuario);
 
-                var resultadosMulti = new List<PokemonUser>();
                 var repoHist = new HistoricoTiradasRepository();
 
                 for (int i = 0; i < 10; i++)
@@ -341,23 +285,22 @@ namespace PK_Proyect.ViewModels.Banners
                         Fecha         = DateTime.Now
                     });
 
-                    ProcesarLevelUp(resultado);
                     resultadosMulti.Add(resultado.Pokemon);
+                    resultadosLevelUp.Add(resultado);
                 }
-
-                Debug.WriteLine($"[TIRADA MULTI] {resultadosMulti.Count} Pokémon obtenidos");
-
-                // Mostrar resultado en el UI Thread
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    ActualizarFichas();
-                    new ResultadosMultiView(resultadosMulti).ShowDialog();
-                });
             });
+
+            // --- De vuelta al UI Thread ---
+            ActualizarFichas();
+            new ResultadosMultiView(resultadosMulti).ShowDialog();
+
+            // Procesar level-ups en orden, ya en el UI Thread
+            foreach (var r in resultadosLevelUp)
+                ProcesarLevelUp(r);
         }
 
         // ----------------------------------------------------------------
-        // Procesar resultado de subida de nivel (movimiento + evolución)
+        // Procesar resultado de subida de nivel (SIEMPRE en UI Thread)
         // ----------------------------------------------------------------
         private void ProcesarLevelUp(LevelUpResultado resultado)
         {

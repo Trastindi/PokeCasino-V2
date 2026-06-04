@@ -163,11 +163,6 @@ namespace PK_Proyect.View
             PayOut_4.Source = SlotMachineNumbers[p4];
         }
 
-        /// <summary>
-        /// Transfiere el payout a créditos de forma animada (tick a tick).
-        /// Las fichas ya están actualizadas en BD desde /casino/jugar;
-        /// aquí solo se mueve el contador visual.
-        /// </summary>
         private async void DrawPayOutToCredit()
         {
             int delay = 50;
@@ -278,13 +273,10 @@ namespace PK_Proyect.View
                             Coin_2.Visibility = Visibility.Collapsed;
                             Coin_3.Visibility = Visibility.Collapsed;
 
-                            // El descuento real lo hace el servidor en /casino/jugar.
-                            // Aquí solo actualizamos el contador visual anticipado.
                             creditos -= coin;
 
                             if (creditos <= 0)
                             {
-                                // TO DO: ventana recargar fichas
                                 creditos = 3;
                             }
                             else
@@ -320,7 +312,7 @@ namespace PK_Proyect.View
                 case 3:
                     timer.Stop();
                     estado = 0;
-                    ComprobarGanar();
+                    _ = ComprobarGanarAsync();
                     break;
             }
         }
@@ -333,12 +325,11 @@ namespace PK_Proyect.View
         }
 
         /// <summary>
-        /// Envía el tablero al servidor y usa su respuesta para actualizar la UI.
-        /// Toda la lógica de premios y fichas reside exclusivamente en el servidor.
+        /// Envía el tablero al servidor de forma asíncrona para no bloquear el UI Thread.
+        /// La llamada HTTP ocurre en un hilo de fondo; la UI se actualiza al volver.
         /// </summary>
-        private async void ComprobarGanar()
+        private async Task ComprobarGanarAsync()
         {
-            // Construir tablero como List<List<int>> para la serialización JSON
             var tableroLista = new List<List<int>>
             {
                 new() { tablero[0, 0], tablero[0, 1], tablero[0, 2] },
@@ -346,7 +337,8 @@ namespace PK_Proyect.View
                 new() { tablero[2, 0], tablero[2, 1], tablero[2, 2] }
             };
 
-            var resultado = _casinoService.Jugar(tableroLista, coin);
+            // La llamada HTTP ya no bloquea el UI Thread
+            CasinoResultado resultado = await _casinoService.JugarAsync(tableroLista, coin);
 
             if (resultado == null)
             {
@@ -358,7 +350,6 @@ namespace PK_Proyect.View
                 return;
             }
 
-            // Sincronizar fichas con el valor autoritativo del servidor
             creditos = resultado.FichasFinal;
             payout   = resultado.Payout;
 
@@ -367,7 +358,6 @@ namespace PK_Proyect.View
 
             if (resultado.LineasGanadoras == null || resultado.LineasGanadoras.Count == 0)
             {
-                // Sin premio
                 ImgCoinSelector.Visibility = Visibility.Visible;
                 Coin_1.Visibility = Visibility.Visible;
                 Coin_2.Visibility = Visibility.Collapsed;

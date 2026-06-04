@@ -1,37 +1,54 @@
 using PK_Proyect.Models;
-using PK_Proyect.Repositories;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace PK_Proyect.Services
 {
     public class CasinoService
     {
+        private readonly HttpClient _http;
+        private readonly string _baseUrl;
+        private readonly string _userId;
+
+        public CasinoService(HttpClient http, string baseUrl, string userId)
+        {
+            _http    = http;
+            _baseUrl = baseUrl;
+            _userId  = userId;
+        }
+
         /// <summary>
-        /// Envía el tablero y la apuesta al servidor.
-        /// El servidor calcula el payout, actualiza fichas en BD y devuelve el resultado.
+        /// Versión asíncrona — usar siempre desde el UI Thread.
+        /// No bloquea el Dispatcher mientras espera la respuesta HTTP.
+        /// </summary>
+        public async Task<CasinoResultado> JugarAsync(List<List<int>> tablero, int apuesta)
+        {
+            var payload = new
+            {
+                user_id = _userId,
+                tablero = tablero,
+                apuesta = apuesta
+            };
+
+            var json    = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _http.PostAsync($"{_baseUrl}/casino/jugar", content);
+            if (!response.IsSuccessStatusCode) return null;
+
+            string body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<CasinoResultado>(body,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        /// <summary>
+        /// Mantiene compatibilidad con código heredado que aún llame a Jugar() síncrono.
+        /// Internamente delega en JugarAsync() de forma bloqueante — preferir JugarAsync.
         /// </summary>
         public CasinoResultado Jugar(List<List<int>> tablero, int apuesta)
-        {
-            try
-            {
-                return ApiClient.Post<CasinoResultado>("/casino/jugar", new
-                {
-                    tablero = tablero,
-                    apuesta = apuesta
-                });
-            }
-            catch { return null; }
-        }
-    }
-
-    public class CasinoResultado
-    {
-        [JsonPropertyName("tablero")]           public List<List<int>> Tablero         { get; set; }
-        [JsonPropertyName("simbolos")]          public List<string>    Simbolos        { get; set; }
-        [JsonPropertyName("apuesta")]           public int             Apuesta         { get; set; }
-        [JsonPropertyName("payout")]            public int             Payout          { get; set; }
-        [JsonPropertyName("lineas_ganadoras")]  public List<string>    LineasGanadoras { get; set; }
-        [JsonPropertyName("fichas_final")]      public int             FichasFinal     { get; set; }
+            => JugarAsync(tablero, apuesta).GetAwaiter().GetResult();
     }
 }
