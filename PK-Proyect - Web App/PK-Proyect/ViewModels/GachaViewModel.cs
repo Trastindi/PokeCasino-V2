@@ -27,8 +27,6 @@ namespace PK_Proyect.ViewModels.Banners
 
         public User Usuario { get; set; }
         public string NombreZona { get; set; }
-
-        // Alias para el binding del XAML ({Binding ZonaNombre})
         public string ZonaNombre => NombreZona;
 
         public ObservableCollection<PokemonZonaViewModel> PokemonDisponibles { get; set; }
@@ -58,7 +56,7 @@ namespace PK_Proyect.ViewModels.Banners
 
         public GachaViewModel(User usuario, string nombreZona)
         {
-            Usuario   = usuario;
+            Usuario    = usuario;
             NombreZona = nombreZona;
 
             _zonaRepo    = new ZonaRepository();
@@ -77,9 +75,6 @@ namespace PK_Proyect.ViewModels.Banners
             _ = CargarZonaAsync();
         }
 
-        // ----------------------------------------------------------------
-        // Zona
-        // ----------------------------------------------------------------
         private void MostrarHistorial()
         {
             var vm = new HistoricoTiradasViewModel(Usuario.Id);
@@ -194,13 +189,11 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            // --- I/O en hilo de fondo ---
             LevelUpResultado resultado = null;
             await Task.Run(() =>
             {
                 Debug.WriteLine($"[TIRADA SINGLE] Fichas antes: {Usuario.FichasCasino}");
                 Usuario.FichasCasino -= COSTE;
-
                 new UserRepository().UpdateUser(Usuario);
 
                 var sorteo = Tirar();
@@ -225,10 +218,10 @@ namespace PK_Proyect.ViewModels.Banners
                 });
             });
 
-            // --- De vuelta al UI Thread: todo lo que abre ventanas o MessageBox ---
             if (resultado == null) return;
 
-            ActualizarFichas();
+            // ActualizarFichas ahora es async: no bloquea el UI Thread
+            await ActualizarFichasAsync();
 
             MessageBox.Show(
                 $"¡Has obtenido a {resultado.Pokemon.Nombre}!\n" +
@@ -249,7 +242,6 @@ namespace PK_Proyect.ViewModels.Banners
                 Fichas = Usuario.FichasCasino;
             }
 
-            // --- I/O en hilo de fondo ---
             var resultadosMulti   = new List<PokemonUser>();
             var resultadosLevelUp = new List<LevelUpResultado>();
 
@@ -257,7 +249,6 @@ namespace PK_Proyect.ViewModels.Banners
             {
                 Debug.WriteLine($"[TIRADA MULTI] Fichas antes: {Usuario.FichasCasino}");
                 Usuario.FichasCasino -= COSTE;
-
                 new UserRepository().UpdateUser(Usuario);
 
                 var repoHist = new HistoricoTiradasRepository();
@@ -290,17 +281,16 @@ namespace PK_Proyect.ViewModels.Banners
                 }
             });
 
-            // --- De vuelta al UI Thread ---
-            ActualizarFichas();
+            // ActualizarFichas async: no bloquea el UI Thread
+            await ActualizarFichasAsync();
             new ResultadosMultiView(resultadosMulti).ShowDialog();
 
-            // Procesar level-ups en orden, ya en el UI Thread
             foreach (var r in resultadosLevelUp)
                 ProcesarLevelUp(r);
         }
 
         // ----------------------------------------------------------------
-        // Procesar resultado de subida de nivel (SIEMPRE en UI Thread)
+        // Procesar level-up (siempre en UI Thread)
         // ----------------------------------------------------------------
         private void ProcesarLevelUp(LevelUpResultado resultado)
         {
@@ -363,9 +353,14 @@ namespace PK_Proyect.ViewModels.Banners
         // ----------------------------------------------------------------
         // Helpers
         // ----------------------------------------------------------------
-        private void ActualizarFichas()
+
+        /// <summary>
+        /// Recarga el usuario desde el servidor de forma asíncrona.
+        /// Llamar siempre con await, nunca en un hilo de fondo.
+        /// </summary>
+        private async Task ActualizarFichasAsync()
         {
-            Usuario = new UserRepository().GetUserById(Usuario.Id);
+            Usuario = await ApiClient.GetAsync<User>($"/usuarios/{Usuario.Id}");
             Fichas  = Usuario.FichasCasino;
         }
 
