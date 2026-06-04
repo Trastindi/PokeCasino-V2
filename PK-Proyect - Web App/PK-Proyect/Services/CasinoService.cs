@@ -1,4 +1,5 @@
 using PK_Proyect.Models;
+using PK_Proyect.Repositories;   // ApiClient.BaseUrl
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -13,6 +14,19 @@ namespace PK_Proyect.Services
         private readonly HttpClient _http;
         private readonly string _baseUrl;
 
+        /// <summary>
+        /// Constructor por defecto: reutiliza ApiClient.BaseUrl y crea
+        /// un HttpClient propio. Es el que usa MainMenuViewModel.
+        /// </summary>
+        public CasinoService()
+        {
+            _baseUrl = ApiClient.BaseUrl;
+            _http    = ApiClient.CreateHttpClient();
+        }
+
+        /// <summary>
+        /// Constructor con inyección explícita (tests / DI manual).
+        /// </summary>
         public CasinoService(HttpClient http, string baseUrl)
         {
             _http    = http;
