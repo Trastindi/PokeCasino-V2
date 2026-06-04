@@ -50,7 +50,7 @@ def _serialize(doc):
     if doc is None:
         return None
     doc = dict(doc)
-    doc["_id"] = str(doc["_id"])
+    doc["id"] = str(doc.pop("_id"))
     doc.pop("password", None)
     doc.pop("Password", None)
     return doc
@@ -222,7 +222,6 @@ def login():
 
         rol      = gf(usuario, "Role",         "rol",      default="user")
         fichas   = gf(usuario, "FichasCasino", "fichas",   default=0)
-        # Pokes = PokeDólares (moneda); Pokemon = cantidad total de Pokémon
         pokes    = gf(usuario, "Pokes",        "pokes",    default=0)
         pokemon  = gf(usuario, "Pokemon",                  default=0)
         uname    = gf(usuario, "Username",     "username", default="")
@@ -683,12 +682,54 @@ def get_pokemon(current_user, pokemon_id):
 
 
 # ---------------------------------------------------------------------------
+# HISTORIAL DE TIRADAS
+# ---------------------------------------------------------------------------
+
+@app.post("/historico")
+@token_required
+def registrar_tirada(current_user):
+    try:
+        data = request.json or {}
+        doc = {
+            "UserId":        data.get("UserId",        str(current_user["_id"])),
+            "PokemonId":     data.get("PokemonId",     0),
+            "NombrePokemon": data.get("NombrePokemon", ""),
+            "Zona":          data.get("Zona",          ""),
+            "TipoTirada":    data.get("TipoTirada",    "single"),
+            "Fecha":         datetime.datetime.utcnow().isoformat(),
+        }
+        historico_tiradas.insert_one(doc)
+        doc["_id"] = str(doc["_id"])
+        return jsonify(doc), 201
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
+@app.get("/historico/<user_id>")
+@token_required
+def obtener_historico(current_user, user_id):
+    try:
+        lista = list(
+            historico_tiradas
+            .find({"UserId": user_id})
+            .sort("Fecha", -1)
+        )
+        for t in lista:
+            t["_id"] = str(t["_id"])
+        return jsonify(lista), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
+# ---------------------------------------------------------------------------
 # Hacer peticiones de batalla
 # ---------------------------------------------------------------------------
 
 @app.post("/battle_requests")
 @token_required
-def make_battle_request(current_user, rival_id):
+def make_battle_request(current_user):
     # TODO: implementar lógica de batalla
     pass
 

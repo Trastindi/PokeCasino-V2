@@ -20,7 +20,6 @@ namespace PK_Proyect.Models
         {
             if (reader.TokenType == JsonTokenType.String)
             {
-                // Formato plano ISO 8601
                 if (DateTime.TryParse(reader.GetString(), out var dt))
                     return dt;
                 throw new JsonException($"Formato de fecha no reconocido: {reader.GetString()}");
@@ -28,9 +27,8 @@ namespace PK_Proyect.Models
 
             if (reader.TokenType == JsonTokenType.StartObject)
             {
-                // { "$date": ... }
-                reader.Read(); // PropertyName "$date"
-                reader.Read(); // value
+                reader.Read();
+                reader.Read();
 
                 DateTime result;
                 if (reader.TokenType == JsonTokenType.String)
@@ -44,21 +42,20 @@ namespace PK_Proyect.Models
                 }
                 else if (reader.TokenType == JsonTokenType.StartObject)
                 {
-                    // { "$numberLong": "643420800000" }
-                    reader.Read(); // PropertyName "$numberLong"
-                    reader.Read(); // value (string o number)
+                    reader.Read();
+                    reader.Read();
                     long ms = reader.TokenType == JsonTokenType.String
                         ? long.Parse(reader.GetString()!)
                         : reader.GetInt64();
                     result = DateTimeOffset.FromUnixTimeMilliseconds(ms).UtcDateTime;
-                    reader.Read(); // EndObject de $numberLong
+                    reader.Read();
                 }
                 else
                 {
                     throw new JsonException("Formato de $date no reconocido.");
                 }
 
-                reader.Read(); // EndObject de $date
+                reader.Read();
                 return result;
             }
 
@@ -83,21 +80,38 @@ namespace PK_Proyect.Models
 
     public class User
     {
+        // El servidor devuelve "_id" (serializado como "id" por _serialize)
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
+        [JsonPropertyName("Nombre")]
         public string Nombre   { get; set; }
+
+        [JsonPropertyName("Apellido")]
         public string Apellido { get; set; }
+
+        [JsonPropertyName("Username")]
         public string Username { get; set; }
 
         private string _email;
 
+        // El servidor devuelve "Correo" en GET /usuarios/{id}
+        // pero "email" en el login (mapeado manualmente en AuthService)
+        [JsonPropertyName("Correo")]
         public string Correo
         {
             get => _email;
             set
             {
+                // Protección: no lanzar excepción si el servidor devuelve
+                // cadena vacía o null durante la deserialización JSON.
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _email = value;
+                    return;
+                }
                 if (!IsValidEmail(value))
                     throw new ArgumentException("Email inválido");
                 _email = value;
@@ -105,20 +119,30 @@ namespace PK_Proyect.Models
         }
 
         /// <summary>Cantidad total de Pokémon del usuario (suma de duplicados).</summary>
+        [JsonPropertyName("Pokemon")]
         public int Pokemon { get; set; } = 0;
 
+        [JsonPropertyName("Password")]
         public string Password { get; set; }
 
         [JsonConverter(typeof(MongoDateTimeConverter))]
+        [JsonPropertyName("Birthdate")]
         public DateTime Birthdate { get; set; }
 
-        public string Role         { get; set; }
+        [JsonPropertyName("Role")]
+        public string Role { get; set; }
 
         /// <summary>PokeDólares: moneda del juego.</summary>
-        public int Pokes        { get; set; } = 0;
+        [JsonPropertyName("Pokes")]
+        public int Pokes { get; set; } = 0;
+
+        [JsonPropertyName("FichasCasino")]
         public int FichasCasino { get; set; } = 0;
 
+        [JsonPropertyName("Medallas")]
         public List<string>      Medallas { get; set; } = new List<string>();
+
+        [JsonPropertyName("Messages")]
         public List<UserMessage> Messages { get; set; } = new List<UserMessage>();
 
         private bool IsValidEmail(string email)
