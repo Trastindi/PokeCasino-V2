@@ -68,7 +68,6 @@ namespace PK_Proyect.ViewModels.Banners
 
             MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
-            // HistorialCommand ahora es async para no bloquear el UI thread
             HistorialCommand      = new AsyncRelayCommand(async () => await MostrarHistorialAsync());
             _pokemonUserService   = new PokemonUserService();
             Fichas = Usuario.FichasCasino;
@@ -78,8 +77,8 @@ namespace PK_Proyect.ViewModels.Banners
 
         private async Task MostrarHistorialAsync()
         {
+            // Primero cargamos datos (sin bloquear UI), luego mostramos la ventana
             var vm = new HistoricoTiradasViewModel(Usuario.Id);
-            // CargarAsync carga el historial desde la API sin bloquear el UI thread
             await vm.CargarAsync();
             var ventana = new HistoricoTiradasView(vm);
             ventana.ShowDialog();
