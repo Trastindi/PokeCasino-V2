@@ -14,7 +14,11 @@ from bson import ObjectId
 
 app = Flask(__name__)
 CORS(app)
-app.config["SECRET_KEY"] = "super_secret_key"  # cambiar en producción
+
+_secret_key = os.environ.get("SECRET_KEY")
+if not _secret_key:
+    raise RuntimeError("SECRET_KEY no está definida. Configúrala en el entorno o en .env")
+app.config["SECRET_KEY"] = _secret_key
 
 # ---------------------------------------------------------------------------
 # UTILIDADES
@@ -60,10 +64,9 @@ def _serialize(doc):
 # MONGODB
 # ---------------------------------------------------------------------------
 
-_uri = os.environ.get(
-    "MONGO_URI",
-    "mongodb+srv://marcosemiliorodriguezmartin_db_user:gDfjWHYHIqMJ346V@pokecasino.asaeily.mongodb.net/?retryWrites=true&w=majority&appName=PokeCasino"
-)
+_uri = os.environ.get("MONGO_URI")
+if not _uri:
+    raise RuntimeError("MONGO_URI no está definida. Configúrala en el entorno o en .env")
 
 try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
