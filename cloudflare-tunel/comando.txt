@@ -1,0 +1,2 @@
+Iniciar cmd en modo administrador.
+cloudflared tunnel --config C:\Users\<nombreusuario>\.cloudflared\config.yml run pokecasino
