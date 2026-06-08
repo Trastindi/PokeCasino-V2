@@ -1,0 +1,32 @@
+# ============================================================
+# Archivos de entorno  -  NUNCA subir al repositorio
+# ============================================================
+.env
+.env.local
+.env.*.local
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.user
+
+# Build outputs
+build/
+dist/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
