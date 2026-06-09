@@ -4018,7 +4018,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "self",
+    "target": "self_side",
     "pp": {
       "base": 25,
       "maxUps": 3
@@ -4057,7 +4057,19 @@
     ],
     "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "self_side",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "safeguard",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -5313,7 +5325,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "self_side",
     "pp": {
       "base": 30,
       "maxUps": 3
@@ -5352,7 +5364,19 @@
     ],
     "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "self_side",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "mist",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -7229,7 +7253,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 10,
       "maxUps": 3
@@ -7266,9 +7290,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "sandstorm",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -7425,7 +7461,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 5,
       "maxUps": 3
@@ -7462,9 +7498,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "sun",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -14332,7 +14380,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "self",
+    "target": "self_side",
     "pp": {
       "base": 30,
       "maxUps": 3
@@ -14373,14 +14421,15 @@
     "specialModifiers": [],
     "secondaryEffects": [
       {
-        "kind": "stat_change",
-        "target": "self",
-        "status": null,
-        "stat": "spAttack",
-        "stages": -1,
+        "kind": "status",
+        "target": "self_side",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
         "fraction": null,
         "chance": 100,
-        "customKey": null
+        "customKey": "light_screen",
+        "durationTurns": 5
       }
     ],
     "enabled": true
@@ -14684,7 +14733,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "self_side",
     "pp": {
       "base": 20,
       "maxUps": 3
@@ -14723,7 +14772,19 @@
     ],
     "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "self_side",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "reflect",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -17061,7 +17122,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 5,
       "maxUps": 3
@@ -17098,9 +17159,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "rain",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -18996,29 +19069,28 @@
       "ruleset": "frlg",
       "sourceVersion": "frlg"
     },
-    "moveClass": "damaging",
+    "moveClass": "status",
     "type": "Tierra",
     "damageClass": {
       "mode": "derived_gen3_from_type",
       "value": "physical"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 15,
       "maxUps": 3
     },
     "priority": 0,
     "accuracyModel": {
-      "kind": "standard",
-      "baseAccuracy": 100,
+      "kind": "always_hits",
+      "baseAccuracy": null,
       "failIfTargetLevelGreater": false,
-      "formulaRef": "standard_accuracy",
+      "formulaRef": null,
       "customKey": null
     },
     "powerModel": {
-      "kind": "fixed_base_power",
-      "basePower": 0,
-      "formulaRef": "base_power_standard"
+      "kind": "none",
+      "formulaRef": null
     },
     "critModel": {
       "critStageBonus": 0
@@ -19040,9 +19112,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "mud_sport",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -20693,7 +20777,7 @@
       "mode": "status",
       "value": "status"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 10,
       "maxUps": 3
@@ -20730,9 +20814,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "hail",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
@@ -21351,29 +21447,28 @@
       "ruleset": "frlg",
       "sourceVersion": "frlg"
     },
-    "moveClass": "damaging",
+    "moveClass": "status",
     "type": "Agua",
     "damageClass": {
       "mode": "derived_gen3_from_type",
       "value": "special"
     },
-    "target": "opponent",
+    "target": "field",
     "pp": {
       "base": 15,
       "maxUps": 3
     },
     "priority": 0,
     "accuracyModel": {
-      "kind": "standard",
-      "baseAccuracy": 100,
+      "kind": "always_hits",
+      "baseAccuracy": null,
       "failIfTargetLevelGreater": false,
-      "formulaRef": "standard_accuracy",
+      "formulaRef": null,
       "customKey": null
     },
     "powerModel": {
-      "kind": "fixed_base_power",
-      "basePower": 0,
-      "formulaRef": "base_power_standard"
+      "kind": "none",
+      "formulaRef": null
     },
     "critModel": {
       "critStageBonus": 0
@@ -21395,9 +21490,21 @@
     "flags": [
       "protectable"
     ],
-    "specialFormulaMode": "standard_damage",
+    "specialFormulaMode": "custom",
     "specialModifiers": [],
-    "secondaryEffects": [],
+    "secondaryEffects": [
+      {
+        "kind": "status",
+        "target": "field",
+        "status": "custom",
+        "stat": null,
+        "stages": null,
+        "fraction": null,
+        "chance": 100,
+        "customKey": "water_sport",
+        "durationTurns": 5
+      }
+    ],
     "enabled": true
   },
   {
