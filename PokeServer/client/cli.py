@@ -435,7 +435,9 @@ def _responder_batalla(msg_id, accepted: bool):
         if accepted:
             bid = r.json().get("battle_id", "?")
             print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
-            batalla = obtener_batalla(bid)
+            is_on_battle = True
+            print(f"{is_on_battle}")
+            menu_usuario()  # <-- Llama al menú de usuario para mostrar el menú de batalla
             print("(Próximamente: conexión automática al endpoint de batalla)")
         else:
             print("Solicitud rechazada correctamente.")
@@ -453,6 +455,7 @@ def obtener_batalla(battle_id):
 # ============================
 def menu_usuario():
     while True:
+        print(f"{is_on_battle}")
         if is_on_battle == False:
             print("\n--- Menú Usuario ---")
             print("1. Ver mi perfil")

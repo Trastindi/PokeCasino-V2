@@ -817,7 +817,7 @@ def respond_battle_request(current_user, msg_id):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-@app.get("battle/<battle_id>")
+@app.get("/battle/<battle_id>")
 @token_required
 def get_battle_status(current_user, battle_id):
     try:
