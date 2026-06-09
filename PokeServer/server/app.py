@@ -463,10 +463,19 @@ def obtener_pokemon(current_user):
 
         pdex    = pokedex.find_one({"numero_pokedex": pokemon_id})
         moveset = []
+        
         if pdex:
             for m in pdex.get("movimientos", []):
                 if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(moveset) < 4:
                     moveset.append(m["nombre"])
+            
+            abilities = pdex.get("habilidades", [])                
+            print(f"{len(abilities)} habilidades posibles para {nombre} (ID {pokemon_id}): {[h.get('habilidad_id') for h in abilities]}")
+            
+            if len(abilities) == 2:
+                    ability = abilities[random.randint(0, 1)].get("habilidad_id")
+            else:
+                ability = abilities[0].get("habilidad_id")
 
         nuevo = {
             "UserId":          uid,
@@ -483,7 +492,7 @@ def obtener_pokemon(current_user):
             "HiddenPowerPower": (random.randint(31, 70) + random.randint(31, 70)) // 2,
             "CurrentHp":       current_hp,
             "MoveSet":         moveset,
-            "AbilityId":       None,
+            "AbilityId":       ability,
             "ItemId":          None,
             "Status":          None,
             "Shards":          0,
