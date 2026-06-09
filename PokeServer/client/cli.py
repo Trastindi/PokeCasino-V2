@@ -218,7 +218,7 @@ def canjear_pokemon():
     print(f"{data['pokemon']['nombre']} - Fecha: {data['pokemon']['fecha_obtenido']}")
 
 def desafiar_usuario(rival_id):
-    r = requests.post(f"{API_URL}/battle_requests/{rival_id}", headers=headers())
+    r = requests.post(f"{API_URL}/battle_requests/{rival_id}", json={}, headers=headers())
     if r.status_code != 201:
         print("Error:", r.json().get("error"))
         return

@@ -15,7 +15,7 @@ from bson import ObjectId
 app = Flask(__name__)
 CORS(app)
 
-_secret_key = os.environ.get("SECRET_KEY")
+_secret_key = "secret_key_aleatoria_y_segura_para_jwt"  # Valor por defecto para desarrollo
 if not _secret_key:
     raise RuntimeError("SECRET_KEY no está definida. Configúrala en el entorno o en .env")
 app.config["SECRET_KEY"] = _secret_key
@@ -64,22 +64,16 @@ def _serialize(doc):
 # MONGODB
 # ---------------------------------------------------------------------------
 
-<<<<<<< HEAD
 _uri = os.environ.get(
     "MONGO_URI",
     "mongodb+srv://marcosemiliorodriguezmartin_db_user:MlVEVrFW50X7bfsS@pokecasino.asaeily.mongodb.net/"
 )
-=======
-_uri = os.environ.get("MONGO_URI")
-if not _uri:
-    raise RuntimeError("MONGO_URI no está definida. Configúrala en el entorno o en .env")
->>>>>>> 8847196813bc5136049fa3c8d985be5b35db5860
 
 try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
     _db              = _client["PokemonDB"]
     naturalezas      = _db["Naturalezas"]
-    menssages        = _db["Menssages"]
+    mensajes        = _db["Messages"]
     movimientos      = _db["Movimientos"]
     objetos_pokemon  = _db["ObjetosPoke"]
     pokedex          = _db["Pokedex"]
@@ -681,15 +675,20 @@ def obtener_historico(current_user, user_id):
 @token_required
 def make_battle_request(current_user, rival_id):
     try:
-        user = usuarios.find_one({"_id": ObjectId(rival_id)})
-        data = request.json or {}
+        rival = usuarios.find_one({"_id": ObjectId(rival_id)})
+        if not rival:
+            return jsonify({"error": "Rival no encontrado"}), 404
+
         doc = {
-            "_id": Bson.ObjectId(),
-            "from":   str(user["Username"]),
-            "title":  "Battle Request",
-            "text":   "You have received a battle request from " + gf(current_user, "Username", "username", default="") + ". Do you accept?",
-            "Fecha":          datetime.datetime.utcnow().isoformat(),
-            type: "battle_request",
+            "_id":   ObjectId(),
+            "from":  str(gf(current_user, "Username", "username", default="")),
+            "to":    str(rival["_id"]),
+            "title": "Battle Request",
+            "text":  "You have received a battle request from "
+                     + gf(current_user, "Username", "username", default="")
+                     + ". Do you accept?",
+            "Fecha": datetime.datetime.utcnow().isoformat(),
+            "type":  "battle_request",
         }
         mensajes.insert_one(doc)
         doc["_id"] = str(doc["_id"])
