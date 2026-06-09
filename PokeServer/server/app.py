@@ -696,7 +696,19 @@ def make_battle_request(current_user, rival_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-
+    
+@app.get("/messages/mis_mensajes")
+@token_required
+def get_messages(current_user):
+    try:
+        uid = str(current_user["_id"])
+        lista = list(mensajes.find({"to": uid}).sort("Fecha", -1))
+        for m in lista:
+            m["_id"] = str(m["_id"])
+        return jsonify(lista), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
 
 # ---------------------------------------------------------------------------
 # MAIN

@@ -225,6 +225,22 @@ def desafiar_usuario(rival_id):
 
     print("Desafío enviado correctamente.")
 
+def ver_mensajes():
+    r = requests.get(f"{API_URL}/messages/mis_mensajes", headers=headers())
+    if r.status_code != 200:
+        print("Error al obtener mensajes")
+        return
+
+    mensajes = r.json()
+
+    if not mensajes:
+        print("No tienes mensajes.")
+        return
+
+    print("\n--- Mis Mensajes ---")
+    for m in mensajes:
+        print(f"{m['title']} - {m['text']} (Fecha: {m['Fecha']})")
+
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
@@ -235,8 +251,9 @@ def menu_usuario():
         print("3. Canjear Pokémon")
         print("4. Pokédex")
         print("5. Mis Pokémon")
-        print("6. Desafiar a otro usuario a batalla (prueba de notificaciones)")
-        print("7. Cerrar sesión")
+        print("6. Desafiar a otro usuario a batalla")
+        print("7. Ver mis mensajes (prueba de notificaciones)")
+        print("8. Cerrar sesión")
 
         op = input("Opción: ")
 
@@ -254,6 +271,8 @@ def menu_usuario():
             rival_id = input("ID del usuario a desafiar: ")
             desafiar_usuario(rival_id)
         elif op == "7":
+            ver_mensajes()
+        elif op == "8":
             break
         else:
             print("Opción inválida.")
