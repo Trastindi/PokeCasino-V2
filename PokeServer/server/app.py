@@ -64,9 +64,16 @@ def _serialize(doc):
 # MONGODB
 # ---------------------------------------------------------------------------
 
+<<<<<<< HEAD
+_uri = os.environ.get(
+    "MONGO_URI",
+    "mongodb+srv://marcosemiliorodriguezmartin_db_user:MlVEVrFW50X7bfsS@pokecasino.asaeily.mongodb.net/"
+)
+=======
 _uri = os.environ.get("MONGO_URI")
 if not _uri:
     raise RuntimeError("MONGO_URI no está definida. Configúrala en el entorno o en .env")
+>>>>>>> 8847196813bc5136049fa3c8d985be5b35db5860
 
 try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
@@ -670,11 +677,26 @@ def obtener_historico(current_user, user_id):
 # Hacer peticiones de batalla
 # ---------------------------------------------------------------------------
 
-@app.post("/battle_requests")
+@app.post("/battle_requests/<rival_id>")
 @token_required
-def make_battle_request(current_user):
-    # TODO: implementar lógica de batalla
-    pass
+def make_battle_request(current_user, rival_id):
+    try:
+        user = usuarios.find_one({"_id": ObjectId(rival_id)})
+        data = request.json or {}
+        doc = {
+            "_id": Bson.ObjectId(),
+            "from":   str(user["Username"]),
+            "title":  "Battle Request",
+            "text":   "You have received a battle request from " + gf(current_user, "Username", "username", default="") + ". Do you accept?",
+            "Fecha":          datetime.datetime.utcnow().isoformat(),
+            type: "battle_request",
+        }
+        mensajes.insert_one(doc)
+        doc["_id"] = str(doc["_id"])
+        return jsonify(doc), 201
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
 
 
 # ---------------------------------------------------------------------------

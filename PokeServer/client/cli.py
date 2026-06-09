@@ -217,7 +217,13 @@ def canjear_pokemon():
     print("\n¡Pokémon obtenido!")
     print(f"{data['pokemon']['nombre']} - Fecha: {data['pokemon']['fecha_obtenido']}")
 
+def desafiar_usuario(rival_id):
+    r = requests.post(f"{API_URL}/battle_requests/{rival_id}", headers=headers())
+    if r.status_code != 201:
+        print("Error:", r.json().get("error"))
+        return
 
+    print("Desafío enviado correctamente.")
 
 #   MENÚ PRINCIPAL USUARIO
 # ============================
@@ -229,7 +235,8 @@ def menu_usuario():
         print("3. Canjear Pokémon")
         print("4. Pokédex")
         print("5. Mis Pokémon")
-        print("6. Cerrar sesión")
+        print("6. Desafiar a otro usuario a batalla (prueba de notificaciones)")
+        print("7. Cerrar sesión")
 
         op = input("Opción: ")
 
@@ -244,6 +251,9 @@ def menu_usuario():
         elif op == "5":
             mis_pokemon()
         elif op == "6":
+            rival_id = input("ID del usuario a desafiar: ")
+            desafiar_usuario(rival_id)
+        elif op == "7":
             break
         else:
             print("Opción inválida.")
@@ -407,7 +417,7 @@ def main():
             if not login():
                 continue
 
-            if current_user["rol"] == "admin": 
+            if current_user["Role"] == "admin": 
                 menu_admin() 
             else: 
                 menu_usuario()
