@@ -50,14 +50,34 @@ def _random_password(n=10) -> str:
 
 
 def _serialize(doc):
-    """Elimina campos sensibles y convierte _id a str."""
+    """Elimina campos sensibles y convierte ObjectId a str recursivamente."""
     if doc is None:
         return None
     doc = dict(doc)
     doc["id"] = str(doc.pop("_id"))
     doc.pop("password", None)
     doc.pop("Password", None)
+
+    # Serializar recursivamente listas y subdocumentos
+    for key, value in doc.items():
+        if isinstance(value, list):
+            doc[key] = [_serialize_value(item) for item in value]
+        else:
+            doc[key] = _serialize_value(value)
+
     return doc
+
+
+def _serialize_value(value):
+    """Convierte ObjectId a str y serializa dicts anidados."""
+    from bson import ObjectId
+    if isinstance(value, ObjectId):
+        return str(value)
+    if isinstance(value, dict):
+        return {k: _serialize_value(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_serialize_value(item) for item in value]
+    return value
 
 
 # ---------------------------------------------------------------------------
@@ -701,8 +721,6 @@ def make_battle_request(current_user, rival_id):
         doc = {
             "_id":     ObjectId(),
             "from":    str(gf(current_user, "Username", "username", default="")),
-            "from_id": str(current_user["_id"]),   # _id del retador para enviar la respuesta
-            "to":      str(rival["_id"]),
             "title":   "Battle Request",
             "text":    "You have received a battle request from "
                        + gf(current_user, "Username", "username", default="")
@@ -774,8 +792,6 @@ def respond_battle_request(current_user, msg_id):
         mensajes.insert_one({
             "_id":       ObjectId(),
             "from":      str(gf(current_user, "Username", "username", default="?")),
-            "from_id":   str(current_user["_id"]),
-            "to":        retador_id,
             "title":     "Battle Accepted",
             "text":      gf(current_user, "Username", "username", default="?")
                          + " ha aceptado tu solicitud de batalla.",
@@ -784,13 +800,36 @@ def respond_battle_request(current_user, msg_id):
             "battle_id": battle_id,
             "responded": False,
         })
+        battles.insert_one({
+            "_id": ObjectId(battle_id),
+            "player1_id": retador_id,
+            "player2_id": str(current_user["_id"]),
+            "status": "pending",
+            "created_at": datetime.datetime.utcnow().isoformat(),
+            "player1_team": None,
+            "player2_team": None,
+            "turn": None,
+            "field_status": None,
+        })
         return jsonify({"msg": "Batalla aceptada", "battle_id": battle_id}), 200
 
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-
+@app.get("battle/<battle_id>")
+@token_required
+def get_battle_status(current_user, battle_id):
+    try:
+        battle = battles.find_one({"_id": ObjectId(battle_id)})
+        if not battle:
+            return jsonify({"error": "Batalla no encontrada"}), 404
+        battle["_id"] = str(battle["_id"])
+        return jsonify(battle), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+    
 # ---------------------------------------------------------------------------
 # MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------

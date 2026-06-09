@@ -3,6 +3,8 @@ from getpass import getpass
 
 API_URL = "http://127.0.0.1:5000"
 
+batalla = None
+is_on_battle = False
 token = None
 current_user = None
 
@@ -52,6 +54,10 @@ def login():
 
     # Obtener datos del usuario
     r2 = requests.get(f"{API_URL}/auth/me", headers=headers())
+    
+    if r2.status_code != 200:
+        print("Error al obtener perfil:", r2.status_code, r2.text)
+        return False          # <-- línea añadida
     current_user = r2.json()
 
     nombre_mostrar = current_user.get("nombre") or current_user.get("username")
@@ -274,8 +280,8 @@ def pokedex_menu():
 
     pokedex_lista = r.json()
 
-    r2 = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
-    mis_pokes = r2.json() if r2.status_code == 200 else []
+    r4 = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
+    mis_pokes = r4.json() if r4.status_code == 200 else []
     # mis_pokemon devuelve documentos PokemonUser; el nº de Pokédex está en PokemonId
     ids_usuario = {p["PokemonId"] for p in mis_pokes}
 
@@ -429,48 +435,69 @@ def _responder_batalla(msg_id, accepted: bool):
         if accepted:
             bid = r.json().get("battle_id", "?")
             print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
+            batalla = obtener_batalla(bid)
             print("(Próximamente: conexión automática al endpoint de batalla)")
         else:
             print("Solicitud rechazada correctamente.")
     else:
         print("Error:", r.json().get("error"))
 
-
+def obtener_batalla(battle_id):
+    r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
+    if r.status_code == 200:
+        return r.json()
+    else:
+        print("Error al obtener batalla:", r.json().get("error"))
+        return None
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
     while True:
-        print("\n--- Menú Usuario ---")
-        print("1. Ver mi perfil")
-        print("2. Jugar al casino (¡El buen Gacha!)")
-        print("3. Canjear Pokémon")
-        print("4. Pokédex")
-        print("5. Mis Pokémon")
-        print("6. Desafiar a otro usuario a batalla")
-        print("7. Ver mis mensajes")
-        print("8. Cerrar sesión")
+        if is_on_battle == False:
+            print("\n--- Menú Usuario ---")
+            print("1. Ver mi perfil")
+            print("2. Jugar al casino (¡El buen Gacha!)")
+            print("3. Canjear Pokémon")
+            print("4. Pokédex")
+            print("5. Mis Pokémon")
+            print("6. Desafiar a otro usuario a batalla")
+            print("7. Ver mis mensajes")
+            print("8. Cerrar sesión")
 
-        op = input("Opción: ")
+            op = input("Opción: ")
 
-        if op == "1":
-            ver_perfil()
-        elif op == "2":
-            jugar_casino()
-        elif op == "3":
-            canjear_pokemon()
-        elif op == "4":
-            pokedex_menu()
-        elif op == "5":
-            mis_pokemon_menu()
-        elif op == "6":
-            rival_id = input("ID del usuario a desafiar: ")
-            desafiar_usuario(rival_id)
-        elif op == "7":
-            mis_mensajes_menu()
-        elif op == "8":
-            break
+            if op == "1":
+                ver_perfil()
+            elif op == "2":
+                jugar_casino()
+            elif op == "3":
+                canjear_pokemon()
+            elif op == "4":
+                pokedex_menu()
+            elif op == "5":
+                mis_pokemon_menu()
+            elif op == "6":
+                rival_id = input("ID del usuario a desafiar: ")
+                desafiar_usuario(rival_id)
+            elif op == "7":
+                mis_mensajes_menu()
+            elif op == "8":
+                break
+            else:
+                print("Opción inválida.")
         else:
-            print("Opción inválida.")
+            print("\n--- Estás en una batalla ---")
+            if(batalla.get("player2_team", []) == None):
+                print("Introduce el nombre de tu equipo para empezar a jugar")
+                team = input("Nombre del equipo: ")
+                r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
+                if r.status_code != 200:
+                    print("Error al obtener equipos:", r.json().get("error"))
+                    continue
+                equipo = r["teams"].find_one({"team_name": team})
+                if equipo:
+                    batalla["player2_team"] = equipo["_id"]
+            #TODO: mostrar menú específico durante la batalla (ej. opciones de ataque, cambio de Pokémon, etc.)
 
 
 
@@ -808,8 +835,6 @@ def jugar_casino():
             print("\nSaliendo del casino...\n")
             print("\n" * 5)  # evita solapamientos con el menú
             break
-
-
 
 
 if __name__ == "__main__":
