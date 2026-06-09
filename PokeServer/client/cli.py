@@ -125,37 +125,38 @@ def mis_pokemon_menu():
         print("\nNo tienes ningún Pokémon todavía.")
         return
 
+    # Mostrar por posición (1-based) para evitar ambigüedad con duplicados
     print("\n--- Mis Pokémon ---")
-    for p in lista:
+    for i, p in enumerate(lista, 1):
         tipo2 = f" / {p['TipoSecundario']}" if p.get("TipoSecundario") else ""
-        print(f"  {p['PokemonId']}. {p['Nombre']}  "
-              f"[{p.get('TipoPrincipal','?')}{tipo2}]  "
-              f"Nv.{p.get('Nivel', 1)}")
+        print(f"  {i}. {p['Nombre']}  "
+              f"[{p.get('TipoPrincipal', '?')}{tipo2}]  "
+              f"Nv.{p.get('Nivel', 1)}  "
+              f"(ID: {p['_id']})")
 
-    sel = input("\nSelecciona un Pokémon por ID para ver detalles (o ENTER para volver): ").strip()
+    sel = input("\nSelecciona la posición del Pokémon (o ENTER para volver): ").strip()
     if not sel:
         return
     try:
-        sel = int(sel)
-    except ValueError:
-        print("ID inválido.")
-        return
-
-    elegido = next((p for p in lista if p["PokemonId"] == sel), None)
-    if not elegido:
-        print("Pokémon no encontrado en tu colección.")
+        pos = int(sel) - 1
+        if pos < 0 or pos >= len(lista):
+            raise IndexError
+        elegido = lista[pos]
+    except (ValueError, IndexError):
+        print("Posición inválida.")
         return
 
     # Mostrar detalle
     tipo2 = f" / {elegido['TipoSecundario']}" if elegido.get("TipoSecundario") else ""
     print(f"\n--- {elegido['Nombre']} ---")
-    print(f"  ID Pokédex : {elegido['PokemonId']}")
-    print(f"  Tipo       : {elegido.get('TipoPrincipal','?')}{tipo2}")
-    print(f"  Nivel      : {elegido.get('Nivel', 1)}")
-    print(f"  HP actual  : {elegido.get('CurrentHp', '?')}")
+    print(f"  ID PokemonUser : {elegido['_id']}")
+    print(f"  Nº Pokédex     : {elegido['PokemonId']}")
+    print(f"  Tipo           : {elegido.get('TipoPrincipal', '?')}{tipo2}")
+    print(f"  Nivel          : {elegido.get('Nivel', 1)}")
+    print(f"  HP actual      : {elegido.get('CurrentHp', '?')}")
     moveset = elegido.get("MoveSet") or []
-    print(f"  Movimientos: {', '.join(moveset) if moveset else 'Ninguno'}")
-    print(f"  Obtenido   : {elegido.get('FechaObtenido','?')}")
+    print(f"  Movimientos    : {', '.join(moveset) if moveset else 'Ninguno'}")
+    print(f"  Obtenido       : {elegido.get('FechaObtenido', '?')}")
 
     # Estadísticas base desde la Pokédex
     r_dex = requests.get(f"{API_URL}/pokedex/{elegido['PokemonId']}", headers=headers())
@@ -179,13 +180,16 @@ def mis_pokemon_menu():
     print("  3. Volver")
     accion = input("Opción: ").strip()
 
+    # Se pasa el _id del documento PokemonUser (string)
+    poke_doc_id = elegido["_id"]
     if accion == "1":
-        _añadir_a_equipo_existente(elegido["PokemonId"])
+        _añadir_a_equipo_existente(poke_doc_id, elegido["Nombre"])
     elif accion == "2":
-        _crear_equipo_con_pokemon(elegido["PokemonId"])
+        _crear_equipo_con_pokemon(poke_doc_id, elegido["Nombre"])
 
 
-def _añadir_a_equipo_existente(pokemon_id):
+def _añadir_a_equipo_existente(poke_doc_id, nombre_pokemon):
+    """Añade el _id de PokemonUser a un equipo existente si hay hueco y no está ya."""
     r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
     if r.status_code != 200:
         print("Error al obtener equipos:", r.json().get("error"))
@@ -196,12 +200,13 @@ def _añadir_a_equipo_existente(pokemon_id):
         print("No tienes equipos creados. Usa la opción 2 para crear uno.")
         return
 
+    # Filtrar equipos con hueco y que no contengan ya este _id
     disponibles = []
     for t in equipos:
         ids = t.get("pokemon_ids", [])
         if len(ids) >= 6:
             continue
-        if pokemon_id in ids:
+        if poke_doc_id in ids:
             continue
         disponibles.append(t)
 
@@ -217,13 +222,15 @@ def _añadir_a_equipo_existente(pokemon_id):
 
     sel = input("Selecciona el número del equipo: ").strip()
     try:
-        sel = int(sel) - 1
-        equipo = disponibles[sel]
+        idx = int(sel) - 1
+        if idx < 0 or idx >= len(disponibles):
+            raise IndexError
+        equipo = disponibles[idx]
     except (ValueError, IndexError):
         print("Selección inválida.")
         return
 
-    nuevos_ids = equipo.get("pokemon_ids", []) + [pokemon_id]
+    nuevos_ids = equipo.get("pokemon_ids", []) + [poke_doc_id]
     team_id = equipo.get("_id") or equipo.get("id")
 
     r2 = requests.put(
@@ -232,12 +239,13 @@ def _añadir_a_equipo_existente(pokemon_id):
         headers=headers()
     )
     if r2.status_code == 200:
-        print(f"{GREEN}¡Pokémon añadido al equipo '{equipo['team_name']}'!{RESET}")
+        print(f"{GREEN}¡{nombre_pokemon} añadido al equipo '{equipo['team_name']}'!{RESET}")
     else:
         print("Error:", r2.json().get("error"))
 
 
-def _crear_equipo_con_pokemon(pokemon_id):
+def _crear_equipo_con_pokemon(poke_doc_id, nombre_pokemon):
+    """Crea un equipo nuevo con el _id de PokemonUser como primer integrante."""
     nombre = input("Nombre para el nuevo equipo: ").strip()
     if not nombre:
         print("El nombre no puede estar vacío.")
@@ -245,12 +253,11 @@ def _crear_equipo_con_pokemon(pokemon_id):
 
     r = requests.post(
         f"{API_URL}/users/pokemonteams",
-        json={"team_name": nombre, "pokemon_ids": [pokemon_id]},
+        json={"team_name": nombre, "pokemon_ids": [poke_doc_id]},
         headers=headers()
     )
     if r.status_code == 201:
-        print(f"{GREEN}Equipo '{nombre}' creado correctamente "
-              f"con el Pokémon {pokemon_id}.{RESET}")
+        print(f"{GREEN}Equipo '{nombre}' creado con {nombre_pokemon} como primer integrante.{RESET}")
     else:
         print("Error:", r.json().get("error"))
 
@@ -724,7 +731,7 @@ def jugar_casino():
             return
 
         if data["payout"] > 0:
-            print(f"{GREEN}¡Has ganado {data['payout']} fichas !{RESET}")#y {data['pokes_ganados']} pokes
+            print(f"{GREEN}¡Has ganado {data['payout']} fichas !{RESET}")
             if data["lineas_ganadoras"]:
                 print(f"{YELLOW}Líneas ganadoras: {', '.join(set(data['lineas_ganadoras']))}{RESET}")
         else:
