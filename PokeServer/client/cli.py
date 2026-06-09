@@ -346,6 +346,9 @@ def canjear_pokemon():
     print("\n¡Pokémon obtenido!")
     print(f"{data['pokemon']['nombre']} - Fecha: {data['pokemon']['fecha_obtenido']}")
 
+
+#   DESAFIAR A BATALLA
+# ============================
 def desafiar_usuario(rival_id):
     r = requests.post(f"{API_URL}/battle_requests/{rival_id}", json={}, headers=headers())
     if r.status_code != 201:
@@ -354,29 +357,86 @@ def desafiar_usuario(rival_id):
 
     print("Desafío enviado correctamente.")
 
-def ver_mensajes():
+
+#   MIS MENSAJES (menú interactivo con respuesta a solicitudes de batalla)
+# ============================
+def mis_mensajes_menu():
     r = requests.get(f"{API_URL}/messages/mis_mensajes", headers=headers())
     if r.status_code != 200:
         print("Error al obtener mensajes")
         return
 
-    mensajes = r.json()
-
-    if not mensajes:
-        print("No tienes mensajes.")
+    lista = r.json()
+    if not lista:
+        print("\nNo tienes mensajes.")
         return
 
     print("\n--- Mis Mensajes ---")
-    for m in mensajes:
-        print(f"{m['title']} - {m['text']} (Fecha: {m['Fecha']})")
-        if m.get("type") == "battle_request":
-            print("¿Quieres aceptar este desafío? (s/n)")
-            while True:
-                resp = input().lower().strip()
-                if resp in ["s", "n"]:
-                    #TODO: Enviar respuesta al backend para aceptar/rechazar batalla
-                    break
-                print("Opción inválida. Escribe 's' o 'n'.")
+    for i, m in enumerate(lista, 1):
+        tipo  = m.get("type", "message")
+        estado = f" {YELLOW}[respondido]{RESET}" if m.get("responded") else ""
+        print(f"  {i}. {CYAN}[{tipo}]{RESET}{estado}  "
+              f"De: {m.get('from', '?')}  —  {m.get('title', '')}")
+
+    sel = input("\nSelecciona un mensaje por número (o ENTER para volver): ").strip()
+    if not sel:
+        return
+    try:
+        pos = int(sel) - 1
+        if pos < 0 or pos >= len(lista):
+            raise IndexError
+        msg = lista[pos]
+    except (ValueError, IndexError):
+        print("Selección inválida.")
+        return
+
+    print(f"\n--- {msg.get('title', '')} ---")
+    print(f"  De    : {msg.get('from', '?')}")
+    print(f"  Fecha : {msg.get('Fecha', '?')}")
+    print(f"  Texto : {msg.get('text', '')}")
+
+    tipo = msg.get("type", "")
+
+    if tipo == "battle_request" and not msg.get("responded"):
+        print("\n  1. Aceptar solicitud de batalla")
+        print("  2. Rechazar")
+        print("  3. Volver")
+        op = input("Opción: ").strip()
+        if op == "1":
+            _responder_batalla(msg["_id"], accepted=True)
+        elif op == "2":
+            _responder_batalla(msg["_id"], accepted=False)
+
+    elif tipo == "battle_request" and msg.get("responded"):
+        print(f"\n  {YELLOW}Ya respondiste a esta solicitud.{RESET}")
+
+    elif tipo == "battle_response":
+        bid = msg.get("battle_id", "?")
+        print(f"\n  {GREEN}✅ Tu solicitud de batalla fue aceptada.{RESET}")
+        print(f"  Battle ID: {bid}")
+        print("  (Próximamente: unirse a la batalla automáticamente)")
+
+    elif tipo == "battle_rejected":
+        print(f"\n  {RED}❌ El rival rechazó tu solicitud de batalla.{RESET}")
+
+
+def _responder_batalla(msg_id, accepted: bool):
+    """Llama a POST /battle_requests/<msg_id>/respond con accepted True/False."""
+    r = requests.post(
+        f"{API_URL}/battle_requests/{msg_id}/respond",
+        json={"accepted": accepted},
+        headers=headers()
+    )
+    if r.status_code == 200:
+        if accepted:
+            bid = r.json().get("battle_id", "?")
+            print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
+            print("(Próximamente: conexión automática al endpoint de batalla)")
+        else:
+            print("Solicitud rechazada correctamente.")
+    else:
+        print("Error:", r.json().get("error"))
+
 
 #   MENÚ PRINCIPAL USUARIO
 # ============================
@@ -389,7 +449,7 @@ def menu_usuario():
         print("4. Pokédex")
         print("5. Mis Pokémon")
         print("6. Desafiar a otro usuario a batalla")
-        print("7. Ver mis mensajes (prueba de notificaciones)")
+        print("7. Ver mis mensajes")
         print("8. Cerrar sesión")
 
         op = input("Opción: ")
@@ -408,7 +468,7 @@ def menu_usuario():
             rival_id = input("ID del usuario a desafiar: ")
             desafiar_usuario(rival_id)
         elif op == "7":
-            ver_mensajes()
+            mis_mensajes_menu()
         elif op == "8":
             break
         else:

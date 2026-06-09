@@ -687,7 +687,7 @@ def obtener_historico(current_user, user_id):
 
 
 # ---------------------------------------------------------------------------
-# Hacer peticiones de batalla
+# SOLICITUDES DE BATALLA
 # ---------------------------------------------------------------------------
 
 @app.post("/battle_requests/<rival_id>")
@@ -699,15 +699,17 @@ def make_battle_request(current_user, rival_id):
             return jsonify({"error": "Rival no encontrado"}), 404
 
         doc = {
-            "_id":   ObjectId(),
-            "from":  str(gf(current_user, "Username", "username", default="")),
-            "to":    str(rival["_id"]),
-            "title": "Battle Request",
-            "text":  "You have received a battle request from "
-                     + gf(current_user, "Username", "username", default="")
-                     + ". Do you accept?",
-            "Fecha": datetime.datetime.utcnow().isoformat(),
-            "type":  "battle_request",
+            "_id":     ObjectId(),
+            "from":    str(gf(current_user, "Username", "username", default="")),
+            "from_id": str(current_user["_id"]),   # _id del retador para enviar la respuesta
+            "to":      str(rival["_id"]),
+            "title":   "Battle Request",
+            "text":    "You have received a battle request from "
+                       + gf(current_user, "Username", "username", default="")
+                       + ". Do you accept?",
+            "Fecha":   datetime.datetime.utcnow().isoformat(),
+            "type":    "battle_request",
+            "responded": False,
         }
         mensajes.insert_one(doc)
         doc["_id"] = str(doc["_id"])
@@ -716,8 +718,81 @@ def make_battle_request(current_user, rival_id):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
+
+@app.post("/battle_requests/<msg_id>/respond")
+@token_required
+def respond_battle_request(current_user, msg_id):
+    """
+    Acepta o rechaza una solicitud de batalla.
+    - Si acepta: genera un battle_id placeholder y manda mensaje
+      type=battle_response al retador con ese ID.
+    - Si rechaza: manda mensaje type=battle_rejected al retador.
+    - Marca el mensaje original como responded=True.
+    El battle_id será reemplazado por el ID real cuando exista el endpoint de batalla.
+    """
+    try:
+        data     = request.json or {}
+        accepted = bool(data.get("accepted", False))
+
+        # Verificar que el mensaje existe, es para este usuario y no fue ya respondido
+        msg = mensajes.find_one({
+            "_id":       ObjectId(msg_id),
+            "to":        str(current_user["_id"]),
+            "type":      "battle_request",
+            "responded": False,
+        })
+        if not msg:
+            return jsonify({"error": "Solicitud no encontrada o ya respondida"}), 404
+
+        # Marcar como respondida
+        mensajes.update_one(
+            {"_id": ObjectId(msg_id)},
+            {"$set": {"responded": True, "accepted": accepted}}
+        )
+
+        retador_id = msg.get("from_id", "")
+
+        if not accepted:
+            mensajes.insert_one({
+                "_id":   ObjectId(),
+                "from":  str(gf(current_user, "Username", "username", default="?")),
+                "from_id": str(current_user["_id"]),
+                "to":    retador_id,
+                "title": "Battle Rejected",
+                "text":  gf(current_user, "Username", "username", default="?")
+                         + " ha rechazado tu solicitud de batalla.",
+                "Fecha": datetime.datetime.utcnow().isoformat(),
+                "type":  "battle_rejected",
+                "responded": False,
+            })
+            return jsonify({"msg": "Solicitud rechazada"}), 200
+
+        # ── ACEPTADO ────────────────────────────────────────────────────────
+        # TODO: sustituir por battle_id real cuando exista el endpoint de batalla
+        battle_id = str(ObjectId())
+
+        mensajes.insert_one({
+            "_id":       ObjectId(),
+            "from":      str(gf(current_user, "Username", "username", default="?")),
+            "from_id":   str(current_user["_id"]),
+            "to":        retador_id,
+            "title":     "Battle Accepted",
+            "text":      gf(current_user, "Username", "username", default="?")
+                         + " ha aceptado tu solicitud de batalla.",
+            "Fecha":     datetime.datetime.utcnow().isoformat(),
+            "type":      "battle_response",
+            "battle_id": battle_id,
+            "responded": False,
+        })
+        return jsonify({"msg": "Batalla aceptada", "battle_id": battle_id}), 200
+
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
 # ---------------------------------------------------------------------------
-# Obtener mensajes del usuario
+# MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------
 
 @app.get("/messages/mis_mensajes")
@@ -733,8 +808,9 @@ def get_messages(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
+
 # ---------------------------------------------------------------------------
-# Obtener equipos de Pokémon del usuario
+# EQUIPOS DE POKÉMON
 # ---------------------------------------------------------------------------
 
 @app.get("/users/pokemonteams")
@@ -749,10 +825,6 @@ def get_pokemon_teams(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-# ---------------------------------------------------------------------------
-# Crear un nuevo equipo de Pokémon para el usuario
-# FIX: team_name y pokemon_ids ahora se leen del body JSON
-# ---------------------------------------------------------------------------
 
 @app.post("/users/pokemonteams")
 @token_required
@@ -785,10 +857,6 @@ def create_pokemon_team(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-
-# ---------------------------------------------------------------------------
-# Actualizar pokemon_ids de un equipo existente
-# ---------------------------------------------------------------------------
 
 @app.put("/users/pokemonteams/<team_id>")
 @token_required
