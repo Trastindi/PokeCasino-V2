@@ -130,6 +130,7 @@ def mis_pokemon():
 
     for p in lista:
         print(f"{p['pokemon_id']} - {p['nombre']} (Obtenido: {p['fecha_obtenido']})")
+        
 
 
 

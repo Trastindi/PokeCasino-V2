@@ -530,6 +530,16 @@ def aplicar_movimiento(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
+#Ver detalles de un Pokémon específico del usuario (para mostrar en la sección "Mis Pokémon" o en la selección de equipo para batalla)
+@app.get("/pokemon/<pokemon_id>")
+@token_required
+def ver_pokemon(current_user, pokemon_id):
+    uid = str(current_user["_id"])
+    poke = pokemon_user.find_one({"UserId": uid, "PokemonId": int(pokemon_id)})
+    if not poke:
+        return jsonify({"error": "Pokémon no encontrado"}), 404
+    poke["_id"] = str(poke["_id"])
+    return jsonify(poke), 200
 
 # ---------------------------------------------------------------------------
 # MEDALLAS  (almacenadas en Users.Medallas como lista de strings)
@@ -696,7 +706,11 @@ def make_battle_request(current_user, rival_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-    
+
+# ---------------------------------------------------------------------------
+# Obtener mensajes del usuario
+# ---------------------------------------------------------------------------
+
 @app.get("/messages/mis_mensajes")
 @token_required
 def get_messages(current_user):
@@ -706,6 +720,51 @@ def get_messages(current_user):
         for m in lista:
             m["_id"] = str(m["_id"])
         return jsonify(lista), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+# ---------------------------------------------------------------------------
+# Obtener equipos de Pokémon del usuario (para selección en batalla)
+# ---------------------------------------------------------------------------
+
+@app.get("/users/pokemonteams")
+@token_required
+def get_pokemon_teams(current_user):
+    try:
+        teams = list(current_user.get("PokemonTeams", []))
+        for t in teams:
+            t["_id"] = str(t["_id"])
+        return jsonify(teams), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+# ---------------------------------------------------------------------------
+# Crear un nuevo equipo de Pokémon para el usuario
+# ---------------------------------------------------------------------------
+
+@app.post("/users/pokemonteams")
+@token_required
+def create_pokemon_team(current_user, team_name, pokemon_ids):
+    try:
+        if not team_name:
+            return jsonify({"error": "Falta el nombre del equipo"}), 400
+        if not isinstance(pokemon_ids, list) or len(pokemon_ids) == 0:
+            return jsonify({"error": "pokemon_ids debe ser una lista no vacía"}), 400
+
+        new_team = {
+            "_id": ObjectId(),
+            "team_name": team_name,
+            "pokemon_ids": pokemon_ids,
+            "created_at": datetime.datetime.utcnow().isoformat(),
+        }
+        usuarios.update_one(
+            {"_id": current_user["_id"]},
+            {"$push": {"PokemonTeams": new_team}}
+        )
+        new_team["_id"] = str(new_team["_id"])
+        return jsonify(new_team), 201
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
