@@ -158,7 +158,7 @@ def mis_pokemon_menu():
     print(f"  Movimientos    : {', '.join(moveset) if moveset else 'Ninguno'}")
     print(f"  Obtenido       : {elegido.get('FechaObtenido', '?')}")
 
-    # Estadísticas base desde la Pokédex
+    # Estadísticas base desde la Pokédex (campo correcto: numero_pokedex)
     r_dex = requests.get(f"{API_URL}/pokedex/{elegido['PokemonId']}", headers=headers())
     if r_dex.status_code == 200:
         stats = r_dex.json().get("estadisticas_base", {})
@@ -272,24 +272,22 @@ def pokedex_menu():
         print("Error al obtener Pokédex")
         return
 
-    pokedex = r.json()
+    pokedex_lista = r.json()
 
     r2 = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
-    mis_pokes = r2.json()
-    ids_usuario = {p["pokemon_id"] for p in mis_pokes}
+    mis_pokes = r2.json() if r2.status_code == 200 else []
+    # mis_pokemon devuelve documentos PokemonUser; el nº de Pokédex está en PokemonId
+    ids_usuario = {p["PokemonId"] for p in mis_pokes}
 
-    id_to_name = {p["Id"]: p["Nombre"] for p in pokedex}
+    id_to_name = {p["numero_pokedex"]: p["Nombre"] for p in pokedex_lista}
 
     print("\n--- Pokédex ---")
-    for p in pokedex:
-
-        capturado = p["Id"] in ids_usuario
+    for p in pokedex_lista:
+        num = p["numero_pokedex"]
+        capturado = num in ids_usuario
         color = RED if capturado else BLUE
-
-        # Si NO está capturado mostrar "???"
         nombre_mostrar = p["Nombre"] if capturado else "???"
-
-        print(f"{color}{p['Id']}. {nombre_mostrar}{RESET}")
+        print(f"{color}{num}. {nombre_mostrar}{RESET}")
 
     sel = input("\nSelecciona un Pokémon por ID: ")
     try:
@@ -298,18 +296,18 @@ def pokedex_menu():
         print("ID inválido")
         return
 
-    elegido = next((p for p in pokedex if p["Id"] == sel), None)
+    elegido = next((p for p in pokedex_lista if p["numero_pokedex"] == sel), None)
     if not elegido:
         print("Pokémon no encontrado")
         return
 
-    evoluciones_nombres = [id_to_name[e] for e in elegido["Evoluciones"]]
+    evoluciones_nombres = [id_to_name.get(e, str(e)) for e in elegido.get("Evoluciones", [])]
 
     print("\n--- Información del Pokémon ---")
     print(f"Nombre: {elegido['Nombre']}")
-    print(f"Tipo: {elegido['Tipo1']} / {elegido.get('Tipo2', '')}")
-    print(f"Región: {elegido['Region']}")
-    print(f"Descripción: {elegido['Descripcion']}")
+    print(f"Tipo: {elegido.get('Tipo1', elegido.get('tipo_1', ''))} / {elegido.get('Tipo2', elegido.get('tipo_2', ''))}")
+    print(f"Región: {elegido.get('Region', elegido.get('region', ''))}")
+    print(f"Descripción: {elegido.get('Descripcion', elegido.get('descripcion', ''))}")
     print(f"Evoluciones: {', '.join(evoluciones_nombres) if evoluciones_nombres else 'Ninguna'}")
 
 
