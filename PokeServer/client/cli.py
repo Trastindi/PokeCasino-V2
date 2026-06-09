@@ -240,6 +240,14 @@ def ver_mensajes():
     print("\n--- Mis Mensajes ---")
     for m in mensajes:
         print(f"{m['title']} - {m['text']} (Fecha: {m['Fecha']})")
+        if m.get("type") == "battle_request":
+            print("¿Quieres aceptar este desafío? (s/n)")
+            while True:
+                resp = input().lower().strip()
+                if resp in ["s", "n"]:
+                    #TODO: Enviar respuesta al backend para aceptar/rechazar batalla
+                    break
+                print("Opción inválida. Escribe 's' o 'n'.")
 
 #   MENÚ PRINCIPAL USUARIO
 # ============================
