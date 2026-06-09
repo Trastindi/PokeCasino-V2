@@ -1,0 +1,23 @@
+[
+  {
+    "_id": {
+      "$oid": "6a1eec52f496efda5b831588"
+    },
+    "id": 0,
+    "from": "PokeCasino",
+    "tittle": "Bienvenido a PokeCasino",
+    "text": "Gracias por registrarte en PokeCasino, tu aventura comienza hoy",
+    "type": "message"
+  },
+  {
+    "_id": {
+      "$oid": "6a27bdfe2d297b91360141b6"
+    },
+    "from": "KAO",
+    "to": "699d808aa76f269dbf7d92d5",
+    "title": "Battle Request",
+    "text": "You have received a battle request from KAO. Do you accept?",
+    "Fecha": "2026-06-09T07:17:18.046434",
+    "type": "battle_request"
+  }
+]

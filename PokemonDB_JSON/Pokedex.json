@@ -227,7 +227,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -463,7 +484,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -513,7 +555,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "disparo-demora",
+        "nombre": "Disparo Demora",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -759,7 +817,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -942,7 +1021,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-furia",
+        "nombre": "Ataque Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -1200,7 +1305,23 @@
       "objeto": "Piedra Lunar"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -1452,7 +1573,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -1722,7 +1859,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "canto",
+        "nombre": "Canto",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "doble-bofeton",
+        "nombre": "Doble Bofetón",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "metronomo",
+        "nombre": "Metrónomo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "reduccion",
+        "nombre": "Reducción",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -1916,7 +2079,18 @@
       "objeto": "Piedra Fuego"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -2175,7 +2349,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "canto",
+        "nombre": "Canto",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "doble-bofeton",
+        "nombre": "Doble Bofetón",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rizo-defensa",
+        "nombre": "Rizo Defensa",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -2400,7 +2600,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "chupavidas",
+        "nombre": "Chupavidas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -2631,7 +2842,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "chirrido",
+        "nombre": "Chirrido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "chupavidas",
+        "nombre": "Chupavidas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "impresionar",
+        "nombre": "Impresionar",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -2842,7 +3079,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "profecia",
+        "nombre": "Profecía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -3046,7 +3304,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-arena",
+        "nombre": "Ataque Arena",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -3262,7 +3536,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-arena",
+        "nombre": "Ataque Arena",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "triataque",
+        "nombre": "Triataque",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -3520,7 +3820,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -3784,7 +4100,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "mordisco",
+        "nombre": "Mordisco",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -4042,7 +4379,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hidrochorro",
+        "nombre": "Hidrochorro",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -4312,7 +4675,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -4522,7 +4901,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -4762,7 +5152,28 @@
       "objeto": "Piedra Agua"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -5014,7 +5425,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "kinetico",
+        "nombre": "Kinético",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "teletransporte",
+        "nombre": "Teletransporte",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -5203,7 +5635,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "dulce-aroma",
+        "nombre": "Dulce Aroma",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "escupir",
+        "nombre": "Escupir",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hoja-afilada",
+        "nombre": "Hoja Afilada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo-cepa",
+        "nombre": "Látigo Cepa",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -5438,7 +5896,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "chapoteo-lodo",
+        "nombre": "Chapoteo Lodo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lanzarrocas",
+        "nombre": "Lanzarrocas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rizo-defensa",
+        "nombre": "Rizo Defensa",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -5636,7 +6120,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -5840,7 +6335,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -6053,7 +6574,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "drenadoras",
+        "nombre": "Drenadoras",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -6283,7 +6825,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -6550,7 +7108,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "garra-metal",
+        "nombre": "Garra Metal",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -6743,7 +7327,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-arena",
+        "nombre": "Ataque Arena",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "tornado",
+        "nombre": "Tornado",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -6977,7 +7582,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -7211,7 +7832,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -7445,7 +8082,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "mordisco",
+        "nombre": "Mordisco",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -7657,7 +8320,23 @@
       "objeto": "Piedra Trueno"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "impactrueno",
+        "nombre": "Impactrueno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -7881,7 +8560,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -8105,7 +8795,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-arena",
+        "nombre": "Ataque Arena",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rizo-defensa",
+        "nombre": "Rizo Defensa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -8275,7 +8986,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rayo-confuso",
+        "nombre": "Rayo Confuso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "velo-sagrado",
+        "nombre": "Velo Sagrado",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -8464,7 +9201,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "absorber",
+        "nombre": "Absorber",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -8653,7 +9401,28 @@
       "objeto": "Piedra Hoja"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "absorber",
+        "nombre": "Absorber",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "dulce-aroma",
+        "nombre": "Dulce Aroma",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "polvo-veneno",
+        "nombre": "Polvo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -8911,7 +9680,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hidrochorro",
+        "nombre": "Hidrochorro",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -9103,7 +9888,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "mordisco",
+        "nombre": "Mordisco",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rastreo",
+        "nombre": "Rastreo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rugido",
+        "nombre": "Rugido",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -9344,7 +10155,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "doble-bofeton",
+        "nombre": "Doble Bofetón",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "sumision",
+        "nombre": "Sumisión",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -9602,7 +10439,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "kinetico",
+        "nombre": "Kinético",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "teletransporte",
+        "nombre": "Teletransporte",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -9854,7 +10712,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "patada-baja",
+        "nombre": "Patada Baja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -10106,7 +10980,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "foco-energia",
+        "nombre": "Foco Energía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "patada-baja",
+        "nombre": "Patada Baja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -10335,7 +11230,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -10618,7 +11524,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "bostezo",
+        "nombre": "Bostezo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "maldicion",
+        "nombre": "Maldición",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -10669,7 +11596,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "disparo-demora",
+        "nombre": "Disparo Demora",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -10862,7 +11805,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -11045,7 +11999,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -11346,7 +12316,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "doble-patada",
+        "nombre": "Doble Patada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "foco-energia",
+        "nombre": "Foco Energía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -11563,7 +12559,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -11780,7 +12787,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "paralizador",
+        "nombre": "Paralizador",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "polvo-veneno",
+        "nombre": "Polvo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -12009,7 +13037,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "profecia",
+        "nombre": "Profecía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -12261,7 +13315,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "foco-energia",
+        "nombre": "Foco Energía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "patada-baja",
+        "nombre": "Patada Baja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -12468,7 +13543,28 @@
       "objeto": "Piedra Hoja"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "desarrollo",
+        "nombre": "Desarrollo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo-cepa",
+        "nombre": "Látigo Cepa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -12673,7 +13769,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "eco-metalico",
+        "nombre": "Eco Metálico",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -12886,7 +13998,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -13111,7 +14234,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "drenadoras",
+        "nombre": "Drenadoras",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo-cepa",
+        "nombre": "Látigo Cepa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -13347,7 +14496,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -13595,7 +14755,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refugio",
+        "nombre": "Refugio",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -13639,7 +14825,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -13858,7 +15055,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -13903,7 +15111,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -14104,7 +15323,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-furia",
+        "nombre": "Ataque Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -14297,7 +15527,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-arena",
+        "nombre": "Ataque Arena",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "tornado",
+        "nombre": "Tornado",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -14491,7 +15747,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "impactrueno",
+        "nombre": "Impactrueno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rayo",
+        "nombre": "Rayo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -14749,7 +16031,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -15056,7 +16354,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "doble-patada",
+        "nombre": "Doble Patada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -15308,7 +16632,23 @@
       "objeto": "Piedra Lunar"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -15626,7 +16966,23 @@
       "objeto": "Piedra Lunar"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -15921,7 +17277,18 @@
       "objeto": "Piedra Lunar"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "canto",
+        "nombre": "Canto",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -16092,7 +17459,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "absorber",
+        "nombre": "Absorber",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "aromaterapia",
+        "nombre": "Aromaterapia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "megaagotar",
+        "nombre": "Megaagotar",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "paralizador",
+        "nombre": "Paralizador",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -16368,7 +17761,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "furia",
+        "nombre": "Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "patada-baja",
+        "nombre": "Patada Baja",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -16584,7 +18003,23 @@
       "objeto": "Piedra Fuego"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "mordisco",
+        "nombre": "Mordisco",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rugido",
+        "nombre": "Rugido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -16794,7 +18229,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "teletransporte",
+        "nombre": "Teletransporte",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -17001,7 +18447,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo-cepa",
+        "nombre": "Látigo Cepa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -17230,7 +18687,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "picotazo-veneno",
+        "nombre": "Picotazo Veneno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "restriccion",
+        "nombre": "Restricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -17459,7 +18937,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rizo-defensa",
+        "nombre": "Rizo Defensa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -17688,7 +19182,33 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "chapoteo-lodo",
+        "nombre": "Chapoteo Lodo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lanzarrocas",
+        "nombre": "Lanzarrocas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rizo-defensa",
+        "nombre": "Rizo Defensa",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -17995,7 +19515,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "bostezo",
+        "nombre": "Bostezo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "maldicion",
+        "nombre": "Maldición",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -18182,7 +19728,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -18381,7 +19943,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-furia",
+        "nombre": "Ataque Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "persecucion",
+        "nombre": "Persecución",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -18618,7 +20206,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lenguetazo",
+        "nombre": "Lengüetazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rencor",
+        "nombre": "Rencor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -18876,7 +20485,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -19104,7 +20729,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "desquite",
+        "nombre": "Desquite",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "doble-patada",
+        "nombre": "Doble Patada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -19332,7 +20973,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "desquite",
+        "nombre": "Desquite",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "puno-cometa",
+        "nombre": "Puño Cometa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -19572,7 +21229,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "gas-venenoso",
+        "nombre": "Gas Venenoso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -19896,7 +21569,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "puno-cometa",
+        "nombre": "Puño Cometa",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -20191,7 +21880,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "barrera",
+        "nombre": "Barrera",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -20396,7 +22096,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -20661,7 +22377,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "beso-amoroso",
+        "nombre": "Beso Amoroso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lenguetazo",
+        "nombre": "Lengüetazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "nieve-polvo",
+        "nombre": "Nieve Polvo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -20889,7 +22631,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "agarre",
+        "nombre": "Agarre",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "foco-energia",
+        "nombre": "Foco Energía",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -21153,7 +22911,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -21209,7 +22983,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "salpicadura",
+        "nombre": "Salpicadura",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -21464,7 +23249,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "golpe",
+        "nombre": "Golpe",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -21723,7 +23519,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "canto",
+        "nombre": "Canto",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -21965,7 +23782,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refuerzo",
+        "nombre": "Refuerzo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -22183,7 +24021,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refuerzo",
+        "nombre": "Refuerzo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -22395,7 +24254,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refuerzo",
+        "nombre": "Refuerzo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -22630,7 +24510,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "mordisco",
+        "nombre": "Mordisco",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refugio",
+        "nombre": "Refugio",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "restriccion",
+        "nombre": "Restricción",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -22877,7 +24783,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -23154,7 +25076,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "absorber",
+        "nombre": "Absorber",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "aranazo",
+        "nombre": "Arañazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "corte-furia",
+        "nombre": "Corte Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -23407,7 +25355,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-ala",
+        "nombre": "Ataque Ala",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -23649,7 +25608,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -23993,7 +25968,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -24233,7 +26224,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "gas-venenoso",
+        "nombre": "Gas Venenoso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -24464,7 +26471,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lenguetazo",
+        "nombre": "Lengüetazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -24728,7 +26751,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "anulacion",
+        "nombre": "Anulación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -24968,7 +27017,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "agarre",
+        "nombre": "Agarre",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "garra-metal",
+        "nombre": "Garra Metal",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -25178,7 +27253,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "carga",
+        "nombre": "Carga",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -25388,7 +27479,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "bomba-sonica",
+        "nombre": "Bomba Sónica",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "carga",
+        "nombre": "Carga",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "chirrido",
+        "nombre": "Chirrido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -25658,7 +27775,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -25964,7 +28092,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "lenguetazo",
+        "nombre": "Lengüetazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -26229,7 +28368,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "cornada",
+        "nombre": "Cornada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -26518,7 +28673,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-furia",
+        "nombre": "Ataque Furia",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "cornada",
+        "nombre": "Cornada",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pisoton",
+        "nombre": "Pisotón",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -26728,7 +28909,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "hidrochorro",
+        "nombre": "Hidrochorro",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -26974,7 +29181,23 @@
       "objeto": "Piedra Agua"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -27220,7 +29443,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "conversion",
+        "nombre": "Conversión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "conversion2",
+        "nombre": "Conversión2",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -27449,7 +29693,23 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "refugio",
+        "nombre": "Refugio",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "restriccion",
+        "nombre": "Restricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -27743,7 +30003,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -28153,7 +30424,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -28345,7 +30627,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "golpe-cabeza",
+        "nombre": "Golpe Cabeza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -28550,7 +30843,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "doble-rayo",
+        "nombre": "Doble Rayo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "golpe-cabeza",
+        "nombre": "Golpe Cabeza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rayo-aurora",
+        "nombre": "Rayo Aurora",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -28814,7 +31133,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "fortaleza",
+        "nombre": "Fortaleza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "gas-venenoso",
+        "nombre": "Gas Venenoso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -29000,7 +31340,23 @@
       "objeto": "Piedra Agua"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refugio",
+        "nombre": "Refugio",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -29267,7 +31623,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "lenguetazo",
+        "nombre": "Lengüetazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rencor",
+        "nombre": "Rencor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -29490,7 +31867,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "chirrido",
+        "nombre": "Chirrido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -29709,7 +32102,28 @@
       "objeto": "Piedra Hoja"
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "alboroto",
+        "nombre": "Alboroto",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "bombardeo",
+        "nombre": "Bombardeo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -29979,7 +32393,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "golpe-cabeza",
+        "nombre": "Golpe Cabeza",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hueso-palo",
+        "nombre": "Hueso Palo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -30219,7 +32659,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "autodestruccion",
+        "nombre": "Autodestrucción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "gas-venenoso",
+        "nombre": "Gas Venenoso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "polucion",
+        "nombre": "Polución",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -30417,7 +32883,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -30634,7 +33111,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "giro-rapido",
+        "nombre": "Giro Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rapidez",
+        "nombre": "Rapidez",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "recuperacion",
+        "nombre": "Recuperación",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -30840,7 +33343,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ataque-rapido",
+        "nombre": "Ataque Rápido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "puno-trueno",
+        "nombre": "Puño Trueno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -30878,7 +33402,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "transformacion",
+        "nombre": "Transformación",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -31085,7 +33620,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "nieve-polvo",
+        "nombre": "Nieve Polvo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "tornado",
+        "nombre": "Tornado",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -31292,7 +33843,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "ataque-ala",
+        "nombre": "Ataque Ala",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -31534,7 +34101,33 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ciclon",
+        "nombre": "Ciclón",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "onda-trueno",
+        "nombre": "Onda Trueno",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -31739,7 +34332,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "eco-metalico",
+        "nombre": "Eco Metálico",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "impactrueno",
+        "nombre": "Impactrueno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -31938,7 +34557,18 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -32119,7 +34749,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "proteccion",
+        "nombre": "Protección",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "rayo-aurora",
+        "nombre": "Rayo Aurora",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refugio",
+        "nombre": "Refugio",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "supersonico",
+        "nombre": "Supersónico",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -32353,7 +35009,18 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -32554,7 +35221,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "bombardeo",
+        "nombre": "Bombardeo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "confusion",
+        "nombre": "Confusión",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "hipnosis",
+        "nombre": "Hipnosis",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -32890,7 +35578,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "destructor",
+        "nombre": "Destructor",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "grunido",
+        "nombre": "Gruñido",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -33118,7 +35822,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "arraigo",
+        "nombre": "Arraigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "restriccion",
+        "nombre": "Restricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -33316,7 +36036,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "burbuja",
+        "nombre": "Burbuja",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pantalla-de-humo",
+        "nombre": "Pantalla de Humo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "pistola-agua",
+        "nombre": "Pistola Agua",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -33526,7 +36272,28 @@
       "objeto": null
     },
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "hidrochorro",
+        "nombre": "Hidrochorro",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -33720,7 +36487,33 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ascuas",
+        "nombre": "Ascuas",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "polucion",
+        "nombre": "Polución",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "puno-fuego",
+        "nombre": "Puño Fuego",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   },
   {
     "_id": {
@@ -33900,7 +36693,28 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "latigo",
+        "nombre": "Látigo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "placaje",
+        "nombre": "Placaje",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "refuerzo",
+        "nombre": "Refuerzo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null
+    ]
   },
   {
     "_id": {
@@ -34113,7 +36927,23 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "impactrueno",
+        "nombre": "Impactrueno",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "picotazo",
+        "nombre": "Picotazo",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      null,
+      null
+    ]
   },
   {
     "_id": {
@@ -34440,6 +37270,32 @@
     ],
     "evolucion": null,
     "HiddenPowerSeed": 0,
-    "HiddenPowerPower": 0
+    "HiddenPowerPower": 0,
+    "moveset": [
+      {
+        "movimiento_id": "ciclon",
+        "nombre": "Ciclón",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "constriccion",
+        "nombre": "Constricción",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "malicioso",
+        "nombre": "Malicioso",
+        "metodo": "nivel",
+        "nivel": 1
+      },
+      {
+        "movimiento_id": "onda-trueno",
+        "nombre": "Onda Trueno",
+        "metodo": "nivel",
+        "nivel": 1
+      }
+    ]
   }
 ]

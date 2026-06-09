@@ -1,602 +1,758 @@
 [
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f538d"
+      "$oid": "6a1401e4ce23e6e2fbbbc367"
     },
-    "name_en": "Black Glasses",
-    "name_es": "Gafas de Sol",
-    "description_es": "",
-    "server_effect": "boost_dark_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "black_glasses"
+    "itemId": "black_glasses",
+    "name": "Gafas de Sol",
+    "nameEn": "Black Glasses",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Siniestro",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f538e"
+      "$oid": "6a1401e4ce23e6e2fbbbc368"
     },
-    "name_en": "Blue Scarf",
-    "name_es": "Pañuelo Azul",
-    "description_es": "",
-    "server_effect": "contest_beauty_boost",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "blue_scarf"
+    "itemId": "charcoal",
+    "name": "Carbón",
+    "nameEn": "Charcoal",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Fuego",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5390"
+      "$oid": "6a1401e4ce23e6e2fbbbc369"
     },
-    "name_en": "Charcoal",
-    "name_es": "Carbón",
-    "description_es": "",
-    "server_effect": "boost_fire_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "charcoal"
+    "itemId": "dragon_fang",
+    "name": "Colmillo de Dragón",
+    "nameEn": "Dragon Fang",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Dragón",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5395"
+      "$oid": "6a1401e4ce23e6e2fbbbc36a"
     },
-    "name_en": "Dragon Fang",
-    "name_es": "Colmillo de Dragón",
-    "description_es": "",
-    "server_effect": "boost_dragon_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "dragon_fang"
+    "itemId": "lax_incense",
+    "name": "Incienso Suave",
+    "nameEn": "Lax Incense",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "opponent_accuracy_down",
+    "enabled": true,
+    "effectData": {
+      "accuracyMultiplierAgainstHolder": 0.95
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539c"
+      "$oid": "6a1401e4ce23e6e2fbbbc36b"
     },
-    "name_en": "Lax Incense",
-    "name_es": "Incienso Suave",
-    "description_es": "",
-    "server_effect": "opponent_accuracy_down",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "lax_incense"
+    "itemId": "poison_barb",
+    "name": "Flecha Venenosa",
+    "nameEn": "Poison Barb",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Veneno",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a9"
+      "$oid": "6a1401e4ce23e6e2fbbbc36c"
     },
-    "name_en": "Pink Scarf",
-    "name_es": "Pañuelo Rosa",
-    "description_es": "",
-    "server_effect": "contest_cute_boost",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "pink_scarf"
+    "itemId": "silk_scarf",
+    "name": "Pañuelo de Seda",
+    "nameEn": "Silk Scarf",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Normal",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53aa"
+      "$oid": "6a1401e4ce23e6e2fbbbc36d"
     },
-    "name_en": "Poison Barb",
-    "name_es": "Flecha Venenosa",
-    "description_es": "",
-    "server_effect": "boost_poison_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "poison_barb"
+    "itemId": "silverpowder",
+    "name": "Polvo Plata",
+    "nameEn": "SilverPowder",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Bicho",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b1"
+      "$oid": "6a1401e4ce23e6e2fbbbc36e"
     },
-    "name_en": "Silk Scarf",
-    "name_es": "Pañuelo de Seda",
-    "description_es": "",
-    "server_effect": "boost_normal_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "silk_scarf"
+    "itemId": "soothe_bell",
+    "name": "Cascabel Alivio",
+    "nameEn": "Soothe Bell",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "friendship_gain_up",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b2"
+      "$oid": "6a1401e4ce23e6e2fbbbc36f"
     },
-    "name_en": "SilverPowder",
-    "name_es": "Polvo Plata",
-    "description_es": "",
-    "server_effect": "boost_bug_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "silverpowder"
+    "itemId": "brightpowder",
+    "name": "Polvo Brillo",
+    "nameEn": "BrightPowder",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "holder_evasion_up",
+    "enabled": true,
+    "effectData": {
+      "accuracyMultiplierAgainstHolder": 0.9
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b5"
+      "$oid": "6a1401e4ce23e6e2fbbbc370"
     },
-    "name_en": "Soothe Bell",
-    "name_es": "Cascabel Alivio",
-    "description_es": "",
-    "server_effect": "friendship_gain_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "soothe_bell"
+    "itemId": "cleanse_tag",
+    "name": "Amuleto",
+    "nameEn": "Cleanse Tag",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "wild_encounter_rate_down_if_lead",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f538f"
+      "$oid": "6a1401e4ce23e6e2fbbbc371"
     },
-    "name_en": "BrightPowder",
-    "name_es": "Polvo Brillo",
-    "description_es": "",
-    "server_effect": "holder_evasion_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "brightpowder"
+    "itemId": "light_ball",
+    "name": "Bola Luminosa",
+    "nameEn": "Light Ball",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "pikachu_atk_spatk_x2",
+    "enabled": true,
+    "effectData": {
+      "species": "Pikachu",
+      "attackMultiplier": 2,
+      "spAttackMultiplier": 2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5392"
+      "$oid": "6a1401e4ce23e6e2fbbbc372"
     },
-    "name_en": "Cleanse Tag",
-    "name_es": "Amuleto",
-    "description_es": "",
-    "server_effect": "wild_encounter_rate_down_if_lead",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "cleanse_tag"
+    "itemId": "mental_herb",
+    "name": "Hierba Mental",
+    "nameEn": "Mental Herb",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": true,
+    "serverEffectKey": "cure_infatuation_taunt_encore_torment_disable",
+    "enabled": true,
+    "effectData": {
+      "volatileStates": [
+        "infatuation",
+        "taunt",
+        "encore",
+        "torment",
+        "disable"
+      ],
+      "oneUse": true
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5399"
+      "$oid": "6a1401e4ce23e6e2fbbbc373"
     },
-    "name_en": "Green Scarf",
-    "name_es": "Pañuelo Verde",
-    "description_es": "",
-    "server_effect": "contest_smart_boost",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "green_scarf"
+    "itemId": "metal_powder",
+    "name": "Polvo Metálico",
+    "nameEn": "Metal Powder",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "ditto_def_up",
+    "enabled": true,
+    "effectData": {
+      "species": "Ditto",
+      "stat": "defense",
+      "multiplier": 1.5
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539e"
+      "$oid": "6a1401e4ce23e6e2fbbbc374"
     },
-    "name_en": "Light Ball",
-    "name_es": "Bola Luminosa",
-    "description_es": "",
-    "server_effect": "pikachu_atk_spatk_x2",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "light_ball"
+    "itemId": "miracle_seed",
+    "name": "Semilla Milagro",
+    "nameEn": "Miracle Seed",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Planta",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a3"
+      "$oid": "6a1401e4ce23e6e2fbbbc375"
     },
-    "name_en": "Mental Herb",
-    "name_es": "Hierba Mental",
-    "description_es": "",
-    "server_effect": "cure_infatuation_taunt_encore_torment_disable",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "mental_herb"
+    "itemId": "mystic_water",
+    "name": "Agua Mística",
+    "nameEn": "Mystic Water",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Agua",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a5"
+      "$oid": "6a1401e4ce23e6e2fbbbc376"
     },
-    "name_en": "Metal Powder",
-    "name_es": "Polvo Metálico",
-    "description_es": "",
-    "server_effect": "ditto_def_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "metal_powder"
+    "itemId": "scope_lens",
+    "name": "Periscopio",
+    "nameEn": "Scope Lens",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "crit_rate_up",
+    "enabled": true,
+    "effectData": {
+      "critStageBonus": 1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a6"
+      "$oid": "6a1401e4ce23e6e2fbbbc377"
     },
-    "name_en": "Miracle Seed",
-    "name_es": "Semilla Milagro",
-    "description_es": "",
-    "server_effect": "boost_grass_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "miracle_seed"
+    "itemId": "smoke_ball",
+    "name": "Bola de Humo",
+    "nameEn": "Smoke Ball",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "always_escape_wild",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a7"
+      "$oid": "6a1401e4ce23e6e2fbbbc378"
     },
-    "name_en": "Mystic Water",
-    "name_es": "Agua Mística",
-    "description_es": "",
-    "server_effect": "boost_water_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "mystic_water"
+    "itemId": "stick",
+    "name": "Puerro",
+    "nameEn": "Stick",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "farfetchd_crit_rate_up",
+    "enabled": true,
+    "effectData": {
+      "species": "Farfetchd",
+      "critStageBonus": 2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53ac"
+      "$oid": "6a1401e4ce23e6e2fbbbc379"
     },
-    "name_en": "Red Scarf",
-    "name_es": "Pañuelo Rojo",
-    "description_es": "",
-    "server_effect": "contest_cool_boost",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "red_scarf"
+    "itemId": "black_belt",
+    "name": "Cinturón Negro",
+    "nameEn": "Black Belt",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Lucha",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53ad"
+      "$oid": "6a1401e4ce23e6e2fbbbc37a"
     },
-    "name_en": "Scope Lens",
-    "name_es": "Periscopio",
-    "description_es": "",
-    "server_effect": "crit_rate_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "scope_lens"
+    "itemId": "choice_band",
+    "name": "Cinta Elección",
+    "nameEn": "Choice Band",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "choice_band",
+    "enabled": true,
+    "effectData": {
+      "attackMultiplier": 1.5,
+      "lockFirstMove": true
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b3"
+      "$oid": "6a1401e4ce23e6e2fbbbc37b"
     },
-    "name_en": "Smoke Ball",
-    "name_es": "Bola de Humo",
-    "description_es": "",
-    "server_effect": "always_escape_wild",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "smoke_ball"
+    "itemId": "deep_sea_scale",
+    "name": "Escama Marina",
+    "nameEn": "Deep Sea Scale",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "clamperl_spdef_x2",
+    "enabled": true,
+    "effectData": {
+      "species": "Clamperl",
+      "stat": "spDefense",
+      "multiplier": 2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b8"
+      "$oid": "6a1401e4ce23e6e2fbbbc37c"
     },
-    "name_en": "Stick",
-    "name_es": "Puerro",
-    "description_es": "",
-    "server_effect": "farfetchd_crit_rate_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "stick"
+    "itemId": "deep_sea_tooth",
+    "name": "Diente Marino",
+    "nameEn": "Deep Sea Tooth",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "clamperl_spatk_x2",
+    "enabled": true,
+    "effectData": {
+      "species": "Clamperl",
+      "stat": "spAttack",
+      "multiplier": 2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f538c"
+      "$oid": "6a1401e4ce23e6e2fbbbc37d"
     },
-    "name_en": "Black Belt",
-    "name_es": "Cinturón Negro",
-    "description_es": "",
-    "server_effect": "boost_fighting_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "black_belt"
+    "itemId": "everstone",
+    "name": "Piedra Eterna",
+    "nameEn": "Everstone",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "prevent_evolution",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5391"
+      "$oid": "6a1401e4ce23e6e2fbbbc37e"
     },
-    "name_en": "Choice Band",
-    "name_es": "Cinta Elección",
-    "description_es": "",
-    "server_effect": "choice_band",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "choice_band"
+    "itemId": "focus_band",
+    "name": "Cinta Aguante",
+    "nameEn": "Focus Band",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "survive_ko_chance",
+    "enabled": true,
+    "effectData": {
+      "chance": 0.1,
+      "minHp": 1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5393"
+      "$oid": "6a1401e4ce23e6e2fbbbc37f"
     },
-    "name_en": "Deep Sea Scale",
-    "name_es": "Escama Marina",
-    "description_es": "",
-    "server_effect": "clamperl_spdef_x2",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "deep_sea_scale"
+    "itemId": "hard_stone",
+    "name": "Piedra Dura",
+    "nameEn": "Hard Stone",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Roca",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5394"
+      "$oid": "6a1401e4ce23e6e2fbbbc380"
     },
-    "name_en": "Deep Sea Tooth",
-    "name_es": "Diente Marino",
-    "description_es": "",
-    "server_effect": "clamperl_spatk_x2",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "deep_sea_tooth"
+    "itemId": "king_s_rock",
+    "name": "Roca del Rey",
+    "nameEn": "King's Rock",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "contact_or_damage_flinch_chance",
+    "enabled": true,
+    "effectData": {
+      "chance": 0.1,
+      "requiresDamage": true
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5397"
+      "$oid": "6a1401e4ce23e6e2fbbbc381"
     },
-    "name_en": "Everstone",
-    "name_es": "Piedra Eterna",
-    "description_es": "",
-    "server_effect": "prevent_evolution",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "everstone"
+    "itemId": "lucky_egg",
+    "name": "Huevo Suerte",
+    "nameEn": "Lucky Egg",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "exp_boost_holder",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5398"
+      "$oid": "6a1401e4ce23e6e2fbbbc382"
     },
-    "name_en": "Focus Band",
-    "name_es": "Cinta Aguante",
-    "description_es": "",
-    "server_effect": "survive_ko_chance",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "focus_band"
+    "itemId": "lucky_punch",
+    "name": "Puño Suerte",
+    "nameEn": "Lucky Punch",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "chansey_crit_rate_up",
+    "enabled": true,
+    "effectData": {
+      "species": "Chansey",
+      "critStageBonus": 2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539a"
+      "$oid": "6a1401e4ce23e6e2fbbbc383"
     },
-    "name_en": "Hard Stone",
-    "name_es": "Piedra Dura",
-    "description_es": "",
-    "server_effect": "boost_rock_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "hard_stone"
+    "itemId": "quick_claw",
+    "name": "Garra Rápida",
+    "nameEn": "Quick Claw",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "move_first_chance",
+    "enabled": true,
+    "effectData": {
+      "chance": 0.2
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539b"
+      "$oid": "6a1401e4ce23e6e2fbbbc384"
     },
-    "name_en": "King's Rock",
-    "name_es": "Roca del Rey",
-    "description_es": "",
-    "server_effect": "contact_or_damage_flinch_chance",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "king_s_rock"
+    "itemId": "sea_incense",
+    "name": "Incienso Marino",
+    "nameEn": "Sea Incense",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Agua",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539f"
+      "$oid": "6a1401e4ce23e6e2fbbbc385"
     },
-    "name_en": "Lucky Egg",
-    "name_es": "Huevo Suerte",
-    "description_es": "",
-    "server_effect": "exp_boost_holder",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "lucky_egg"
+    "itemId": "shell_bell",
+    "name": "Cascabel Concha",
+    "nameEn": "Shell Bell",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "heal_fraction_of_damage_dealt",
+    "enabled": true,
+    "effectData": {
+      "fraction": 0.125
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a0"
+      "$oid": "6a1401e4ce23e6e2fbbbc386"
     },
-    "name_en": "Lucky Punch",
-    "name_es": "Puño Suerte",
-    "description_es": "",
-    "server_effect": "chansey_crit_rate_up",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "lucky_punch"
+    "itemId": "soul_dew",
+    "name": "Rocío Bondad",
+    "nameEn": "Soul Dew",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "latias_latios_boost_psychic_dragon",
+    "enabled": true,
+    "effectData": {
+      "species": [
+        "Latias",
+        "Latios"
+      ],
+      "types": [
+        "Psíquico",
+        "Dragón"
+      ],
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53ab"
+      "$oid": "6a1401e4ce23e6e2fbbbc387"
     },
-    "name_en": "Quick Claw",
-    "name_es": "Garra Rápida",
-    "description_es": "",
-    "server_effect": "move_first_chance",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "quick_claw"
+    "itemId": "twistedspoon",
+    "name": "Cuchara Torcida",
+    "nameEn": "TwistedSpoon",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Psíquico",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53ae"
+      "$oid": "6a1401e4ce23e6e2fbbbc388"
     },
-    "name_en": "Sea Incense",
-    "name_es": "Incienso Marino",
-    "description_es": "",
-    "server_effect": "boost_water_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "sea_incense"
+    "itemId": "white_herb",
+    "name": "Hierba Blanca",
+    "nameEn": "White Herb",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": true,
+    "serverEffectKey": "restore_lowered_stats_once",
+    "enabled": true,
+    "effectData": {
+      "trigger": "has_lowered_stats",
+      "oneUse": true
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b0"
+      "$oid": "6a1401e4ce23e6e2fbbbc389"
     },
-    "name_en": "Shell Bell",
-    "name_es": "Cascabel Concha",
-    "description_es": "",
-    "server_effect": "heal_fraction_of_damage_dealt",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "shell_bell"
+    "itemId": "amulet_coin",
+    "name": "Moneda Amuleto",
+    "nameEn": "Amulet Coin",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "money_double_if_participates",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53b6"
+      "$oid": "6a1401e4ce23e6e2fbbbc38a"
     },
-    "name_en": "Soul Dew",
-    "name_es": "Rocío Bondad",
-    "description_es": "",
-    "server_effect": "latias_latios_boost_psychic_dragon",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "soul_dew"
+    "itemId": "exp_share",
+    "name": "Repartir Experiencia",
+    "nameEn": "Exp. Share",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "exp_share",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53ba"
+      "$oid": "6a1401e4ce23e6e2fbbbc38b"
     },
-    "name_en": "TwistedSpoon",
-    "name_es": "Cuchara Torcida",
-    "description_es": "",
-    "server_effect": "boost_psychic_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "twistedspoon"
+    "itemId": "leftovers",
+    "name": "Restos",
+    "nameEn": "Leftovers",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "heal_each_turn",
+    "enabled": true,
+    "effectData": {
+      "fraction": 0.0625
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53bb"
+      "$oid": "6a1401e4ce23e6e2fbbbc38c"
     },
-    "name_en": "White Herb",
-    "name_es": "Hierba Blanca",
-    "description_es": "",
-    "server_effect": "restore_lowered_stats_once",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "white_herb"
+    "itemId": "macho_brace",
+    "name": "Brazal Firme",
+    "nameEn": "Macho Brace",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "ev_yield_double_speed_half",
+    "enabled": true,
+    "effectData": {}
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f538b"
+      "$oid": "6a1401e4ce23e6e2fbbbc38d"
     },
-    "name_en": "Amulet Coin",
-    "name_es": "Moneda Amuleto",
-    "description_es": "",
-    "server_effect": "money_double_if_participates",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "amulet_coin"
+    "itemId": "magnet",
+    "name": "Imán",
+    "nameEn": "Magnet",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Eléctrico",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f5396"
+      "$oid": "6a1401e4ce23e6e2fbbbc38e"
     },
-    "name_en": "Exp. Share",
-    "name_es": "Repartir Experiencia",
-    "description_es": "",
-    "server_effect": "exp_share",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "exp_share"
+    "itemId": "metal_coat",
+    "name": "Revestimiento Metálico",
+    "nameEn": "Metal Coat",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Acero",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f539d"
+      "$oid": "6a1401e4ce23e6e2fbbbc38f"
     },
-    "name_en": "Leftovers",
-    "name_es": "Restos",
-    "description_es": "",
-    "server_effect": "heal_each_turn",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "leftovers"
+    "itemId": "never_melt_ice",
+    "name": "Hielo Perpetuo",
+    "nameEn": "Never-Melt Ice",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Hielo",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a1"
+      "$oid": "6a1401e4ce23e6e2fbbbc390"
     },
-    "name_en": "Macho Brace",
-    "name_es": "Brazal Firme",
-    "description_es": "",
-    "server_effect": "ev_yield_double_speed_half",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "macho_brace"
+    "itemId": "sharp_beak",
+    "name": "Pico Afilado",
+    "nameEn": "Sharp Beak",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Volador",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a2"
+      "$oid": "6a1401e4ce23e6e2fbbbc391"
     },
-    "name_en": "Magnet",
-    "name_es": "Imán",
-    "description_es": "",
-    "server_effect": "boost_electric_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "magnet"
+    "itemId": "soft_sand",
+    "name": "Arena Fina",
+    "nameEn": "Soft Sand",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Tierra",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a4"
+      "$oid": "6a1401e4ce23e6e2fbbbc392"
     },
-    "name_en": "Metal Coat",
-    "name_es": "Revestimiento Metálico",
-    "description_es": "",
-    "server_effect": "boost_steel_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "metal_coat"
+    "itemId": "spell_tag",
+    "name": "Hechizo",
+    "nameEn": "Spell Tag",
+    "itemClass": "hold",
+    "combatUsable": true,
+    "consumable": false,
+    "serverEffectKey": "boost_type",
+    "enabled": true,
+    "effectData": {
+      "type": "Fantasma",
+      "multiplier": 1.1
+    }
   },
   {
     "_id": {
-      "$oid": "69f070a49a42cface88f53a8"
+      "$oid": "6a1401e4ce23e6e2fbbbc393"
     },
-    "name_en": "Never-Melt Ice",
-    "name_es": "Hielo Perpetuo",
-    "description_es": "",
-    "server_effect": "boost_ice_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "never_melt_ice"
-  },
-  {
-    "_id": {
-      "$oid": "69f070a49a42cface88f53af"
-    },
-    "name_en": "Sharp Beak",
-    "name_es": "Pico Afilado",
-    "description_es": "",
-    "server_effect": "boost_flying_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "sharp_beak"
-  },
-  {
-    "_id": {
-      "$oid": "69f070a49a42cface88f53b4"
-    },
-    "name_en": "Soft Sand",
-    "name_es": "Arena Fina",
-    "description_es": "",
-    "server_effect": "boost_ground_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "soft_sand"
-  },
-  {
-    "_id": {
-      "$oid": "69f070a49a42cface88f53b7"
-    },
-    "name_en": "Spell Tag",
-    "name_es": "Hechizo",
-    "description_es": "",
-    "server_effect": "boost_ghost_type",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "spell_tag"
-  },
-  {
-    "_id": {
-      "$oid": "69f070a49a42cface88f53b9"
-    },
-    "name_en": "Thick Club",
-    "name_es": "Hueso Grueso",
-    "description_es": "",
-    "server_effect": "cubone_marowak_atk_x2",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "thick_club"
-  },
-  {
-    "_id": {
-      "$oid": "69f070a49a42cface88f53bc"
-    },
-    "name_en": "Yellow Scarf",
-    "name_es": "Pañuelo Amarillo",
-    "description_es": "",
-    "server_effect": "contest_tough_boost",
-    "category": "hold",
-    "import_type": "pokemon_item",
-    "idObjeto": "yellow_scarf"
+    "itemId": "thick_club",
+    "name": "Hueso Grueso",
+    "nameEn": "Thick Club",
+    "itemClass": "hold",
+    "combatUsable": false,
+    "consumable": false,
+    "serverEffectKey": "species_stat_boost",
+    "enabled": true,
+    "effectData": {
+      "species": [
+        "Cubone",
+        "Marowak"
+      ],
+      "stat": "attack",
+      "multiplier": 2
+    }
   }
 ]

@@ -14,23 +14,141 @@
     },
     "Role": "admin",
     "Pokes": 500,
-    "FichasCasino": 500
+    "FichasCasino": 500,
+    "medallas": [],
+    "messages": [
+      {
+        "messageid": 0,
+        "foreignid": 0,
+        "text": "Welcome",
+        "date": {
+          "$date": "2026-06-02T14:40:46.851Z"
+        },
+        "read": false
+      }
+    ],
+    "PokemonTeams": []
   },
   {
     "_id": {
       "$oid": "699d808aa76f269dbf7d92d5"
     },
-    "Nombre": "Lex",
-    "Apellido": "Luthor",
+    "Nombre": null,
+    "Apellido": null,
     "Username": "LEX",
     "Correo": "LL@Luthorcorp.es",
-    "Pokemon": 24,
-    "Password": "$2a$11$tMJxWXv0Kg8GRlyPnKgNeuMdTxP5ma.r6ZGonsgWdi69kMgIUCLAm",
-    "Birthdate": {
-      "$date": "2004-07-01T22:00:00Z"
-    },
+    "Pokemon": 1,
+    "Password": "$2a$11$jXDZRwlANBNCFfl1uuqn2uzqXLGEuIkPP3W/yI9p.T3lYCQMSC4A.",
+    "Birthdate": "0001-01-01T00:00:00Z",
     "Role": "user",
     "Pokes": 800000,
-    "FichasCasino": 781987
+    "FichasCasino": 772087,
+    "medallas": [],
+    "messages": [
+      {
+        "messageid": 0,
+        "foreignid": 0,
+        "text": "Welcome",
+        "date": {
+          "$date": "2026-06-02T14:40:46.851Z"
+        },
+        "read": false
+      }
+    ],
+    "PokemonTeams": [],
+    "email_lower": "ll@luthorcorp.es",
+    "username_lower": "lex"
+  },
+  {
+    "_id": {
+      "$oid": "6a14100577390dea68e30cd1"
+    },
+    "Nombre": null,
+    "Apellido": null,
+    "Username": "KAO",
+    "Correo": "kao@gmail.com",
+    "Pokemon": 1,
+    "Password": "$2a$11$2HFSy8wM.c98PEoLysAz7O3Mvdirf1fR52yQ4UKetJJ29Qz54AVfu",
+    "Birthdate": "0001-01-01T00:00:00Z",
+    "Role": "user",
+    "Pokes": 500,
+    "FichasCasino": 499926456,
+    "Medallas": [],
+    "Messages": [
+      {
+        "messageid": 0,
+        "foreignid": 0,
+        "text": "Welcome",
+        "date": {
+          "$date": "2026-06-02T14:40:46.851Z"
+        },
+        "read": false
+      }
+    ],
+    "email_lower": "kao@gmail.com",
+    "username_lower": "kao",
+    "PokemonTeams": []
+  },
+  {
+    "_id": {
+      "$oid": "6a15c1b64170aaf38e930511"
+    },
+    "Nombre": "N",
+    "Apellido": "N",
+    "Username": "N",
+    "Correo": "n@gmail.com",
+    "Pokemon": 0,
+    "Password": "$2a$11$OdfJhqSNNksa29CjlQzx1ubJ1qAjl/7klvjA.Xa2LSWJn6pY8PPS.",
+    "Birthdate": {
+      "$date": "2026-05-05T22:00:00Z"
+    },
+    "Role": "user",
+    "Pokes": 500,
+    "FichasCasino": 499961600.0,
+    "medallas": [],
+    "messages": [
+      {
+        "messageid": 0,
+        "foreignid": 0,
+        "text": "Welcome",
+        "date": {
+          "$date": "2026-06-02T14:40:46.851Z"
+        },
+        "read": false
+      }
+    ],
+    "PokemonTeams": []
+  },
+  {
+    "_id": {
+      "$oid": "6a2670679edad02d11129b75"
+    },
+    "Nombre": "L",
+    "Apellido": "L",
+    "Username": "L",
+    "username_lower": "l",
+    "Correo": "l@gmail.com",
+    "email_lower": "l@gmail.com",
+    "Pokemon": 0,
+    "Password": "$2b$12$rLJxtBex/kCxAQoHML0kQ.qwbk/pA.xmP5Cz6u2untdiaCL36OPX6",
+    "Birthdate": {
+      "$date": "2000-02-28T00:00:00Z"
+    },
+    "Role": "user",
+    "Pokes": 300,
+    "FichasCasino": 0,
+    "Medallas": [],
+    "Messages": [
+      {
+        "messageid": 0,
+        "foreignid": 0,
+        "text": "Welcome",
+        "date": {
+          "$date": "2026-06-08T07:33:59.743Z"
+        },
+        "read": false
+      }
+    ],
+    "PokemonTeams": []
   }
 ]

@@ -18,7 +18,10 @@
         "TipoSecundario": "Tierra",
         "AbilityNombre": "Cabeza Roca",
         "ItemId": null,
-        "MoveSet": ["Placaje", "Rizo Defensa"],
+        "MoveSet": [
+          "Placaje",
+          "Rizo Defensa"
+        ],
         "Status": null
       },
       {
@@ -29,7 +32,12 @@
         "TipoSecundario": "Tierra",
         "AbilityNombre": "Cabeza Roca",
         "ItemId": null,
-        "MoveSet": ["Placaje", "Fortaleza", "Constricción", "Tumba Rocas"],
+        "MoveSet": [
+          "Placaje",
+          "Fortaleza",
+          "Constricción",
+          "Tumba Rocas"
+        ],
         "Status": null
       }
     ]
@@ -53,7 +61,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Cura Natural",
         "ItemId": null,
-        "MoveSet": ["Placaje", "Fortaleza", "Recuperación", "Pistola Agua"],
+        "MoveSet": [
+          "Placaje",
+          "Fortaleza",
+          "Recuperación",
+          "Pistola Agua"
+        ],
         "Status": null
       },
       {
@@ -64,7 +77,12 @@
         "TipoSecundario": "Psíquico",
         "AbilityNombre": "Cura Natural",
         "ItemId": null,
-        "MoveSet": ["Giro Rápido", "Veloz", "Recuperación", "Pistola Agua"],
+        "MoveSet": [
+          "Giro Rápido",
+          "Veloz",
+          "Recuperación",
+          "Pistola Agua"
+        ],
         "Status": null
       }
     ]
@@ -88,7 +106,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Estática",
         "ItemId": null,
-        "MoveSet": ["Ataque Rápido", "Pantalla de Luz", "Sónico", "Chispa"],
+        "MoveSet": [
+          "Ataque Rápido",
+          "Pantalla de Luz",
+          "Sónico",
+          "Chispa"
+        ],
         "Status": null
       },
       {
@@ -99,7 +122,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Estática",
         "ItemId": null,
-        "MoveSet": ["Ataque Rápido", "Gruñido", "Impactrueno", "Cola de Hierro"],
+        "MoveSet": [
+          "Ataque Rápido",
+          "Gruñido",
+          "Impactrueno",
+          "Cola de Hierro"
+        ],
         "Status": null
       },
       {
@@ -110,7 +138,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Estática",
         "ItemId": null,
-        "MoveSet": ["Ataque Rápido", "Gruñido", "Impactrueno", "Trueno"],
+        "MoveSet": [
+          "Ataque Rápido",
+          "Gruñido",
+          "Impactrueno",
+          "Trueno"
+        ],
         "Status": null
       }
     ]
@@ -134,7 +167,12 @@
         "TipoSecundario": "Veneno",
         "AbilityNombre": "Clorofila",
         "ItemId": null,
-        "MoveSet": ["Látigo Cepa", "Corte", "Drenadoras", "Dulce Aroma"],
+        "MoveSet": [
+          "Látigo Cepa",
+          "Corte",
+          "Drenadoras",
+          "Dulce Aroma"
+        ],
         "Status": null
       },
       {
@@ -145,7 +183,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Clorofila",
         "ItemId": null,
-        "MoveSet": ["Constricción", "Drenadoras", "Megaagotar", "Polvo Veneno"],
+        "MoveSet": [
+          "Constricción",
+          "Drenadoras",
+          "Megaagotar",
+          "Polvo Veneno"
+        ],
         "Status": null
       },
       {
@@ -156,7 +199,12 @@
         "TipoSecundario": "Veneno",
         "AbilityNombre": "Efecto Espora",
         "ItemId": null,
-        "MoveSet": ["Absorber", "Drenadoras", "Megaagotar", "Polvo Veneno"],
+        "MoveSet": [
+          "Absorber",
+          "Drenadoras",
+          "Megaagotar",
+          "Polvo Veneno"
+        ],
         "Status": null
       }
     ]
@@ -180,7 +228,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Levitación",
         "ItemId": null,
-        "MoveSet": ["Polvo Veneno", "Neblina", "Bomba Lodo", "Minimizar"],
+        "MoveSet": [
+          "Polvo Veneno",
+          "Neblina",
+          "Bomba Lodo",
+          "Minimizar"
+        ],
         "Status": null
       },
       {
@@ -191,7 +244,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Viscosidad",
         "ItemId": null,
-        "MoveSet": ["Bomba Lodo", "Minimizar", "Neblina", "Amnesia"],
+        "MoveSet": [
+          "Bomba Lodo",
+          "Minimizar",
+          "Neblina",
+          "Amnesia"
+        ],
         "Status": null
       },
       {
@@ -202,7 +260,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Levitación",
         "ItemId": null,
-        "MoveSet": ["Polvo Veneno", "Neblina", "Bomba Lodo", "Minimizar"],
+        "MoveSet": [
+          "Polvo Veneno",
+          "Neblina",
+          "Bomba Lodo",
+          "Minimizar"
+        ],
         "Status": null
       },
       {
@@ -213,7 +276,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Levitación",
         "ItemId": null,
-        "MoveSet": ["Bomba Lodo", "Humo", "Neblina", "Explosión"],
+        "MoveSet": [
+          "Bomba Lodo",
+          "Humo",
+          "Neblina",
+          "Explosión"
+        ],
         "Status": null
       }
     ]
@@ -237,7 +305,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Sincronía",
         "ItemId": null,
-        "MoveSet": ["Teletransportación", "Confusión", "Recuperación", "Psíquico"],
+        "MoveSet": [
+          "Teletransportación",
+          "Confusión",
+          "Recuperación",
+          "Psíquico"
+        ],
         "Status": null
       },
       {
@@ -248,7 +321,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Pantalla Sónica",
         "ItemId": null,
-        "MoveSet": ["Barrera", "Confusión", "Pantalla de Luz", "Psíquico"],
+        "MoveSet": [
+          "Barrera",
+          "Confusión",
+          "Pantalla de Luz",
+          "Psíquico"
+        ],
         "Status": null
       },
       {
@@ -259,7 +337,12 @@
         "TipoSecundario": "Veneno",
         "AbilityNombre": "Polvo Escudo",
         "ItemId": null,
-        "MoveSet": ["Polvo Veneno", "Psíquico", "Neblina", "Drenadoras"],
+        "MoveSet": [
+          "Polvo Veneno",
+          "Psíquico",
+          "Neblina",
+          "Drenadoras"
+        ],
         "Status": null
       },
       {
@@ -270,7 +353,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Sincronía",
         "ItemId": null,
-        "MoveSet": ["Teletransportación", "Confusión", "Recuperación", "Psíquico"],
+        "MoveSet": [
+          "Teletransportación",
+          "Confusión",
+          "Recuperación",
+          "Psíquico"
+        ],
         "Status": null
       }
     ]
@@ -294,7 +382,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Intimidación",
         "ItemId": null,
-        "MoveSet": ["Mordisco", "Rugido", "Llamerada", "Ascuas"],
+        "MoveSet": [
+          "Mordisco",
+          "Rugido",
+          "Llamerada",
+          "Ascuas"
+        ],
         "Status": null
       },
       {
@@ -305,7 +398,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Flash Fire",
         "ItemId": null,
-        "MoveSet": ["Placaje", "Velocidad", "Ascuas", "Llamerada"],
+        "MoveSet": [
+          "Placaje",
+          "Velocidad",
+          "Ascuas",
+          "Llamerada"
+        ],
         "Status": null
       },
       {
@@ -316,7 +414,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Flash Fire",
         "ItemId": null,
-        "MoveSet": ["Ataque Rápido", "Velocidad", "Ascuas", "Llamerada"],
+        "MoveSet": [
+          "Ataque Rápido",
+          "Velocidad",
+          "Ascuas",
+          "Llamerada"
+        ],
         "Status": null
       },
       {
@@ -327,7 +430,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Intimidación",
         "ItemId": null,
-        "MoveSet": ["Cabezazo", "Rugido", "Llamerada", "Extremevelocidad"],
+        "MoveSet": [
+          "Cabezazo",
+          "Rugido",
+          "Llamerada",
+          "Extremevelocidad"
+        ],
         "Status": null
       }
     ]
@@ -351,7 +459,12 @@
         "TipoSecundario": "Roca",
         "AbilityNombre": "Cabeza Roca",
         "ItemId": null,
-        "MoveSet": ["Cornada", "Impresionar", "Terremoto", "Cuerpo Pesado"],
+        "MoveSet": [
+          "Cornada",
+          "Impresionar",
+          "Terremoto",
+          "Cuerpo Pesado"
+        ],
         "Status": null
       },
       {
@@ -362,7 +475,12 @@
         "TipoSecundario": null,
         "AbilityNombre": "Trampa Arena",
         "ItemId": null,
-        "MoveSet": ["Ataque Arena", "Excavar", "Fisura", "Terremoto"],
+        "MoveSet": [
+          "Ataque Arena",
+          "Excavar",
+          "Fisura",
+          "Terremoto"
+        ],
         "Status": null
       },
       {
@@ -373,7 +491,12 @@
         "TipoSecundario": "Tierra",
         "AbilityNombre": "Punto Veneno",
         "ItemId": null,
-        "MoveSet": ["Doble Filo", "Terremoto", "Bombardeo", "Superdiente"],
+        "MoveSet": [
+          "Doble Filo",
+          "Terremoto",
+          "Bombardeo",
+          "Superdiente"
+        ],
         "Status": null
       },
       {
@@ -384,7 +507,12 @@
         "TipoSecundario": "Tierra",
         "AbilityNombre": "Punto Veneno",
         "ItemId": null,
-        "MoveSet": ["Doble Filo", "Terremoto", "Megacuerno", "Superdiente"],
+        "MoveSet": [
+          "Doble Filo",
+          "Terremoto",
+          "Megacuerno",
+          "Superdiente"
+        ],
         "Status": null
       },
       {
@@ -395,7 +523,12 @@
         "TipoSecundario": "Roca",
         "AbilityNombre": "Cabeza Roca",
         "ItemId": null,
-        "MoveSet": ["Cornada", "Impresionar", "Terremoto", "Cuerpo Pesado"],
+        "MoveSet": [
+          "Cornada",
+          "Impresionar",
+          "Terremoto",
+          "Cuerpo Pesado"
+        ],
         "Status": null
       }
     ]
