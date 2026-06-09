@@ -725,7 +725,7 @@ def get_messages(current_user):
         return jsonify({"error": "Error interno del servidor"}), 500
 
 # ---------------------------------------------------------------------------
-# Obtener equipos de Pokémon del usuario (para selección en batalla)
+# Obtener equipos de Pokémon del usuario
 # ---------------------------------------------------------------------------
 
 @app.get("/users/pokemonteams")
@@ -742,16 +742,23 @@ def get_pokemon_teams(current_user):
 
 # ---------------------------------------------------------------------------
 # Crear un nuevo equipo de Pokémon para el usuario
+# FIX: team_name y pokemon_ids ahora se leen del body JSON
 # ---------------------------------------------------------------------------
 
 @app.post("/users/pokemonteams")
 @token_required
-def create_pokemon_team(current_user, team_name, pokemon_ids):
+def create_pokemon_team(current_user):
     try:
+        data        = request.json or {}
+        team_name   = data.get("team_name", "").strip()
+        pokemon_ids = data.get("pokemon_ids", [])
+
         if not team_name:
             return jsonify({"error": "Falta el nombre del equipo"}), 400
         if not isinstance(pokemon_ids, list) or len(pokemon_ids) == 0:
             return jsonify({"error": "pokemon_ids debe ser una lista no vacía"}), 400
+        if len(pokemon_ids) > 6:
+            return jsonify({"error": "Un equipo no puede tener más de 6 Pokémon"}), 400
 
         new_team = {
             "_id": ObjectId(),
@@ -768,6 +775,37 @@ def create_pokemon_team(current_user, team_name, pokemon_ids):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
+
+
+# ---------------------------------------------------------------------------
+# Actualizar pokemon_ids de un equipo existente
+# ---------------------------------------------------------------------------
+
+@app.put("/users/pokemonteams/<team_id>")
+@token_required
+def update_pokemon_team(current_user, team_id):
+    try:
+        data        = request.json or {}
+        pokemon_ids = data.get("pokemon_ids")
+
+        if pokemon_ids is None:
+            return jsonify({"error": "Falta pokemon_ids"}), 400
+        if not isinstance(pokemon_ids, list):
+            return jsonify({"error": "pokemon_ids debe ser una lista"}), 400
+        if len(pokemon_ids) > 6:
+            return jsonify({"error": "Un equipo no puede tener más de 6 Pokémon"}), 400
+
+        result = usuarios.update_one(
+            {"_id": current_user["_id"], "PokemonTeams._id": ObjectId(team_id)},
+            {"$set": {"PokemonTeams.$.pokemon_ids": pokemon_ids}}
+        )
+        if result.matched_count == 0:
+            return jsonify({"error": "Equipo no encontrado"}), 404
+        return jsonify({"msg": "Equipo actualizado"}), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
 
 # ---------------------------------------------------------------------------
 # MAIN
