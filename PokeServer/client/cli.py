@@ -425,25 +425,19 @@ def mis_mensajes_menu():
 
 
 def _responder_batalla(msg_id, accepted: bool):
-    """Llama a POST /battle_requests/<msg_id>/respond con accepted True/False."""
-    r = requests.post(
-        f"{API_URL}/battle_requests/{msg_id}/respond",
-        json={"accepted": accepted},
-        headers=headers()
-    )
+    global is_on_battle, batalla
+    r = requests.post(...)
     if r.status_code == 200:
         if accepted:
             bid = r.json().get("battle_id", "?")
             print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
             is_on_battle = True
-            print(f"{is_on_battle}")
-            menu_usuario()  # <-- Llama al menú de usuario para mostrar el menú de batalla
-            print("(Próximamente: conexión automática al endpoint de batalla)")
+            batalla = obtener_batalla(bid)
         else:
             print("Solicitud rechazada correctamente.")
     else:
         print("Error:", r.json().get("error"))
-
+    
 def obtener_batalla(battle_id):
     r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
     if r.status_code == 200:
