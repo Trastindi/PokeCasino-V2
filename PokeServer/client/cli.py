@@ -111,27 +111,148 @@ def ver_perfil():
 
 
 
-#   MIS POKÉMON
+#   MIS POKÉMON (menú interactivo con detalle, stats y gestión de equipos)
 # ============================
 
-
-def mis_pokemon():
+def mis_pokemon_menu():
     r = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
     if r.status_code != 200:
         print("Error:", r.json().get("error"))
         return
 
-    print("\n--- Mis Pokémon ---")
     lista = r.json()
-
     if not lista:
-        print("No tienes ningún Pokémon todavía.")
+        print("\nNo tienes ningún Pokémon todavía.")
         return
 
+    print("\n--- Mis Pokémon ---")
     for p in lista:
-        print(f"{p['pokemon_id']} - {p['nombre']} (Obtenido: {p['fecha_obtenido']})")
-        
+        tipo2 = f" / {p['TipoSecundario']}" if p.get("TipoSecundario") else ""
+        print(f"  {p['PokemonId']}. {p['Nombre']}  "
+              f"[{p.get('TipoPrincipal','?')}{tipo2}]  "
+              f"Nv.{p.get('Nivel', 1)}")
 
+    sel = input("\nSelecciona un Pokémon por ID para ver detalles (o ENTER para volver): ").strip()
+    if not sel:
+        return
+    try:
+        sel = int(sel)
+    except ValueError:
+        print("ID inválido.")
+        return
+
+    elegido = next((p for p in lista if p["PokemonId"] == sel), None)
+    if not elegido:
+        print("Pokémon no encontrado en tu colección.")
+        return
+
+    # Mostrar detalle
+    tipo2 = f" / {elegido['TipoSecundario']}" if elegido.get("TipoSecundario") else ""
+    print(f"\n--- {elegido['Nombre']} ---")
+    print(f"  ID Pokédex : {elegido['PokemonId']}")
+    print(f"  Tipo       : {elegido.get('TipoPrincipal','?')}{tipo2}")
+    print(f"  Nivel      : {elegido.get('Nivel', 1)}")
+    print(f"  HP actual  : {elegido.get('CurrentHp', '?')}")
+    moveset = elegido.get("MoveSet") or []
+    print(f"  Movimientos: {', '.join(moveset) if moveset else 'Ninguno'}")
+    print(f"  Obtenido   : {elegido.get('FechaObtenido','?')}")
+
+    # Estadísticas base desde la Pokédex
+    r_dex = requests.get(f"{API_URL}/pokedex/{elegido['PokemonId']}", headers=headers())
+    if r_dex.status_code == 200:
+        stats = r_dex.json().get("estadisticas_base", {})
+        if stats:
+            print(f"\n  --- Estadísticas base ---")
+            print(f"  {'PS':<22}: {stats.get('ps', '?')}")
+            print(f"  {'Ataque':<22}: {stats.get('ataque', '?')}")
+            print(f"  {'Defensa':<22}: {stats.get('defensa', '?')}")
+            print(f"  {'Ataque Especial':<22}: {stats.get('ataque_especial', '?')}")
+            print(f"  {'Defensa Especial':<22}: {stats.get('defensa_especial', '?')}")
+            print(f"  {'Velocidad':<22}: {stats.get('velocidad', '?')}")
+    else:
+        print(f"  {YELLOW}(No se pudieron cargar las estadísticas){RESET}")
+
+    # Gestión de equipos
+    print("\n¿Qué quieres hacer?")
+    print("  1. Añadir a un equipo existente")
+    print("  2. Crear un nuevo equipo con este Pokémon")
+    print("  3. Volver")
+    accion = input("Opción: ").strip()
+
+    if accion == "1":
+        _añadir_a_equipo_existente(elegido["PokemonId"])
+    elif accion == "2":
+        _crear_equipo_con_pokemon(elegido["PokemonId"])
+
+
+def _añadir_a_equipo_existente(pokemon_id):
+    r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
+    if r.status_code != 200:
+        print("Error al obtener equipos:", r.json().get("error"))
+        return
+
+    equipos = r.json()
+    if not equipos:
+        print("No tienes equipos creados. Usa la opción 2 para crear uno.")
+        return
+
+    disponibles = []
+    for t in equipos:
+        ids = t.get("pokemon_ids", [])
+        if len(ids) >= 6:
+            continue
+        if pokemon_id in ids:
+            continue
+        disponibles.append(t)
+
+    if not disponibles:
+        print("No hay equipos disponibles "
+              "(todos tienen 6 Pokémon o ya incluyen este Pokémon).")
+        return
+
+    print("\n--- Equipos disponibles ---")
+    for i, t in enumerate(disponibles, 1):
+        print(f"  {i}. {t['team_name']}  "
+              f"({len(t.get('pokemon_ids', []))}/6 Pokémon)")
+
+    sel = input("Selecciona el número del equipo: ").strip()
+    try:
+        sel = int(sel) - 1
+        equipo = disponibles[sel]
+    except (ValueError, IndexError):
+        print("Selección inválida.")
+        return
+
+    nuevos_ids = equipo.get("pokemon_ids", []) + [pokemon_id]
+    team_id = equipo.get("_id") or equipo.get("id")
+
+    r2 = requests.put(
+        f"{API_URL}/users/pokemonteams/{team_id}",
+        json={"pokemon_ids": nuevos_ids},
+        headers=headers()
+    )
+    if r2.status_code == 200:
+        print(f"{GREEN}¡Pokémon añadido al equipo '{equipo['team_name']}'!{RESET}")
+    else:
+        print("Error:", r2.json().get("error"))
+
+
+def _crear_equipo_con_pokemon(pokemon_id):
+    nombre = input("Nombre para el nuevo equipo: ").strip()
+    if not nombre:
+        print("El nombre no puede estar vacío.")
+        return
+
+    r = requests.post(
+        f"{API_URL}/users/pokemonteams",
+        json={"team_name": nombre, "pokemon_ids": [pokemon_id]},
+        headers=headers()
+    )
+    if r.status_code == 201:
+        print(f"{GREEN}Equipo '{nombre}' creado correctamente "
+              f"con el Pokémon {pokemon_id}.{RESET}")
+    else:
+        print("Error:", r.json().get("error"))
 
 
 #   POKÉDEX
@@ -275,7 +396,7 @@ def menu_usuario():
         elif op == "4":
             pokedex_menu()
         elif op == "5":
-            mis_pokemon()
+            mis_pokemon_menu()
         elif op == "6":
             rival_id = input("ID del usuario a desafiar: ")
             desafiar_usuario(rival_id)
@@ -622,7 +743,6 @@ def jugar_casino():
             print("\nSaliendo del casino...\n")
             print("\n" * 5)  # evita solapamientos con el menú
             break
-
 
 
 
