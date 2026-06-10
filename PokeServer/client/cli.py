@@ -3,7 +3,7 @@ from getpass import getpass
 
 API_URL = "http://127.0.0.1:5000"
 
-batalla = []  # variable global para almacenar los datos de la batalla actual
+batalla = {}  # variable global para almacenar los datos de la batalla actual
 is_on_battle = False
 token = None
 current_user = None
@@ -500,6 +500,7 @@ def menu_usuario():
                 if equipo["team_name"] == team:
                     break
             if equipo:
+                print(f"Equipo '{equipo}' seleccionado. Enviando datos al servidor para iniciar la batalla...")
                 res = requests.post(
                     f"{API_URL}/battles/{batalla['_id']}/teams",
                     json={"team": equipo, "battle_id": batalla["_id"]},
