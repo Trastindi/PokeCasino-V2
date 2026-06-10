@@ -832,14 +832,14 @@ def get_battle_status(current_user, battle_id):
 
 @app.post("/battles/<battle_id>/teams")
 @token_required
-def submit_battle_team(current_user):
-    data = request.json or {}
-    battle_id = data.get("battle_id")
-    team = data.get("team", [])
-
-    if not battle_id or not isinstance(team, list) or len(team) == 0:
-        return jsonify({"error": "Falta battle_id o team inválido"}), 400
+def submit_battle_team(current_user, battle_id):  # ← battle_id viene de la URL
     try:
+        data = request.json or {}
+        team = data.get("team", [])
+
+        if not isinstance(team, list) or len(team) == 0:
+            return jsonify({"error": "team debe ser una lista no vacía"}), 400
+
         battle = battles.find_one({"_id": ObjectId(battle_id)})
         if not battle:
             return jsonify({"error": "Batalla no encontrada"}), 404
@@ -852,10 +852,16 @@ def submit_battle_team(current_user):
         else:
             return jsonify({"error": "No eres parte de esta batalla"}), 403
 
+        # Marcar como "ready" si ambos enviaron equipo
+        battle_updated = battles.find_one({"_id": ObjectId(battle_id)})
+        if battle_updated["player1_team"] and battle_updated["player2_team"]:
+            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"status": "ready"}})
+
         return jsonify({"msg": "Equipo enviado"}), 200
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
+    
 # ---------------------------------------------------------------------------
 # MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------
