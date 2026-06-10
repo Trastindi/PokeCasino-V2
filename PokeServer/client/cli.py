@@ -3,7 +3,7 @@ from getpass import getpass
 
 API_URL = "http://127.0.0.1:5000"
 
-batalla = None
+batalla = []  # variable global para almacenar los datos de la batalla actual
 is_on_battle = False
 token = None
 current_user = None
@@ -426,28 +426,35 @@ def mis_mensajes_menu():
 
 def _responder_batalla(msg_id, accepted: bool):
     global is_on_battle, batalla
-    r = requests.post(...)
+    """Llama a POST /battle_requests/<msg_id>/respond con accepted True/False."""
+    r = requests.post(
+        f"{API_URL}/battle_requests/{msg_id}/respond",
+        json={"accepted": accepted},
+        headers=headers()
+    )
     if r.status_code == 200:
         if accepted:
             bid = r.json().get("battle_id", "?")
             print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
             is_on_battle = True
             batalla = obtener_batalla(bid)
+            print(f"{is_on_battle}")
         else:
             print("Solicitud rechazada correctamente.")
     else:
         print("Error:", r.json().get("error"))
-    
+
 def obtener_batalla(battle_id):
     r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
     if r.status_code == 200:
         return r.json()
     else:
-        print("Error al obtener batalla:", r.json().get("error"))
+        print("Error al obtener batalla:", r.get("error"))
         return None
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
+    global is_on_battle, batalla
     while True:
         print(f"{is_on_battle}")
         if is_on_battle == False:
@@ -484,17 +491,24 @@ def menu_usuario():
                 print("Opción inválida.")
         else:
             print("\n--- Estás en una batalla ---")
-            if(batalla.get("player2_team", []) == None):
-                print("Introduce el nombre de tu equipo para empezar a jugar")
-                team = input("Nombre del equipo: ")
-                r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
-                if r.status_code != 200:
-                    print("Error al obtener equipos:", r.json().get("error"))
-                    continue
-                equipo = r["teams"].find_one({"team_name": team})
-                if equipo:
-                    batalla["player2_team"] = equipo["_id"]
-            #TODO: mostrar menú específico durante la batalla (ej. opciones de ataque, cambio de Pokémon, etc.)
+            print(f"{batalla}")
+            print("Introduce el nombre de tu equipo para empezar a jugar")
+            team = input("Nombre del equipo: ")
+            r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers()).json()
+            print(r)
+            for equipo in r:
+                if equipo["team_name"] == team:
+                    break
+            if equipo:
+                res = requests.post(
+                    f"{API_URL}/battles/{batalla['_id']}/teams",
+                    json={"team": equipo, "battle_id": batalla["_id"]},
+                    headers=headers()
+                )
+                print(res.json())
+                print("¡La batalla comenzará pronto! Prepárate...")
+                # Aquí podríamos llamar a una función para iniciar la batalla en modo interactivo
+            #TODO: mostrar menú específico durante la batalla (ej. opciones de ataque, cambio de Pokémon, etc())
 
 
 

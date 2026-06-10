@@ -806,10 +806,10 @@ def respond_battle_request(current_user, msg_id):
             "player2_id": str(current_user["_id"]),
             "status": "pending",
             "created_at": datetime.datetime.utcnow().isoformat(),
-            "player1_team": None,
-            "player2_team": None,
-            "turn": None,
-            "field_status": None,
+            "player1_team": [],
+            "player2_team": [],
+            "turn": 0,
+            "field_status": "normal",
         })
         return jsonify({"msg": "Batalla aceptada", "battle_id": battle_id}), 200
 
@@ -817,7 +817,7 @@ def respond_battle_request(current_user, msg_id):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-@app.get("/battle/<battle_id>")
+@app.get("/battles/<battle_id>")
 @token_required
 def get_battle_status(current_user, battle_id):
     try:
@@ -829,7 +829,33 @@ def get_battle_status(current_user, battle_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-    
+
+@app.post("/battles/<battle_id>/teams")
+@token_required
+def submit_battle_team(current_user):
+    data = request.json or {}
+    battle_id = data.get("battle_id")
+    team = data.get("team", [])
+
+    if not battle_id or not isinstance(team, list) or len(team) == 0:
+        return jsonify({"error": "Falta battle_id o team inválido"}), 400
+    try:
+        battle = battles.find_one({"_id": ObjectId(battle_id)})
+        if not battle:
+            return jsonify({"error": "Batalla no encontrada"}), 404
+
+        uid = str(current_user["_id"])
+        if battle["player1_id"] == uid:
+            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player1_team": team}})
+        elif battle["player2_id"] == uid:
+            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player2_team": team}})
+        else:
+            return jsonify({"error": "No eres parte de esta batalla"}), 403
+
+        return jsonify({"msg": "Equipo enviado"}), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
 # ---------------------------------------------------------------------------
 # MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------
@@ -881,7 +907,7 @@ def create_pokemon_team(current_user):
             return jsonify({"error": "Un equipo no puede tener más de 6 Pokémon"}), 400
 
         new_team = {
-            "_id": ObjectId(),
+            "user_id": current_user["_id"],
             "team_name": team_name,
             "pokemon_ids": pokemon_ids,
             "created_at": datetime.datetime.utcnow().isoformat(),
@@ -921,8 +947,6 @@ def update_pokemon_team(current_user, team_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-
-
 # ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
