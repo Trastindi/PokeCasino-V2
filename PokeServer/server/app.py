@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo.errors import OperationFailure
+from dotenv import load_dotenv
 import bcrypt
 import jwt
 import datetime
@@ -83,11 +84,8 @@ def _serialize_value(value):
 # ---------------------------------------------------------------------------
 # MONGODB
 # ---------------------------------------------------------------------------
-
-_uri = os.environ.get(
-    "MONGO_URI",
-    "mongodb+srv://marcosemiliorodriguezmartin_db_user:MlVEVrFW50X7bfsS@pokecasino.asaeily.mongodb.net/"
-)
+load_dotenv(dotenv_path="server/.env")
+_uri = os.environ.get("MONGO_URI", "")
 
 try:
     _client          = MongoClient(_uri, server_api=ServerApi("1"))
