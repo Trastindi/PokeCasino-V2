@@ -1,6 +1,7 @@
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace PK_Proyect.Services
 {
@@ -11,15 +12,14 @@ namespace PK_Proyect.Services
     public class TrainerService
     {
         /// <summary>
-        /// Envía los datos del usuario al servidor y devuelve el User creado
-        /// (con Id, Token, etc.) listo para navegar a MainMenuView.
-        /// Devuelve null si el registro falla (username/email duplicado, error de red).
+        /// Versión ASÍNCRONA: No bloquea el UI Thread mientras espera la respuesta del servidor.
+        /// Esta es la versión preferida para llamadas desde la UI.
         /// </summary>
-        public User CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             try
             {
-                var resp = ApiClient.Post<RegisterResponse>("/auth/register", new
+                var resp = await ApiClient.PostAsync<RegisterResponse>("/auth/register", new
                 {
                     username  = user.Username,
                     password  = user.Password,
@@ -53,6 +53,16 @@ namespace PK_Proyect.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// Envía los datos del usuario al servidor y devuelve el User creado
+        /// (con Id, Token, etc.) listo para navegar a MainMenuView.
+        /// Devuelve null si el registro falla (username/email duplicado, error de red).
+        /// 
+        /// DEPRECATED: Usar CreateUserAsync() en su lugar para evitar bloquear el UI Thread.
+        /// </summary>
+        public User CreateUser(User user)
+            => CreateUserAsync(user).GetAwaiter().GetResult();
 
         private class RegisterResponse
         {
