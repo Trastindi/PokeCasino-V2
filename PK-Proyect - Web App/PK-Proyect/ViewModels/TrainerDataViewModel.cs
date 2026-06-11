@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using PK_Proyect.Commands;
+using System.Threading.Tasks;
 
 namespace PK_Proyect.ViewModels
 {
@@ -88,7 +89,7 @@ namespace PK_Proyect.ViewModels
         // LÓGICA
         // ============================
 
-        private void Guardar(object obj)
+        private async void Guardar(object obj)
         {
             if (string.IsNullOrWhiteSpace(Nombre)    ||
                 string.IsNullOrWhiteSpace(Apellido)  ||
@@ -129,7 +130,7 @@ namespace PK_Proyect.ViewModels
                 Birthdate = Birthdate.Value
             };
 
-            User creado = _service.CreateUser(nuevo);
+            User creado = await _service.CreateUserAsync(nuevo);
 
             if (creado == null)
             {
