@@ -578,7 +578,7 @@ def obtener_datos_movimiento(movimiento_id):
     mov = movimientos.find_one({"moveId": movimiento_id})
     if not mov:
         return jsonify({"error": "Movimiento no encontrado"}), 404
-    return jsonify(mov), 200
+    return jsonify(_serialize(mov)), 200
 
 #Ver detalles de un Pokémon específico del usuario (para mostrar en la sección "Mis Pokémon" o en la selección de equipo para batalla)
 @app.get("/pokemon/<pokemon_id>")
