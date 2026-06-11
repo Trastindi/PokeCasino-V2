@@ -559,6 +559,14 @@ def aplicar_movimiento(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
+@app.get("/movimiento/<movimiento_id>")
+def obtener_datos_movimiento(movimiento_id):
+    """Devuelve los datos de un movimiento dado su ID."""
+    mov = movimientos.find_one({"moveId": movimiento_id})
+    if not mov:
+        return jsonify({"error": "Movimiento no encontrado"}), 404
+    return jsonify(mov), 200
+
 #Ver detalles de un Pokémon específico del usuario (para mostrar en la sección "Mis Pokémon" o en la selección de equipo para batalla)
 @app.get("/pokemon/<pokemon_id>")
 @token_required
@@ -721,6 +729,8 @@ def make_battle_request(current_user, rival_id):
         doc = {
             "_id":     ObjectId(),
             "from":    str(gf(current_user, "Username", "username", default="")),
+            "from_id": str(current_user["_id"]),
+            "to":      str(rival_id),
             "title":   "Battle Request",
             "text":    "You have received a battle request from "
                        + gf(current_user, "Username", "username", default="")
@@ -792,6 +802,7 @@ def respond_battle_request(current_user, msg_id):
         mensajes.insert_one({
             "_id":       ObjectId(),
             "from":      str(gf(current_user, "Username", "username", default="?")),
+            "to":        retador_id,
             "title":     "Battle Accepted",
             "text":      gf(current_user, "Username", "username", default="?")
                          + " ha aceptado tu solicitud de batalla.",
@@ -806,8 +817,8 @@ def respond_battle_request(current_user, msg_id):
             "player2_id": str(current_user["_id"]),
             "status": "pending",
             "created_at": datetime.datetime.utcnow().isoformat(),
-            "player1_team": [],
-            "player2_team": [],
+            "player1_team": {},
+            "player2_team": {},
             "turn": 0,
             "field_status": "normal",
         })
@@ -835,10 +846,10 @@ def get_battle_status(current_user, battle_id):
 def submit_battle_team(current_user, battle_id):  # ← battle_id viene de la URL
     try:
         data = request.json or {}
-        team = data.get("team", [])
-
-        if not isinstance(team, list) or len(team) == 0:
-            return jsonify({"error": "team debe ser una lista no vacía"}), 400
+        team = data.get("team", {})  # Esperamos un json con info del equipo (ej: Pokémon seleccionados, movimientos, etc.)
+        
+        if not team:
+            return jsonify({"error": "Falta el equipo"}), 400
 
         battle = battles.find_one({"_id": ObjectId(battle_id)})
         if not battle:

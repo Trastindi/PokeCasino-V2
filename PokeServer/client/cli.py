@@ -7,6 +7,7 @@ batalla = {}  # variable global para almacenar los datos de la batalla actual
 is_on_battle = False
 token = None
 current_user = None
+equipo_seleccionado = {}
 
 # Colores ANSI
 RED = "\033[91m"
@@ -350,7 +351,7 @@ def canjear_pokemon():
     print("\n¡Pokémon obtenido!")
     print(f"{data['pokemon']['nombre']} - Fecha: {data['pokemon']['fecha_obtenido']}")
 
-
+# ============================
 #   DESAFIAR A BATALLA
 # ============================
 def desafiar_usuario(rival_id):
@@ -361,9 +362,9 @@ def desafiar_usuario(rival_id):
 
     print("Desafío enviado correctamente.")
 
-
+# ========================================================================
 #   MIS MENSAJES (menú interactivo con respuesta a solicitudes de batalla)
-# ============================
+# ========================================================================
 def mis_mensajes_menu():
     r = requests.get(f"{API_URL}/messages/mis_mensajes", headers=headers())
     if r.status_code != 200:
@@ -418,7 +419,11 @@ def mis_mensajes_menu():
         bid = msg.get("battle_id", "?")
         print(f"\n  {GREEN}✅ Tu solicitud de batalla fue aceptada.{RESET}")
         print(f"  Battle ID: {bid}")
-        print("  (Próximamente: unirse a la batalla automáticamente)")
+        print("  ¿Quieres ir al menú de batalla ahora? (s/n)")
+        if input().strip().lower() == "s":
+            global is_on_battle, batalla
+            is_on_battle = True
+            batalla = obtener_batalla(bid)
 
     elif tipo == "battle_rejected":
         print(f"\n  {RED}❌ El rival rechazó tu solicitud de batalla.{RESET}")
@@ -454,7 +459,7 @@ def obtener_batalla(battle_id):
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
-    global is_on_battle, batalla
+    global is_on_battle, batalla, equipo_seleccionado
     while True:
         print(f"{is_on_battle}")
         if is_on_battle == False:
@@ -498,6 +503,7 @@ def menu_usuario():
             print(r)
             for equipo in r:
                 if equipo["team_name"] == team:
+                    equipo_seleccionado = equipo
                     break
             if equipo:
                 print(f"Equipo '{equipo}' seleccionado. Enviando datos al servidor para iniciar la batalla...")
@@ -507,6 +513,7 @@ def menu_usuario():
                     headers=headers()
                 )
                 print(res.json())
+                batalla = obtener_batalla(batalla["_id"])
                 print("¡La batalla comenzará pronto! Prepárate...")
                 # Aquí podríamos llamar a una función para iniciar la batalla en modo interactivo
             #TODO: mostrar menú específico durante la batalla (ej. opciones de ataque, cambio de Pokémon, etc())
