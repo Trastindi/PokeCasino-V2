@@ -221,7 +221,22 @@ def register():
         ],
     }
     usuarios.insert_one(doc)
-    return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
+    
+    # Devolver el usuario creado con token (como login)
+    rol      = "user"
+    token    = _make_token(doc["_id"], rol)
+    
+    return jsonify({
+        "mensaje":  "Usuario registrado correctamente",
+        "token":    token,
+        "id":       str(doc["_id"]),
+        "username": username,
+        "email":    email,
+        "rol":      rol,
+        "fichas":   0,
+        "pokes":    300,
+        "pokemon":  0
+    }), 201
 
 
 @app.post("/auth/login")
