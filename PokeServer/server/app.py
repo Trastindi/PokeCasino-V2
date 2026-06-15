@@ -680,7 +680,7 @@ def jugar(current_user):
 @app.get("/pokedex")
 @token_required
 def get_pokedex(current_user):
-    return jsonify(list(pokedex.find({}, {"_id": 0}))), 200
+    return jsonify(list(pokedex.find({}, {"_id": 0}).sort("numero_pokedex", 1))), 200
 
 
 @app.get("/pokedex/<int:pokemon_id>")
