@@ -1266,7 +1266,20 @@ def _resolver_turno(battle_id: str, battle: dict):
 
     battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
 
+# ---------------------------------------------------------------------------
+# TABLA DE TIPOS
+# ---------------------------------------------------------------------------
 
+@app.get("/type_chart")
+@token_required
+def get_type_chart(current_user):
+    try:
+        tabla = list(tabla_tipos.find({}, {"_id": 0}))
+        return jsonify(tabla), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+    
 # ---------------------------------------------------------------------------
 # MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------
