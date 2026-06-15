@@ -792,8 +792,7 @@ def respond_battle_request(current_user, msg_id):
             {"$set": {"responded": True, "accepted": accepted}}
         )
 
-        retador = msg.get("from", "")
-        retador_id = usuarios.find_one({"Username": retador})["_id"]
+        retador_id = msg.get("from_id", "")
 
         if not accepted:
             mensajes.insert_one({
