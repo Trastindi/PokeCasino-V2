@@ -1,11 +1,15 @@
+# -*- coding: utf-8 -*-
 import requests
 import time
 import os
+import json
 
 API_URL  = "http://127.0.0.1:5000"
 token    = None
-current_user = {}
-batalla  = {}
+current_user     = {}
+batalla          = {}
+is_on_battle     = False
+equipo_seleccionado = {}
 
 # Colores ANSI
 RED    = "\033[91m"
@@ -15,12 +19,25 @@ CYAN   = "\033[96m"
 BOLD   = "\033[1m"
 RESET  = "\033[0m"
 
+# Tabla de tipos (se carga al inicio)
+type_chart = {}
+
+def _load_type_chart():
+    path = os.path.join(os.path.dirname(__file__), "type_chart.json")
+    global type_chart
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            type_chart = json.load(f)
+    except FileNotFoundError:
+        pass
+
 def headers():
     return {"Authorization": f"Bearer {token}"} if token else {}
 
-# ─────────────────────────────────────────────────────────────────────────────
-# AUTH
-# ─────────────────────────────────────────────────────────────────────────────
+
+# ============================
+#   AUTH
+# ============================
 
 def login():
     global token, current_user
@@ -33,8 +50,10 @@ def login():
         token        = data.get("token")
         current_user = data.get("user", {})
         print(f"{GREEN}Bienvenido, {current_user.get('Username', username)}!{RESET}")
+        return True
     else:
         print(f"{RED}Error: {r.json().get('error', 'Login fallido')}{RESET}")
+        return False
 
 
 def register():
@@ -54,9 +73,9 @@ def register():
         print(f"{RED}Error: {r.json().get('error', 'Registro fallido')}{RESET}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# POKÉDEX
-# ─────────────────────────────────────────────────────────────────────────────
+# ============================
+#   POKÉDEX
+# ============================
 
 def pokedex_menu():
     page   = 1
@@ -139,9 +158,9 @@ def _ver_detalle_pokedex(pokemon_id):
     print(f"{'─'*40}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# MIS POKÉMON
-# ─────────────────────────────────────────────────────────────────────────────
+# ============================
+#   MIS POKÉMON
+# ============================
 
 def mis_pokemon_menu():
     r = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
@@ -267,98 +286,9 @@ def _crear_equipo_con_pokemon(pokemon_id):
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EQUIPOS
-# ─────────────────────────────────────────────────────────────────────────────
-
-def ver_equipos():
-    r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
-    if r.status_code != 200:
-        print(f"{RED}Error: {r.json().get('error')}{RESET}")
-        return
-    equipos = r.json()
-    if not equipos:
-        print("\nNo tienes equipos creados.")
-        return
-    print("\n--- Mis Equipos ---")
-    for t in equipos:
-        ids = t.get("pokemon_ids", [])
-        print(f"  [{t.get('_id','')}] {t['team_name']}  ({len(ids)}/6 Pokémon)  IDs: {ids}")
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# TIENDA / PREMIOS
-# ─────────────────────────────────────────────────────────────────────────────
-
-def ver_tienda():
-    r = requests.get(f"{API_URL}/tienda", headers=headers())
-    if r.status_code != 200:
-        print(f"{RED}Error al obtener la tienda{RESET}")
-        return
-    items = r.json()
-    print("\n--- Tienda ---")
-    for item in items:
-        print(f"  {item.get('_id','')}  {item.get('Nombre','?')}  "
-              f"Precio: {item.get('Precio','?')} monedas")
-
-
-def comprar_item(item_id):
-    r = requests.post(f"{API_URL}/tienda/comprar",
-                      json={"item_id": item_id}, headers=headers())
-    if r.status_code == 200:
-        print(f"{GREEN}Compra realizada: {r.json().get('msg','')}{RESET}")
-    else:
-        print(f"{RED}Error: {r.json().get('error')}{RESET}")
-
-
-def ver_premios():
-    r = requests.get(f"{API_URL}/premios", headers=headers())
-    if r.status_code != 200:
-        print(f"{RED}Error al obtener premios{RESET}")
-        return
-    premios = r.json()
-    print("\n--- Premios disponibles ---")
-    for pr in premios:
-        print(f"  {pr.get('Nombre','?')}  —  {pr.get('Descripcion','')}")
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# MENSAJES
-# ─────────────────────────────────────────────────────────────────────────────
-
-def ver_mensajes():
-    r = requests.get(f"{API_URL}/messages", headers=headers())
-    if r.status_code != 200:
-        print(f"{RED}Error al obtener mensajes{RESET}")
-        return
-    msgs = r.json()
-    if not msgs:
-        print("\nNo tienes mensajes.")
-        return
-    print("\n--- Mensajes ---")
-    for i, m in enumerate(msgs, 1):
-        tipo   = m.get("type", "msg")
-        estado = f" {YELLOW}[respondido]{RESET}" if m.get("responded") else ""
-        print(f"  {i}. {CYAN}[{tipo}]{RESET}{estado}  "
-              f"De: {m.get('sender_username','?')}  "
-              f"— {m.get('content','')[:60]}")
-
-
-def enviar_mensaje():
-    dest      = input("Destinatario (username): ").strip()
-    contenido = input("Mensaje: ").strip()
-    r = requests.post(f"{API_URL}/messages",
-                      json={"recipient_username": dest, "content": contenido},
-                      headers=headers())
-    if r.status_code == 201:
-        print(f"{GREEN}Mensaje enviado.{RESET}")
-    else:
-        print(f"{RED}Error: {r.json().get('error')}{RESET}")
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# BATALLA
-# ─────────────────────────────────────────────────────────────────────────────
+# ============================
+#   BATALLA
+# ============================
 
 def obtener_batalla(battle_id):
     r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
@@ -377,7 +307,6 @@ def batalla_loop(battle_id):
 
         if status == "ready":
             _elegir_pokemon_activo(battle_id)
-            # Esperar a que el servidor procese ambas elecciones antes de continuar
             print(f"{YELLOW}Esperando confirmación...{RESET}")
             while True:
                 time.sleep(1.5)
@@ -397,12 +326,11 @@ def batalla_loop(battle_id):
                 batalla    = obtener_batalla(battle_id)
                 new_status = batalla.get("status", "")
                 new_turno  = batalla.get("turn", -1)
-                # Salir cuando el turno haya avanzado O la batalla haya terminado
                 if new_status == "finished":
                     break
                 if new_status == "choosing_action" and new_turno > turno_actual:
                     break
-                if new_status == "ready":  # algún Pokémon fainted
+                if new_status == "ready":
                     break
             _mostrar_log_turno(batalla.get("turn_log", []))
             if batalla.get("status") == "finished":
@@ -548,7 +476,7 @@ def _cambiar_pokemon(battle_id, my_slot):
 
 
 def _mostrar_estado_batalla(b):
-    uid    = current_user.get("id") or current_user.get("_id", "")
+    uid     = current_user.get("id") or current_user.get("_id", "")
     my_slot = "player1_team" if b.get("player1_id") == uid else "player2_team"
     en_slot = "player2_team" if my_slot == "player1_team" else "player1_team"
 
@@ -585,205 +513,390 @@ def _mostrar_log_turno(log):
             print(f"  {entry}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CASINO (ruleta, slots, blackjack…)
-# ─────────────────────────────────────────────────────────────────────────────
+# ============================
+#   CASINO / GACHA / CANJE
+# ============================
 
-def jugar_ruleta():
-    apuesta = input("Apuesta (monedas): ").strip()
-    numero  = input("Número (0-36): ").strip()
-    try:
-        apuesta = int(apuesta)
-        numero  = int(numero)
-    except ValueError:
-        print("Valores inválidos.")
-        return
-    r = requests.post(f"{API_URL}/casino/ruleta",
-                      json={"apuesta": apuesta, "numero": numero},
-                      headers=headers())
-    if r.status_code == 200:
-        data = r.json()
-        print(f"Resultado: {data.get('resultado','?')}  "
-              f"Ganancia: {data.get('ganancia','?')} monedas")
-    else:
-        print(f"{RED}Error: {r.json().get('error')}{RESET}")
-
-
-def jugar_slots():
-    apuesta = input("Apuesta (monedas): ").strip()
+def jugar_casino():
+    print("\n--- Casino (Gacha) ---")
+    apuesta = input("Fichas a apostar: ").strip()
     try:
         apuesta = int(apuesta)
     except ValueError:
         print("Valor inválido.")
         return
-    r = requests.post(f"{API_URL}/casino/slots",
-                      json={"apuesta": apuesta},
-                      headers=headers())
+    r = requests.post(f"{API_URL}/casino/gacha",
+                      json={"fichas": apuesta}, headers=headers())
     if r.status_code == 200:
         data = r.json()
-        print(f"Resultado: {data.get('resultado','?')}  "
-              f"Ganancia: {data.get('ganancia','?')} monedas")
+        print(f"Resultado: {data}")
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# MENÚS
-# ─────────────────────────────────────────────────────────────────────────────
+def canjear_pokemon():
+    print("\n--- Canjear Pokémon ---")
+    r = requests.get(f"{API_URL}/casino/canje", headers=headers())
+    if r.status_code != 200:
+        print(f"{RED}Error: {r.json().get('error')}{RESET}")
+        return
+    opciones = r.json()
+    for i, p in enumerate(opciones, 1):
+        print(f"  {i}. {p.get('Nombre','?')}  Coste: {p.get('Coste','?')} pokes")
+    sel = input("Elige número (o ENTER para cancelar): ").strip()
+    if not sel:
+        return
+    try:
+        sel = int(sel) - 1
+        elegido = opciones[sel]
+    except (ValueError, IndexError):
+        print("Selección inválida.")
+        return
+    r2 = requests.post(f"{API_URL}/casino/canje",
+                       json={"pokemon_id": elegido.get("PokemonId")}, headers=headers())
+    if r2.status_code == 200:
+        print(f"{GREEN}¡Pokémon canjeado!{RESET}")
+    else:
+        print(f"{RED}Error: {r2.json().get('error')}{RESET}")
 
-def menu_principal():
+
+def desafiar_usuario(rival_id):
+    r = requests.post(f"{API_URL}/battles/challenge",
+                      json={"rival_id": rival_id}, headers=headers())
+    if r.status_code in (200, 201):
+        data = r.json()
+        print(f"{GREEN}Desafío enviado. ID batalla: {data.get('battle_id') or data.get('_id')}{RESET}")
+    else:
+        print(f"{RED}Error: {r.json().get('error')}{RESET}")
+
+
+# ============================
+#   MENSAJES
+# ============================
+
+def mis_mensajes_menu():
+    r = requests.get(f"{API_URL}/messages", headers=headers())
+    if r.status_code != 200:
+        print(f"{RED}Error al obtener mensajes{RESET}")
+        return
+    msgs = r.json()
+    if not msgs:
+        print("\nNo tienes mensajes.")
+        return
+    print("\n--- Mis mensajes ---")
+    for i, m in enumerate(msgs, 1):
+        tipo   = m.get("type", "msg")
+        estado = f" {YELLOW}[respondido]{RESET}" if m.get("responded") else ""
+        print(f"  {i}. {CYAN}[{tipo}]{RESET}{estado}  "
+              f"De: {m.get('sender_username','?')}  "
+              f"— {m.get('content','')[:60]}")
+    print("\n  [e] Enviar mensaje  [cualquier tecla] Volver")
+    if input("  > ").strip().lower() == "e":
+        dest      = input("Destinatario (username): ").strip()
+        contenido = input("Mensaje: ").strip()
+        r2 = requests.post(f"{API_URL}/messages",
+                           json={"recipient_username": dest, "content": contenido},
+                           headers=headers())
+        if r2.status_code == 201:
+            print(f"{GREEN}Mensaje enviado.{RESET}")
+        else:
+            print(f"{RED}Error: {r2.json().get('error')}{RESET}")
+
+
+# ============================
+#   EXPORTAR / IMPORTAR (admin)
+# ============================
+
+def exportar_usuario():
+    uid = input("ID del usuario a exportar: ").strip()
+    r   = requests.get(f"{API_URL}/usuarios/{uid}", headers=headers())
+    if r.status_code != 200:
+        print("Error:", r.json().get("error"))
+        return
+    filename = f"usuario_{uid}.json"
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(r.json(), f, ensure_ascii=False, indent=2)
+    print(f"Usuario exportado a {filename}")
+
+
+def exportar_todos():
+    r = requests.get(f"{API_URL}/usuarios", headers=headers())
+    if r.status_code != 200:
+        print("Error:", r.json().get("error"))
+        return
+    with open("todos_usuarios.json", "w", encoding="utf-8") as f:
+        json.dump(r.json(), f, ensure_ascii=False, indent=2)
+    print("Todos los usuarios exportados a todos_usuarios.json")
+
+
+def importar_desde_json():
+    filename = input("Ruta del archivo JSON: ").strip()
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error al leer el archivo: {e}")
+        return
+    usuarios = data if isinstance(data, list) else [data]
+    for u in usuarios:
+        r = requests.post(f"{API_URL}/usuarios", json=u, headers=headers())
+        estado = "OK" if r.status_code in (200, 201) else r.json().get("error", "Error")
+        print(f"  {u.get('username', '?')} → {estado}")
+
+
+# ============================
+#   MENÚ USUARIO
+# ============================
+
+def menu_usuario():
+    global is_on_battle, batalla, equipo_seleccionado
     while True:
-        print(f"\n{'═'*40}")
-        print(f"  {BOLD}PokéCasino CLI{RESET}")
-        print(f"{'═'*40}")
-        if token:
-            print(f"  Sesión: {GREEN}{current_user.get('Username','?')}{RESET}")
-        print("  1. Login")
-        print("  2. Registro")
-        print("  3. Pokédex")
-        if token:
-            print("  4. Menú usuario")
-        print("  0. Salir")
-        op = input("Opción: ").strip()
+        print(f"{is_on_battle}")
+        if is_on_battle == False:
+            print("\n--- Menú Usuario ---")
+            print("1. Ver mi perfil")
+            print("2. Jugar al casino (¡El buen Gacha!)")
+            print("3. Canjear Pokémon")
+            print("4. Pokédex")
+            print("5. Mis Pokémon")
+            print("6. Desafiar a otro usuario a batalla")
+            print("7. Ver mis mensajes")
+            print("8. Cerrar sesión")
+
+            op = input("Opción: ")
+
+            if op == "1":
+                ver_perfil()
+            elif op == "2":
+                jugar_casino()
+            elif op == "3":
+                canjear_pokemon()
+            elif op == "4":
+                pokedex_menu()
+            elif op == "5":
+                mis_pokemon_menu()
+            elif op == "6":
+                rival_id = input("ID del usuario a desafiar: ")
+                desafiar_usuario(rival_id)
+            elif op == "7":
+                mis_mensajes_menu()
+            elif op == "8":
+                break
+            else:
+                print("Opción inválida.")
+        else:
+            print("\n--- Estás en una batalla ---")
+            print(f"{batalla}")
+            print("Introduce el nombre de tu equipo para empezar a jugar")
+            team = input("Nombre del equipo: ")
+            r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers()).json()
+            print(r)
+            for equipo in r:
+                if equipo["team_name"] == team:
+                    equipo_seleccionado = equipo
+                    break
+            if equipo:
+                print(f"Equipo '{equipo}' seleccionado. Enviando datos al servidor para iniciar la batalla...")
+                res = requests.post(
+                    f"{API_URL}/battles/{batalla['_id']}/teams",
+                    json={"team_id": equipo["_id"], "battle_id": batalla["_id"]},
+                    headers=headers()
+                )
+                print(res.json())
+                batalla = obtener_batalla(batalla["_id"])
+                print("¡La batalla comenzará pronto! Prepárate...")
+                batalla = obtener_batalla(batalla["_id"])
+                if batalla and batalla.get("status") in ("ready", "choosing_action"):
+                    batalla_loop(batalla["_id"])
+                    is_on_battle = False
+                    batalla = {}
+
+
+# ============================
+#   MENÚ ADMIN
+# ============================
+
+def menu_admin():
+    while True:
+        print("\n--- Menú Administrador ---")
+        print("1. Listar usuarios (básico)")
+        print("2. Listar usuarios con detalles")
+        print("3. Modificar datos de un usuario")
+        print("4. Eliminar usuario")
+        print("5. Resetear contraseña de un usuario")
+        print("6. Exportar un usuario a JSON")
+        print("7. Exportar todos los usuarios a JSON")
+        print("8. Importar usuarios desde JSON")
+        print("9. Salir")
+
+        op = input("Opción: ")
+
+        # 1. Listar usuarios (básico)
+        if op == "1":
+            r = requests.get(f"{API_URL}/usuarios", headers=headers())
+            if r.status_code != 200:
+                print("Error:", r.json().get("error"))
+                continue
+
+            print("\n--- Lista de usuarios ---")
+            for u in r.json():
+                print(f"{u['_id']} - {u['nombre']} {u['apellido']} ({u['rol']})")
+
+        # 2. Listar usuarios con detalles
+        elif op == "2":
+            r = requests.get(f"{API_URL}/usuarios", headers=headers())
+            if r.status_code != 200:
+                print("Error:", r.json().get("error"))
+                continue
+
+            print("\n--- Lista de usuarios (detallado) ---")
+            for u in r.json():
+                print("\n------------------------")
+                print(f"ID: {u['_id']}")
+                print(f"Nombre: {u['nombre']} {u['apellido']}")
+                print(f"Username: {u['username']}")
+                print(f"Edad: {u['edad']}")
+                print(f"Email: {u['email']}")
+                print(f"Rol: {u['rol']}")
+                print(f"Pokes: {u['pokes']}")
+                print(f"Fichas: {u['fichas']}")
+                print(f"Pokémon: {len(u.get('pokemon', []))}")
+
+        # 3. Modificar datos del usuario
+        elif op == "3":
+            uid = input("ID del usuario a modificar: ")
+
+            print("\nIntroduce los nuevos valores (deja vacío para no cambiar):")
+            nuevo_nombre    = input("Nuevo nombre: ")
+            nuevo_apellido  = input("Nuevo apellido: ")
+            nuevo_email     = input("Nuevo email: ")
+            nuevo_rol       = input("Nuevo rol (user/admin): ")
+            nuevas_fichas   = input("Nuevas fichas: ")
+            nuevos_pokes    = input("Nuevos pokes: ")
+
+            payload = {}
+            if nuevo_nombre.strip():
+                payload["nombre"] = nuevo_nombre
+            if nuevo_apellido.strip():
+                payload["apellido"] = nuevo_apellido
+            if nuevo_email.strip():
+                payload["email"] = nuevo_email
+            if nuevo_rol.strip():
+                payload["rol"] = nuevo_rol
+            if nuevas_fichas.strip():
+                payload["fichas"] = int(nuevas_fichas)
+            if nuevos_pokes.strip():
+                payload["pokes"] = int(nuevos_pokes)
+
+            if not payload:
+                print("No se ha cambiado ningún dato.")
+                continue
+
+            r = requests.put(f"{API_URL}/usuarios/{uid}", json=payload, headers=headers())
+            if r.status_code != 200:
+                print("Error:", r.json().get("error"))
+                continue
+
+            print("Usuario modificado correctamente.")
+
+        # 4. Eliminar usuario
+        elif op == "4":
+            uid     = input("ID del usuario a eliminar: ")
+            confirm = input("¿Seguro que quieres eliminarlo? (s/n): ")
+            if confirm.lower() != "s":
+                print("Operación cancelada.")
+                continue
+
+            r = requests.delete(f"{API_URL}/usuarios/{uid}", headers=headers())
+            if r.status_code != 200:
+                print("Error:", r.json().get("error"))
+                continue
+
+            print("Usuario eliminado correctamente.")
+
+        # 5. Resetear contraseña
+        elif op == "5":
+            uid       = input("ID del usuario: ")
+            nueva_pass = input("Nueva contraseña: ")
+
+            r = requests.put(
+                f"{API_URL}/usuarios/{uid}/reset_password",
+                json={"password": nueva_pass},
+                headers=headers()
+            )
+            if r.status_code != 200:
+                print("Error:", r.json().get("error"))
+                continue
+
+            print("Contraseña reseteada correctamente.")
+
+        # 6. Exportar usuario a JSON
+        elif op == "6":
+            exportar_usuario()
+
+        # 7. Exportar todos los usuarios a JSON
+        elif op == "7":
+            exportar_todos()
+
+        # 8. Importar usuarios desde JSON
+        elif op == "8":
+            importar_desde_json()
+
+        # 9. Salir
+        elif op == "9":
+            break
+
+        else:
+            print("Opción inválida.")
+
+
+# ============================
+#   MENÚ PRINCIPAL
+# ============================
+
+def ver_perfil():
+    r = requests.get(f"{API_URL}/usuarios/perfil", headers=headers())
+    if r.status_code == 200:
+        u = r.json()
+        print(f"\n  Usuario : {u.get('Username','?')}")
+        print(f"  Email   : {u.get('Email','?')}")
+        print(f"  Fichas  : {u.get('Fichas','?')}")
+        print(f"  Pokes   : {u.get('Pokes','?')}")
+        print(f"  Nivel   : {u.get('Nivel','?')}")
+    else:
+        # Fallback con datos locales si el endpoint no existe aún
+        print(f"\n  Usuario : {current_user.get('Username','?')}")
+        print(f"  Email   : {current_user.get('Email','?')}")
+
+
+def main():
+    _load_type_chart()
+    while True:
+        print("\n===========================")
+        print("      CASINO POKÉMON")
+        print("===========================")
+        print("1. Iniciar sesión")
+        print("2. Registrarse")
+        print("3. Salir")
+
+        op = input("Opción: ")
 
         if op == "1":
-            login()
+            if not login():
+                continue
+
+            if current_user["Role"] == "admin":
+                menu_admin()
+            else:
+                menu_usuario()
         elif op == "2":
             register()
         elif op == "3":
-            pokedex_menu()
-        elif op == "4" and token:
-            menu_usuario()
-        elif op == "0":
-            print("¡Hasta luego!")
+            print("Hasta luego.")
             break
         else:
-            print("Opción no válida.")
+            print("Opción inválida.")
 
-
-def menu_usuario():
-    global batalla
-    equipo_enviado   = False
-    battle_id_activo = None
-
-    while True:
-        print(f"\n{'─'*40}")
-        print(f"  {BOLD}Menú Usuario{RESET}  —  {current_user.get('Username','?')}")
-        print(f"  Monedas: {current_user.get('Monedas', '?')}")
-        print(f"{'─'*40}")
-        print("  1. Ver perfil")
-        print("  2. Pokédex")
-        print("  3. Mis Pokémon")
-        print("  4. Mis equipos")
-        print("  5. Mensajes")
-        print("  6. Tienda")
-        print("  7. Premios")
-        print("  8. Ruleta")
-        print("  9. Slots")
-        print(" 10. Batalla PvP")
-        print("  0. Cerrar sesión")
-        op = input("Opción: ").strip()
-
-        if op == "1":
-            print(f"\n  Usuario : {current_user.get('Username','?')}")
-            print(f"  Email   : {current_user.get('Email','?')}")
-            print(f"  Monedas : {current_user.get('Monedas','?')}")
-            print(f"  Nivel   : {current_user.get('Nivel','?')}")
-
-        elif op == "2":
-            pokedex_menu()
-
-        elif op == "3":
-            mis_pokemon_menu()
-
-        elif op == "4":
-            ver_equipos()
-
-        elif op == "5":
-            ver_mensajes()
-            print("\n  [e] Enviar mensaje  [cualquier tecla] Volver")
-            if input("  > ").strip().lower() == "e":
-                enviar_mensaje()
-
-        elif op == "6":
-            ver_tienda()
-            print("\n  ¿Comprar algún ítem? (ID o ENTER para volver)")
-            item_id = input("  > ").strip()
-            if item_id:
-                comprar_item(item_id)
-
-        elif op == "7":
-            ver_premios()
-
-        elif op == "8":
-            jugar_ruleta()
-
-        elif op == "9":
-            jugar_slots()
-
-        elif op == "10":
-            print("\n--- Estás en una batalla ---")
-            # Fase 1: seleccionar y enviar equipo
-            if not equipo_enviado:
-                print("Introduce el nombre de tu equipo para empezar a jugar")
-                while not equipo_enviado:
-                    nombre_equipo = input("Nombre del equipo: ").strip()
-                    if not nombre_equipo:
-                        break
-                    # Verificar que el equipo existe
-                    r_equipos = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
-                    if r_equipos.status_code != 200:
-                        print(f"{RED}Error al obtener equipos.{RESET}")
-                        break
-                    equipos   = r_equipos.json()
-                    equipo_sel = next(
-                        (e for e in equipos if e.get("team_name","").lower() == nombre_equipo.lower()),
-                        None
-                    )
-                    if not equipo_sel:
-                        print(f"{RED}Equipo '{nombre_equipo}' no encontrado. Inténtalo de nuevo.{RESET}")
-                        continue
-                    print(f"{GREEN}Equipo '{nombre_equipo}' seleccionado. Enviando datos al servidor...{RESET}")
-                    r_join = requests.post(
-                        f"{API_URL}/battles/join",
-                        json={"team_name": nombre_equipo},
-                        headers=headers()
-                    )
-                    if r_join.status_code in (200, 201):
-                        battle_data      = r_join.json()
-                        battle_id_activo = battle_data.get("battle_id") or battle_data.get("_id")
-                        print(f"{GREEN}¡Equipo enviado! Esperando al rival...{RESET}")
-                        equipo_enviado = True
-                    else:
-                        print(f"{RED}Error al unirse a batalla: {r_join.json().get('error')}{RESET}")
-                        break
-
-            # Fase 2: polling hasta que el rival se una
-            if equipo_enviado and battle_id_activo:
-                batalla = obtener_batalla(battle_id_activo)
-                while batalla.get("status") == "pending":
-                    print(f"{YELLOW}Esperando al rival... (estado: {batalla.get('status','?')}){RESET}")
-                    time.sleep(2)
-                    batalla = obtener_batalla(battle_id_activo)
-
-                if batalla and batalla.get("status") in ("ready", "choosing_action"):
-                    batalla_loop(battle_id_activo)
-                    equipo_enviado   = False
-                    battle_id_activo = None
-                elif batalla.get("status") == "finished":
-                    print("La batalla ya ha terminado.")
-                    equipo_enviado   = False
-                    battle_id_activo = None
-
-        elif op == "0":
-            break
-        else:
-            print("Opción no válida.")
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# ENTRY POINT
-# ─────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    menu_principal()
+    main()
