@@ -323,9 +323,6 @@ def pokedex_menu():
     print(f"Descripción: {elegido.get('Descripcion', elegido.get('descripcion', ''))}")
     print(f"Evoluciones: {elegido.get('evolucion', '')['nombre']}")
 
-
-
-
 #   CANJEAR POKÉMON
 # ============================
 def canjear_pokemon():
@@ -915,32 +912,50 @@ def batalla_loop(battle_id):
         batalla = obtener_batalla(battle_id)
         status  = batalla.get("status", "")
 
+        # ── Fase: elegir Pokémon inicial ──────────────────────────────────
         if status == "ready":
             _elegir_pokemon_activo(battle_id)
-            # Esperar a que el servidor procese ambas elecciones antes de continuar
-            print(f"{YELLOW}Esperando confirmación...{RESET}")
-            while True:
-                time.sleep(1.5)
-                batalla = obtener_batalla(battle_id)
-                new_status = batalla.get("status", "")
-                if new_status != "ready":
-                    break
-            continue
-
-        if status == "choosing_action":
-            _mostrar_estado_batalla(batalla)
-            _elegir_accion(battle_id)
             print(f"{YELLOW}Esperando al rival...{RESET}")
             while True:
                 time.sleep(1.5)
                 batalla = obtener_batalla(battle_id)
-                if batalla.get("status") in ("choosing_action", "finished"):
+                if batalla.get("status") != "ready":
                     break
+            continue
+
+        # ── Fase: elegir acción ───────────────────────────────────────────
+        if status == "choosing_action":
+            turno_actual = batalla.get("turn", 0)
+            _mostrar_estado_batalla(batalla)
+            ok = _elegir_accion(battle_id)
+            if not ok:
+                time.sleep(1.0)
+                continue
+
+            # Esperar a que el número de turno suba (ambos eligieron y se resolvió)
+            print(f"{YELLOW}Esperando al rival...{RESET}")
+            dots = 0
+            while True:
+                time.sleep(1.5)
+                batalla = obtener_batalla(battle_id)
+                new_status = batalla.get("status", "")
+                new_turno  = batalla.get("turn", 0)
+
+                if new_status == "finished":
+                    break
+                if new_turno > turno_actual:   # ← el servidor resolvió el turno
+                    break
+
+                dots = (dots + 1) % 4
+                print(f"\r{YELLOW}Esperando al rival{'.' * dots}   {RESET}", end="", flush=True)
+
+            print()
             _mostrar_log_turno(batalla.get("turn_log", []))
             if batalla.get("status") == "finished":
                 break
             continue
 
+        # ── Batalla terminada ─────────────────────────────────────────────
         if status == "finished":
             break
 
@@ -952,8 +967,7 @@ def batalla_loop(battle_id):
         print(f"\n{GREEN}🏆 ¡Has ganado la batalla!{RESET}")
     else:
         print(f"\n{RED}💀 Has perdido la batalla.{RESET}")
-
-
+        
 def _elegir_pokemon_activo(battle_id):
     global batalla
     uid     = current_user.get("id") or current_user.get("_id", "")
@@ -1046,13 +1060,15 @@ def _elegir_accion(battle_id):
         print("Opción inválida, atacando con movimiento 0.")
         action = {"type": "move", "move_index": 0}
 
-    r = requests.post(
+        r = requests.post(
         f"{API_URL}/battles/{battle_id}/action",
         json={"action": action},
         headers=headers()
     )
     if r.status_code != 200:
         print("Error:", r.json().get("error"))
+        return False
+    return True
 
 
 def _mostrar_estado_batalla(batalla):
