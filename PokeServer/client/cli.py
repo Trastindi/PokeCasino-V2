@@ -116,11 +116,11 @@ def ver_perfil():
 
     u = r.json()
     print("\n--- Mi Perfil ---")
-    print(f"Nombre: {u['nombre']} {u['apellido']}")
-    print(f"Email: {u['email']}")
-    print(f"Fichas: {u['fichas']}")
-    print(f"Pokes: {u['pokes']}")
-    print(f"Rol: {u['rol']}")
+    print(f"Nombre: {u['Nombre']} {u['Apellido']}")
+    print(f"Email: {u['Correo']}")
+    print(f"Fichas: {u['FichasCasino']}")
+    print(f"Pokes: {u['Pokes']}")
+    print(f"Rol: {u['Role']}")
 
 
 # ============================
