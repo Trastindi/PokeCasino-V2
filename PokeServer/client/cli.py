@@ -1058,7 +1058,7 @@ def _elegir_accion(battle_id):
         print("Opción inválida, atacando con movimiento 0.")
         action = {"type": "move", "move_index": 0}
 
-        r = requests.post(
+    r = requests.post(
         f"{API_URL}/battles/{battle_id}/action",
         json={"action": action},
         headers=headers()

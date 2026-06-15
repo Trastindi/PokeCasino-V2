@@ -1067,27 +1067,18 @@ def _efectividad_tipo(tipo_ataque: str, tipo_defensor: str) -> float:
 # ---------------------------------------------------------------------------
 
 def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
-    """
-    Fórmula Gen III completa (Bulbapedia):
-
-    damage = floor(
-        floor( floor( floor((2*L/5)+2) * Power * A/D ) / 50 + 2 )
-        * Burn * Screen * Targets * Weather * FF
-        * Stockpile * Critical * DoubleDmg * Charge * HH
-        * STAB * Type1 * Type2
-        * random[85..100] / 100
-    )
-
-    Esta implementación cubre los modificadores aplicables a un combate 1v1:
-    Burn, Weather, STAB, Type1, Type2, Critical y random.
-    Los modificadores de dobles (Screen dobles, Targets, HH) usan sus valores
-    por defecto (1) al ser una batalla individual.
-    """
     if isinstance(movimiento, str):
         return 0
 
-    categoria = movimiento.get("damage_class", "physical")
-    potencia  = int(movimiento.get("power") or 0)
+    # ✅ damage_class está anidado en damageClass.value
+    damage_class_obj = movimiento.get("damageClass") or {}
+    categoria = damage_class_obj.get("value", "physical")
+    if categoria == "status":
+        return 0
+
+    # ✅ power está en powerModel.basePower
+    power_model = movimiento.get("powerModel") or {}
+    potencia = int(power_model.get("basePower") or movimiento.get("power") or 0)
     if potencia == 0:
         return 0
 
@@ -1095,8 +1086,9 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     stats_def = defensor.get("estadisticas_base") or {}
 
     if categoria == "special":
-        A = int(stats_atk.get("sp_ataque", stats_atk.get("ataque_especial", 50)))
-        D = int(stats_def.get("sp_defensa", stats_def.get("defensa_especial", 50)))
+        # ✅ la BD usa "ataque_especial" y "defensa_especial"
+        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50)))
+        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50)))
     else:
         A = int(stats_atk.get("ataque", 50))
         D = int(stats_def.get("defensa", 50))
@@ -1251,7 +1243,7 @@ def _resolver_turno(battle_id: str, battle: dict):
         "player1_action": None,
         "player2_action": None,
         "turn": battle.get("turn", 0) + 1,
-        "last_turn_log": log,
+        "turn_log": log,
     }
 
     if winner:
