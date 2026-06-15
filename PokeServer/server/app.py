@@ -572,10 +572,10 @@ def aplicar_movimiento(current_user):
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
 
-@app.get("/movimiento/<movimiento_id>")
-def obtener_datos_movimiento(movimiento_id):
-    """Devuelve los datos de un movimiento dado su ID."""
-    mov = movimientos.find_one({"moveId": movimiento_id})
+@app.get("/movimiento/<movimiento_name>")
+def obtener_datos_movimiento(movimiento_name):
+    """Devuelve los datos de un movimiento dado su nombre."""
+    mov = movimientos.find_one({"name": movimiento_name})
     if not mov:
         return jsonify({"error": "Movimiento no encontrado"}), 404
     return jsonify(_serialize(mov)), 200
@@ -977,6 +977,54 @@ def update_pokemon_team(current_user, team_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
+
+@app.get("/users/pokemonteams/<team_id>")
+@token_required
+def get_team(current_user, team_id):
+    try:
+        result = usuarios.find_one(
+            {
+                "_id": current_user["_id"],
+                "PokemonTeams._id": ObjectId(team_id)
+            },
+            {
+                "PokemonTeams.$": 1,
+                "_id": 0
+            }
+        )
+
+        if not result or not result.get("PokemonTeams"):
+            return jsonify({"error": "Equipo no encontrado"}), 404
+
+        team = result["PokemonTeams"][0]
+        team["_id"] = str(team["_id"])
+        return jsonify(team["pokemon_ids"]), 200
+
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Equipo no encontrado"}), 404
+
+@app.get("/users/pokemonteams/<pokemon_id>/moveset")
+@token_required
+def team_clone(current_user, pokemon_id):
+    try:
+        pokemon = pokemon_user.find_one({
+            "_id": ObjectId(pokemon_id),
+            "UserId": str(current_user["_id"])
+        })
+
+        if not pokemon:
+            return jsonify({"error": "Pokémon no encontrado"}), 404
+
+        moveset = pokemon.get("MoveSet", [])
+
+        return jsonify({"moveset": moveset}), 200
+
+    except Exception:
+        return jsonify({"error": "error al extraer los movimientos"}), 500
+
+
+
 # ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
