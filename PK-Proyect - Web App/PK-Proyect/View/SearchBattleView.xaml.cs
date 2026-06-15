@@ -1,17 +1,26 @@
-﻿using System.Windows;
+using System.Windows;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
+using PK_Proyect.Models;
 
 namespace PK_Proyect.View
 {
-    public partial class SearchBattle : Window
+    public partial class SearchBattleView : Window
     {
         private readonly SearchBattleViewModel _vm;
 
-        public SearchBattle(IBattleService battleService)
+        public SearchBattleView(IBattleService battleService, User currentUser)
         {
             InitializeComponent();
-            _vm = new SearchBattleViewModel(battleService, Close);
+            
+            if (currentUser == null)
+            {
+                MessageBox.Show("Error: No se encontró el usuario actual.");
+                this.Close();
+                return;
+            }
+
+            _vm = new SearchBattleViewModel(battleService, currentUser.Id, Close);
             _vm.BattleAccepted += OnBattleAccepted;
             DataContext = _vm;
         }
@@ -20,7 +29,15 @@ namespace PK_Proyect.View
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var battleWindow = new BattleWindow();
+                // Usar el nombre correcto de la ventana: BattleWindowView
+                var battleWindow = new BattleWindowView(
+                    (IBattleService)((SearchBattleViewModel)this.DataContext)
+                        .GetType()
+                        .GetField("_battleService", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                        ?.GetValue((SearchBattleViewModel)this.DataContext) 
+                    ?? new BattleService(new ApiClient())
+                );
+                
                 battleWindow.Owner = this.Owner;
                 battleWindow.Show();
                 this.Close();

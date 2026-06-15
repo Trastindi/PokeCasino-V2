@@ -1,4 +1,4 @@
-﻿<Window x:Class="PK_Proyect.View.BattleWindowView"
+<Window x:Class="PK_Proyect.View.BattleWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Batalla"
@@ -27,28 +27,28 @@
                     <ColumnDefinition Width="360"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- espacio izquierdo vacío -->
-                <StackPanel Grid.Column="0"/>
+                <!-- Información del rival (izquierda) -->
+                <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Top" Margin="0,6,532,0" Width="200">
+                    <TextBlock Text="{Binding OpponentName}" FontWeight="Bold" FontSize="13"/>
+                    <TextBlock FontSize="12" Margin="0,4,0,0"><Run Text="Nv: "/><Run Text="{Binding OpponentLevel}"/></TextBlock>
+                    
+                    <!-- Barra de vida del rival (solo visual) -->
+                    <ProgressBar Width="180" Height="14" Value="{Binding OpponentHpPercent}" Maximum="100"
+                        Foreground="#FF2ECC71" Background="#FFBDBDBD" Margin="0,6,0,0"/>
+                </StackPanel>
 
-                <!-- zona rival -->
-                <Grid Margin="370,10,0,-10" Grid.ColumnSpan="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <!-- info (nombre, nv, barra) -->
-                        <ColumnDefinition Width="12"/>
-                        <ColumnDefinition Width="140"/>
-                        <!-- sprite -->
-                    </Grid.ColumnDefinitions>
-
-                    <!-- BLOQUE INFO RIVAL (izquierda del sprite) -->
-
-                    <!-- CUADRO SPRITE RIVAL (derecha) -->
-                </Grid>
+                <!-- Sprite del rival (derecha) -->
+                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" Background="#FFF8F0D8"
+                    CornerRadius="6" Padding="6" HorizontalAlignment="Right" Width="329" Height="120" Margin="395,0,0,0">
+                    <Image Source="{Binding OpponentSprite}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
             </Grid>
 
             <!-- ESPACIO VACÍO (sin cuadro central) -->
             <Grid Grid.Row="1">
                 <!-- Intencionalmente vacío para respetar el diseño clásico sin caja central -->
+                <!-- Mensaje de batalla aquí si es necesario -->
+                <TextBlock Text="{Binding BattleMessage}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF333333"/>
             </Grid>
 
             <!-- BOTTOM: izquierda cuadro del jugador (solo sprite), derecha: info encima del menú 2x2 -->
@@ -108,55 +108,6 @@
                                 </TransformGroup>
                             </TextBlock.RenderTransform>
                         </TextBlock>
-
-                        <!-- PANEL DE MOVIMIENTOS (visual, oculto por defecto) -->
-                        <Border x:Name="MovesPanel"
-        BorderBrush="Black"
-        BorderThickness="2"
-        Background="#FFF8F0D8"
-        CornerRadius="6"
-        Padding="8"
-        Margin="0,0,0,8"
-        Visibility="Collapsed"
-        Width="320"
-        HorizontalAlignment="Right">
-                            <StackPanel>
-                                <TextBlock Text="Movimientos" FontWeight="Bold" FontSize="12" Margin="0,0,0,6" HorizontalAlignment="Center"/>
-                                <!-- Lista visual de 4 movimientos (plantilla). Reemplaza ItemsControl.ItemsSource por tu binding Moves cuando añadas la lógica -->
-                                <ItemsControl x:Name="MovesPreview">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,4">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <!-- Botón visual (sin Command) -->
-                                                <Button Content="{Binding Name}" Height="34" Margin="0,0,8,0"
-                    Background="#FF2B2B2B" Foreground="White" BorderBrush="Black" BorderThickness="2"
-                    HorizontalAlignment="Stretch"/>
-
-                                                <!-- Texto PP -->
-                                                <TextBlock Grid.Column="1" Text="{Binding PpText}" VerticalAlignment="Center" FontSize="12"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-
-                                    <!-- Ejemplo de items visuales por defecto para que se vea sin ViewModel -->
-                                    <ItemsControl.Items>
-                                        <local:MoveModel Name="Placaje" Pp="35" MaxPp="35"/>
-                                        <local:MoveModel Name="Lanzallamas" Pp="15" MaxPp="15"/>
-                                        <local:MoveModel Name="Rayo" Pp="10" MaxPp="10"/>
-                                        <local:MoveModel Name="Protección" Pp="5" MaxPp="5"/>
-                                    </ItemsControl.Items>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-
-
-
                     </StackPanel>
 
                     <!-- MENÚ 2x2 (abajo-derecha) -->
@@ -172,31 +123,17 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Row="0" Grid.Column="0" Style="{StaticResource RoundedButton}" Content="Luchar"
-                      Command="{Binding OpenMovesCommand}" Margin="6" Height="44"/>
+                       Command="{Binding OpenMovesCommand}" Margin="6" Height="44" IsEnabled="{Binding IsBattleActive}"/>
                             <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource RoundedButton}" Content="PKMN"
-                      Command="{Binding SwitchPokemonCommand}" Margin="6" Height="44"/>
+                       Command="{Binding SwitchPokemonCommand}" Margin="6" Height="44" IsEnabled="{Binding IsBattleActive}"/>
                             <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource RoundedButton}" Content="OBJ."
-                      Command="{Binding UseItemCommand}" Margin="6" Height="44"/>
+                       Command="{Binding UseItemCommand}" Margin="6" Height="44" IsEnabled="{Binding IsBattleActive}"/>
                             <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource RoundedButton}" Content="ESC"
-                      Command="{Binding RunCommand}" Margin="6" Height="44"/>
+                       Command="{Binding RunCommand}" Margin="6" Height="44" IsEnabled="{Binding IsBattleActive}"/>
                         </Grid>
                     </Border>
                 </StackPanel>
             </Grid>
-            <Border BorderBrush="Black" BorderThickness="2" Background="#FFF8F0D8"
-                CornerRadius="6" Padding="6" HorizontalAlignment="Left" Width="329" Height="120" Margin="395,0,0,0">
-                <Image Source="{Binding OpponentSprite}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Top" Margin="0,6,532,0" Width="200">
-                <TextBlock Text="{Binding OpponentName}" FontWeight="Bold" FontSize="13"/>
-                <TextBlock FontSize="12" Margin="0,4,0,0"><Run Text="Nv: "/><Run Text="{Binding OpponentLevel}"/></TextBlock>
-
-                <!-- NO mostrar texto numérico de PS para el rival -->
-                <!-- Barra de vida del rival (solo visual) -->
-                <ProgressBar Width="180" Height="14" Value="{Binding OpponentHpPercent}" Maximum="100"
-                    Foreground="#FF2ECC71" Background="#FFBDBDBD" Margin="0,6,0,0"/>
-
-            </StackPanel>
         </Grid>
     </Border>
 </Window>

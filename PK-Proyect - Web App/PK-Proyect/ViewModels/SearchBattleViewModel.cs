@@ -1,9 +1,9 @@
-﻿using PK_Proyect.Commands;
+using PK_Proyect.Commands;
 using PK_Proyect.Services;
-using PK_Proyect.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace PK_Proyect.ViewModels
@@ -11,9 +11,11 @@ namespace PK_Proyect.ViewModels
     public class SearchBattleViewModel : INotifyPropertyChanged
     {
         private readonly IBattleService _battleService;
+        private readonly string _currentUserId;
         private string _idUserToChallenge;
         private string _idBattleToJoin;
         private bool _isBusy;
+        private string _statusMessage;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event System.Action BattleAccepted;
@@ -30,13 +32,13 @@ namespace PK_Proyect.ViewModels
         public double ButtonHeight { get; } = 40;
         public double InputHeight { get; } = 36;
 
-        public SearchBattleViewModel(IBattleService battleService, System.Action closeAction)
+        public SearchBattleViewModel(IBattleService battleService, string currentUserId, System.Action closeAction)
         {
             _battleService = battleService;
+            _currentUserId = currentUserId;
 
             BackgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3C04A"));
-            // Asegúrate de que "PokemonClassic" esté registrado en tu proyecto (Resources o sistema)
-            FontFamily = new FontFamily("");
+            FontFamily = new FontFamily("PokemonClassic");
             ButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2B2B2B"));
             ButtonForeground = Brushes.White;
 
@@ -82,33 +84,110 @@ namespace PK_Proyect.ViewModels
             }
         }
 
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                if (_statusMessage == value) return;
+                _statusMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsValidUserId => !string.IsNullOrWhiteSpace(IdUserToChallenge);
         public bool IsValidBattleId => !string.IsNullOrWhiteSpace(IdBattleToJoin);
 
         private async Task DesafiarAsync()
         {
+            if (string.IsNullOrWhiteSpace(_currentUserId))
+            {
+                MessageBox.Show("Error: No se encontró el ID del usuario actual.");
+                return;
+            }
+
+            if (_currentUserId == IdUserToChallenge)
+            {
+                MessageBox.Show("No puedes desafiarte a ti mismo.");
+                return;
+            }
+
             IsBusy = true;
+            StatusMessage = "Enviando desafío...";
+
             try
             {
-                var sent = await _battleService.SendChallengeAsync("currentUserId", IdUserToChallenge);
-                if (!sent) return;
+                var sent = await _battleService.SendChallengeAsync(_currentUserId, IdUserToChallenge);
+                if (!sent)
+                {
+                    StatusMessage = "Error al enviar desafío.";
+                    return;
+                }
+
+                StatusMessage = "Esperando respuesta...";
                 var accepted = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
-                if (accepted) OnBattleAccepted();
+                if (accepted)
+                {
+                    StatusMessage = "¡Desafío aceptado!";
+                    OnBattleAccepted();
+                }
+                else
+                {
+                    StatusMessage = "El desafío fue rechazado o expiró.";
+                }
             }
-            finally { IsBusy = false; }
+            catch (System.Exception ex)
+            {
+                StatusMessage = $"Error: {ex.Message}";
+                MessageBox.Show($"Error durante el desafío: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private async Task UnirseAsync()
         {
+            if (string.IsNullOrWhiteSpace(_currentUserId))
+            {
+                MessageBox.Show("Error: No se encontró el ID del usuario actual.");
+                return;
+            }
+
             IsBusy = true;
+            StatusMessage = "Uniéndose a la batalla...";
+
             try
             {
-                var sent = await _battleService.RequestJoinAsync("currentUserId", IdBattleToJoin);
-                if (!sent) return;
+                var sent = await _battleService.RequestJoinAsync(_currentUserId, IdBattleToJoin);
+                if (!sent)
+                {
+                    StatusMessage = "Error al unirse a la batalla.";
+                    return;
+                }
+
+                StatusMessage = "Esperando confirmación...";
                 var accepted = await _battleService.WaitForAcceptanceAsync(IdBattleToJoin);
-                if (accepted) OnBattleAccepted();
+                if (accepted)
+                {
+                    StatusMessage = "¡Te has unido a la batalla!";
+                    OnBattleAccepted();
+                }
+                else
+                {
+                    StatusMessage = "La batalla fue cancelada o expiró.";
+                }
             }
-            finally { IsBusy = false; }
+            catch (System.Exception ex)
+            {
+                StatusMessage = $"Error: {ex.Message}";
+                MessageBox.Show($"Error al unirse: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         protected void OnBattleAccepted() => BattleAccepted?.Invoke();

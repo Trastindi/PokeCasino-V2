@@ -1,4 +1,4 @@
-﻿<Window x:Class="PK_Proyect.View.SearchBattleView"
+<Window x:Class="PK_Proyect.View.SearchBattleView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Buscar Batalla"
@@ -7,12 +7,11 @@
         ResizeMode="NoResize"
         Padding="16"
         Background="{Binding BackgroundBrush}"
-        FontFamily="{StaticResource PokemonClassic}" Height="206" Width="334">
+        FontFamily="{StaticResource PokemonClassic}" Height="260" Width="380">
     <Border BorderBrush="Black" BorderThickness="3" Margin="10" Background="#F8F0D8">
-
-
         <Grid Margin="6">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -44,41 +43,48 @@
                VerticalAlignment="Center"
                      FontFamily="{StaticResource PokemonClassic}"
                Text="{Binding IdUserToChallenge, UpdateSourceTrigger=PropertyChanged}"
-               ToolTip="Introduce id_user a desafiar" Margin="2,0,0,0"/>
+               ToolTip="Introduce ID del usuario a desafiar" Margin="2,0,0,0"/>
             </Grid>
 
             <!-- Unirse -->
             <Grid Grid.Row="2" Margin="0,6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="90"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0"
+              Width="120"
               Height="{Binding ButtonHeight}"
               Background="{Binding ButtonBackground}"
               Foreground="{Binding ButtonForeground}"
               Content="Unirse"
               Command="{Binding UnirseCommand}"
-              FontFamily="{StaticResource PokemonClassic}" Grid.ColumnSpan="3" HorizontalAlignment="Left" Width="119"/>
+              FontFamily="{StaticResource PokemonClassic}"/>
                 <TextBox Grid.Column="2"
-               Height="18"
+               Height="{Binding InputHeight}"
                VerticalAlignment="Center"
                      FontFamily="{StaticResource PokemonClassic}"
                Text="{Binding IdBattleToJoin, UpdateSourceTrigger=PropertyChanged}"
-               ToolTip="Introduce id_battle a unirse" Margin="47,0,0,0"/>
+               ToolTip="Introduce ID de la batalla a unirse" Margin="8,0,0,0"/>
             </Grid>
 
+            <!-- Mensaje de estado -->
+            <TextBlock Grid.Row="3" Text="{Binding StatusMessage}" FontSize="11" Foreground="#FF333333"
+               HorizontalAlignment="Center" Margin="0,8,0,8" TextWrapping="Wrap"/>
+
             <!-- Botón cancelar -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,58,130,-56" Width="109"/>
-            <Button
+            <Button Grid.Row="3"
             Height="{Binding ButtonHeight}"
             Background="{Binding ButtonBackground}"
             Foreground="{Binding ButtonForeground}"
             Content="Cancelar"
             Command="{Binding CancelCommand}"
-            FontFamily="{StaticResource PokemonClassic}" Margin="86,41,111,-40" Grid.Row="2"/>
+            FontFamily="{StaticResource PokemonClassic}" 
+            HorizontalAlignment="Center"
+            Width="120"
+            Margin="0,50,0,0"/>
         </Grid>
     </Border>
 </Window>
