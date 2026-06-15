@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import requests
 import time
 import os
@@ -19,9 +18,9 @@ RESET  = "\033[0m"
 def headers():
     return {"Authorization": f"Bearer {token}"} if token else {}
 
-# ─────────────────────────────────────────────
-#  AUTH
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# AUTH
+# ─────────────────────────────────────────────────────────────────────────────
 
 def login():
     global token, current_user
@@ -30,12 +29,13 @@ def login():
     password = input("Contraseña: ").strip()
     r = requests.post(f"{API_URL}/auth/login", json={"username": username, "password": password})
     if r.status_code == 200:
-        data  = r.json()
-        token = data.get("token")
+        data         = r.json()
+        token        = data.get("token")
         current_user = data.get("user", {})
         print(f"{GREEN}Bienvenido, {current_user.get('Username', username)}!{RESET}")
     else:
         print(f"{RED}Error: {r.json().get('error', 'Login fallido')}{RESET}")
+
 
 def register():
     global token, current_user
@@ -46,16 +46,17 @@ def register():
     r = requests.post(f"{API_URL}/auth/register",
                       json={"username": username, "password": password, "email": email})
     if r.status_code == 201:
-        data  = r.json()
-        token = data.get("token")
+        data         = r.json()
+        token        = data.get("token")
         current_user = data.get("user", {})
         print(f"{GREEN}Registro exitoso. Bienvenido, {username}!{RESET}")
     else:
         print(f"{RED}Error: {r.json().get('error', 'Registro fallido')}{RESET}")
 
-# ─────────────────────────────────────────────
-#  POKÉDEX
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POKÉDEX
+# ─────────────────────────────────────────────────────────────────────────────
 
 def pokedex_menu():
     page   = 1
@@ -72,9 +73,9 @@ def pokedex_menu():
             print(f"{RED}Error al obtener la Pokédex{RESET}")
             return
 
-        data   = r.json()
-        lista  = data.get("pokemons", data) if isinstance(data, dict) else data
-        total  = data.get("total", len(lista)) if isinstance(data, dict) else len(lista)
+        data  = r.json()
+        lista = data.get("pokemons", data) if isinstance(data, dict) else data
+        total = data.get("total", len(lista)) if isinstance(data, dict) else len(lista)
 
         print(f"\n{'─'*50}")
         print(f"  {'#':>4}  {'Nombre':<16} {'Tipo'}")
@@ -87,7 +88,6 @@ def pokedex_menu():
         print("\n  [n] Siguiente  [p] Anterior  [b] Buscar  [v] Ver detalle  [q] Volver")
 
         op = input("Opción: ").strip().lower()
-
         if op == "n":
             if page * limit < total:
                 page += 1
@@ -114,12 +114,13 @@ def pokedex_menu():
         else:
             print("Opción no válida.")
 
+
 def _ver_detalle_pokedex(pokemon_id):
     r = requests.get(f"{API_URL}/pokedex/{pokemon_id}", headers=headers())
     if r.status_code != 200:
         print(f"{RED}Pokémon no encontrado.{RESET}")
         return
-    p = r.json()
+    p     = r.json()
     tipo2 = f" / {p['TipoSecundario']}" if p.get("TipoSecundario") else ""
     print(f"\n{'─'*40}")
     print(f"  #{p['PokemonId']}  {BOLD}{p['Nombre']}{RESET}")
@@ -137,9 +138,10 @@ def _ver_detalle_pokedex(pokemon_id):
                 print(f"    - {m}")
     print(f"{'─'*40}")
 
-# ─────────────────────────────────────────────
-#  MIS POKÉMON
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MIS POKÉMON
+# ─────────────────────────────────────────────────────────────────────────────
 
 def mis_pokemon_menu():
     r = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
@@ -194,6 +196,7 @@ def mis_pokemon_menu():
     elif accion == "2":
         _crear_equipo_con_pokemon(elegido["PokemonId"])
 
+
 def _añadir_a_equipo_existente(pokemon_id):
     r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
     if r.status_code != 200:
@@ -226,7 +229,7 @@ def _añadir_a_equipo_existente(pokemon_id):
 
     sel = input("Selecciona el número del equipo: ").strip()
     try:
-        sel   = int(sel) - 1
+        sel    = int(sel) - 1
         equipo = disponibles[sel]
     except (ValueError, IndexError):
         print("Selección inválida.")
@@ -245,6 +248,7 @@ def _añadir_a_equipo_existente(pokemon_id):
     else:
         print(f"{RED}Error: {r2.json().get('error')}{RESET}")
 
+
 def _crear_equipo_con_pokemon(pokemon_id):
     nombre = input("Nombre para el nuevo equipo: ").strip()
     if not nombre:
@@ -262,9 +266,10 @@ def _crear_equipo_con_pokemon(pokemon_id):
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
-# ─────────────────────────────────────────────
-#  EQUIPOS
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EQUIPOS
+# ─────────────────────────────────────────────────────────────────────────────
 
 def ver_equipos():
     r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers())
@@ -280,9 +285,10 @@ def ver_equipos():
         ids = t.get("pokemon_ids", [])
         print(f"  [{t.get('_id','')}] {t['team_name']}  ({len(ids)}/6 Pokémon)  IDs: {ids}")
 
-# ─────────────────────────────────────────────
-#  TIENDA / PREMIOS
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIENDA / PREMIOS
+# ─────────────────────────────────────────────────────────────────────────────
 
 def ver_tienda():
     r = requests.get(f"{API_URL}/tienda", headers=headers())
@@ -295,6 +301,7 @@ def ver_tienda():
         print(f"  {item.get('_id','')}  {item.get('Nombre','?')}  "
               f"Precio: {item.get('Precio','?')} monedas")
 
+
 def comprar_item(item_id):
     r = requests.post(f"{API_URL}/tienda/comprar",
                       json={"item_id": item_id}, headers=headers())
@@ -302,6 +309,7 @@ def comprar_item(item_id):
         print(f"{GREEN}Compra realizada: {r.json().get('msg','')}{RESET}")
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
+
 
 def ver_premios():
     r = requests.get(f"{API_URL}/premios", headers=headers())
@@ -313,9 +321,10 @@ def ver_premios():
     for pr in premios:
         print(f"  {pr.get('Nombre','?')}  —  {pr.get('Descripcion','')}")
 
-# ─────────────────────────────────────────────
-#  MENSAJES
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MENSAJES
+# ─────────────────────────────────────────────────────────────────────────────
 
 def ver_mensajes():
     r = requests.get(f"{API_URL}/messages", headers=headers())
@@ -334,8 +343,9 @@ def ver_mensajes():
               f"De: {m.get('sender_username','?')}  "
               f"— {m.get('content','')[:60]}")
 
+
 def enviar_mensaje():
-    dest    = input("Destinatario (username): ").strip()
+    dest      = input("Destinatario (username): ").strip()
     contenido = input("Mensaje: ").strip()
     r = requests.post(f"{API_URL}/messages",
                       json={"recipient_username": dest, "content": contenido},
@@ -345,15 +355,17 @@ def enviar_mensaje():
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
-# ─────────────────────────────────────────────
-#  BATALLA
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BATALLA
+# ─────────────────────────────────────────────────────────────────────────────
 
 def obtener_batalla(battle_id):
     r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
     if r.status_code == 200:
         return r.json()
     return {}
+
 
 def batalla_loop(battle_id):
     global batalla
@@ -369,7 +381,7 @@ def batalla_loop(battle_id):
             print(f"{YELLOW}Esperando confirmación...{RESET}")
             while True:
                 time.sleep(1.5)
-                batalla   = obtener_batalla(battle_id)
+                batalla    = obtener_batalla(battle_id)
                 new_status = batalla.get("status", "")
                 if new_status != "ready":
                     break
@@ -536,12 +548,12 @@ def _cambiar_pokemon(battle_id, my_slot):
 
 
 def _mostrar_estado_batalla(b):
-    uid     = current_user.get("id") or current_user.get("_id", "")
+    uid    = current_user.get("id") or current_user.get("_id", "")
     my_slot = "player1_team" if b.get("player1_id") == uid else "player2_team"
     en_slot = "player2_team" if my_slot == "player1_team" else "player1_team"
 
-    my_active  = b.get(my_slot,  {}).get("active_pokemon", {})
-    en_active  = b.get(en_slot,  {}).get("active_pokemon", {})
+    my_active = b.get(my_slot, {}).get("active_pokemon", {})
+    en_active = b.get(en_slot, {}).get("active_pokemon", {})
 
     print(f"\n{'─'*40}")
     print(f"  Rival: {en_active.get('name','?')}  HP: {en_active.get('current_hp','?')}")
@@ -573,9 +585,9 @@ def _mostrar_log_turno(log):
             print(f"  {entry}")
 
 
-# ─────────────────────────────────────────────
-#  CASINO (ruleta, slots, blackjack…)
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# CASINO (ruleta, slots, blackjack…)
+# ─────────────────────────────────────────────────────────────────────────────
 
 def jugar_ruleta():
     apuesta = input("Apuesta (monedas): ").strip()
@@ -596,6 +608,7 @@ def jugar_ruleta():
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
+
 def jugar_slots():
     apuesta = input("Apuesta (monedas): ").strip()
     try:
@@ -613,9 +626,10 @@ def jugar_slots():
     else:
         print(f"{RED}Error: {r.json().get('error')}{RESET}")
 
-# ─────────────────────────────────────────────
-#  MENÚS
-# ─────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MENÚS
+# ─────────────────────────────────────────────────────────────────────────────
 
 def menu_principal():
     while True:
@@ -649,7 +663,7 @@ def menu_principal():
 
 def menu_usuario():
     global batalla
-    equipo_enviado = False
+    equipo_enviado   = False
     battle_id_activo = None
 
     while True:
@@ -721,7 +735,7 @@ def menu_usuario():
                     if r_equipos.status_code != 200:
                         print(f"{RED}Error al obtener equipos.{RESET}")
                         break
-                    equipos = r_equipos.json()
+                    equipos   = r_equipos.json()
                     equipo_sel = next(
                         (e for e in equipos if e.get("team_name","").lower() == nombre_equipo.lower()),
                         None
@@ -736,7 +750,7 @@ def menu_usuario():
                         headers=headers()
                     )
                     if r_join.status_code in (200, 201):
-                        battle_data = r_join.json()
+                        battle_data      = r_join.json()
                         battle_id_activo = battle_data.get("battle_id") or battle_data.get("_id")
                         print(f"{GREEN}¡Equipo enviado! Esperando al rival...{RESET}")
                         equipo_enviado = True
@@ -767,9 +781,9 @@ def menu_usuario():
             print("Opción no válida.")
 
 
-# ─────────────────────────────────────────────
-#  ENTRY POINT
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# ENTRY POINT
+# ─────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     menu_principal()
