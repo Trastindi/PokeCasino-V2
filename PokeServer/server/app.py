@@ -8,6 +8,7 @@ import bcrypt
 import jwt
 import datetime
 import random
+import math
 import string
 import os
 from functools import wraps
@@ -1038,17 +1039,59 @@ def battle_action(current_user, battle_id):
         return jsonify({"error": "Error interno del servidor"}), 500
 
 
-def _aplicar_dano(atacante, defensor, movimiento):
+# ---------------------------------------------------------------------------
+# TABLA DE EFECTIVIDAD DE TIPOS (cacheada en memoria)
+# ---------------------------------------------------------------------------
+
+_tipo_cache: dict = {}  # {"atacante/defensor": 0.5 | 1.0 | 2.0}
+
+def _efectividad_tipo(tipo_ataque: str, tipo_defensor: str) -> float:
+    """Devuelve la efectividad (0, 0.5, 1 o 2) consultando TablaTipos en MongoDB."""
+    if not tipo_ataque or not tipo_defensor:
+        return 1.0
+    clave = f"{tipo_ataque}/{tipo_defensor}"
+    if clave in _tipo_cache:
+        return _tipo_cache[clave]
+    doc = tabla_tipos.find_one({
+        "$or": [
+            {"attacking_type": tipo_ataque, "defending_type": tipo_defensor},
+            {"ataque": tipo_ataque, "defensa": tipo_defensor},
+        ]
+    })
+    if doc:
+        ef = float(doc.get("effectiveness", doc.get("efectividad", 1.0)))
+    else:
+        ef = 1.0
+    _tipo_cache[clave] = ef
+    return ef
+
+
+# ---------------------------------------------------------------------------
+# FÓRMULA DE DAÑO GEN III
+# ---------------------------------------------------------------------------
+
+def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     """
-    Calcula y aplica daño básico usando la fórmula gen-3 simplificada.
-    Devuelve el daño infligido.
+    Fórmula Gen III completa (Bulbapedia):
+
+    damage = floor(
+        floor( floor( floor((2*L/5)+2) * Power * A/D ) / 50 + 2 )
+        * Burn * Screen * Targets * Weather * FF
+        * Stockpile * Critical * DoubleDmg * Charge * HH
+        * STAB * Type1 * Type2
+        * random[85..100] / 100
+    )
+
+    Esta implementación cubre los modificadores aplicables a un combate 1v1:
+    Burn, Weather, STAB, Type1, Type2, Critical y random.
+    Los modificadores de dobles (Screen dobles, Targets, HH) usan sus valores
+    por defecto (1) al ser una batalla individual.
     """
     if isinstance(movimiento, str):
-        # Movimiento no expandido, no se puede calcular
         return 0
 
     categoria = movimiento.get("damage_class", "physical")
-    potencia   = int(movimiento.get("power") or 0)
+    potencia  = int(movimiento.get("power") or 0)
     if potencia == 0:
         return 0
 
@@ -1056,20 +1099,75 @@ def _aplicar_dano(atacante, defensor, movimiento):
     stats_def = defensor.get("estadisticas_base") or {}
 
     if categoria == "special":
-        atk = int(stats_atk.get("sp_ataque", stats_atk.get("ataque_especial", 50)))
-        def_ = int(stats_def.get("sp_defensa", stats_def.get("defensa_especial", 50)))
+        A = int(stats_atk.get("sp_ataque", stats_atk.get("ataque_especial", 50)))
+        D = int(stats_def.get("sp_defensa", stats_def.get("defensa_especial", 50)))
     else:
-        atk  = int(stats_atk.get("ataque", 50))
-        def_ = int(stats_def.get("defensa", 50))
+        A = int(stats_atk.get("ataque", 50))
+        D = int(stats_def.get("defensa", 50))
+
+    if D == 0:
+        D = 1
 
     nivel = int(atacante.get("Nivel", 1))
-    dano  = int(((2 * nivel / 5 + 2) * potencia * atk / def_) / 50 + 2)
 
-    # Aplicar daño
+    # ── Base damage ─────────────────────────────────────────────────────────
+    base = math.floor(
+        math.floor(
+            math.floor((2 * nivel / 5) + 2) * potencia * A / D
+        ) / 50
+    ) + 2
+
+    # ── Burn ────────────────────────────────────────────────────────────────
+    # 0.5 si el atacante está quemado Y el movimiento es físico
+    status_atk = (atacante.get("Status") or "").lower()
+    burn = 0.5 if (status_atk == "quemado" or status_atk == "burn") and categoria == "physical" else 1
+
+    # ── Weather ─────────────────────────────────────────────────────────────
+    tipo_mov = (movimiento.get("type") or movimiento.get("tipo") or "").lower()
+    campo    = (field_status or "normal").lower()
+    if campo == "lluvia" or campo == "rain":
+        weather = 1.5 if tipo_mov == "agua" or tipo_mov == "water" else (
+                  0.5 if tipo_mov == "fuego" or tipo_mov == "fire"  else 1)
+    elif campo == "sol" or campo == "sun" or campo == "harsh sunlight":
+        weather = 1.5 if tipo_mov == "fuego" or tipo_mov == "fire" else (
+                  0.5 if tipo_mov == "agua"  or tipo_mov == "water" else 1)
+    elif campo not in ("none", "normal", "despejado", "clear"):
+        # Granizo, tormenta de arena, etc.
+        weather = 0.5 if (tipo_mov == "solar" or tipo_mov == "rayo solar") else 1
+    else:
+        weather = 1
+
+    # ── STAB ────────────────────────────────────────────────────────────────
+    tipo1_atk = (atacante.get("TipoPrincipal")  or "").lower()
+    tipo2_atk = (atacante.get("TipoSecundario") or "").lower()
+    stab = 1.5 if tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk) else 1
+
+    # ── Efectividad de tipos ─────────────────────────────────────────────────
+    tipo1_def = (defensor.get("TipoPrincipal")  or "").title()
+    tipo2_def = (defensor.get("TipoSecundario") or "")
+    tipo_ataque_titulo = tipo_mov.title() if tipo_mov else ""
+
+    type1_eff = _efectividad_tipo(tipo_ataque_titulo, tipo1_def)
+    type2_eff = _efectividad_tipo(tipo_ataque_titulo, tipo2_def) if tipo2_def else 1.0
+
+    # ── Crítico ─────────────────────────────────────────────────────────────
+    # Probabilidad Gen III: 1/16 por defecto
+    critical = 2 if random.randint(1, 16) == 1 else 1
+
+    # ── Random [85..100] / 100 ──────────────────────────────────────────────
+    rand = random.randint(85, 100) / 100
+
+    # ── Daño final ──────────────────────────────────────────────────────────
+    dano = math.floor(
+        base * burn * weather * stab * type1_eff * type2_eff * critical * rand
+    )
+    dano = max(1, dano)
+
+    # ── Aplicar al defensor ──────────────────────────────────────────────────
     hp_actual = int(defensor.get("CurrentHp", 0))
-    nuevo_hp  = max(0, hp_actual - dano)
-    defensor["CurrentHp"] = nuevo_hp
-    return dano
+    defensor["CurrentHp"] = max(0, hp_actual - dano)
+
+    return dano, critical == 2
 
 
 def _resolver_turno(battle_id: str, battle: dict):
@@ -1083,6 +1181,8 @@ def _resolver_turno(battle_id: str, battle: dict):
 
     p1_action = battle.get("player1_action", {})
     p2_action = battle.get("player2_action", {})
+
+    field_status = battle.get("field_status", "normal")
 
     def get_speed(poke):
         stats = poke.get("estadisticas_base") or {}
@@ -1124,9 +1224,17 @@ def _resolver_turno(battle_id: str, battle: dict):
             moveset   = atacante.get("MoveSet", [])
             if mov_index < len(moveset):
                 movimiento = moveset[mov_index]
-                dano = _aplicar_dano(atacante, defensor, movimiento)
+                resultado  = _aplicar_dano(atacante, defensor, movimiento, field_status)
+                if resultado:
+                    dano, es_critico = resultado
+                else:
+                    dano, es_critico = 0, False
+
                 mov_nombre = movimiento.get("name", movimiento) if isinstance(movimiento, dict) else movimiento
-                log.append(f"{jugador} usa {mov_nombre} → {dano} de daño")
+                entrada_log = f"{jugador} usa {mov_nombre} → {dano} de daño"
+                if es_critico:
+                    entrada_log += " (¡Golpe crítico!)"
+                log.append(entrada_log)
 
                 # Comprobar KO del defensor
                 if defensor.get("CurrentHp", 0) <= 0:
