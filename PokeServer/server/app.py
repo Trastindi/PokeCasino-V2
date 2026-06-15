@@ -969,9 +969,8 @@ def get_messages(current_user):
 def get_pokemon_teams(current_user):
     try:
         teams = list(current_user.get("PokemonTeams", []))
-        for t in teams:
-            t["_id"] = str(t["_id"])
-        return jsonify(teams), 200
+        serialized = [_serialize_value(t) for t in teams]
+        return jsonify(serialized), 200
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
@@ -1004,6 +1003,7 @@ def create_pokemon_team(current_user):
             {"$push": {"PokemonTeams": new_team}}
         )
         new_team["_id"] = str(new_team["_id"])
+        new_team["user_id"] = str(new_team["user_id"])
         return jsonify(new_team), 201
     except Exception:
         import traceback; traceback.print_exc()
