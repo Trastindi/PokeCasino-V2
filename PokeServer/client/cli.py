@@ -515,11 +515,12 @@ def menu_usuario():
                 print(res.json())
                 batalla = obtener_batalla(batalla["_id"])
                 print("¡La batalla comenzará pronto! Prepárate...")
-                # Aquí podríamos llamar a una función para iniciar la batalla en modo interactivo
-            #TODO: mostrar menú específico durante la batalla (ej. opciones de ataque, cambio de Pokémon, etc())
-
-
-
+                # donde dice "¡La batalla comenzará pronto! Prepárate..."
+                batalla = obtener_batalla(batalla["_id"])
+                if batalla and batalla.get("status") in ("ready", "choosing_action"):
+                    batalla_loop(batalla["_id"])
+                    is_on_battle = False
+                    batalla = {}
 
 #   MENÚ ADMIN
 # ============================
@@ -663,6 +664,7 @@ def menu_admin():
 #   MENÚ PRINCIPAL
 # ============================
 def main():
+    _load_type_chart()
     while True:
         print("\n===========================")
         print("      CASINO POKÉMON")

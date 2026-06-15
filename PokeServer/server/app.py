@@ -17,6 +17,23 @@ app = Flask(__name__)
 CORS(app)
 
 _secret_key = "secret_key_aleatoria_y_segura_para_jwt"  # Valor por defecto para desarrollo
+_type_chart_cache: dict = {}
+
+def _load_type_chart():
+    """Carga la tabla de tipos desde MongoDB al arrancar (o si el caché está vacío)."""
+    global _type_chart_cache
+    if _type_chart_cache:
+        return
+    for entry in tipo_tabla.find({}, {"_id": 0, "attack_type": 1, "effectiveness": 1}):
+        # Normalizar a minúsculas para comparar sin distinción de mayúsculas
+        atk = entry["attack_type"].lower()
+        _type_chart_cache[atk] = {
+            def_type.lower(): mult
+            for def_type, mult in entry["effectiveness"].items()
+        }
+
+_load_type_chart()
+
 if not _secret_key:
     raise RuntimeError("SECRET_KEY no está definida. Configúrala en el entorno o en .env")
 app.config["SECRET_KEY"] = _secret_key
@@ -1073,6 +1090,211 @@ def team_clone(current_user, pokemon_id):
         return jsonify({"error": "error al extraer los movimientos"}), 500
 
 
+def batalla_loop(battle_id):
+    global batalla
+    print(f"\n{GREEN}=== BATALLA INICIADA ==={RESET}")
+
+    while True:
+        batalla = obtener_batalla(battle_id)
+        status  = batalla.get("status", "")
+
+        # ── Elegir Pokémon inicial / tras KO ─────────────────────────────
+        if status == "ready":
+            _elegir_pokemon_activo(battle_id)
+            continue
+
+        # ── Elegir acción del turno ───────────────────────────────────────
+        if status == "choosing_action":
+            _mostrar_estado_batalla(batalla)
+            _elegir_accion(battle_id)
+            print(f"{YELLOW}Esperando al rival...{RESET}")
+            # Polling hasta que el turno se resuelva
+            while True:
+                time.sleep(1.5)
+                batalla = obtener_batalla(battle_id)
+                if batalla.get("status") in ("choosing_action", "finished"):
+                    break
+            _mostrar_log_turno(batalla.get("turn_log", []))
+            if batalla.get("status") == "finished":
+                break
+            continue
+
+        if status == "finished":
+            break
+
+        time.sleep(1.5)  # esperar si el rival aún no eligió Pokémon
+
+    # ── Resultado final ───────────────────────────────────────────────────
+    winner = batalla.get("winner", "")
+    uid    = current_user.get("id") or current_user.get("_id", "")
+    if winner == uid:
+        print(f"\n{GREEN}🏆 ¡Has ganado la batalla!{RESET}")
+    else:
+        print(f"\n{RED}💀 Has perdido la batalla.{RESET}")
+
+
+def _elegir_pokemon_activo(battle_id):
+    global batalla
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    team    = batalla.get(my_slot, {}).get("pokemon", [])
+
+    print(f"\n{CYAN}Elige tu Pokémon:{RESET}")
+    for i, p in enumerate(team):
+        hp = p.get("CurrentHp", 0)
+        print(f"  {i+1}. {p['Nombre']}  HP: {hp}")
+
+    while True:
+        sel = input("Número: ").strip()
+        try:
+            idx = int(sel) - 1
+            if 0 <= idx < len(team) and team[idx].get("CurrentHp", 0) > 0:
+                break
+            print("Pokémon inválido o sin HP.")
+        except ValueError:
+            print("Número inválido.")
+
+    r = requests.post(
+        f"{API_URL}/battles/{battle_id}/choose_pokemon",
+        json={"pokemon_index": idx},
+        headers=headers()
+    )
+    if r.status_code == 200:
+        print(f"{GREEN}¡{team[idx]['Nombre']} al campo!{RESET}")
+    else:
+        print("Error:", r.json().get("error"))
+
+
+def _elegir_accion(battle_id):
+    global batalla
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    my_idx  = batalla.get("player1_active" if my_slot == "player1_team" else "player2_active", 0)
+    poke    = batalla.get(my_slot, {}).get("pokemon", [])[my_idx]
+
+    print(f"\n{CYAN}--- {poke['Nombre']} ---  HP: {poke.get('CurrentHp', 0)}{RESET}")
+    print("1. Atacar")
+    print("2. Cambiar Pokémon")
+
+    op = input("Opción: ").strip()
+
+    if op == "1":
+        moves = poke.get("MoveSet", [])
+        print(f"\n{CYAN}Movimientos:{RESET}")
+        for i, m in enumerate(moves):
+            if isinstance(m, dict):
+                pp = m.get("pp", {})
+                print(f"  {i+1}. {m.get('name','?')}  "
+                      f"[{m.get('type','?')}]  "
+                      f"Poder: {m.get('powerModel',{}).get('basePower','?')}  "
+                      f"PP: {pp.get('base','?')}")
+            else:
+                print(f"  {i+1}. {m}")
+
+        while True:
+            sel = input("Elige movimiento: ").strip()
+            try:
+                midx = int(sel) - 1
+                if 0 <= midx < len(moves):
+                    break
+                print("Índice inválido.")
+            except ValueError:
+                print("Número inválido.")
+
+        action = {"type": "move", "move_index": midx}
+
+    elif op == "2":
+        team = batalla.get(my_slot, {}).get("pokemon", [])
+        print(f"\n{CYAN}Pokémon disponibles:{RESET}")
+        for i, p in enumerate(team):
+            if i == my_idx:
+                continue
+            hp = p.get("CurrentHp", 0)
+            print(f"  {i+1}. {p['Nombre']}  HP: {hp}")
+
+        while True:
+            sel = input("Elige Pokémon: ").strip()
+            try:
+                pidx = int(sel) - 1
+                if 0 <= pidx < len(team) and pidx != my_idx and team[pidx].get("CurrentHp", 0) > 0:
+                    break
+                print("Selección inválida.")
+            except ValueError:
+                print("Número inválido.")
+
+        action = {"type": "switch", "pokemon_index": pidx}
+
+    else:
+        print("Opción inválida, atacando con movimiento 0.")
+        action = {"type": "move", "move_index": 0}
+
+    r = requests.post(
+        f"{API_URL}/battles/{battle_id}/action",
+        json={"action": action},
+        headers=headers()
+    )
+    if r.status_code != 200:
+        print("Error:", r.json().get("error"))
+
+
+def _mostrar_estado_batalla(batalla):
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    ri_slot = "player2_team" if my_slot == "player1_team" else "player1_team"
+    my_idx  = batalla.get("player1_active" if my_slot == "player1_team" else "player2_active", 0)
+    ri_idx  = batalla.get("player2_active" if my_slot == "player1_team" else "player1_active", 0)
+
+    my_poke = batalla.get(my_slot, {}).get("pokemon", [])[my_idx]
+    ri_poke = batalla.get(ri_slot, {}).get("pokemon", [])[ri_idx]
+
+    print(f"\n{'─'*40}")
+    print(f"  Rival: {RED}{ri_poke['Nombre']}{RESET}  HP: {ri_poke.get('CurrentHp', 0)}")
+    print(f"  Turno: {batalla.get('turn', 0)}  Campo: {batalla.get('field_status','normal')}")
+    print(f"  Tú:    {GREEN}{my_poke['Nombre']}{RESET}  HP: {my_poke.get('CurrentHp', 0)}")
+    print(f"{'─'*40}")
+
+
+def _mostrar_log_turno(log):
+    for entry in log:
+        ev = entry.get("event")
+        if ev == "speed_tie":
+            print(f"{YELLOW}⚡ ¡Empate de velocidad! Orden aleatorio.{RESET}")
+        elif ev == "attack":
+            ef = entry.get("effectiveness", 1.0)
+            ef_str = ""
+            if ef > 1.5:   ef_str = f" {RED}¡Es muy eficaz!{RESET}"
+            elif ef < 0.5: ef_str = f" {BLUE}No es muy eficaz...{RESET}"
+            elif ef == 0:  ef_str = f" {WHITE}No afecta...{RESET}"
+            crit_str = f" {YELLOW}¡Golpe crítico!{RESET}" if entry.get("crit") else ""
+            stab_str = f" {GREEN}(STAB){RESET}" if entry.get("stab") else ""
+            boost_str = f" {MAGENTA}(habilidad x{entry['ability_boost']:.1f}){RESET}" if entry.get("ability_boost") else ""
+            print(f"  {entry['attacker']} usa {CYAN}{entry['move']}{RESET}{boost_str}  "
+                  f"→  {entry['damage']} daño{ef_str}{crit_str}{stab_str}  "
+                  f"(HP rival: {entry['remaining_hp']})")
+        elif ev == "fainted":
+            print(f"  {RED}💀 {entry['pokemon']} se ha debilitado.{RESET}")
+        elif ev == "switch":
+            print(f"  {GREEN}↔ {entry['player']} saca a {entry['to']}.{RESET}")
+        elif ev == "stat_change":
+            sign = "bajó" if entry.get("stages", 0) < 0 else "subió"
+            print(f"  {MAGENTA}[{entry['ability']}] {entry['pokemon']}'s {entry['stat']} {sign}.{RESET}")
+        elif ev == "field_damage":
+            print(f"  {YELLOW}[{entry['field']}] {entry['pokemon']} recibe {entry['damage']} de daño.{RESET}")
+        elif ev == "status_applied":
+            print(f"  {MAGENTA}[{entry['ability']}] {entry['target']} quedó paralizado.{RESET}")
+
+# Caché en memoria para evitar consultas repetidas en cada cálculo
+
+
+
+def _type_effectiveness(move_type: str, defender_type: str) -> float:
+    """Consulta la tabla de tipos desde caché (cargada de MongoDB)."""
+    if not defender_type:
+        return 1.0
+    if not _type_chart_cache:
+        _load_type_chart()
+    atk_data = _type_chart_cache.get(move_type.lower(), {})
+    return atk_data.get(defender_type.lower(), 1.0)
 
 # ---------------------------------------------------------------------------
 # MAIN
