@@ -456,11 +456,6 @@ def obtener_batalla(battle_id):
     else:
         print("Error al obtener batalla:", r.get("error"))
         return None
-    
-def clonar_equipo(team):
-    for t in team:
-        r = requests.get(f"{API_URL}/users/pokemonteams/{t[""]}/moveset")
-
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
@@ -511,12 +506,10 @@ def menu_usuario():
                     equipo_seleccionado = equipo
                     break
             if equipo:
-                equipo = requests.get(f"{API_URL}/users/pokemonteams/{equipo["_id"]}")
-                
                 print(f"Equipo '{equipo}' seleccionado. Enviando datos al servidor para iniciar la batalla...")
                 res = requests.post(
                     f"{API_URL}/battles/{batalla['_id']}/teams",
-                    json={"team": equipo, "battle_id": batalla["_id"]},
+                    json={"team_id": equipo["_id"], "battle_id": batalla["_id"]},
                     headers=headers()
                 )
                 print(res.json())

@@ -503,12 +503,12 @@ def obtener_pokemon(current_user):
                     moveset.append(m["nombre"])
             
             abilities = pdex.get("habilidades", [])                
-            print(f"{len(abilities)} habilidades posibles para {nombre} (ID {pokemon_id}): {[h.get('habilidad_id') for h in abilities]}")
+            print(f"{len(abilities)} habilidades posibles para {nombre} (ID {pokemon_id}): {[h.get('nombre') for h in abilities]}")
             
             if len(abilities) == 2:
-                    ability = abilities[random.randint(0, 1)].get("habilidad_id")
+                    ability = abilities[random.randint(0, 1)].get("nombre")
             else:
-                ability = abilities[0].get("habilidad_id")
+                ability = abilities[0].get("nombre")
 
         nuevo = {
             "UserId":          uid,
@@ -856,32 +856,81 @@ def get_battle_status(current_user, battle_id):
 
 @app.post("/battles/<battle_id>/teams")
 @token_required
-def submit_battle_team(current_user, battle_id):  # ← battle_id viene de la URL
+def submit_battle_team(current_user, battle_id):
     try:
-        data = request.json or {}
-        team = data.get("team", {})  # Esperamos un json con info del equipo (ej: Pokémon seleccionados, movimientos, etc.)
-        
-        if not team:
-            return jsonify({"error": "Falta el equipo"}), 400
+        data    = request.json or {}
+        team_id = data.get("team_id", "").strip()
 
+        if not team_id:
+            return jsonify({"error": "Falta team_id"}), 400
+
+        # ── 1. Obtener la batalla ────────────────────────────────────────────
         battle = battles.find_one({"_id": ObjectId(battle_id)})
         if not battle:
             return jsonify({"error": "Batalla no encontrada"}), 404
 
         uid = str(current_user["_id"])
-        if battle["player1_id"] == uid:
-            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player1_team": team}})
-        elif battle["player2_id"] == uid:
-            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player2_team": team}})
-        else:
+        if battle["player1_id"] != uid and battle["player2_id"] != uid:
             return jsonify({"error": "No eres parte de esta batalla"}), 403
 
-        # Marcar como "ready" si ambos enviaron equipo
+        # ── 2. Obtener el equipo del usuario ─────────────────────────────────
+        result = usuarios.find_one(
+            {"_id": current_user["_id"], "PokemonTeams._id": ObjectId(team_id)},
+            {"PokemonTeams.$": 1, "_id": 0}
+        )
+        if not result or not result.get("PokemonTeams"):
+            return jsonify({"error": "Equipo no encontrado"}), 404
+
+        team_doc    = result["PokemonTeams"][0]
+        pokemon_ids = team_doc.get("pokemon_ids", [])
+
+        # ── 3. Enriquecer cada Pokémon ────────────────────────────────────────
+        enriched_pokemon = []
+        for poke_id in pokemon_ids:
+            poke = pokemon_user.find_one({"_id": ObjectId(poke_id), "UserId": uid})
+            if not poke:
+                continue  # si ya no existe en la colección, lo saltamos
+
+            # Expandir movimientos
+            moveset_expanded = []
+            for move_name in poke.get("MoveSet", []):
+                mov_doc = movimientos.find_one({"name": move_name})
+                if mov_doc:
+                    moveset_expanded.append(_serialize_value(mov_doc))
+                else:
+                    moveset_expanded.append(move_name)  # fallback al nombre
+
+            # Expandir habilidad
+            ability_doc = None
+            ability_id  = poke.get("AbilityId")
+            if ability_id:
+                ability_doc = habilidades.find_one({"name": ability_id})
+
+            poke_enriched = _serialize_value(dict(poke))
+            poke_enriched["MoveSet"] = moveset_expanded
+            poke_enriched["Ability"] = _serialize_value(ability_doc) if ability_doc else []
+
+            enriched_pokemon.append(poke_enriched)
+
+        battle_team = {
+            "_id":      str(team_doc.get("_id", "")),
+            "team_name": team_doc.get("team_name", ""),
+            "pokemon":  enriched_pokemon,
+        }
+
+        # ── 4. Guardar en la batalla ──────────────────────────────────────────
+        if battle["player1_id"] == uid:
+            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player1_team": battle_team}})
+        else:
+            battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"player2_team": battle_team}})
+
+        # Marcar como ready si ambos enviaron equipo
         battle_updated = battles.find_one({"_id": ObjectId(battle_id)})
         if battle_updated["player1_team"] and battle_updated["player2_team"]:
             battles.update_one({"_id": ObjectId(battle_id)}, {"$set": {"status": "ready"}})
 
-        return jsonify({"msg": "Equipo enviado"}), 200
+        return jsonify({"msg": "Equipo enviado", "team": battle_team}), 200
+
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
