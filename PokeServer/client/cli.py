@@ -58,13 +58,17 @@ def login():
     
     if r2.status_code != 200:
         print("Error al obtener perfil:", r2.status_code, r2.text)
-        return False          # <-- línea añadida
+        return False
     current_user = r2.json()
 
-    nombre_mostrar = current_user.get("nombre") or current_user.get("username")
+    nombre_mostrar = current_user.get("Nombre") or current_user.get("nombre") or current_user.get("username")
 
     print(f"\nBienvenido, {nombre_mostrar}!")
     print("Token: ", token)
+
+    # Cargar tabla de tipos ahora que tenemos token
+    _load_type_chart()
+
     return True
 
 
@@ -110,11 +114,11 @@ def ver_perfil():
 
     u = r.json()
     print("\n--- Mi Perfil ---")
-    print(f"Nombre: {u['nombre']} {u['apellido']}")
-    print(f"Email: {u['email']}")
-    print(f"Fichas: {u['fichas']}")
-    print(f"Pokes: {u['pokes']}")
-    print(f"Rol: {u['rol']}")
+    print(f"Nombre: {u.get('Nombre', u.get('nombre', ''))} {u.get('Apellido', u.get('apellido', ''))}")
+    print(f"Email: {u.get('Correo', u.get('email', ''))}")
+    print(f"Fichas: {u.get('FichasCasino', u.get('fichas', 0))}")
+    print(f"Pokes: {u.get('Pokes', u.get('pokes', 0))}")
+    print(f"Rol: {u.get('Role', u.get('rol', ''))}")
 
 
 
@@ -165,7 +169,7 @@ def mis_pokemon_menu():
     print(f"  Movimientos    : {', '.join(moveset) if moveset else 'Ninguno'}")
     print(f"  Obtenido       : {elegido.get('FechaObtenido', '?')}")
 
-    # Estadísticas base desde la Pokédex (campo correcto: numero_pokedex)
+    # Estadísticas base desde la Pokédex
     r_dex = requests.get(f"{API_URL}/pokedex/{elegido['PokemonId']}", headers=headers())
     if r_dex.status_code == 200:
         stats = r_dex.json().get("estadisticas_base", {})
@@ -548,7 +552,7 @@ def menu_admin():
 
             print("\n--- Lista de usuarios ---")
             for u in r.json():
-                print(f"{u['_id']} - {u['nombre']} {u['apellido']} ({u['rol']})")
+                print(f"{u['id']} - {u.get('Nombre', u.get('nombre', ''))} {u.get('Apellido', u.get('apellido', ''))} ({u.get('Role', u.get('rol', ''))})")
 
         # 2. Listar usuarios con detalles
         elif op == "2":
@@ -560,15 +564,14 @@ def menu_admin():
             print("\n--- Lista de usuarios (detallado) ---")
             for u in r.json():
                 print("\n------------------------")
-                print(f"ID: {u['_id']}")
-                print(f"Nombre: {u['nombre']} {u['apellido']}")
-                print(f"Username: {u['username']}")
-                print(f"Edad: {u['edad']}")
-                print(f"Email: {u['email']}")
-                print(f"Rol: {u['rol']}")
-                print(f"Pokes: {u['pokes']}")
-                print(f"Fichas: {u['fichas']}")
-                print(f"Pokémon: {len(u.get('pokemon', []))}")
+                print(f"ID: {u['id']}")
+                print(f"Nombre: {u.get('Nombre', u.get('nombre', ''))} {u.get('Apellido', u.get('apellido', ''))}")
+                print(f"Username: {u.get('Username', u.get('username', ''))}")
+                print(f"Email: {u.get('Correo', u.get('email', ''))}")
+                print(f"Rol: {u.get('Role', u.get('rol', ''))}")
+                print(f"Pokes: {u.get('Pokes', u.get('pokes', 0))}")
+                print(f"Fichas: {u.get('FichasCasino', u.get('fichas', 0))}")
+                print(f"Pokémon: {u.get('Pokemon', 0)}")
 
         # 3. Modificar datos del usuario
         elif op == "3":
@@ -585,17 +588,17 @@ def menu_admin():
             payload = {}
 
             if nuevo_nombre.strip():
-                payload["nombre"] = nuevo_nombre
+                payload["Nombre"] = nuevo_nombre
             if nuevo_apellido.strip():
-                payload["apellido"] = nuevo_apellido
+                payload["Apellido"] = nuevo_apellido
             if nuevo_email.strip():
-                payload["email"] = nuevo_email
+                payload["Correo"] = nuevo_email
             if nuevo_rol.strip():
-                payload["rol"] = nuevo_rol
+                payload["Role"] = nuevo_rol
             if nuevas_fichas.strip():
-                payload["fichas"] = int(nuevas_fichas)
+                payload["FichasCasino"] = int(nuevas_fichas)
             if nuevos_pokes.strip():
-                payload["pokes"] = int(nuevos_pokes)
+                payload["Pokes"] = int(nuevos_pokes)
 
             if not payload:
                 print("No se ha cambiado ningún dato.")
@@ -664,7 +667,6 @@ def menu_admin():
 #   MENÚ PRINCIPAL
 # ============================
 def main():
-    _load_type_chart()
     while True:
         print("\n===========================")
         print("      CASINO POKÉMON")
@@ -679,9 +681,10 @@ def main():
             if not login():
                 continue
 
-            if current_user["Role"] == "admin": 
-                menu_admin() 
-            else: 
+            rol = current_user.get("Role") or current_user.get("rol", "user")
+            if rol == "admin":
+                menu_admin()
+            else:
                 menu_usuario()
         elif op == "2":
             register()
@@ -864,7 +867,7 @@ def jugar_casino():
 _type_chart_cache: dict = {}
 
 def _load_type_chart():
-    """Carga la tabla de efectividad de tipos desde el servidor al iniciar sesión."""
+    """Carga la tabla de efectividad de tipos desde el servidor (requiere token)."""
     global _type_chart_cache
     if _type_chart_cache:
         return
