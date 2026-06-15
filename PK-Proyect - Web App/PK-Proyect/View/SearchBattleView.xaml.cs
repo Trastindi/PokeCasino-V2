@@ -1,7 +1,8 @@
-using System.Windows;
+using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
-using PK_Proyect.Models;
+using System.Reflection;
+using System.Windows;
 
 namespace PK_Proyect.View
 {
@@ -31,13 +32,13 @@ namespace PK_Proyect.View
             {
                 // Usar el nombre correcto de la ventana: BattleWindowView
                 var battleWindow = new BattleWindowView(
-                    (IBattleService)((SearchBattleViewModel)this.DataContext)
-                        .GetType()
-                        .GetField("_battleService", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                        ?.GetValue((SearchBattleViewModel)this.DataContext) 
-                    ?? new BattleService(new ApiClient())
+                (IBattleService)((SearchBattleViewModel)this.DataContext)
+                .GetType()
+                .GetField("_battleService", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.GetValue((SearchBattleViewModel)this.DataContext)
+                ?? new BattleService()
                 );
-                
+
                 battleWindow.Owner = this.Owner;
                 battleWindow.Show();
                 this.Close();
