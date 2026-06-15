@@ -858,5 +858,213 @@ def jugar_casino():
             break
 
 
+# ============================
+#   TABLA DE TIPOS (caché local)
+# ============================
+_type_chart_cache: dict = {}
+
+def _load_type_chart():
+    """Carga la tabla de efectividad de tipos desde el servidor al iniciar sesión."""
+    global _type_chart_cache
+    if _type_chart_cache:
+        return
+    r = requests.get(f"{API_URL}/type_chart", headers=headers())
+    if r.status_code == 200:
+        for entry in r.json():
+            atk = entry["attacking_type"].lower()
+            _type_chart_cache[atk] = {
+                k.lower(): v for k, v in entry.get("effectiveness", {}).items()
+            }
+
+
+# ============================
+#   BATALLA LOOP
+# ============================
+
+def batalla_loop(battle_id):
+    global batalla
+    print(f"\n{GREEN}=== BATALLA INICIADA ==={RESET}")
+
+    while True:
+        batalla = obtener_batalla(battle_id)
+        status  = batalla.get("status", "")
+
+        if status == "ready":
+            _elegir_pokemon_activo(battle_id)
+            continue
+
+        if status == "choosing_action":
+            _mostrar_estado_batalla(batalla)
+            _elegir_accion(battle_id)
+            print(f"{YELLOW}Esperando al rival...{RESET}")
+            while True:
+                time.sleep(1.5)
+                batalla = obtener_batalla(battle_id)
+                if batalla.get("status") in ("choosing_action", "finished"):
+                    break
+            _mostrar_log_turno(batalla.get("turn_log", []))
+            if batalla.get("status") == "finished":
+                break
+            continue
+
+        if status == "finished":
+            break
+
+        time.sleep(1.5)
+
+    winner = batalla.get("winner", "")
+    uid    = current_user.get("id") or current_user.get("_id", "")
+    if winner == uid:
+        print(f"\n{GREEN}🏆 ¡Has ganado la batalla!{RESET}")
+    else:
+        print(f"\n{RED}💀 Has perdido la batalla.{RESET}")
+
+
+def _elegir_pokemon_activo(battle_id):
+    global batalla
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    team    = batalla.get(my_slot, {}).get("pokemon", [])
+
+    print(f"\n{CYAN}Elige tu Pokémon:{RESET}")
+    for i, p in enumerate(team):
+        hp = p.get("CurrentHp", 0)
+        print(f"  {i+1}. {p['Nombre']}  HP: {hp}")
+
+    while True:
+        sel = input("Número: ").strip()
+        try:
+            idx = int(sel) - 1
+            if 0 <= idx < len(team) and team[idx].get("CurrentHp", 0) > 0:
+                break
+            print("Pokémon inválido o sin HP.")
+        except ValueError:
+            print("Número inválido.")
+
+    r = requests.post(
+        f"{API_URL}/battles/{battle_id}/choose_pokemon",
+        json={"pokemon_index": idx},
+        headers=headers()
+    )
+    if r.status_code == 200:
+        print(f"{GREEN}¡{team[idx]['Nombre']} al campo!{RESET}")
+    else:
+        print("Error:", r.json().get("error"))
+
+
+def _elegir_accion(battle_id):
+    global batalla
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    my_idx  = batalla.get("player1_active" if my_slot == "player1_team" else "player2_active", 0)
+    poke    = batalla.get(my_slot, {}).get("pokemon", [])[my_idx]
+
+    print(f"\n{CYAN}--- {poke['Nombre']} ---  HP: {poke.get('CurrentHp', 0)}{RESET}")
+    print("1. Atacar")
+    print("2. Cambiar Pokémon")
+
+    op = input("Opción: ").strip()
+
+    if op == "1":
+        moves = poke.get("MoveSet", [])
+        print(f"\n{CYAN}Movimientos:{RESET}")
+        for i, m in enumerate(moves):
+            if isinstance(m, dict):
+                pp = m.get("pp", {})
+                print(f"  {i+1}. {m.get('name','?')}  [{m.get('type','?')}]  "
+                      f"Poder: {m.get('powerModel',{}).get('basePower','?')}  "
+                      f"PP: {pp.get('base','?')}")
+            else:
+                print(f"  {i+1}. {m}")
+
+        while True:
+            sel = input("Elige movimiento: ").strip()
+            try:
+                midx = int(sel) - 1
+                if 0 <= midx < len(moves):
+                    break
+                print("Índice inválido.")
+            except ValueError:
+                print("Número inválido.")
+        action = {"type": "move", "move_index": midx}
+
+    elif op == "2":
+        team = batalla.get(my_slot, {}).get("pokemon", [])
+        print(f"\n{CYAN}Pokémon disponibles:{RESET}")
+        for i, p in enumerate(team):
+            if i == my_idx:
+                continue
+            hp = p.get("CurrentHp", 0)
+            print(f"  {i+1}. {p['Nombre']}  HP: {hp}")
+
+        while True:
+            sel = input("Elige Pokémon: ").strip()
+            try:
+                pidx = int(sel) - 1
+                if 0 <= pidx < len(team) and pidx != my_idx and team[pidx].get("CurrentHp", 0) > 0:
+                    break
+                print("Selección inválida.")
+            except ValueError:
+                print("Número inválido.")
+        action = {"type": "switch", "pokemon_index": pidx}
+
+    else:
+        print("Opción inválida, atacando con movimiento 0.")
+        action = {"type": "move", "move_index": 0}
+
+    r = requests.post(
+        f"{API_URL}/battles/{battle_id}/action",
+        json={"action": action},
+        headers=headers()
+    )
+    if r.status_code != 200:
+        print("Error:", r.json().get("error"))
+
+
+def _mostrar_estado_batalla(batalla):
+    uid     = current_user.get("id") or current_user.get("_id", "")
+    my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+    ri_slot = "player2_team" if my_slot == "player1_team" else "player1_team"
+    my_idx  = batalla.get("player1_active" if my_slot == "player1_team" else "player2_active", 0)
+    ri_idx  = batalla.get("player2_active" if my_slot == "player1_team" else "player1_active", 0)
+    my_poke = batalla.get(my_slot, {}).get("pokemon", [])[my_idx]
+    ri_poke = batalla.get(ri_slot, {}).get("pokemon", [])[ri_idx]
+
+    print(f"\n{'─'*40}")
+    print(f"  Rival: {RED}{ri_poke['Nombre']}{RESET}  HP: {ri_poke.get('CurrentHp', 0)}")
+    print(f"  Turno: {batalla.get('turn', 0)}  Campo: {batalla.get('field_status','normal')}")
+    print(f"  Tú:    {GREEN}{my_poke['Nombre']}{RESET}  HP: {my_poke.get('CurrentHp', 0)}")
+    print(f"{'─'*40}")
+
+
+def _mostrar_log_turno(log):
+    for entry in log:
+        ev = entry.get("event")
+        if ev == "speed_tie":
+            print(f"{YELLOW}⚡ ¡Empate de velocidad! Orden aleatorio.{RESET}")
+        elif ev == "attack":
+            ef     = entry.get("effectiveness", 1.0)
+            ef_str = (f" {RED}¡Es muy eficaz!{RESET}"     if ef > 1.5 else
+                      f" {BLUE}No es muy eficaz...{RESET}" if ef < 0.5 else
+                      f" {WHITE}No afecta...{RESET}"        if ef == 0  else "")
+            crit_str  = f" {YELLOW}¡Golpe crítico!{RESET}" if entry.get("crit")          else ""
+            stab_str  = f" {GREEN}(STAB){RESET}"           if entry.get("stab")          else ""
+            boost_str = f" {MAGENTA}(x{entry['ability_boost']:.1f}){RESET}" if entry.get("ability_boost") else ""
+            print(f"  {entry['attacker']} usa {CYAN}{entry['move']}{RESET}{boost_str}"
+                  f"  →  {entry['damage']} daño{ef_str}{crit_str}{stab_str}"
+                  f"  (HP rival: {entry['remaining_hp']})")
+        elif ev == "fainted":
+            print(f"  {RED}💀 {entry['pokemon']} se ha debilitado.{RESET}")
+        elif ev == "switch":
+            print(f"  {GREEN}↔ {entry['player']} saca a {entry['to']}.{RESET}")
+        elif ev == "stat_change":
+            sign = "bajó" if entry.get("stages", 0) < 0 else "subió"
+            print(f"  {MAGENTA}[{entry['ability']}] {entry['pokemon']}'s {entry['stat']} {sign}.{RESET}")
+        elif ev == "field_damage":
+            print(f"  {YELLOW}[{entry['field']}] {entry['pokemon']} recibe {entry['damage']} daño.{RESET}")
+        elif ev == "status_applied":
+            print(f"  {MAGENTA}[{entry['ability']}] {entry['target']} quedó paralizado.{RESET}")
+
+
 if __name__ == "__main__":
     main()
