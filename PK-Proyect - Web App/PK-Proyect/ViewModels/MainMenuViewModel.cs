@@ -1,5 +1,6 @@
 using PK_Proyect.Commands;
 using PK_Proyect.Models;
+using PK_Proyect.Repositories;
 using PK_Proyect.Services;
 using PK_Proyect.View;
 using System;
@@ -22,6 +23,8 @@ namespace PK_Proyect.ViewModels
         public ICommand AbrirEquipoCommand { get; }
         public ICommand AbrirMedallasCommand { get; }
         public ICommand AbrirPerfilCommand { get; }
+
+        public ICommand AbrirBatallaCommand { get; }
         public ICommand CerrarSesionCommand { get; }
 
         public MainMenuViewModel(User usuario, UserService userService)
@@ -34,12 +37,25 @@ namespace PK_Proyect.ViewModels
             AbrirEquipoCommand   = new RelayCommand(_ => AbrirEquipo());
             AbrirMedallasCommand = new RelayCommand(_ => AbrirMedallas());
             AbrirPerfilCommand   = new RelayCommand(_ => AbrirPerfil());
+            AbrirBatallaCommand = new RelayCommand(_ => AbrirBatalla());
             CerrarSesionCommand  = new RelayCommand(_ => CerrarSesion());
         }
 
         private void AbrirMedallas()
         {
             var ventana = new MedallasView(new MedallasViewModel(UsuarioConectado.Id));
+            ventana.ShowDialog();
+        }
+
+        private void AbrirBatalla()
+        {
+            IBattleService battleService = new BattleService();
+
+            var ventana = new SearchBattleView(
+                battleService,
+                UsuarioConectado
+            );
+
             ventana.ShowDialog();
         }
 
