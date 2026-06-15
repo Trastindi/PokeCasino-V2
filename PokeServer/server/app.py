@@ -1046,25 +1046,21 @@ def battle_action(current_user, battle_id):
 _tipo_cache: dict = {}  # {"atacante/defensor": 0.5 | 1.0 | 2.0}
 
 def _efectividad_tipo(tipo_ataque: str, tipo_defensor: str) -> float:
-    """Devuelve la efectividad (0, 0.5, 1 o 2) consultando TablaTipos en MongoDB."""
     if not tipo_ataque or not tipo_defensor:
         return 1.0
     clave = f"{tipo_ataque}/{tipo_defensor}"
     if clave in _tipo_cache:
         return _tipo_cache[clave]
-    doc = tabla_tipos.find_one({
-        "$or": [
-            {"attacking_type": tipo_ataque, "defending_type": tipo_defensor},
-            {"ataque": tipo_ataque, "defensa": tipo_defensor},
-        ]
-    })
+
+    # La BD almacena: { attack_type: "Fuego", effectiveness: { "Planta": 2, ... } }
+    doc = tabla_tipos.find_one({"attack_type": tipo_ataque})
     if doc:
-        ef = float(doc.get("effectiveness", doc.get("efectividad", 1.0)))
+        ef = float(doc.get("effectiveness", {}).get(tipo_defensor, 1.0))
     else:
         ef = 1.0
+
     _tipo_cache[clave] = ef
     return ef
-
 
 # ---------------------------------------------------------------------------
 # FÓRMULA DE DAÑO GEN III

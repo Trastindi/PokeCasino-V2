@@ -887,18 +887,16 @@ def jugar_casino():
 _type_chart_cache: dict = {}
 
 def _load_type_chart():
-    """Carga la tabla de efectividad de tipos desde el servidor (requiere token)."""
-    global _type_chart_cache
-    if _type_chart_cache:
-        return
-    r = requests.get(f"{API_URL}/type_chart", headers=headers())
-    if r.status_code == 200:
-        for entry in r.json():
-            atk = entry["attacking_type"].lower()
-            _type_chart_cache[atk] = {
-                k.lower(): v for k, v in entry.get("effectiveness", {}).items()
-            }
-
+    global _tipo_cache
+    try:
+        r = requests.get(f"{API_URL}/type_chart", headers=headers(), timeout=3)
+        if r.status_code == 200:
+            for entry in r.json():
+                atk = entry["attack_type"].lower()          # ← campo correcto
+                for def_tipo, mult in entry.get("effectiveness", {}).items():
+                    _tipo_cache[f"{atk}/{def_tipo.lower()}"] = float(mult)
+    except Exception:
+        pass
 
 # ============================
 #   BATALLA LOOP
