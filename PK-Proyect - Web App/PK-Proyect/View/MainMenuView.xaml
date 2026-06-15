@@ -47,7 +47,7 @@
                 BorderThickness="3"
                 BorderBrush="{StaticResource PkBlue}"
                 Background="{StaticResource PkBox}"
-                Opacity="0.98">
+                Opacity="0.98" Margin="0,0,0,-43">
 
             <Grid Margin="20">
                 <Grid.RowDefinitions>
@@ -123,6 +123,10 @@
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding AbrirMedallasCommand}"/>
+                    <Button Content="◓  Buscar Combate"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        Style="{StaticResource RetroButton}"
+                        Command="{Binding AbrirBatallaCommand}" Click="Button_Click"/>
 
 
                 </StackPanel>
