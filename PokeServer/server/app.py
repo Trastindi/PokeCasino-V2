@@ -488,58 +488,64 @@ def obtener_pokemon(current_user):
     try:
         data       = request.json or {}
         pokemon_id = int(data.get("pokemon_id"))
-        nombre     = data.get("nombre",     "")
-        tipo1      = data.get("tipo1",      "")
-        tipo2      = data.get("tipo2",      "")
-        current_hp = int(data.get("current_hp", 0))
         uid        = str(current_user["_id"])
         uname      = gf(current_user, "Username", "username", default="")
 
-        pdex    = pokedex.find_one({"numero_pokedex": pokemon_id})
+        pdex = pokedex.find_one({"numero_pokedex": pokemon_id})
+        if not pdex:
+            return jsonify({"error": "Pokémon no encontrado en la Pokédex"}), 404
+
+        nombre = data.get("nombre") or pdex.get("Nombre", "")
+        tipo1  = data.get("tipo1") or pdex.get("Tipo1") or pdex.get("tipo_1", "")
+        tipo2  = data.get("tipo2") or pdex.get("Tipo2") or pdex.get("tipo_2", "")
+
+        estadisticas_base = pdex.get("estadisticas_base", {}) or {}
+        current_hp = int(estadisticas_base.get("ps", 0))
+
         moveset = []
-        
-        if pdex:
-            for m in pdex.get("movimientos", []):
-                if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(moveset) < 4:
-                    moveset.append(m["nombre"])
-            
-            abilities = pdex.get("habilidades", [])                
+        for m in pdex.get("movimientos", []):
+            if m.get("metodo") == "nivel" and m.get("nivel") == 1 and len(moveset) < 4:
+                moveset.append(m["nombre"])
+
+        abilities = pdex.get("habilidades", [])
+        ability = None
+        if abilities:
             print(f"{len(abilities)} habilidades posibles para {nombre} (ID {pokemon_id}): {[h.get('nombre') for h in abilities]}")
-            
             if len(abilities) == 2:
-                    ability = abilities[random.randint(0, 1)].get("nombre")
+                ability = abilities[random.randint(0, 1)].get("nombre")
             else:
                 ability = abilities[0].get("nombre")
 
         nuevo = {
-            "UserId":          uid,
-            "Username":        uname,
-            "PokemonId":       pokemon_id,
-            "numero_pokedex":  pokemon_id,
-            "Nombre":          nombre,
-            "TipoPrincipal":   tipo1,
-            "TipoSecundario":  tipo2,
-            "Nivel":           1,
-            "Cantidad":        1,
-            "FechaObtenido":   datetime.datetime.utcnow().isoformat(),
-            "HiddenPowerSeed":  random.randint(0, 15),
+            "UserId": uid,
+            "Username": uname,
+            "PokemonId": pokemon_id,
+            "numero_pokedex": pokemon_id,
+            "Nombre": nombre,
+            "TipoPrincipal": tipo1,
+            "TipoSecundario": tipo2,
+            "Nivel": 1,
+            "Cantidad": 1,
+            "FechaObtenido": datetime.datetime.utcnow().isoformat(),
+            "HiddenPowerSeed": random.randint(0, 15),
             "HiddenPowerPower": (random.randint(31, 70) + random.randint(31, 70)) // 2,
-            "CurrentHp":       current_hp,
-            "MoveSet":         moveset,
-            "AbilityId":       ability,
-            "ItemId":          None,
-            "Status":          None,
-            "Shards":          0,
+            "estadisticas_base": estadisticas_base,
+            "CurrentHp": current_hp,
+            "MoveSet": moveset,
+            "AbilityId": ability,
+            "ItemId": None,
+            "Status": None,
+            "Shards": 0,
         }
-        pokemon_user.insert_one(nuevo)
+
+        result = pokemon_user.insert_one(nuevo)
         _recalcular_pokes(uid)
-        nuevo["_id"] = str(nuevo["_id"])
+        nuevo["_id"] = str(result.inserted_id)
         return jsonify(nuevo), 201
 
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-
 
 @app.put("/pokemon/movimiento")
 @token_required
@@ -987,6 +993,7 @@ def create_pokemon_team(current_user):
             return jsonify({"error": "Un equipo no puede tener más de 6 Pokémon"}), 400
 
         new_team = {
+            "_id": ObjectId(),
             "user_id": current_user["_id"],
             "team_name": team_name,
             "pokemon_ids": pokemon_ids,

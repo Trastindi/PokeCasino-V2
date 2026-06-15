@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PK-Proyect": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "MONGO_URI": "mongodb+srv://marcosemiliorodriguezmartin_db_user:MlVEVrFW50X7bfsS@pokecasino.asaeily.mongodb.net/"
+      }
+    }
+  }
+}

@@ -18,15 +18,14 @@ namespace PK_Proyect.Repositories
         public List<PokemonUser> GetPokemonsByUser(string userId)
             => ApiClient.Get<List<PokemonUser>>($"/usuarios/{userId}/pokemon");
 
-        public void InsertPokemon(PokemonUser pokemon)
-            => ApiClient.Post<object>("/pokemon/obtener", new
-            {
-                pokemon_id = pokemon.PokemonId,
-                nombre     = pokemon.Nombre,
-                tipo1      = pokemon.TipoPrincipal,
-                tipo2      = pokemon.TipoSecundario,
-                current_hp = pokemon.CurrentHp
-            });
+        public PokemonUser InsertPokemon(PokemonUser pokemon)
+        => ApiClient.Post<PokemonUser>("/pokemon/obtener", new
+        {
+            pokemon_id = pokemon.PokemonId,
+            nombre = pokemon.Nombre,
+            tipo1 = pokemon.TipoPrincipal,
+            tipo2 = pokemon.TipoSecundario
+        });
 
         /// <summary>
         /// Actualización de moveset. Para subida de nivel usa InsertPokemon (que llama a /pokemon/obtener).

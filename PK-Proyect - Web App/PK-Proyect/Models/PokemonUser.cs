@@ -61,6 +61,8 @@ namespace PK_Proyect.Models
         [JsonPropertyName("HiddenPowerPower")]
         public int HiddenPowerPower { get; set; } = 0;
 
+        [JsonPropertyName("Stats")]
+        public Dictionary<string, int> estadisticas_base { get; private set; } = new Dictionary<string, int>();
         /// <summary>
         /// Moneda de fragmentos. Reservado para uso futuro.
         /// Se obtiene acumulando Pokémon duplicados u otras acciones.
