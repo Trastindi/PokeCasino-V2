@@ -833,7 +833,7 @@ def respond_battle_request(current_user, msg_id):
         })
         battles.insert_one({
             "_id": ObjectId(battle_id),
-            "player1_id": retador_id,
+            "player1_id": str(retador_id),
             "player2_id": str(current_user["_id"]),
             "status": "pending",
             "created_at": datetime.datetime.utcnow().isoformat(),
