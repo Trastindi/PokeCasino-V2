@@ -140,7 +140,11 @@ def mis_pokemon():
         return
 
     for p in lista:
-        print(f"{p['pokemon_id']} - {p['nombre']} (Obtenido: {p['fecha_obtenido']})")
+        tipo2 = f" / {p['TipoSecundario']}" if p.get("TipoSecundario") else ""
+        print(f"{p['PokemonId']} - {p['Nombre']}  "
+              f"[{p.get('TipoPrincipal','?')}{tipo2}]  "
+              f"Nv.{p.get('Nivel',1)}  "
+              f"(Obtenido: {p.get('FechaObtenido','?')})")
 
 
 # ============================
@@ -155,17 +159,17 @@ def pokedex_menu():
     pokedex = r.json()
 
     r2 = requests.get(f"{API_URL}/usuarios/mis_pokemon", headers=headers())
-    mis_pokes   = r2.json()
-    ids_usuario = {p["pokemon_id"] for p in mis_pokes}
+    mis_pokes   = r2.json() if r2.status_code == 200 else []
+    ids_usuario = {p["PokemonId"] for p in mis_pokes}
 
-    id_to_name = {p["Id"]: p["Nombre"] for p in pokedex}
+    id_to_name = {p["PokemonId"]: p["Nombre"] for p in pokedex}
 
     print("\n--- Pokédex ---")
     for p in pokedex:
-        capturado      = p["Id"] in ids_usuario
+        capturado      = p["PokemonId"] in ids_usuario
         color          = RED if capturado else BLUE
         nombre_mostrar = p["Nombre"] if capturado else "???"
-        print(f"{color}{p['Id']}. {nombre_mostrar}{RESET}")
+        print(f"{color}{p['PokemonId']}. {nombre_mostrar}{RESET}")
 
     sel = input("\nSelecciona un Pokémon por ID: ")
     try:
@@ -174,18 +178,18 @@ def pokedex_menu():
         print("ID inválido")
         return
 
-    elegido = next((p for p in pokedex if p["Id"] == sel), None)
+    elegido = next((p for p in pokedex if p["PokemonId"] == sel), None)
     if not elegido:
         print("Pokémon no encontrado")
         return
 
-    evoluciones_nombres = [id_to_name[e] for e in elegido["Evoluciones"]]
+    evoluciones_nombres = [id_to_name.get(e, str(e)) for e in elegido.get("Evoluciones", [])]
 
     print("\n--- Información del Pokémon ---")
     print(f"Nombre: {elegido['Nombre']}")
-    print(f"Tipo: {elegido['Tipo1']} / {elegido.get('Tipo2', '')}")
-    print(f"Región: {elegido['Region']}")
-    print(f"Descripción: {elegido['Descripcion']}")
+    print(f"Tipo: {elegido.get('TipoPrincipal', elegido.get('Tipo1','?'))} / {elegido.get('TipoSecundario', elegido.get('Tipo2',''))}")
+    print(f"Región: {elegido.get('Region','?')}")
+    print(f"Descripción: {elegido.get('Descripcion','?')}")
     print(f"Evoluciones: {', '.join(evoluciones_nombres) if evoluciones_nombres else 'Ninguna'}")
 
 
