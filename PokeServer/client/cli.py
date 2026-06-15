@@ -460,13 +460,16 @@ def obtener_batalla(battle_id):
     else:
         print("Error al obtener batalla:", r.get("error"))
         return None
+
 #   MENÚ PRINCIPAL USUARIO
 # ============================
 def menu_usuario():
     global is_on_battle, batalla, equipo_seleccionado
+    equipo_enviado = False  # controla si ya enviamos el equipo en esta batalla
+
     while True:
-        print(f"{is_on_battle}")
-        if is_on_battle == False:
+        if not is_on_battle:
+            equipo_enviado = False  # resetear al salir de batalla
             print("\n--- Menú Usuario ---")
             print("1. Ver mi perfil")
             print("2. Jugar al casino (¡El buen Gacha!)")
@@ -499,32 +502,50 @@ def menu_usuario():
             else:
                 print("Opción inválida.")
         else:
-            print("\n--- Estás en una batalla ---")
-            print(f"{batalla}")
-            print("Introduce el nombre de tu equipo para empezar a jugar")
-            team = input("Nombre del equipo: ")
-            r = requests.get(f"{API_URL}/users/pokemonteams", headers=headers()).json()
-            print(r)
-            for equipo in r:
-                if equipo["team_name"] == team:
-                    equipo_seleccionado = equipo
-                    break
-            if equipo:
-                print(f"Equipo '{equipo}' seleccionado. Enviando datos al servidor para iniciar la batalla...")
-                res = requests.post(
-                    f"{API_URL}/battles/{batalla['_id']}/teams",
-                    json={"team_id": equipo["_id"], "battle_id": batalla["_id"]},
-                    headers=headers()
-                )
-                print(res.json())
+            # ── FASE 1: enviar equipo (sólo una vez) ──────────────────────
+            if not equipo_enviado:
+                print("\n--- Estás en una batalla ---")
                 batalla = obtener_batalla(batalla["_id"])
-                print("¡La batalla comenzará pronto! Prepárate...")
-                # donde dice "¡La batalla comenzará pronto! Prepárate..."
-                batalla = obtener_batalla(batalla["_id"])
-                if batalla and batalla.get("status") in ("ready", "choosing_action"):
-                    batalla_loop(batalla["_id"])
-                    is_on_battle = False
-                    batalla = {}
+
+                # Si ya tenemos nuestro equipo registrado en la batalla,
+                # saltamos directamente a esperar/jugar
+                uid     = current_user.get("id") or current_user.get("_id", "")
+                my_slot = "player1_team" if batalla.get("player1_id") == uid else "player2_team"
+                if batalla.get(my_slot):
+                    equipo_enviado = True
+                else:
+                    print("Introduce el nombre de tu equipo para empezar a jugar")
+                    team = input("Nombre del equipo: ").strip()
+                    equipos = requests.get(f"{API_URL}/users/pokemonteams", headers=headers()).json()
+                    equipo_encontrado = next((e for e in equipos if e["team_name"] == team), None)
+
+                    if not equipo_encontrado:
+                        print(f"{RED}No se encontró ningún equipo con ese nombre. Inténtalo de nuevo.{RESET}")
+                        continue  # vuelve a pedir el nombre sin salir del bucle
+
+                    equipo_seleccionado = equipo_encontrado
+                    print(f"Equipo '{equipo_seleccionado['team_name']}' seleccionado. Enviando datos al servidor...")
+                    res = requests.post(
+                        f"{API_URL}/battles/{batalla['_id']}/teams",
+                        json={"team_id": equipo_seleccionado["_id"], "battle_id": batalla["_id"]},
+                        headers=headers()
+                    )
+                    if res.status_code != 200:
+                        print(f"{RED}Error al enviar equipo: {res.json().get('error')}{RESET}")
+                        continue
+                    print(f"{GREEN}¡Equipo enviado! Esperando al rival...{RESET}")
+                    equipo_enviado = True
+
+            # ── FASE 2: esperar a que la batalla esté lista y arrancar ────
+            batalla = obtener_batalla(batalla["_id"])
+            if batalla and batalla.get("status") in ("ready", "choosing_action"):
+                batalla_loop(batalla["_id"])
+                is_on_battle  = False
+                equipo_enviado = False
+                batalla        = {}
+            else:
+                print(f"{YELLOW}Esperando al rival... (estado: {batalla.get('status','?')}){RESET}")
+                time.sleep(2)
 
 #   MENÚ ADMIN
 # ============================
@@ -894,6 +915,14 @@ def batalla_loop(battle_id):
 
         if status == "ready":
             _elegir_pokemon_activo(battle_id)
+            # Esperar a que el servidor procese ambas elecciones antes de continuar
+            print(f"{YELLOW}Esperando confirmación...{RESET}")
+            while True:
+                time.sleep(1.5)
+                batalla = obtener_batalla(battle_id)
+                new_status = batalla.get("status", "")
+                if new_status != "ready":
+                    break
             continue
 
         if status == "choosing_action":
