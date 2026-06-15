@@ -3,6 +3,7 @@ import requests
 import time
 import os
 import json
+import getpass
 
 API_URL  = "http://127.0.0.1:5000"
 token    = None
@@ -43,7 +44,7 @@ def login():
     global token, current_user
     print("\n--- Login ---")
     username = input("Usuario: ").strip()
-    password = input("Contraseña: ").strip()
+    password = getpass.getpass("Contraseña: ")
     r = requests.post(f"{API_URL}/auth/login", json={"username": username, "password": password})
     if r.status_code == 200:
         data         = r.json()
@@ -60,7 +61,7 @@ def register():
     global token, current_user
     print("\n--- Registro ---")
     username = input("Usuario: ").strip()
-    password = input("Contraseña: ").strip()
+    password = getpass.getpass("Contraseña: ")
     email    = input("Email: ").strip()
     r = requests.post(f"{API_URL}/auth/register",
                       json={"username": username, "password": password, "email": email})
@@ -816,8 +817,8 @@ def menu_admin():
 
         # 5. Resetear contraseña
         elif op == "5":
-            uid       = input("ID del usuario: ")
-            nueva_pass = input("Nueva contraseña: ")
+            uid        = input("ID del usuario: ")
+            nueva_pass = getpass.getpass("Nueva contraseña: ")
 
             r = requests.put(
                 f"{API_URL}/usuarios/{uid}/reset_password",
@@ -869,6 +870,11 @@ def ver_perfil():
         print(f"  Email   : {current_user.get('Email','?')}")
 
 
+def _get_role():
+    """Devuelve el rol del usuario actual ignorando mayúsculas/minúsculas."""
+    return (current_user.get("Role") or current_user.get("role") or "user").lower()
+
+
 def main():
     _load_type_chart()
     while True:
@@ -885,7 +891,7 @@ def main():
             if not login():
                 continue
 
-            if current_user["Role"] == "admin":
+            if _get_role() == "admin":
                 menu_admin()
             else:
                 menu_usuario()
