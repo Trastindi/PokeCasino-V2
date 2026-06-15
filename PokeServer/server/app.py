@@ -1062,6 +1062,7 @@ def _efectividad_tipo(tipo_ataque: str, tipo_defensor: str) -> float:
     _tipo_cache[clave] = ef
     return ef
 
+
 # ---------------------------------------------------------------------------
 # FÓRMULA DE DAÑO GEN III
 # ---------------------------------------------------------------------------
@@ -1070,13 +1071,13 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     if isinstance(movimiento, str):
         return 0
 
-    # ✅ damage_class está anidado en damageClass.value
+    # damage_class está anidado en damageClass.value
     damage_class_obj = movimiento.get("damageClass") or {}
     categoria = damage_class_obj.get("value", "physical")
     if categoria == "status":
         return 0
 
-    # ✅ power está en powerModel.basePower
+    # power está en powerModel.basePower
     power_model = movimiento.get("powerModel") or {}
     potencia = int(power_model.get("basePower") or movimiento.get("power") or 0)
     if potencia == 0:
@@ -1086,7 +1087,6 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     stats_def = defensor.get("estadisticas_base") or {}
 
     if categoria == "special":
-        # ✅ la BD usa "ataque_especial" y "defensa_especial"
         A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50)))
         D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50)))
     else:
@@ -1106,7 +1106,6 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     ) + 2
 
     # ── Burn ────────────────────────────────────────────────────────────────
-    # 0.5 si el atacante está quemado Y el movimiento es físico
     status_atk = (atacante.get("Status") or "").lower()
     burn = 0.5 if (status_atk == "quemado" or status_atk == "burn") and categoria == "physical" else 1
 
@@ -1114,14 +1113,11 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     tipo_mov = (movimiento.get("type") or movimiento.get("tipo") or "").lower()
     campo    = (field_status or "normal").lower()
     if campo == "lluvia" or campo == "rain":
-        weather = 1.5 if tipo_mov == "agua" or tipo_mov == "water" else (
-                  0.5 if tipo_mov == "fuego" or tipo_mov == "fire"  else 1)
-    elif campo == "sol" or campo == "sun" or campo == "harsh sunlight":
-        weather = 1.5 if tipo_mov == "fuego" or tipo_mov == "fire" else (
-                  0.5 if tipo_mov == "agua"  or tipo_mov == "water" else 1)
+        weather = 1.5 if tipo_mov in ("agua", "water") else (0.5 if tipo_mov in ("fuego", "fire") else 1)
+    elif campo in ("sol", "sun", "harsh sunlight"):
+        weather = 1.5 if tipo_mov in ("fuego", "fire") else (0.5 if tipo_mov in ("agua", "water") else 1)
     elif campo not in ("none", "normal", "despejado", "clear"):
-        # Granizo, tormenta de arena, etc.
-        weather = 0.5 if (tipo_mov == "solar" or tipo_mov == "rayo solar") else 1
+        weather = 0.5 if tipo_mov in ("solar", "rayo solar") else 1
     else:
         weather = 1
 
@@ -1131,27 +1127,22 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     stab = 1.5 if tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk) else 1
 
     # ── Efectividad de tipos ─────────────────────────────────────────────────
-    tipo1_def = (defensor.get("TipoPrincipal")  or "").title()
-    tipo2_def = (defensor.get("TipoSecundario") or "")
-    tipo_ataque_titulo = tipo_mov.title() if tipo_mov else ""
-
-    type1_eff = _efectividad_tipo(tipo_ataque_titulo, tipo1_def)
-    type2_eff = _efectividad_tipo(tipo_ataque_titulo, tipo2_def) if tipo2_def else 1.0
+    tipo1_def      = (defensor.get("TipoPrincipal")  or "").title()
+    tipo2_def      = (defensor.get("TipoSecundario") or "")
+    tipo_titulo    = tipo_mov.title() if tipo_mov else ""
+    type1_eff      = _efectividad_tipo(tipo_titulo, tipo1_def)
+    type2_eff      = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
 
     # ── Crítico ─────────────────────────────────────────────────────────────
-    # Probabilidad Gen III: 1/16 por defecto
     critical = 2 if random.randint(1, 16) == 1 else 1
 
     # ── Random [85..100] / 100 ──────────────────────────────────────────────
     rand = random.randint(85, 100) / 100
 
     # ── Daño final ──────────────────────────────────────────────────────────
-    dano = math.floor(
-        base * burn * weather * stab * type1_eff * type2_eff * critical * rand
-    )
+    dano = math.floor(base * burn * weather * stab * type1_eff * type2_eff * critical * rand)
     dano = max(1, dano)
 
-    # ── Aplicar al defensor ──────────────────────────────────────────────────
     hp_actual = int(defensor.get("CurrentHp", 0))
     defensor["CurrentHp"] = max(0, hp_actual - dano)
 
@@ -1176,7 +1167,7 @@ def _resolver_turno(battle_id: str, battle: dict):
         stats = poke.get("estadisticas_base") or {}
         return int(stats.get("velocidad", 0))
 
-    # Determinar orden de ataque (mayor velocidad primero; empate → aleatorio)
+    # Determinar orden (mayor velocidad primero; empate → aleatorio)
     p1_speed = get_speed(p1_team[p1_idx])
     p2_speed = get_speed(p2_team[p2_idx])
     if p1_speed > p2_speed:
@@ -1190,6 +1181,7 @@ def _resolver_turno(battle_id: str, battle: dict):
                       ("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx)]
         random.shuffle(orden_base)
         orden = orden_base
+        log.append({"event": "speed_tie"})
 
     winner = None
 
@@ -1200,39 +1192,81 @@ def _resolver_turno(battle_id: str, battle: dict):
         tipo_accion = accion.get("type", "move")
 
         if tipo_accion == "switch":
-            nuevo_idx = int(accion.get("pokemon_index", idx_atk))
+            nuevo_idx    = int(accion.get("pokemon_index", idx_atk))
+            nombre_nuevo = equipo_atk[nuevo_idx].get("Nombre", f"#{nuevo_idx}")
             if jugador == "p1":
                 p1_idx = nuevo_idx
             else:
                 p2_idx = nuevo_idx
-            log.append(f"{jugador} cambia al Pokémon #{nuevo_idx}")
+            log.append({
+                "event":  "switch",
+                "player": jugador,
+                "to":     nombre_nuevo,
+            })
 
         elif tipo_accion == "move":
             mov_index = int(accion.get("move_index", 0))
             moveset   = atacante.get("MoveSet", [])
-            if mov_index < len(moveset):
-                movimiento = moveset[mov_index]
-                resultado  = _aplicar_dano(atacante, defensor, movimiento, field_status)
-                if resultado:
-                    dano, es_critico = resultado
-                else:
-                    dano, es_critico = 0, False
+            if mov_index >= len(moveset):
+                continue
 
-                mov_nombre = movimiento.get("name", movimiento) if isinstance(movimiento, dict) else movimiento
-                entrada_log = f"{jugador} usa {mov_nombre} → {dano} de daño"
-                if es_critico:
-                    entrada_log += " (¡Golpe crítico!)"
-                log.append(entrada_log)
+            movimiento = moveset[mov_index]
 
-                # Comprobar KO del defensor
-                if defensor.get("CurrentHp", 0) <= 0:
-                    log.append(f"{'p2' if jugador == 'p1' else 'p1'} Pokémon #{idx_def} ha sido derrotado")
+            # Movimientos de estado: sin daño, aplicar efectos secundarios
+            damage_class_obj = movimiento.get("damageClass") or {} if isinstance(movimiento, dict) else {}
+            categoria        = damage_class_obj.get("value", "physical")
+            if categoria == "status":
+                mov_nombre = movimiento.get("name", "???") if isinstance(movimiento, dict) else movimiento
+                for efecto in (movimiento.get("secondaryEffects", []) if isinstance(movimiento, dict) else []):
+                    if efecto.get("kind") == "stat_change":
+                        log.append({
+                            "event":   "stat_change",
+                            "ability": mov_nombre,
+                            "pokemon": defensor.get("Nombre", "???"),
+                            "stat":    efecto.get("stat", ""),
+                            "stages":  efecto.get("stages", 0),
+                        })
+                continue
 
-                    # Comprobar si todos los Pokémon del equipo defensor están a 0 HP
-                    equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
-                    if not equipo_vivo:
-                        winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
-                        break
+            resultado = _aplicar_dano(atacante, defensor, movimiento, field_status)
+            if resultado:
+                dano, es_critico = resultado
+            else:
+                dano, es_critico = 0, False
+
+            mov_nombre  = movimiento.get("name", "???") if isinstance(movimiento, dict) else movimiento
+            tipo_mov    = (movimiento.get("type") or "").lower() if isinstance(movimiento, dict) else ""
+            tipo1_atk   = (atacante.get("TipoPrincipal")  or "").lower()
+            tipo2_atk   = (atacante.get("TipoSecundario") or "").lower()
+            stab        = bool(tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk))
+
+            tipo1_def   = (defensor.get("TipoPrincipal")  or "").title()
+            tipo2_def   = (defensor.get("TipoSecundario") or "")
+            tipo_titulo = tipo_mov.title() if tipo_mov else ""
+            ef1         = _efectividad_tipo(tipo_titulo, tipo1_def)
+            ef2         = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
+            efectividad = ef1 * ef2
+
+            log.append({
+                "event":         "attack",
+                "attacker":      atacante.get("Nombre", jugador),
+                "move":          mov_nombre,
+                "damage":        dano,
+                "remaining_hp":  defensor.get("CurrentHp", 0),
+                "effectiveness": efectividad,
+                "crit":          es_critico,
+                "stab":          stab,
+            })
+
+            if defensor.get("CurrentHp", 0) <= 0:
+                log.append({
+                    "event":   "fainted",
+                    "pokemon": defensor.get("Nombre", "???"),
+                })
+                equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
+                if not equipo_vivo:
+                    winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
+                    break
 
     # Construir update de la batalla
     update = {
@@ -1253,6 +1287,7 @@ def _resolver_turno(battle_id: str, battle: dict):
         update["status"] = "choosing_action"
 
     battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
+
 
 # ---------------------------------------------------------------------------
 # TABLA DE TIPOS
