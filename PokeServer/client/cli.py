@@ -291,11 +291,33 @@ def _crear_equipo_con_pokemon(pokemon_id):
 #   BATALLA
 # ============================
 
+def _responder_batalla(msg_id, accepted: bool):
+    global is_on_battle, batalla
+    """Llama a POST /battle_requests/<msg_id>/respond con accepted True/False."""
+    r = requests.post(
+        f"{API_URL}/battle_requests/{msg_id}/respond",
+        json={"accepted": accepted},
+        headers=headers()
+    )
+    if r.status_code == 200:
+        if accepted:
+            bid = r.json().get("battle_id", "?")
+            print(f"{GREEN}¡Batalla aceptada! Battle ID: {bid}{RESET}")
+            is_on_battle = True
+            batalla = obtener_batalla(bid)
+            print(f"{is_on_battle}")
+        else:
+            print("Solicitud rechazada correctamente.")
+    else:
+        print("Error:", r.json().get("error"))
+
 def obtener_batalla(battle_id):
     r = requests.get(f"{API_URL}/battles/{battle_id}", headers=headers())
     if r.status_code == 200:
         return r.json()
-    return {}
+    else:
+        print("Error al obtener batalla:", r.get("error"))
+        return None
 
 
 def batalla_loop(battle_id):
@@ -576,33 +598,67 @@ def desafiar_usuario(rival_id):
 # ============================
 
 def mis_mensajes_menu():
-    r = requests.get(f"{API_URL}/messages", headers=headers())
+    r = requests.get(f"{API_URL}/messages/mis_mensajes", headers=headers())
     if r.status_code != 200:
-        print(f"{RED}Error al obtener mensajes{RESET}")
+        print("Error al obtener mensajes")
         return
-    msgs = r.json()
-    if not msgs:
+
+    lista = r.json()
+    if not lista:
         print("\nNo tienes mensajes.")
         return
-    print("\n--- Mis mensajes ---")
-    for i, m in enumerate(msgs, 1):
-        tipo   = m.get("type", "msg")
+
+    print("\n--- Mis Mensajes ---")
+    for i, m in enumerate(lista, 1):
+        tipo  = m.get("type", "message")
         estado = f" {YELLOW}[respondido]{RESET}" if m.get("responded") else ""
         print(f"  {i}. {CYAN}[{tipo}]{RESET}{estado}  "
-              f"De: {m.get('sender_username','?')}  "
-              f"— {m.get('content','')[:60]}")
-    print("\n  [e] Enviar mensaje  [cualquier tecla] Volver")
-    if input("  > ").strip().lower() == "e":
-        dest      = input("Destinatario (username): ").strip()
-        contenido = input("Mensaje: ").strip()
-        r2 = requests.post(f"{API_URL}/messages",
-                           json={"recipient_username": dest, "content": contenido},
-                           headers=headers())
-        if r2.status_code == 201:
-            print(f"{GREEN}Mensaje enviado.{RESET}")
-        else:
-            print(f"{RED}Error: {r2.json().get('error')}{RESET}")
+              f"De: {m.get('from', '?')}  —  {m.get('title', '')}")
 
+    sel = input("\nSelecciona un mensaje por número (o ENTER para volver): ").strip()
+    if not sel:
+        return
+    try:
+        pos = int(sel) - 1
+        if pos < 0 or pos >= len(lista):
+            raise IndexError
+        msg = lista[pos]
+    except (ValueError, IndexError):
+        print("Selección inválida.")
+        return
+
+    print(f"\n--- {msg.get('title', '')} ---")
+    print(f"  De    : {msg.get('from', '?')}")
+    print(f"  Fecha : {msg.get('Fecha', '?')}")
+    print(f"  Texto : {msg.get('text', '')}")
+
+    tipo = msg.get("type", "")
+
+    if tipo == "battle_request" and not msg.get("responded"):
+        print("\n  1. Aceptar solicitud de batalla")
+        print("  2. Rechazar")
+        print("  3. Volver")
+        op = input("Opción: ").strip()
+        if op == "1":
+            _responder_batalla(msg["_id"], accepted=True)
+        elif op == "2":
+            _responder_batalla(msg["_id"], accepted=False)
+
+    elif tipo == "battle_request" and msg.get("responded"):
+        print(f"\n  {YELLOW}Ya respondiste a esta solicitud.{RESET}")
+
+    elif tipo == "battle_response":
+        bid = msg.get("battle_id", "?")
+        print(f"\n  {GREEN}✅ Tu solicitud de batalla fue aceptada.{RESET}")
+        print(f"  Battle ID: {bid}")
+        print("  ¿Quieres ir al menú de batalla ahora? (s/n)")
+        if input().strip().lower() == "s":
+            global is_on_battle, batalla
+            is_on_battle = True
+            batalla = obtener_batalla(bid)
+
+    elif tipo == "battle_rejected":
+        print(f"\n  {RED}❌ El rival rechazó tu solicitud de batalla.{RESET}")
 
 # ============================
 #   EXPORTAR / IMPORTAR (admin)
