@@ -941,7 +941,224 @@ def submit_battle_team(current_user, battle_id):
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-    
+
+
+# ---------------------------------------------------------------------------
+# BATALLA — ELEGIR POKÉMON ACTIVO
+# ---------------------------------------------------------------------------
+
+@app.post("/battles/<battle_id>/choose_pokemon")
+@token_required
+def choose_pokemon(current_user, battle_id):
+    try:
+        data  = request.json or {}
+        idx   = data.get("pokemon_index")
+        if idx is None:
+            return jsonify({"error": "Falta pokemon_index"}), 400
+
+        battle = battles.find_one({"_id": ObjectId(battle_id)})
+        if not battle:
+            return jsonify({"error": "Batalla no encontrada"}), 404
+
+        uid = str(current_user["_id"])
+        if battle["player1_id"] != uid and battle["player2_id"] != uid:
+            return jsonify({"error": "No eres parte de esta batalla"}), 403
+
+        if battle.get("status") != "ready":
+            return jsonify({"error": f"Estado incorrecto: {battle.get('status')}"}), 409
+
+        slot      = "player1_active" if battle["player1_id"] == uid else "player2_active"
+        team_slot = "player1_team"   if battle["player1_id"] == uid else "player2_team"
+        team      = battle.get(team_slot, {}).get("pokemon", [])
+
+        if not (0 <= int(idx) < len(team)):
+            return jsonify({"error": "Índice de Pokémon inválido"}), 400
+        if team[int(idx)].get("CurrentHp", 0) <= 0:
+            return jsonify({"error": "Ese Pokémon no tiene HP"}), 400
+
+        battles.update_one(
+            {"_id": ObjectId(battle_id)},
+            {"$set": {slot: int(idx)}}
+        )
+
+        # Si ambos jugadores ya eligieron Pokémon activo → pasar a choosing_action
+        battle_updated = battles.find_one({"_id": ObjectId(battle_id)})
+        p1_ready = battle_updated.get("player1_active") is not None
+        p2_ready = battle_updated.get("player2_active") is not None
+        if p1_ready and p2_ready:
+            battles.update_one(
+                {"_id": ObjectId(battle_id)},
+                {"$set": {"status": "choosing_action"}}
+            )
+
+        return jsonify({"msg": "Pokémon activo seleccionado", "index": int(idx)}), 200
+
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
+# ---------------------------------------------------------------------------
+# BATALLA — ELEGIR ACCIÓN (movimiento o cambio)
+# ---------------------------------------------------------------------------
+
+@app.post("/battles/<battle_id>/action")
+@token_required
+def battle_action(current_user, battle_id):
+    try:
+        data   = request.json or {}
+        action = data.get("action", {})
+
+        battle = battles.find_one({"_id": ObjectId(battle_id)})
+        if not battle:
+            return jsonify({"error": "Batalla no encontrada"}), 404
+
+        uid = str(current_user["_id"])
+        if battle["player1_id"] != uid and battle["player2_id"] != uid:
+            return jsonify({"error": "No eres parte de esta batalla"}), 403
+
+        if battle.get("status") != "choosing_action":
+            return jsonify({"error": f"Estado incorrecto: {battle.get('status')}"}), 409
+
+        action_slot = "player1_action" if battle["player1_id"] == uid else "player2_action"
+        battles.update_one(
+            {"_id": ObjectId(battle_id)},
+            {"$set": {action_slot: action}}
+        )
+
+        # Si ambos enviaron acción → resolver turno
+        battle_updated = battles.find_one({"_id": ObjectId(battle_id)})
+        if battle_updated.get("player1_action") and battle_updated.get("player2_action"):
+            _resolver_turno(battle_id, battle_updated)
+
+        return jsonify({"msg": "Acción registrada"}), 200
+
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
+def _aplicar_dano(atacante, defensor, movimiento):
+    """
+    Calcula y aplica daño básico usando la fórmula gen-3 simplificada.
+    Devuelve el daño infligido.
+    """
+    if isinstance(movimiento, str):
+        # Movimiento no expandido, no se puede calcular
+        return 0
+
+    categoria = movimiento.get("damage_class", "physical")
+    potencia   = int(movimiento.get("power") or 0)
+    if potencia == 0:
+        return 0
+
+    stats_atk = atacante.get("estadisticas_base") or {}
+    stats_def = defensor.get("estadisticas_base") or {}
+
+    if categoria == "special":
+        atk = int(stats_atk.get("sp_ataque", stats_atk.get("ataque_especial", 50)))
+        def_ = int(stats_def.get("sp_defensa", stats_def.get("defensa_especial", 50)))
+    else:
+        atk  = int(stats_atk.get("ataque", 50))
+        def_ = int(stats_def.get("defensa", 50))
+
+    nivel = int(atacante.get("Nivel", 1))
+    dano  = int(((2 * nivel / 5 + 2) * potencia * atk / def_) / 50 + 2)
+
+    # Aplicar daño
+    hp_actual = int(defensor.get("CurrentHp", 0))
+    nuevo_hp  = max(0, hp_actual - dano)
+    defensor["CurrentHp"] = nuevo_hp
+    return dano
+
+
+def _resolver_turno(battle_id: str, battle: dict):
+    """Resuelve las acciones de ambos jugadores, actualiza HP y estado en la BD."""
+    log = []
+
+    p1_team  = battle["player1_team"]["pokemon"]
+    p2_team  = battle["player2_team"]["pokemon"]
+    p1_idx   = battle.get("player1_active", 0)
+    p2_idx   = battle.get("player2_active", 0)
+
+    p1_action = battle.get("player1_action", {})
+    p2_action = battle.get("player2_action", {})
+
+    def get_speed(poke):
+        stats = poke.get("estadisticas_base") or {}
+        return int(stats.get("velocidad", 0))
+
+    # Determinar orden de ataque (mayor velocidad primero; empate → aleatorio)
+    p1_speed = get_speed(p1_team[p1_idx])
+    p2_speed = get_speed(p2_team[p2_idx])
+    if p1_speed > p2_speed:
+        orden = [("p1", p1_action, p1_team, p1_idx, p2_team, p2_idx),
+                 ("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx)]
+    elif p2_speed > p1_speed:
+        orden = [("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx),
+                 ("p1", p1_action, p1_team, p1_idx, p2_team, p2_idx)]
+    else:
+        orden_base = [("p1", p1_action, p1_team, p1_idx, p2_team, p2_idx),
+                      ("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx)]
+        random.shuffle(orden_base)
+        orden = orden_base
+
+    winner = None
+
+    for jugador, accion, equipo_atk, idx_atk, equipo_def, idx_def in orden:
+        atacante = equipo_atk[idx_atk]
+        defensor = equipo_def[idx_def]
+
+        tipo_accion = accion.get("type", "move")
+
+        if tipo_accion == "switch":
+            nuevo_idx = int(accion.get("pokemon_index", idx_atk))
+            if jugador == "p1":
+                p1_idx = nuevo_idx
+            else:
+                p2_idx = nuevo_idx
+            log.append(f"{jugador} cambia al Pokémon #{nuevo_idx}")
+
+        elif tipo_accion == "move":
+            mov_index = int(accion.get("move_index", 0))
+            moveset   = atacante.get("MoveSet", [])
+            if mov_index < len(moveset):
+                movimiento = moveset[mov_index]
+                dano = _aplicar_dano(atacante, defensor, movimiento)
+                mov_nombre = movimiento.get("name", movimiento) if isinstance(movimiento, dict) else movimiento
+                log.append(f"{jugador} usa {mov_nombre} → {dano} de daño")
+
+                # Comprobar KO del defensor
+                if defensor.get("CurrentHp", 0) <= 0:
+                    log.append(f"{'p2' if jugador == 'p1' else 'p1'} Pokémon #{idx_def} ha sido derrotado")
+
+                    # Comprobar si todos los Pokémon del equipo defensor están a 0 HP
+                    equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
+                    if not equipo_vivo:
+                        winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
+                        break
+
+    # Construir update de la batalla
+    update = {
+        "player1_team.pokemon": p1_team,
+        "player2_team.pokemon": p2_team,
+        "player1_active": p1_idx,
+        "player2_active": p2_idx,
+        "player1_action": None,
+        "player2_action": None,
+        "turn": battle.get("turn", 0) + 1,
+        "last_turn_log": log,
+    }
+
+    if winner:
+        update["status"] = "finished"
+        update["winner"] = winner
+    else:
+        update["status"] = "choosing_action"
+
+    battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
+
+
 # ---------------------------------------------------------------------------
 # MENSAJES DEL USUARIO
 # ---------------------------------------------------------------------------
