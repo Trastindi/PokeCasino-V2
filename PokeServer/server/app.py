@@ -1075,6 +1075,22 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     damage_class_obj = movimiento.get("damageClass") or {}
     categoria = damage_class_obj.get("value", "physical")
     if categoria == "status":
+        target = atacante.get("secondaryEffects.target")
+        stat = atacante.get("secondaryEffects.stat")
+        stages = atacante.get("secondaryEffects.stages")
+
+        if(target == "opponent"):
+            stats = defensor.get("modificador_estadisiticas")
+        else:
+            stats = atacante.get("modificador_estadisiticas")
+        
+        stats[stat] += stages
+        
+        if(stats[stat] > -6):
+            stats[stat] = -6
+        
+        if(stats[stat] > 6):
+            stats[stat] = 6
         return 0
 
     # power está en powerModel.basePower
@@ -1084,14 +1100,16 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
         return 0
 
     stats_atk = atacante.get("estadisticas_base") or {}
+    atk_modficator = atacante.get("modificador_estadisticas") or {}
     stats_def = defensor.get("estadisticas_base") or {}
+    def_modficator = defensor.get("modificador_estadisticas") or {}
 
     if categoria == "special":
-        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50)))
-        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50)))
+        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50))) * stat_stage_table[int(atk_modficator.get("ataque_especial"))]
+        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50))) * stat_stage_table[int(def_modficator.get("ataque_especial"))]
     else:
-        A = int(stats_atk.get("ataque", 50))
-        D = int(stats_def.get("defensa", 50))
+        A = int(stats_atk.get("ataque", 50)) * stat_stage_table[int(atk_modficator.get("defensa"))]
+        D = int(stats_def.get("defensa", 50)) * stat_stage_table[int(def_modficator.get("defensa"))]
 
     if D == 0:
         D = 1
@@ -1166,10 +1184,14 @@ def _resolver_turno(battle_id: str, battle: dict):
     def get_speed(poke):
         stats = poke.get("estadisticas_base") or {}
         return int(stats.get("velocidad", 0))
-
+    
+    def get_speed_modificator(poke):
+        modificador = poke.get("modificador_estadisticas") or {}
+        return int(modificador.get("velocidad"))
+    
     # Determinar orden (mayor velocidad primero; empate → aleatorio)
-    p1_speed = get_speed(p1_team[p1_idx])
-    p2_speed = get_speed(p2_team[p2_idx])
+    p1_speed = get_speed(p1_team[p1_idx])*get_speed_modificator(p1_team[p1_idx])
+    p2_speed = get_speed(p2_team[p2_idx])*get_speed_modificator(p1_team[p2_idx])
     if p1_speed > p2_speed:
         orden = [("p1", p1_action, p1_team, p1_idx, p2_team, p2_idx),
                  ("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx)]
@@ -1288,6 +1310,42 @@ def _resolver_turno(battle_id: str, battle: dict):
 
     battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
 
+
+# ---------------------------------------------------------------------------
+# TABLA DE CAMBIO DE  ESTADISTICAS
+# ---------------------------------------------------------------------------
+
+accuracy_evasion_table = {
+    -6: 3/9,
+    -5: 3/8,
+    -4: 3/7,
+    -3: 3/6,
+    -2: 3/5,
+    -1: 3/4,
+     0: 3/3,
+     1: 4/3,
+     2: 5/3,
+     3: 6/3,
+     4: 7/3,
+     5: 8/3,
+     6: 9/3,
+}
+
+stat_stage_table = {
+    -6: 2/8,
+    -5: 2/7,
+    -4: 2/6,
+    -3: 2/5,
+    -2: 2/4,
+    -1: 2/3,
+     0: 2/2,
+     1: 3/2,
+     2: 4/2,
+     3: 5/2,
+     4: 6/2,
+     5: 7/2,
+     6: 8/2,
+}
 
 # ---------------------------------------------------------------------------
 # TABLA DE TIPOS
