@@ -917,6 +917,17 @@ def submit_battle_team(current_user, battle_id):
             poke_enriched = _serialize_value(dict(poke))
             poke_enriched["MoveSet"] = moveset_expanded
             poke_enriched["Ability"] = _serialize_value(ability_doc) if ability_doc else []
+            # Inicializar stages en 0 para todos las estadísticas si no existen
+            if "modificador_estadisticas" not in poke_enriched:
+                poke_enriched["modificador_estadisticas"] = {
+                    "ataque": 0,
+                    "defensa": 0,
+                    "ataque_especial": 0,
+                    "defensa_especial": 0,
+                    "velocidad": 0,
+                    "precision": 0,
+                    "evasion": 0,
+                }
 
             enriched_pokemon.append(poke_enriched)
 
@@ -1075,22 +1086,6 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     damage_class_obj = movimiento.get("damageClass") or {}
     categoria = damage_class_obj.get("value", "physical")
     if categoria == "status":
-        target = atacante.get("secondaryEffects.target")
-        stat = atacante.get("secondaryEffects.stat")
-        stages = atacante.get("secondaryEffects.stages")
-
-        if(target == "opponent"):
-            stats = defensor.get("modificador_estadisiticas")
-        else:
-            stats = atacante.get("modificador_estadisiticas")
-        
-        stats[stat] += stages
-        
-        if(stats[stat] > -6):
-            stats[stat] = -6
-        
-        if(stats[stat] > 6):
-            stats[stat] = 6
         return 0
 
     # power está en powerModel.basePower
@@ -1099,17 +1094,19 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     if potencia == 0:
         return 0
 
-    stats_atk = atacante.get("estadisticas_base") or {}
-    atk_modficator = atacante.get("modificador_estadisticas") or {}
-    stats_def = defensor.get("estadisticas_base") or {}
-    def_modficator = defensor.get("modificador_estadisticas") or {}
+    stats_atk      = atacante.get("estadisticas_base") or {}
+    atk_modificator = atacante.get("modificador_estadisticas") or {}
+    stats_def      = defensor.get("estadisticas_base") or {}
+    def_modificator = defensor.get("modificador_estadisticas") or {}
 
     if categoria == "special":
-        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50))) * stat_stage_table[int(atk_modficator.get("ataque_especial"))]
-        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50))) * stat_stage_table[int(def_modficator.get("ataque_especial"))]
+        # FIX: defensor usa "defensa_especial", no "ataque_especial"
+        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50))) * stat_stage_table[int(atk_modificator.get("ataque_especial", 0))]
+        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50))) * stat_stage_table[int(def_modificator.get("defensa_especial", 0))]
     else:
-        A = int(stats_atk.get("ataque", 50)) * stat_stage_table[int(atk_modficator.get("defensa"))]
-        D = int(stats_def.get("defensa", 50)) * stat_stage_table[int(def_modficator.get("defensa"))]
+        # FIX: atacante usa "ataque", no "defensa"
+        A = int(stats_atk.get("ataque", 50)) * stat_stage_table[int(atk_modificator.get("ataque", 0))]
+        D = int(stats_def.get("defensa", 50)) * stat_stage_table[int(def_modificator.get("defensa", 0))]
 
     if D == 0:
         D = 1
@@ -1167,6 +1164,17 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     return dano, critical == 2
 
 
+def _aplicar_stat_change(objetivo, stat: str, stages: int):
+    """Aplica un cambio de stage a una estadística, respetando el clamp [-6, +6]."""
+    modificador = objetivo.get("modificador_estadisticas") or {}
+    valor_actual = int(modificador.get(stat, 0))
+    nuevo_valor = valor_actual + stages
+    # FIX: clamp correcto
+    nuevo_valor = max(-6, min(6, nuevo_valor))
+    modificador[stat] = nuevo_valor
+    objetivo["modificador_estadisticas"] = modificador
+
+
 def _resolver_turno(battle_id: str, battle: dict):
     """Resuelve las acciones de ambos jugadores, actualiza HP y estado en la BD."""
     log = []
@@ -1184,14 +1192,15 @@ def _resolver_turno(battle_id: str, battle: dict):
     def get_speed(poke):
         stats = poke.get("estadisticas_base") or {}
         return int(stats.get("velocidad", 0))
-    
-    def get_speed_modificator(poke):
+
+    def get_speed_stage(poke):
         modificador = poke.get("modificador_estadisticas") or {}
-        return int(modificador.get("velocidad"))
-    
-    # Determinar orden (mayor velocidad primero; empate → aleatorio)
-    p1_speed = get_speed(p1_team[p1_idx])*get_speed_modificator(p1_team[p1_idx])
-    p2_speed = get_speed(p2_team[p2_idx])*get_speed_modificator(p1_team[p2_idx])
+        return stat_stage_table[int(modificador.get("velocidad", 0))]
+
+    # FIX: p2_speed usaba p1_team en lugar de p2_team
+    p1_speed = get_speed(p1_team[p1_idx]) * get_speed_stage(p1_team[p1_idx])
+    p2_speed = get_speed(p2_team[p2_idx]) * get_speed_stage(p2_team[p2_idx])
+
     if p1_speed > p2_speed:
         orden = [("p1", p1_action, p1_team, p1_idx, p2_team, p2_idx),
                  ("p2", p2_action, p2_team, p2_idx, p1_team, p1_idx)]
@@ -1234,19 +1243,25 @@ def _resolver_turno(battle_id: str, battle: dict):
 
             movimiento = moveset[mov_index]
 
-            # Movimientos de estado: sin daño, aplicar efectos secundarios
+            # Movimientos de estado: aplicar cambios de stats
             damage_class_obj = movimiento.get("damageClass") or {} if isinstance(movimiento, dict) else {}
             categoria        = damage_class_obj.get("value", "physical")
             if categoria == "status":
                 mov_nombre = movimiento.get("name", "???") if isinstance(movimiento, dict) else movimiento
                 for efecto in (movimiento.get("secondaryEffects", []) if isinstance(movimiento, dict) else []):
                     if efecto.get("kind") == "stat_change":
+                        stat   = efecto.get("stat", "")
+                        stages = int(efecto.get("stages", 0))
+                        target = efecto.get("target", "opponent")
+                        objetivo = defensor if target == "opponent" else atacante
+                        _aplicar_stat_change(objetivo, stat, stages)
                         log.append({
                             "event":   "stat_change",
                             "ability": mov_nombre,
-                            "pokemon": defensor.get("Nombre", "???"),
-                            "stat":    efecto.get("stat", ""),
-                            "stages":  efecto.get("stages", 0),
+                            "pokemon": objetivo.get("Nombre", "???"),
+                            "stat":    stat,
+                            "stages":  stages,
+                            "new_stage": objetivo["modificador_estadisticas"].get(stat, 0),
                         })
                 continue
 
@@ -1312,7 +1327,7 @@ def _resolver_turno(battle_id: str, battle: dict):
 
 
 # ---------------------------------------------------------------------------
-# TABLA DE CAMBIO DE  ESTADISTICAS
+# TABLA DE CAMBIO DE ESTADISTICAS
 # ---------------------------------------------------------------------------
 
 accuracy_evasion_table = {
