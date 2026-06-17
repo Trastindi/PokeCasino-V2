@@ -114,7 +114,7 @@
                             Style="{StaticResource RetroButton}"
                             Command="{Binding AbrirMapaCommand}"/>
 
-                    <Button Content="◓  Equipo Pokémon"
+                    <Button Content="◓  Gestion Pokémon"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding AbrirMenuPokemonCommand}"/>
@@ -123,6 +123,7 @@
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding AbrirMedallasCommand}"/>
+                    
                     <Button Content="◓  Buscar Combate"
                         FontFamily="{StaticResource PokemonClassic}"
                         Style="{StaticResource RetroButton}"
@@ -219,7 +220,6 @@
                     </Button.Template>
 
                 </Button>
-
             </Grid>
 
         </Border>
