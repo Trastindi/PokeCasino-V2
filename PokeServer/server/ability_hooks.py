@@ -49,11 +49,10 @@ def _handle_effect(effect_type, params, target, ctx, battle_state):
     if effect_type == "modify_stat":
         stat = params["stat"]
         mult = params["multiplier"]
-        battle_state["stat_multipliers"][target][stat] = (
-            battle_state["stat_multipliers"][target].get(stat, 1.0) * mult
+        resolved = "opponent" if target in ("adjacent_opponents", "all_opponents") else target
+        battle_state["stat_multipliers"][resolved][stat] = (
+            battle_state["stat_multipliers"][resolved].get(stat, 1.0) * mult
         )
-        result["modified"] = True
-        result["log"].append(f"[hook] modify_stat {stat} x{mult} para {target}")
 
     elif effect_type == "modify_move_power":
         battle_state["move_power_multiplier"] *= params["multiplier"]
@@ -133,8 +132,9 @@ def _handle_effect(effect_type, params, target, ctx, battle_state):
     elif effect_type == "apply_stat_stage_change":
         stat = params["stat"]
         stages = params["stages"]
-        battle_state["stat_stages"][target][stat] = (
-            battle_state["stat_stages"][target].get(stat, 0) + stages
+        resolved = "opponent" if target in ("adjacent_opponents", "all_opponents") else target
+        battle_state["stat_stages"][resolved][stat] = (
+            battle_state["stat_stages"][resolved].get(stat, 0) + stages
         )
 
     elif effect_type == "heal_on_type_hit":

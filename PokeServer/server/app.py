@@ -1251,7 +1251,7 @@ def _apply_enter_battle_hooks(battle_id: str, battle: dict):
 def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
                   atk_abilities=None, def_abilities=None):
     if isinstance(movimiento, str):
-        return 0
+        return 0, False
 
     # damage_class está anidado en damageClass.value
     damage_class_obj = movimiento.get("damageClass") or {}
