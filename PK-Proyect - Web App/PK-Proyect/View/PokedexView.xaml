@@ -42,15 +42,28 @@
             <Setter Property="Cursor"        Value="Hand"/>
         </Style>
 
-        <!-- Botón D-Pad -->
+        <!--
+            D-Pad: en WPF estándar Button no tiene CornerRadius.
+            Usamos un Border con CornerRadius que envuelve un Button transparente.
+            Este estilo se aplica al Button DENTRO del Border.
+        -->
         <Style x:Key="DPadBtn" TargetType="Button">
-            <Setter Property="Background"    Value="#001A4D"/>
-            <Setter Property="Foreground"    Value="White"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Foreground"      Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width"  Value="36"/>
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Width"           Value="36"/>
+            <Setter Property="Height"          Value="36"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontSize"        Value="16"/>
+            <!-- Elimina el chrome default de Button para que el Border sea el visual -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -74,12 +87,27 @@
                                FontSize="14" FontWeight="Bold"
                                Foreground="White"
                                VerticalAlignment="Center" Margin="10,0,0,0"/>
-                    <Button Content="X"
-                            HorizontalAlignment="Right" Margin="0,0,8,0"
+                    <!-- Botón cierre: Border redondeado + Button transparente -->
+                    <Border HorizontalAlignment="Right" Margin="0,0,8,0"
                             Width="24" Height="24"
-                            Background="#E00000" Foreground="White"
-                            BorderThickness="0" FontWeight="Bold"
-                            Click="btnClose_Click" Cursor="Hand"/>
+                            CornerRadius="4"
+                            Background="#E00000">
+                        <Button Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Click="btnClose_Click"
+                                Cursor="Hand"
+                                Width="24" Height="24">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                            X
+                        </Button>
+                    </Border>
                 </Grid>
             </Border>
 
@@ -181,7 +209,7 @@
                         </Grid>
                     </Border>
 
-                    <!-- D-PAD -->
+                    <!-- D-PAD: cada botón dentro de un Border con CornerRadius -->
                     <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="36"/>
@@ -195,27 +223,39 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Arriba -->
-                        <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource DPadBtn}"
-                                Content="▲"
-                                Command="{Binding ClickUpCommand}"
-                                CornerRadius="8,8,0,0" Padding="0"/>
+                        <Border Grid.Row="0" Grid.Column="1"
+                                Background="#001A4D" CornerRadius="8,8,0,0">
+                            <Button Style="{StaticResource DPadBtn}"
+                                    Content="▲"
+                                    Command="{Binding ClickUpCommand}"/>
+                        </Border>
+
                         <!-- Izquierda -->
-                        <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource DPadBtn}"
-                                Content="◄"
-                                Command="{Binding ClickLeftCommand}"
-                                CornerRadius="8,0,0,8" Padding="0"/>
+                        <Border Grid.Row="1" Grid.Column="0"
+                                Background="#001A4D" CornerRadius="8,0,0,8">
+                            <Button Style="{StaticResource DPadBtn}"
+                                    Content="◄"
+                                    Command="{Binding ClickLeftCommand}"/>
+                        </Border>
+
                         <!-- Centro (decorativo) -->
                         <Border Grid.Row="1" Grid.Column="1" Background="#001A4D"/>
+
                         <!-- Derecha -->
-                        <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource DPadBtn}"
-                                Content="►"
-                                Command="{Binding ClickRightCommand}"
-                                CornerRadius="0,8,8,0" Padding="0"/>
+                        <Border Grid.Row="1" Grid.Column="2"
+                                Background="#001A4D" CornerRadius="0,8,8,0">
+                            <Button Style="{StaticResource DPadBtn}"
+                                    Content="►"
+                                    Command="{Binding ClickRightCommand}"/>
+                        </Border>
+
                         <!-- Abajo -->
-                        <Button Grid.Row="2" Grid.Column="1" Style="{StaticResource DPadBtn}"
-                                Content="▼"
-                                Command="{Binding ClickDownCommand}"
-                                CornerRadius="0,0,8,8" Padding="0"/>
+                        <Border Grid.Row="2" Grid.Column="1"
+                                Background="#001A4D" CornerRadius="0,0,8,8">
+                            <Button Style="{StaticResource DPadBtn}"
+                                    Content="▼"
+                                    Command="{Binding ClickDownCommand}"/>
+                        </Border>
                     </Grid>
                 </Grid>
             </Border>
