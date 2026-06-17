@@ -24,6 +24,7 @@ namespace PK_Proyect.ViewModels
         public ICommand AbrirMedallasCommand      { get; }
         public ICommand AbrirPerfilCommand        { get; }
         public ICommand AbrirBatallaCommand       { get; }
+        public ICommand AbrirMensajesCommand      { get; }
         public ICommand CerrarSesionCommand       { get; }
 
         public MainMenuViewModel(User usuario, UserService userService)
@@ -37,6 +38,7 @@ namespace PK_Proyect.ViewModels
             AbrirMedallasCommand      = new RelayCommand(_ => AbrirMedallas());
             AbrirPerfilCommand        = new RelayCommand(_ => AbrirPerfil());
             AbrirBatallaCommand       = new RelayCommand(_ => AbrirBatalla());
+            AbrirMensajesCommand      = new RelayCommand(_ => AbrirMensajes());
             CerrarSesionCommand       = new RelayCommand(_ => CerrarSesion());
         }
 
@@ -49,8 +51,14 @@ namespace PK_Proyect.ViewModels
         private void AbrirBatalla()
         {
             IBattleService battleService = new BattleService();
-            // SearchBattleView recibe IBattleService y el userId como string
             var ventana = new SearchBattleView(battleService, UsuarioConectado.Id);
+            ventana.ShowDialog();
+        }
+
+        private void AbrirMensajes()
+        {
+            var vm = new MisMensajesViewModel();
+            var ventana = new MisMensajesView(vm);
             ventana.ShowDialog();
         }
 
@@ -73,7 +81,6 @@ namespace PK_Proyect.ViewModels
 
         private void AbrirMenuPokemon()
         {
-            // MenuPokemonView(User, UserService)
             var ventana = new MenuPokemonView(UsuarioConectado, new UserService());
             ventana.ShowDialog();
         }
