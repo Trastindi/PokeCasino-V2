@@ -1,4 +1,4 @@
-using PK_Proyect.Commands;
+﻿using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 using PK_Proyect.Utils;
@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +24,7 @@ namespace PK_Proyect.ViewModels
 
     public class PokedexViewModel : INotifyPropertyChanged
     {
-        // ── Colores por tipo (fiel a PokemonType de PokedexV.kt) ──────────────────
+        // ── Colores por tipo ──────────────────────────────────────────────────────
         private static readonly Dictionary<string, (string bg, string fg)> TipoColores =
             new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase)
             {
@@ -44,23 +45,30 @@ namespace PK_Proyect.ViewModels
                 { "Agua",     ("#4592C4", "#FFFFFF") },
             };
 
-        // ── Estado interno (igual que PokedexUiState en Kotlin) ───────────────────
-        private readonly PokedexRepository _repo;
-        private List<CroppedBitmap> _sprites;
-        private const int MaxNumber = 151;
+        // ── Repositorios y estado ─────────────────────────────────────────────────
+        private readonly PokedexRepository      _repo;
+        private readonly PokemonUserRepository  _pokemonUserRepo;
+        private readonly string                 _userId;
+
+        // IDs de Pokémon que el usuario ha obtenido
+        private HashSet<int> _obtenidos = new HashSet<int>();
+
+        private List<CroppedBitmap> _sprites;        // sprites normales
+        private List<CroppedBitmap> _hiddenSprites;  // sprites ocultos
+
+        private const int MaxNumber  = 151;
         private const int SpriteCols = 15;
         private const int SpriteRows = 11;
 
-        private int _currentNo = 1;
-        private string _inputNo = "001";
-        private string _screenMode = "SPRITE";   // SPRITE | DESCRIPCION | REGION
+        private int    _currentNo   = 1;
+        private string _inputNo     = "001";
+        private string _screenMode  = "SPRITE";  // SPRITE | DESCRIPCION | REGION
 
-        private string _tipo1 = string.Empty;
-        private string _tipo2 = string.Empty;
+        private string _tipo1       = string.Empty;
+        private string _tipo2       = string.Empty;
         private string _descripcion = string.Empty;
         private string _region      = string.Empty;
         private string _nombre      = string.Empty;
-        private EstadisticasBase _stats;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -76,17 +84,17 @@ namespace PK_Proyect.ViewModels
         // ── Constructor ───────────────────────────────────────────────────────────
         public PokedexViewModel(string userId)
         {
-            _repo = new PokedexRepository();
+            _userId          = userId;
+            _repo            = new PokedexRepository();
+            _pokemonUserRepo = new PokemonUserRepository();
 
-            // Cargar sprites del spritesheet (pokedexicons.png, 15×11)
-            try
-            {
-                _sprites = SpriteHelper.SplitSprites("/Images/pokedexicons.png", SpriteCols, SpriteRows);
-            }
-            catch
-            {
-                _sprites = new List<CroppedBitmap>();
-            }
+            // Sprites normales (pokedexicons.png)
+            try { _sprites = SpriteHelper.SplitSprites("/Images/pokedexicons.png", SpriteCols, SpriteRows); }
+            catch { _sprites = new List<CroppedBitmap>(); }
+
+            // Sprites ocultos (pokedexhiddenicons.png)
+            try { _hiddenSprites = SpriteHelper.SplitSprites("/Images/pokedexhiddenicons.png", SpriteCols, SpriteRows); }
+            catch { _hiddenSprites = new List<CroppedBitmap>(); }
 
             ClickUpCommand    = new RelayCommand(_ => OnClickUp());
             ClickDownCommand  = new RelayCommand(_ => OnClickDown());
@@ -96,8 +104,24 @@ namespace PK_Proyect.ViewModels
             SearchCommand     = new RelayCommand(_ => OnSearch());
             ClearCommand      = new RelayCommand(_ => { InputPokedexNo = string.Empty; });
 
-            _ = LoadPokemonAsync(_currentNo);
+            _ = InicializarAsync();
         }
+
+        // Carga primero los obtenidos y luego el primer Pokémon
+        private async Task InicializarAsync()
+        {
+            await CargarObtenidosAsync();
+            await LoadPokemonAsync(_currentNo);
+        }
+
+        private async Task CargarObtenidosAsync()
+        {
+            var lista = await Task.Run(() => _pokemonUserRepo.GetPokemonsByUser(_userId));
+            _obtenidos = new HashSet<int>(lista.Select(p => p.PokemonId));
+        }
+
+        // ¿El pokémon actual ha sido obtenido por el usuario?
+        private bool EsObtenido => _obtenidos.Contains(_currentNo);
 
         // ── Propiedades expuestas al XAML ─────────────────────────────────────────
 
@@ -107,42 +131,50 @@ namespace PK_Proyect.ViewModels
             set { _inputNo = value; Notify(); }
         }
 
-        public string NombreDisplay  => string.IsNullOrEmpty(_nombre)  ? "???" : _nombre;
+        public string NombreDisplay  => EsObtenido && !string.IsNullOrEmpty(_nombre) ? _nombre : "????";
         public string NumeroDisplay  => $"N.º {_currentNo:000}";
-        public string Descripcion    => string.IsNullOrEmpty(_descripcion) ? "Sin descripción." : _descripcion;
-        public string Region         => string.IsNullOrEmpty(_region) ? "Desconocida" : _region;
+        public string Descripcion    => EsObtenido && !string.IsNullOrEmpty(_descripcion) ? _descripcion : "????";
+        public string Region         => EsObtenido && !string.IsNullOrEmpty(_region) ? _region : "????";
 
         public CroppedBitmap CurrentSprite
         {
             get
             {
-                if (_sprites == null || _sprites.Count == 0) return null;
-                int idx = (_currentNo - 1).Clamp(0, _sprites.Count - 1);
-                return _sprites[idx];
+                int idx = (_currentNo - 1).Clamp(0, MaxNumber - 1);
+
+                if (EsObtenido)
+                {
+                    if (_sprites != null && idx < _sprites.Count) return _sprites[idx];
+                }
+                else
+                {
+                    if (_hiddenSprites != null && idx < _hiddenSprites.Count) return _hiddenSprites[idx];
+                }
+                return null;
             }
         }
 
-        // Visibilidad de paneles según modo
+        // Visibilidad de paneles
         public Visibility SpritePanelVisible      => _screenMode == "SPRITE"      ? Visibility.Visible : Visibility.Collapsed;
         public Visibility DescripcionPanelVisible => _screenMode == "DESCRIPCION" ? Visibility.Visible : Visibility.Collapsed;
         public Visibility RegionPanelVisible      => _screenMode == "REGION"      ? Visibility.Visible : Visibility.Collapsed;
 
-        // Tipo 1
-        public string    Tipo1           => _tipo1;
-        public Visibility Tipo1Visible   => string.IsNullOrEmpty(_tipo1) ? Visibility.Collapsed : Visibility.Visible;
-        public Brush Tipo1Background     => BrushFromTipo(_tipo1, isBg: true);
-        public Brush Tipo1Foreground     => BrushFromTipo(_tipo1, isBg: false);
+        // Tipo 1 — oculto si no ha sido obtenido
+        public string     Tipo1           => EsObtenido ? _tipo1 : string.Empty;
+        public Visibility Tipo1Visible    => EsObtenido && !string.IsNullOrEmpty(_tipo1) ? Visibility.Visible : Visibility.Collapsed;
+        public Brush      Tipo1Background => BrushFromTipo(_tipo1, isBg: true);
+        public Brush      Tipo1Foreground => BrushFromTipo(_tipo1, isBg: false);
 
-        // Tipo 2
-        public string     Tipo2          => _tipo2;
-        public Visibility Tipo2Visible   => string.IsNullOrEmpty(_tipo2) ? Visibility.Collapsed : Visibility.Visible;
-        public Brush Tipo2Background     => BrushFromTipo(_tipo2, isBg: true);
-        public Brush Tipo2Foreground     => BrushFromTipo(_tipo2, isBg: false);
+        // Tipo 2 — oculto si no ha sido obtenido
+        public string     Tipo2           => EsObtenido ? _tipo2 : string.Empty;
+        public Visibility Tipo2Visible    => EsObtenido && !string.IsNullOrEmpty(_tipo2) ? Visibility.Visible : Visibility.Collapsed;
+        public Brush      Tipo2Background => BrushFromTipo(_tipo2, isBg: true);
+        public Brush      Tipo2Foreground => BrushFromTipo(_tipo2, isBg: false);
 
-        // Stats para la vista de descripción
+        // Stats — vacías si no obtenido
         public ObservableCollection<StatItem> Stats { get; } = new ObservableCollection<StatItem>();
 
-        // ── Lógica de navegación (igual que PokedexVM.kt) ────────────────────────
+        // ── Navegación ────────────────────────────────────────────────────────────
 
         private void OnClickRight()
         {
@@ -204,29 +236,32 @@ namespace PK_Proyect.ViewModels
 
         private async Task LoadPokemonAsync(int numero)
         {
+            // Siempre cargamos del repo (para tenerlo listo si se desbloqueara)
+            // pero solo exponemos los datos si EsObtenido
             try
             {
                 var pokemon = await Task.Run(() => _repo.ObtenerPorId(numero));
                 if (pokemon != null)
                 {
-                    _nombre      = pokemon.Nombre ?? string.Empty;
-                    _tipo1       = pokemon.TipoPrincipal  ?? string.Empty;
-                    _tipo2       = pokemon.TipoSecundario ?? string.Empty;
-                    _descripcion = pokemon.Descripcion    ?? string.Empty;
-                    _region      = pokemon.Region         ?? string.Empty;
+                    _nombre      = pokemon.Nombre          ?? string.Empty;
+                    _tipo1       = pokemon.TipoPrincipal   ?? string.Empty;
+                    _tipo2       = pokemon.TipoSecundario  ?? string.Empty;
+                    _descripcion = pokemon.Descripcion     ?? string.Empty;
+                    _region      = pokemon.Region          ?? string.Empty;
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         Stats.Clear();
-                        if (pokemon.EstadisticasBase != null)
+                        // Solo añadimos stats si el usuario lo ha obtenido
+                        if (EsObtenido && pokemon.EstadisticasBase != null)
                         {
                             var eb = pokemon.EstadisticasBase;
-                            Stats.Add(new StatItem { Nombre = "PS",       Valor = eb.Ps });
-                            Stats.Add(new StatItem { Nombre = "Ataque",   Valor = eb.Ataque });
-                            Stats.Add(new StatItem { Nombre = "Defensa",  Valor = eb.Defensa });
-                            Stats.Add(new StatItem { Nombre = "Sp.Atq",   Valor = eb.AtaqueEspecial });
-                            Stats.Add(new StatItem { Nombre = "Sp.Def",   Valor = eb.DefensaEspecial });
-                            Stats.Add(new StatItem { Nombre = "Velocidad",Valor = eb.Velocidad });
+                            Stats.Add(new StatItem { Nombre = "PS",        Valor = eb.Ps });
+                            Stats.Add(new StatItem { Nombre = "Ataque",    Valor = eb.Ataque });
+                            Stats.Add(new StatItem { Nombre = "Defensa",   Valor = eb.Defensa });
+                            Stats.Add(new StatItem { Nombre = "Sp.Atq",    Valor = eb.AtaqueEspecial });
+                            Stats.Add(new StatItem { Nombre = "Sp.Def",    Valor = eb.DefensaEspecial });
+                            Stats.Add(new StatItem { Nombre = "Velocidad", Valor = eb.Velocidad });
                         }
                     });
                 }
