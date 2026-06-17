@@ -28,7 +28,9 @@ def _check_condition(cond, ctx):
     if t == "battle_type_in":    return ctx.get("battle_type") in v
     if t == "source_is_opponent":return ctx.get("source_is_opponent") == v
     if t == "is_opposite_gender":return ctx.get("is_opposite_gender") == v
-    return True  # condición desconocida → no bloquea
+    # FIX: condición desconocida → bloquea el hook en vez de ignorarla
+    print(f"[ability_hooks] WARN: condición desconocida '{t}' — hook bloqueado")
+    return False
 
 def _conditions_met(conditions, ctx):
     return all(_check_condition(c, ctx) for c in conditions)
@@ -197,6 +199,9 @@ def _handle_effect(effect_type, params, target, ctx, battle_state):
 
     elif effect_type == "redirect_move_to_self":
         battle_state["redirect_target"] = target
+
+    else:
+        print(f"[ability_hooks] WARN: effectType desconocido '{effect_type}' — ignorado")
 
     return result
 
