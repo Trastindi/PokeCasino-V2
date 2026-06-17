@@ -12,6 +12,8 @@ def _check_condition(cond, ctx):
     if t == "move_category_is":  return ctx.get("move_category") == v
     if t == "move_is_damaging":  return ctx.get("move_is_damaging") == v
     if t == "move_dealt_damage": return ctx.get("move_dealt_damage") == v
+    if t == "move_is":           return ctx.get("move_name") == v
+    if t == "move_name_in":      return ctx.get("move_name") in (v or [])
     if t == "status_is":         return ctx.get("applied_status") == v
     if t == "status_in":         return ctx.get("applied_status") in v
     if t == "has_major_status":  return bool(ctx.get("target_status")) == v
