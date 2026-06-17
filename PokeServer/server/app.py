@@ -964,8 +964,8 @@ def submit_battle_team(current_user, battle_id):
 @token_required
 def choose_pokemon(current_user, battle_id):
     try:
-        data  = request.json or {}
-        idx   = data.get("pokemon_index")
+        data = request.json or {}
+        idx = data.get("pokemon_index")
         if idx is None:
             return jsonify({"error": "Falta pokemon_index"}), 400
 
@@ -980,9 +980,9 @@ def choose_pokemon(current_user, battle_id):
         if battle.get("status") != "ready":
             return jsonify({"error": f"Estado incorrecto: {battle.get('status')}"}), 409
 
-        slot      = "player1_active" if battle["player1_id"] == uid else "player2_active"
-        team_slot = "player1_team"   if battle["player1_id"] == uid else "player2_team"
-        team      = battle.get(team_slot, {}).get("pokemon", [])
+        slot = "player1_active" if battle["player1_id"] == uid else "player2_active"
+        team_slot = "player1_team" if battle["player1_id"] == uid else "player2_team"
+        team = battle.get(team_slot, {}).get("pokemon", [])
 
         if not (0 <= int(idx) < len(team)):
             return jsonify({"error": "Índice de Pokémon inválido"}), 400
@@ -994,25 +994,31 @@ def choose_pokemon(current_user, battle_id):
             {"$set": {slot: int(idx)}}
         )
 
-        # Si ambos jugadores ya eligieron Pokémon activo → pasar a choosing_action
         battle_updated = battles.find_one({"_id": ObjectId(battle_id)})
         p1_ready = battle_updated.get("player1_active") is not None
         p2_ready = battle_updated.get("player2_active") is not None
+
         if p1_ready and p2_ready:
             battles.update_one(
                 {"_id": ObjectId(battle_id)},
                 {"$set": {"status": "choosing_action"}}
             )
-            # Releer DESPUÉS del update para tener status y ambos índices correctos
-            battle_final = battles.find_one({"_id": ObjectId(battle_id)})  # ✅
-            _apply_enter_battle_hooks(battle_id, battle_final)              # ✅
+
+            battle_final = battles.find_one({"_id": ObjectId(battle_id)})
+            hook_result = _apply_enter_battle_hooks(battle_id, battle_final, entering_side="both")
+
+            battles.update_one(
+                {"_id": ObjectId(battle_id)},
+                {"$set": {
+                    "turn_log": hook_result["events"]
+                }}
+            )
 
         return jsonify({"msg": "Pokémon activo seleccionado", "index": int(idx)}), 200
 
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
-
 
 # ---------------------------------------------------------------------------
 # BATALLA — ELEGIR ACCIÓN (movimiento o cambio)
@@ -1164,9 +1170,8 @@ def _make_battle_state() -> dict:
         "redirect_target":             None,
     }
 
-
 def _apply_stat_stages_from_hook(poke: dict, stages_dict: dict):
-    """Transfiere stat_stages calculados por un hook al Pokémon en memoria."""
+    """Transfiere stat_stages calculados por un hook al PokÃ©mon en memoria."""
     if not stages_dict:
         return
     mod = poke.get("modificador_estadisticas") or {}
@@ -1175,12 +1180,10 @@ def _apply_stat_stages_from_hook(poke: dict, stages_dict: dict):
         mod[stat] = max(-6, min(6, actual + int(delta)))
     poke["modificador_estadisticas"] = mod
 
-
 def _apply_enter_battle_hooks(battle_id, battle, entering_side="both"):
-
     """
-    Dispara la fase enter_battle para ambos Pokémon activos y persiste
-    los stat_stages (e.g. Intimidación) y el clima en la batalla.
+    Dispara la fase enter_battle para los Pokémon que entren al campo,
+    persiste stages/clima y devuelve la lista de eventos generados.
     """
     p1_team = battle["player1_team"]["pokemon"]
     p2_team = battle["player2_team"]["pokemon"]
@@ -1188,65 +1191,82 @@ def _apply_enter_battle_hooks(battle_id, battle, entering_side="both"):
     p2_idx  = battle.get("player2_active", 0)
     field   = (battle.get("field_status") or "normal").lower()
 
-    log = list(battle.get("turn_log") or [])
+    hook_events = []
     update = {}
 
     pairs = []
     if entering_side in ("p1", "both"):
-        pairs.append((p1_team[p1_idx], p2_team[p2_idx], "p1", "p2"))
+        pairs.append((p1_team[p1_idx], p2_team[p2_idx], "p2"))
     if entering_side in ("p2", "both"):
-        pairs.append((p2_team[p2_idx], p1_team[p1_idx], "p2", "p1"))
+        pairs.append((p2_team[p2_idx], p1_team[p1_idx], "p1"))
 
-    for (attacker, opponent, atk_label, def_label) in pairs:
+    for (attacker, opponent, def_label) in pairs:
         abilities = _get_ability_docs(attacker)
         if not abilities:
             continue
 
         ctx = {
-            "weather":          field,
-            "target_status":    opponent.get("Status"),
-            "target_species":   opponent.get("Nombre", ""),
-            "target_types":     [
+            "weather": field,
+            "target_status": opponent.get("Status"),
+            "target_species": opponent.get("Nombre", ""),
+            "target_types": [
                 (opponent.get("TipoPrincipal") or "").lower(),
                 (opponent.get("TipoSecundario") or "").lower(),
             ],
-            "hp_fraction":      1.0,
+            "hp_fraction": 1.0,
             "source_is_opponent": False,
-            "volatile_flags":   {},
+            "volatile_flags": {},
         }
+
         state = _make_battle_state()
         state["weather"] = field
         apply_hooks("enter_battle", abilities, ctx, state)
 
-        # Aplicar stat_stages al oponente (Intimidación baja Ataque del rival)
         opp_stages = state["stat_stages"].get("opponent", {})
         if opp_stages:
             _apply_stat_stages_from_hook(opponent, opp_stages)
             for stat, delta in opp_stages.items():
-                log.append({
-                    "event":   "stat_change",
-                    "ability": (abilities[0].get("name", "?") if abilities else "?"),
+                hook_events.append({
+                    "event": "stat_change",
+                    "ability": abilities[0].get("name", "?"),
                     "pokemon": opponent.get("Nombre", def_label),
-                    "stat":    stat,
-                    "stages":  delta,
+                    "stat": stat,
+                    "stages": delta,
                     "new_stage": (opponent.get("modificador_estadisticas") or {}).get(stat, 0),
                 })
 
-        # Aplicar stat_stages propios (Speed Boost en entrada, etc.)
         self_stages = state["stat_stages"].get("self", {})
         if self_stages:
             _apply_stat_stages_from_hook(attacker, self_stages)
+            for stat, delta in self_stages.items():
+                hook_events.append({
+                    "event": "stat_change",
+                    "ability": abilities[0].get("name", "?"),
+                    "pokemon": attacker.get("Nombre", "?"),
+                    "stat": stat,
+                    "stages": delta,
+                    "new_stage": (attacker.get("modificador_estadisticas") or {}).get(stat, 0),
+                })
 
-        # Persistir clima si la habilidad lo cambió (Llovizna, Sol abrasador, etc.)
         if state["weather"] != field:
             field = state["weather"]
             update["field_status"] = field
+            hook_events.append({
+                "event": "weather_change",
+                "weather": field,
+            })
 
     update["player1_team.pokemon"] = p1_team
     update["player2_team.pokemon"] = p2_team
-    update["turn_log"] = log
+
     battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
 
+    return {
+        "player1_team": p1_team,
+        "player2_team": p2_team,
+        "field_status": field,
+        "events": hook_events,
+    }
 
 # ---------------------------------------------------------------------------
 # FÓRMULA DE DAÑO GEN III
@@ -1411,7 +1431,7 @@ def _aplicar_stat_change(objetivo, stat: str, stages: int):
 def _resolver_turno(battle_id: str, battle: dict):
     """Resuelve las acciones de ambos jugadores, actualiza HP y estado en la BD."""
     
-    log = list(battle.get("turn_log") or [])
+    log = []
 
     p1_team  = battle["player1_team"]["pokemon"]
     p2_team  = battle["player2_team"]["pokemon"]
@@ -1450,10 +1470,16 @@ def _resolver_turno(battle_id: str, battle: dict):
     winner = None
 
     for jugador, accion, equipo_atk, idx_atk, equipo_def, idx_def in orden:
+        if jugador == "p1":
+            equipo_atk, equipo_def = p1_team, p2_team
+            idx_atk, idx_def = p1_idx, p2_idx
+        else:
+            equipo_atk, equipo_def = p2_team, p1_team
+            idx_atk, idx_def = p2_idx, p1_idx
+
         atacante = equipo_atk[idx_atk]
         defensor = equipo_def[idx_def]
 
-        # Obtener habilidades expandidas del atacante y defensor
         atk_abilities = _get_ability_docs(atacante)
         def_abilities = _get_ability_docs(defensor)
 
@@ -1461,15 +1487,21 @@ def _resolver_turno(battle_id: str, battle: dict):
 
         if tipo_accion == "switch":
             _reset_stat_stages(atacante)
+
             nuevo_idx = int(accion.get("pokemon_index", idx_atk))
             nombre_nuevo = equipo_atk[nuevo_idx].get("Nombre", f"#{nuevo_idx}")
+
             if jugador == "p1":
                 p1_idx = nuevo_idx
             else:
                 p2_idx = nuevo_idx
-            log.append({"event": "switch", "player": jugador, "to": nombre_nuevo})
-            
-            # Persistir el nuevo índice activo ANTES de llamar al hook
+
+            log.append({
+                "event": "switch",
+                "player": jugador,
+                "to": nombre_nuevo
+            })
+
             battles.update_one(
                 {"_id": ObjectId(battle_id)},
                 {"$set": {
@@ -1479,88 +1511,103 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "player2_team.pokemon": p2_team,
                 }}
             )
-            entering = "p1" if jugador == "p1" else "p2"
+
             battle_post_switch = battles.find_one({"_id": ObjectId(battle_id)})
-            _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side=entering)
-            # Releer equipos actualizados por el hook (Intimidación ya aplicada)
-            battle_reread = battles.find_one({"_id": ObjectId(battle_id)})
-            p1_team = battle_reread["player1_team"]["pokemon"]
-            p2_team = battle_reread["player2_team"]["pokemon"]     
-
-        elif tipo_accion == "move":
-            mov_index = int(accion.get("move_index", 0))
-            moveset   = atacante.get("MoveSet", [])
-            if mov_index >= len(moveset):
-                continue
-
-            movimiento = moveset[mov_index]
-
-            # Movimientos de estado: aplicar cambios de stats
-            damage_class_obj = movimiento.get("damageClass") or {} if isinstance(movimiento, dict) else {}
-            categoria        = damage_class_obj.get("value", "physical")
-            if categoria == "status":
-                mov_nombre = movimiento.get("name", "???") if isinstance(movimiento, dict) else movimiento
-                for efecto in (movimiento.get("secondaryEffects", []) if isinstance(movimiento, dict) else []):
-                    if efecto.get("kind") == "stat_change":
-                        stat   = efecto.get("stat", "")
-                        stages = int(efecto.get("stages", 0))
-                        target = efecto.get("target", "opponent")
-                        objetivo = defensor if target == "opponent" else atacante
-                        _aplicar_stat_change(objetivo, stat, stages)
-                        log.append({
-                            "event":   "stat_change",
-                            "ability": mov_nombre,
-                            "pokemon": objetivo.get("Nombre", "???"),
-                            "stat":    stat,
-                            "stages":  stages,
-                            "new_stage": objetivo["modificador_estadisticas"].get(stat, 0),
-                        })
-                continue
-
-            resultado = _aplicar_dano(
-                atacante, defensor, movimiento, field_status,
-                atk_abilities=atk_abilities,
-                def_abilities=def_abilities,
+            hook_result = _apply_enter_battle_hooks(
+                battle_id,
+                battle_post_switch,
+                entering_side=jugador
             )
-            if resultado:
-                dano, es_critico = resultado
-            else:
-                dano, es_critico = 0, False
 
-            mov_nombre  = movimiento.get("name", "???") if isinstance(movimiento, dict) else movimiento
-            tipo_mov    = (movimiento.get("type") or "").lower() if isinstance(movimiento, dict) else ""
-            tipo1_atk   = (atacante.get("TipoPrincipal")  or "").lower()
-            tipo2_atk   = (atacante.get("TipoSecundario") or "").lower()
-            stab        = bool(tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk))
+            p1_team = hook_result["player1_team"]
+            p2_team = hook_result["player2_team"]
+            field_status = hook_result["field_status"]
+            log.extend(hook_result["events"])
 
-            tipo1_def   = (defensor.get("TipoPrincipal")  or "").title()
-            tipo2_def   = (defensor.get("TipoSecundario") or "")
-            tipo_titulo = tipo_mov.title() if tipo_mov else ""
-            ef1         = _efectividad_tipo(tipo_titulo, tipo1_def)
-            ef2         = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
-            efectividad = ef1 * ef2
+            continue
 
-            log.append({
-                "event":         "attack",
-                "attacker":      atacante.get("Nombre", jugador),
-                "move":          mov_nombre,
-                "damage":        dano,
-                "remaining_hp":  defensor.get("CurrentHp", 0),
-                "effectiveness": efectividad,
-                "crit":          es_critico,
-                "stab":          stab,
-            })
+        if tipo_accion != "move":
+            continue
 
-            if defensor.get("CurrentHp", 0) <= 0:
+        mov_index = int(accion.get("move_index", 0))
+        moveset = atacante.get("MoveSet", [])
+        if mov_index < 0 or mov_index >= len(moveset):
+            continue
+
+        movimiento = moveset[mov_index]
+
+        if isinstance(movimiento, dict):
+            damage_class = (movimiento.get("damageClass") or {}).get("value", "physical")
+            mov_nombre = movimiento.get("name", "???")
+        else:
+            damage_class = "physical"
+            mov_nombre = str(movimiento)
+
+        if damage_class == "status":
+            for efecto in movimiento.get("secondaryEffects", []) if isinstance(movimiento, dict) else []:
+                if efecto.get("kind") != "stat_change":
+                    continue
+
+                stat = efecto.get("stat")
+                stages = int(efecto.get("stages", 0))
+                target = efecto.get("target", "opponent")
+
+                objetivo = defensor if target == "opponent" else atacante
+                _aplicar_stat_change(objetivo, stat, stages)
+
                 log.append({
-                    "event":   "fainted",
-                    "pokemon": defensor.get("Nombre", "???"),
+                    "event": "stat_change",
+                    "ability": mov_nombre,
+                    "pokemon": objetivo.get("Nombre", ""),
+                    "stat": stat,
+                    "stages": stages,
+                    "new_stage": (objetivo.get("modificador_estadisticas") or {}).get(stat, 0),
                 })
-                _reset_stat_stages(defensor)
-                equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
-                if not equipo_vivo:
-                    winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
-                    break
+            continue
+
+        dano, es_critico = _aplicar_dano(
+            atacante,
+            defensor,
+            movimiento,
+            field_status,
+            atk_abilities=atk_abilities,
+            def_abilities=def_abilities,
+        )
+
+        tipo_mov = (movimiento.get("type") or "").lower() if isinstance(movimiento, dict) else ""
+        tipo1_atk = (atacante.get("TipoPrincipal") or "").lower()
+        tipo2_atk = (atacante.get("TipoSecundario") or "").lower()
+        stab = bool(tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk))
+
+        tipo1_def = (defensor.get("TipoPrincipal") or "").title()
+        tipo2_def = (defensor.get("TipoSecundario") or "")
+        tipo_titulo = tipo_mov.title() if tipo_mov else ""
+        ef1 = _efectividad_tipo(tipo_titulo, tipo1_def)
+        ef2 = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
+        efectividad = ef1 * ef2
+
+        log.append({
+            "event": "attack",
+            "attacker": atacante.get("Nombre", jugador),
+            "move": mov_nombre,
+            "damage": dano,
+            "remaining_hp": defensor.get("CurrentHp", 0),
+            "effectiveness": efectividad,
+            "crit": es_critico,
+            "stab": stab,
+        })
+
+        if defensor.get("CurrentHp", 0) <= 0:
+            log.append({
+                "event": "fainted",
+                "pokemon": defensor.get("Nombre", "")
+            })
+            _reset_stat_stages(defensor)
+
+            equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
+            if not equipo_vivo:
+                winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
+                break
 
     # ── Fase turn_end: efectos al final del turno (veneno, quemadura, etc.) ──
     for jugador_label, equipo, idx in [("p1", p1_team, p1_idx), ("p2", p2_team, p2_idx)]:
