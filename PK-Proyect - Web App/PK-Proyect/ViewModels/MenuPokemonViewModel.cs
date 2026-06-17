@@ -42,7 +42,7 @@ namespace PK_Proyect.ViewModels
         // Pokedex -> PokedexView
         private void AbrirPokedex()
         {
-            var ventana = new PokedexView();
+            var ventana = new PokedexView(UsuarioConectado.Id);
             ventana.ShowDialog();
         }
 

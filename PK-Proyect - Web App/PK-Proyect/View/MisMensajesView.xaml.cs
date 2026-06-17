@@ -17,8 +17,7 @@ namespace PK_Proyect.View
             {
                 this.Close();
                 var battleService = new BattleService();
-                var battleWindow  = new BattleWindowView(battleService, battleId,
-                                                         vm.MensajeSeleccionado?.RemitenteId);
+                var battleWindow  = new BattleWindowView(battleService, battleId, vm.MensajeSeleccionado?.RemitenteId);
                 battleWindow.Show();
             };
         }

@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <None Remove="Images\arrow.png" />
+    <None Remove="Images\bg_pokidex_1.png" />
+    <None Remove="Images\bg_screen.png" />
     <None Remove="Images\CoinOptions.png" />
     <None Remove="Images\dialog_frame.png" />
     <None Remove="Images\fondo.jpg" />
@@ -19,6 +21,7 @@
     <None Remove="Images\logo.ico" />
     <None Remove="Images\logo.png" />
     <None Remove="Images\MapaKanto.webp" />
+    <None Remove="Images\messages_ico.png" />
     <None Remove="Images\Oak.png" />
     <None Remove="Images\perfil.webp" />
     <None Remove="Images\PokeAdmin.jpg" />
@@ -44,10 +47,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\bg_pokidex_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\bg_screen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\CoinOptions.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\MapaKanto.webp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\messages_ico.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\perfil.webp">
