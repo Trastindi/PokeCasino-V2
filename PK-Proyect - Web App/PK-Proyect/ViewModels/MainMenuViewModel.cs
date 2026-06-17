@@ -20,7 +20,7 @@ namespace PK_Proyect.ViewModels
 
         public ICommand AbrirCasinoCommand { get; }
         public ICommand AbrirMapaCommand { get; }
-        public ICommand AbrirEquipoCommand { get; }
+        public ICommand AbrirMenuPokemonCommand { get; }
         public ICommand AbrirMedallasCommand { get; }
         public ICommand AbrirPerfilCommand { get; }
 
@@ -34,7 +34,7 @@ namespace PK_Proyect.ViewModels
 
             AbrirCasinoCommand   = new RelayCommand(_ => AbrirCasino());
             AbrirMapaCommand     = new RelayCommand(_ => AbrirMapa());
-            AbrirEquipoCommand   = new RelayCommand(_ => AbrirEquipo());
+            AbrirMenuPokemonCommand   = new RelayCommand(_ => AbrirMenuPokemon());
             AbrirMedallasCommand = new RelayCommand(_ => AbrirMedallas());
             AbrirPerfilCommand   = new RelayCommand(_ => AbrirPerfil());
             AbrirBatallaCommand = new RelayCommand(_ => AbrirBatalla());
@@ -78,9 +78,9 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        private void AbrirEquipo()
+        private void AbrirMenuPokemon()
         {
-            var ventana = new EquipoPokemonView(new EquipoPokemonViewModel(UsuarioConectado.Id));
+            var ventana = new MenuPokemonView(new MenuPokemonViewModel(UsuarioConectado.Id));
             ventana.ShowDialog();
         }
 
