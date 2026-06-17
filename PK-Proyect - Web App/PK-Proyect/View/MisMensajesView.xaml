@@ -50,12 +50,20 @@
 
                                 <StackPanel Orientation="Vertical">
 
-                                    <!-- REMITENTE -->
+                                    <!-- REMITENTE (campo "from") -->
                                     <TextBlock Text="{Binding Remitente}"
                                                FontFamily="{StaticResource PokemonClassic}"
                                                FontSize="16"
                                                FontWeight="Bold"
                                                Foreground="Black"/>
+
+                                    <!-- TÍTULO (campo "title") -->
+                                    <TextBlock Text="{Binding Titulo}"
+                                               FontFamily="{StaticResource PokemonClassic}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="#333"
+                                               Margin="0 2 0 0"/>
 
                                     <!-- FECHA -->
                                     <TextBlock Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy HH:mm}'}"
@@ -64,14 +72,14 @@
                                                Foreground="#555"
                                                Margin="0 2 0 0"/>
 
-                                    <!-- CONTENIDO -->
+                                    <!-- CONTENIDO (campo "text") -->
                                     <TextBlock Text="{Binding Contenido}"
                                                FontFamily="{StaticResource PokemonClassic}"
                                                Foreground="Black"
                                                TextWrapping="Wrap"
                                                Margin="0 4 0 0"/>
 
-                                    <!-- BADGE DESAFÍO (solo si hay TipoBatallaId) -->
+                                    <!-- BADGE DESAFÍO -->
                                     <TextBlock Text="⚔ Desafío de batalla"
                                                FontFamily="{StaticResource PokemonClassic}"
                                                Foreground="DarkRed"
@@ -82,24 +90,13 @@
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding TipoBatallaId}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <!-- Visible cuando TipoBatallaId tiene valor -->
-                                                    <DataTrigger Binding="{Binding TipoBatallaId}" Value="">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <DataTrigger Binding="{Binding Tipo}" Value="battle_request">
+                                                        <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-
-                                    <!-- LEÍDO -->
-                                    <TextBlock Text="{Binding Leido, StringFormat='Leído: {0}'}"
-                                               FontFamily="{StaticResource PokemonClassic}"
-                                               Foreground="Gray"
-                                               FontSize="11"
-                                               Margin="0 2 0 0"/>
 
                                 </StackPanel>
                             </Border>
