@@ -1,21 +1,308 @@
 <Window x:Class="PK_Proyect.View.PokedexView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Pokedex"
-        Height="600" Width="500"
-        WindowStartupLocation="CenterScreen"
+        Title="Pokédex"
+        Height="700" Width="420"
+        WindowStyle="None"
         ResizeMode="NoResize"
-        Background="#F8F0D8">
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
 
-    <Border BorderBrush="Black" BorderThickness="3" Margin="10" Background="#F8F0D8">
-        <Grid Margin="20">
-            <TextBlock Text="Pokedex"
-                       FontSize="28"
-                       FontFamily="{StaticResource PokemonClassic}"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Foreground="Black"/>
+    <Window.Resources>
+        <!-- Colores base -->
+        <SolidColorBrush x:Key="BgTop"    Color="#CA215A"/>
+        <SolidColorBrush x:Key="BgBottom" Color="#FE1A55"/>
+        <SolidColorBrush x:Key="DPadColor" Color="#001A4D"/>
+        <SolidColorBrush x:Key="White"    Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextDark" Color="#212121"/>
+
+        <!-- Botón de teclado numérico -->
+        <Style x:Key="KeyBtn" TargetType="Button">
+            <Setter Property="Background"   Value="#2A2AA8"/>
+            <Setter Property="Foreground"   Value="White"/>
+            <Setter Property="BorderBrush"  Value="#001A4D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily"   Value="{StaticResource PokemonClassic}"/>
+            <Setter Property="FontSize"     Value="14"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Height"       Value="40"/>
+        </Style>
+
+        <!-- Botón de acción (SEARCH / CLEAR) -->
+        <Style x:Key="ActionBtn" TargetType="Button">
+            <Setter Property="Background"    Value="White"/>
+            <Setter Property="Foreground"    Value="#001A4D"/>
+            <Setter Property="BorderBrush"   Value="#001A4D"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="FontFamily"    Value="{StaticResource PokemonClassic}"/>
+            <Setter Property="FontSize"      Value="12"/>
+            <Setter Property="Height"        Value="40"/>
+            <Setter Property="Cursor"        Value="Hand"/>
+        </Style>
+
+        <!-- Botón D-Pad -->
+        <Style x:Key="DPadBtn" TargetType="Button">
+            <Setter Property="Background"    Value="#001A4D"/>
+            <Setter Property="Foreground"    Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width"  Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- Contenedor principal -->
+    <Border CornerRadius="12" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- Barra de título -->
+                <RowDefinition Height="36"/>
+                <!-- Panel superior rojo (sprite / descripción / región) -->
+                <RowDefinition Height="*"/>
+                <!-- Panel inferior rojo oscuro (teclado + tipos) -->
+                <RowDefinition Height="320"/>
+            </Grid.RowDefinitions>
+
+            <!-- ══════════════ BARRA TÍTULO ══════════════ -->
+            <Border Grid.Row="0" Background="#001A4D" CornerRadius="12,12,0,0">
+                <Grid>
+                    <TextBlock Text="POKÉDEX"
+                               FontFamily="{StaticResource PokemonClassic}"
+                               FontSize="14" FontWeight="Bold"
+                               Foreground="White"
+                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <Button Content="X"
+                            HorizontalAlignment="Right" Margin="0,0,8,0"
+                            Width="24" Height="24"
+                            Background="#E00000" Foreground="White"
+                            BorderThickness="0" FontWeight="Bold"
+                            Click="btnClose_Click" Cursor="Hand"/>
+                </Grid>
+            </Border>
+
+            <!-- ══════════════ PANEL SUPERIOR (rojo) ══════════════ -->
+            <Border Grid.Row="1" Background="#CA215A">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!-- Lámparas decorativas + cámara -->
+                        <RowDefinition Height="60"/>
+                        <!-- Sprite / descripción / región -->
+                        <RowDefinition Height="*"/>
+                        <!-- D-Pad -->
+                        <RowDefinition Height="70"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Lámparas superiores (simuladas con elipses) -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal"
+                                VerticalAlignment="Center" Margin="16,0,0,0">
+                        <Ellipse Width="44" Height="44" Fill="White" Stroke="#001A4D" StrokeThickness="3" Margin="0,0,8,0"/>
+                        <Ellipse Width="16" Height="16" Fill="#FF0000" Stroke="#001A4D" StrokeThickness="2" Margin="0,0,4,0"/>
+                        <Ellipse Width="16" Height="16" Fill="#FFCC00" Stroke="#001A4D" StrokeThickness="2" Margin="0,0,4,0"/>
+                        <Ellipse Width="16" Height="16" Fill="#33CC33" Stroke="#001A4D" StrokeThickness="2"/>
+                    </StackPanel>
+
+                    <!-- ÁREA CENTRAL: sprite / descripción / región -->
+                    <Border Grid.Row="1" Background="#1A0010" Margin="16,4,16,4" CornerRadius="6">
+                        <Grid>
+                            <!-- MODO SPRITE -->
+                            <Image x:Name="imgSprite"
+                                   Source="{Binding CurrentSprite}"
+                                   Width="120" Height="120"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Visibility="{Binding SpritePanelVisible}"/>
+
+                            <!-- MODO DESCRIPCIÓN -->
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          Visibility="{Binding DescripcionPanelVisible}"
+                                          Margin="8">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding NombreDisplay}"
+                                               FontFamily="{StaticResource PokemonClassic}"
+                                               FontSize="14" FontWeight="Bold"
+                                               Foreground="#FFD700"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,6,0,6"/>
+                                    <TextBlock Text="{Binding Descripcion}"
+                                               FontFamily="{StaticResource PokemonClassic}"
+                                               FontSize="11" Foreground="#E0E0E0"
+                                               TextWrapping="Wrap" Margin="4,0,4,4"/>
+                                    <!-- Stats -->
+                                    <ItemsControl ItemsSource="{Binding Stats}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="4,2">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="30"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Nombre}"
+                                                               FontFamily="{StaticResource PokemonClassic}"
+                                                               FontSize="10" Foreground="#AAA"/>
+                                                    <ProgressBar Grid.Column="1" Value="{Binding Valor}"
+                                                                 Maximum="255" Height="10"
+                                                                 Background="#333"
+                                                                 Foreground="#4CAF50"
+                                                                 VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Valor}"
+                                                               FontFamily="{StaticResource PokemonClassic}"
+                                                               FontSize="10" Foreground="White"
+                                                               HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <!-- MODO REGIÓN -->
+                            <StackPanel Visibility="{Binding RegionPanelVisible}"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="REGIÓN"
+                                           FontFamily="{StaticResource PokemonClassic}"
+                                           FontSize="11" Foreground="#AAA"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Region}"
+                                           FontFamily="{StaticResource PokemonClassic}"
+                                           FontSize="18" FontWeight="Bold"
+                                           Foreground="#FFD700"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,8,0,0"/>
+                                <TextBlock Text="{Binding NumeroDisplay}"
+                                           FontFamily="{StaticResource PokemonClassic}"
+                                           FontSize="13" Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- D-PAD -->
+                    <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="36"/>
+                            <RowDefinition Height="36"/>
+                            <RowDefinition Height="36"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Arriba -->
+                        <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource DPadBtn}"
+                                Content="▲"
+                                Command="{Binding ClickUpCommand}"
+                                CornerRadius="8,8,0,0" Padding="0"/>
+                        <!-- Izquierda -->
+                        <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource DPadBtn}"
+                                Content="◄"
+                                Command="{Binding ClickLeftCommand}"
+                                CornerRadius="8,0,0,8" Padding="0"/>
+                        <!-- Centro (decorativo) -->
+                        <Border Grid.Row="1" Grid.Column="1" Background="#001A4D"/>
+                        <!-- Derecha -->
+                        <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource DPadBtn}"
+                                Content="►"
+                                Command="{Binding ClickRightCommand}"
+                                CornerRadius="0,8,8,0" Padding="0"/>
+                        <!-- Abajo -->
+                        <Button Grid.Row="2" Grid.Column="1" Style="{StaticResource DPadBtn}"
+                                Content="▼"
+                                Command="{Binding ClickDownCommand}"
+                                CornerRadius="0,0,8,8" Padding="0"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ══════════════ PANEL INFERIOR (rojo oscuro) ══════════════ -->
+            <Border Grid.Row="2" Background="#FE1A55" CornerRadius="0,0,12,12">
+                <Grid Margin="10,8,10,8">
+                    <Grid.RowDefinitions>
+                        <!-- Display del número -->
+                        <RowDefinition Height="44"/>
+                        <!-- Teclado numérico -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Tipos -->
+                        <RowDefinition Height="44"/>
+                        <!-- SEARCH / CLEAR -->
+                        <RowDefinition Height="48"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Display número -->
+                    <Border Grid.Row="0" Background="#1A0010" CornerRadius="4"
+                            Margin="0,0,0,6">
+                        <TextBlock Text="{Binding InputPokedexNo}"
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="18" Foreground="#E9E9E9"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Teclado 2 filas: 0-4 y 5-9 -->
+                    <StackPanel Grid.Row="1" Margin="0,0,0,6">
+                        <UniformGrid Rows="1" Columns="5">
+                            <Button Content="0" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="0"/>
+                            <Button Content="1" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="1"/>
+                            <Button Content="2" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="2"/>
+                            <Button Content="3" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="3"/>
+                            <Button Content="4" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="4"/>
+                        </UniformGrid>
+                        <UniformGrid Rows="1" Columns="5" Margin="0,2,0,0">
+                            <Button Content="5" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="5"/>
+                            <Button Content="6" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="6"/>
+                            <Button Content="7" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="7"/>
+                            <Button Content="8" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="8"/>
+                            <Button Content="9" Style="{StaticResource KeyBtn}" Command="{Binding KeypadCommand}" CommandParameter="9"/>
+                        </UniformGrid>
+                    </StackPanel>
+
+                    <!-- Tipos (badges con color dinámico) -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <!-- Tipo 1 -->
+                        <Border CornerRadius="4" Padding="14,6" Margin="4,0"
+                                Background="{Binding Tipo1Background}">
+                            <TextBlock Text="{Binding Tipo1}"
+                                       FontFamily="{StaticResource PokemonClassic}"
+                                       FontSize="12" FontWeight="Bold"
+                                       Foreground="{Binding Tipo1Foreground}"
+                                       Visibility="{Binding Tipo1Visible}"/>
+                        </Border>
+                        <!-- Tipo 2 -->
+                        <Border CornerRadius="4" Padding="14,6" Margin="4,0"
+                                Background="{Binding Tipo2Background}"
+                                Visibility="{Binding Tipo2Visible}">
+                            <TextBlock Text="{Binding Tipo2}"
+                                       FontFamily="{StaticResource PokemonClassic}"
+                                       FontSize="12" FontWeight="Bold"
+                                       Foreground="{Binding Tipo2Foreground}"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- SEARCH / CLEAR -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="44"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="SEARCH" Style="{StaticResource ActionBtn}"
+                                Margin="0,0,4,0" Command="{Binding SearchCommand}"/>
+                        <Button Grid.Column="1" Content="CLEAR"  Style="{StaticResource ActionBtn}"
+                                Margin="4,0,4,0" Command="{Binding ClearCommand}"/>
+                        <!-- Icono radar -->
+                        <Ellipse Grid.Column="2" Width="32" Height="32"
+                                 Fill="#FFCC00" Stroke="#001A4D" StrokeThickness="2"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </Border>
 </Window>
