@@ -117,7 +117,7 @@
                     <Button Content="◓  Equipo Pokémon"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
-                            Command="{Binding AbrirEquipoCommand}"/>
+                            Command="{Binding AbrirMenuPokemonCommand}"/>
 
                     <Button Content="🏅  Medallas"
                             FontFamily="{StaticResource PokemonClassic}"
