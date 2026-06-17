@@ -1003,6 +1003,8 @@ def choose_pokemon(current_user, battle_id):
                 {"_id": ObjectId(battle_id)},
                 {"$set": {"status": "choosing_action"}}
             )
+            # ── FIX: disparar enter_battle para ambos Pokémon activos ────────
+            _apply_enter_battle_hooks(battle_id, battle_updated)
 
         return jsonify({"msg": "Pokémon activo seleccionado", "index": int(idx)}), 200
 
@@ -1133,6 +1135,85 @@ def _make_battle_state() -> dict:
     }
 
 
+def _apply_stat_stages_from_hook(poke: dict, stages_dict: dict):
+    """Transfiere stat_stages calculados por un hook al Pokémon en memoria."""
+    if not stages_dict:
+        return
+    mod = poke.get("modificador_estadisticas") or {}
+    for stat, delta in stages_dict.items():
+        actual = int(mod.get(stat, 0))
+        mod[stat] = max(-6, min(6, actual + int(delta)))
+    poke["modificador_estadisticas"] = mod
+
+
+def _apply_enter_battle_hooks(battle_id: str, battle: dict):
+    """
+    Dispara la fase enter_battle para ambos Pokémon activos y persiste
+    los stat_stages (e.g. Intimidación) y el clima en la batalla.
+    """
+    p1_team = battle["player1_team"]["pokemon"]
+    p2_team = battle["player2_team"]["pokemon"]
+    p1_idx  = battle.get("player1_active", 0)
+    p2_idx  = battle.get("player2_active", 0)
+    field   = (battle.get("field_status") or "normal").lower()
+
+    log = list(battle.get("turn_log") or [])
+    update = {}
+
+    for (attacker, opponent, atk_label, def_label) in [
+        (p1_team[p1_idx], p2_team[p2_idx], "p1", "p2"),
+        (p2_team[p2_idx], p1_team[p1_idx], "p2", "p1"),
+    ]:
+        abilities = _get_ability_docs(attacker)
+        if not abilities:
+            continue
+
+        ctx = {
+            "weather":          field,
+            "target_status":    opponent.get("Status"),
+            "target_species":   opponent.get("Nombre", ""),
+            "target_types":     [
+                (opponent.get("TipoPrincipal") or "").lower(),
+                (opponent.get("TipoSecundario") or "").lower(),
+            ],
+            "hp_fraction":      1.0,
+            "source_is_opponent": False,
+            "volatile_flags":   {},
+        }
+        state = _make_battle_state()
+        state["weather"] = field
+        apply_hooks("enter_battle", abilities, ctx, state)
+
+        # Aplicar stat_stages al oponente (Intimidación baja Ataque del rival)
+        opp_stages = state["stat_stages"].get("opponent", {})
+        if opp_stages:
+            _apply_stat_stages_from_hook(opponent, opp_stages)
+            for stat, delta in opp_stages.items():
+                log.append({
+                    "event":   "stat_change",
+                    "ability": (abilities[0].get("name", "?") if abilities else "?"),
+                    "pokemon": opponent.get("Nombre", def_label),
+                    "stat":    stat,
+                    "stages":  delta,
+                    "new_stage": (opponent.get("modificador_estadisticas") or {}).get(stat, 0),
+                })
+
+        # Aplicar stat_stages propios (Speed Boost en entrada, etc.)
+        self_stages = state["stat_stages"].get("self", {})
+        if self_stages:
+            _apply_stat_stages_from_hook(attacker, self_stages)
+
+        # Persistir clima si la habilidad lo cambió (Llovizna, Sol abrasador, etc.)
+        if state["weather"] != field:
+            field = state["weather"]
+            update["field_status"] = field
+
+    update["player1_team.pokemon"] = p1_team
+    update["player2_team.pokemon"] = p2_team
+    update["turn_log"] = log
+    battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
+
+
 # ---------------------------------------------------------------------------
 # FÓRMULA DE DAÑO GEN III
 # ---------------------------------------------------------------------------
@@ -1161,28 +1242,43 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
     tipo2_def   = (defensor.get("TipoSecundario") or "")
     tipo_titulo = tipo_mov.title() if tipo_mov else ""
 
+    max_hp_atk = max(int((atacante.get("estadisticas_base") or {}).get("ps", 1)), 1)
+    max_hp_def = max(int((defensor.get("estadisticas_base") or {}).get("ps", 1)), 1)
+
     # ── Contexto para los hooks ──────────────────────────────────────────────
+    # FIX: hp_fraction usa la HP del atacante en move_power y la del defensor
+    # en receive_move; se construye un ctx único con ambas fracciones nombradas.
     ctx = {
-        "move_type":        tipo_mov,
-        "move_category":    categoria,
-        "move_is_damaging": True,
-        "weather":          (field_status or "normal").lower(),
-        "target_types":     [tipo1_def.lower(), tipo2_def.lower()] if tipo2_def else [tipo1_def.lower()],
-        "target_status":    defensor.get("Status"),
-        "hp_fraction":      defensor.get("CurrentHp", 0) / max(int((defensor.get("estadisticas_base") or {}).get("ps", 1)), 1),
-        "volatile_flags":   {},
+        "move_type":          tipo_mov,
+        "move_name":          movimiento.get("name", ""),
+        "move_group":         (movimiento.get("moveGroup") or movimiento.get("group") or "").lower(),
+        "move_category":      categoria,
+        "move_is_damaging":   True,
+        "move_dealt_damage":  False,  # se actualiza tras el cálculo si hay daño
+        "weather":            (field_status or "normal").lower(),
+        "target_types":       [tipo1_def.lower(), tipo2_def.lower()] if tipo2_def else [tipo1_def.lower()],
+        "target_status":      defensor.get("Status"),
+        "target_species":     defensor.get("Nombre", ""),
+        "source_is_opponent": True,
+        "battle_type":        "pvp",
+        # FIX: hp_fraction separadas por rol
+        "hp_fraction":        atacante.get("CurrentHp", 0) / max_hp_atk,   # para move_power (Blaze/Torrent/Overgrow)
+        "hp_fraction_def":    defensor.get("CurrentHp", 0) / max_hp_def,   # para receive_move
+        "volatile_flags":     {},
     }
 
     battle_state = _make_battle_state()
     battle_state["weather"] = ctx["weather"]
 
-    # Hook fase move_power (atacante modifica potencia del movimiento)
+    # Hook fase move_power (atacante: usa hp_fraction del atacante)
     if atk_abilities:
         apply_hooks("move_power", atk_abilities, ctx, battle_state)
 
-    # Hook fase receive_move (defensor puede bloquear o modificar daño recibido)
+    # Hook fase receive_move (defensor: swap hp_fraction al del defensor antes de evaluar)
     if def_abilities:
-        apply_hooks("receive_move", def_abilities, ctx, battle_state)
+        ctx_def = dict(ctx)
+        ctx_def["hp_fraction"] = ctx["hp_fraction_def"]
+        apply_hooks("receive_move", def_abilities, ctx_def, battle_state)
 
     if battle_state["move_blocked"]:
         return 0, False
@@ -1196,11 +1292,21 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
     def_modificator = defensor.get("modificador_estadisticas") or {}
 
     if categoria == "special":
-        A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50))) * stat_stage_table[int(atk_modificator.get("ataque_especial", 0))]
-        D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50))) * stat_stage_table[int(def_modificator.get("defensa_especial", 0))]
+        A_base = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50)))
+        D_base = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50)))
+        A = A_base * stat_stage_table[int(atk_modificator.get("ataque_especial", 0))]
+        D = D_base * stat_stage_table[int(def_modificator.get("defensa_especial", 0))]
+        # FIX: aplicar stat_multipliers de hooks sobre A y D
+        A *= battle_state["stat_multipliers"]["self"].get("ataque_especial", 1.0)
+        D *= battle_state["stat_multipliers"]["opponent"].get("defensa_especial", 1.0)
     else:
-        A = int(stats_atk.get("ataque", 50)) * stat_stage_table[int(atk_modificator.get("ataque", 0))]
-        D = int(stats_def.get("defensa", 50)) * stat_stage_table[int(def_modificator.get("defensa", 0))]
+        A_base = int(stats_atk.get("ataque", 50))
+        D_base = int(stats_def.get("defensa", 50))
+        A = A_base * stat_stage_table[int(atk_modificator.get("ataque", 0))]
+        D = D_base * stat_stage_table[int(def_modificator.get("defensa", 0))]
+        # FIX: aplicar stat_multipliers de hooks sobre A y D
+        A *= battle_state["stat_multipliers"]["self"].get("ataque", 1.0)
+        D *= battle_state["stat_multipliers"]["opponent"].get("defensa", 1.0)
 
     if D == 0:
         D = 1
@@ -1331,6 +1437,48 @@ def _resolver_turno(battle_id: str, battle: dict):
                 "to":     nombre_nuevo,
             })
 
+            # FIX: disparar enter_battle para el Pokémon que entra tras el cambio
+            nuevo_poke   = equipo_atk[nuevo_idx]
+            nuevo_abilities = _get_ability_docs(nuevo_poke)
+            rival        = defensor  # el defensor sigue siendo el mismo
+            if nuevo_abilities:
+                ctx_enter = {
+                    "weather":          (field_status or "normal").lower(),
+                    "target_status":    rival.get("Status"),
+                    "target_species":   rival.get("Nombre", ""),
+                    "target_types":     [
+                        (rival.get("TipoPrincipal") or "").lower(),
+                        (rival.get("TipoSecundario") or "").lower(),
+                    ],
+                    "hp_fraction":      1.0,
+                    "source_is_opponent": False,
+                    "volatile_flags":   {},
+                }
+                state_enter = _make_battle_state()
+                state_enter["weather"] = ctx_enter["weather"]
+                apply_hooks("enter_battle", nuevo_abilities, ctx_enter, state_enter)
+
+                opp_stages = state_enter["stat_stages"].get("opponent", {})
+                if opp_stages:
+                    _apply_stat_stages_from_hook(rival, opp_stages)
+                    for stat, delta in opp_stages.items():
+                        log.append({
+                            "event":   "stat_change",
+                            "ability": (nuevo_abilities[0].get("name", "?") if nuevo_abilities else "?"),
+                            "pokemon": rival.get("Nombre", ""),
+                            "stat":    stat,
+                            "stages":  delta,
+                            "new_stage": (rival.get("modificador_estadisticas") or {}).get(stat, 0),
+                        })
+
+                self_stages = state_enter["stat_stages"].get("self", {})
+                if self_stages:
+                    _apply_stat_stages_from_hook(nuevo_poke, self_stages)
+
+                if state_enter["weather"] != (field_status or "normal").lower():
+                    field_status = state_enter["weather"]
+                    log.append({"event": "weather_change", "weather": field_status})
+
         elif tipo_accion == "move":
             mov_index = int(accion.get("move_index", 0))
             moveset   = atacante.get("MoveSet", [])
@@ -1413,9 +1561,9 @@ def _resolver_turno(battle_id: str, battle: dict):
             turn_end_state = _make_battle_state()
             turn_end_state["weather"] = (field_status or "normal").lower()
             ctx_end = {
-                "weather":       turn_end_state["weather"],
-                "target_status": poke.get("Status"),
-                "hp_fraction":   poke.get("CurrentHp", 0) / max(int((poke.get("estadisticas_base") or {}).get("ps", 1)), 1),
+                "weather":        turn_end_state["weather"],
+                "target_status":  poke.get("Status"),
+                "hp_fraction":    poke.get("CurrentHp", 0) / max(int((poke.get("estadisticas_base") or {}).get("ps", 1)), 1),
                 "volatile_flags": {},
             }
             apply_hooks("turn_end", poke_abilities, ctx_end, turn_end_state)
@@ -1440,6 +1588,45 @@ def _resolver_turno(battle_id: str, battle: dict):
                 })
                 poke["Status"] = None
 
+            # FIX: aplicar daño por contacto (Piel Tosca, Barras de Hierro, etc.)
+            if turn_end_state["contact_damage_fraction"] > 0:
+                max_hp = int((poke.get("estadisticas_base") or {}).get("ps", 1))
+                dmg    = max(1, math.floor(max_hp * turn_end_state["contact_damage_fraction"]))
+                poke["CurrentHp"] = max(0, poke.get("CurrentHp", 0) - dmg)
+                log.append({
+                    "event":   "ability_damage",
+                    "pokemon": poke.get("Nombre", jugador_label),
+                    "amount":  dmg,
+                })
+
+            # FIX: aplicar estado pendiente (Punto Veneno, Llama Cuerpo, etc.)
+            if turn_end_state["pending_status"] and not poke.get("Status"):
+                pending = turn_end_state["pending_status"]
+                if pending.get("target") == "opponent":
+                    # El oponente de este Pokémon en turno_end
+                    rival_equipo = p2_team if jugador_label == "p1" else p1_team
+                    rival_idx    = p2_idx   if jugador_label == "p1" else p1_idx
+                    rival_poke   = rival_equipo[rival_idx]
+                    if not rival_poke.get("Status"):
+                        rival_poke["Status"] = pending["status"]
+                        log.append({
+                            "event":   "status_applied",
+                            "pokemon": rival_poke.get("Nombre", ""),
+                            "status":  pending["status"],
+                        })
+                else:
+                    poke["Status"] = pending["status"]
+                    log.append({
+                        "event":   "status_applied",
+                        "pokemon": poke.get("Nombre", jugador_label),
+                        "status":  pending["status"],
+                    })
+
+            # FIX: persistir cambio de clima provocado por habilidad en turn_end
+            if turn_end_state["weather"] not in ("normal", field_status.lower()):
+                field_status = turn_end_state["weather"]
+                log.append({"event": "weather_change", "weather": field_status})
+
     # Construir update de la batalla
     update = {
         "player1_team.pokemon": p1_team,
@@ -1450,6 +1637,7 @@ def _resolver_turno(battle_id: str, battle: dict):
         "player2_action": None,
         "turn": battle.get("turn", 0) + 1,
         "turn_log": log,
+        "field_status": field_status,
     }
 
     if winner:
