@@ -73,9 +73,6 @@
                                    Margin="10,0,0,0"
                                    Style="{StaticResource RetroText}"/>
 
-
-
-
                         <Button Content="X"
                                 FontFamily="{StaticResource PokemonClassic}"
                                 FontSize="20"
@@ -104,25 +101,27 @@
                            Height="130"
                            Margin="0,0,0,20"/>
 
-                    
+                    <!-- Ver Pokemon: abre PokemonObtenidosView -->
                     <Button Content="🗺️ Ver Pokemon"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding VerPokemonCommand}"/>
 
+                    <!-- Pokédex -->
                     <Button Content="◓ Pokedex"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding AbrirPokedexCommand}"/>
 
+                    <!-- Gestionar Equipo: abre EquipoPokemonView -->
                     <Button Content="🏅 Gestiona Equipo"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
-                            Command="{Binding AbrirGestionarEquipoCommand}"/>
-                    
+                            Command="{Binding GestionarEquipoCommand}"/>
 
                 </StackPanel>
 
+                <!-- Botón cerrar sesión -->
                 <Button Content="⏻"
                     Style="{StaticResource RetroButton}"
                     Background="{StaticResource PkBlue}"
@@ -140,15 +139,11 @@
                     Grid.Row="1">
 
                     <Button.Template>
-
                         <ControlTemplate TargetType="Button">
-
                             <Grid>
-
                                 <Ellipse Fill="{TemplateBinding Background}"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="2"/>
-
                                 <ContentPresenter
                                 ContentSource="Content"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -157,17 +152,13 @@
                                 TextElement.FontFamily="{TemplateBinding FontFamily}"
                                 TextElement.FontSize="{TemplateBinding FontSize}"
                                 Margin="0,0,0,15"/>
-
                             </Grid>
-
                         </ControlTemplate>
-
                     </Button.Template>
 
                 </Button>
 
-
-
+                <!-- Botón perfil (sin command por ahora, añadir AbrirPerfilCommand al ViewModel cuando esté listo) -->
                 <Button Content="👤"
                     Style="{StaticResource RetroButton}"
                     Background="{StaticResource PkBlue}"
@@ -177,24 +168,16 @@
                     FontSize="36"
                     Width="80"
                     Height="80"
-                    Command="{Binding AbrirPerfilCommand}" 
                     Margin="0,12,881,416"
-                    
-                    Grid.Row="1" 
+                    Grid.Row="1"
                     RenderTransformOrigin="0.5,0.5">
 
                     <Button.Template>
-
-                        <ControlTemplate 
-        
-                            TargetType="Button">
-
+                        <ControlTemplate TargetType="Button">
                             <Grid>
-
-                                <Ellipse Fill="{TemplateBinding Background}" 
-                                    Stroke="{TemplateBinding BorderBrush}" 
+                                <Ellipse Fill="{TemplateBinding Background}"
+                                    Stroke="{TemplateBinding BorderBrush}"
                                     StrokeThickness="2"/>
-
                                 <ContentPresenter
                                     ContentSource="Content"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -203,11 +186,8 @@
                                     TextElement.FontFamily="{TemplateBinding FontFamily}"
                                     TextElement.FontSize="{TemplateBinding FontSize}"
                                     Margin="0,0,0,15"/>
-
                             </Grid>
-
                         </ControlTemplate>
-
                     </Button.Template>
 
                 </Button>
