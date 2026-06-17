@@ -11,12 +11,14 @@ namespace PK_Proyect.View
             InitializeComponent();
             DataContext = vm;
 
-            // Cuando el VM notifique que se acepto un desafio, abrir BattleWindow
+            // Cuando el VM notifique que se aceptó un desafío, cerrar esta
+            // ventana y abrir BattleWindowView con el battleId correspondiente.
             vm.BatallaAceptada += battleId =>
             {
                 this.Close();
                 var battleService = new BattleService();
-                var battleWindow  = new BattleWindowView(battleService, battleId, vm.MensajeSeleccionado?.RemitenteId);
+                var battleWindow  = new BattleWindowView(battleService, battleId,
+                                                         vm.MensajeSeleccionado?.RemitenteId);
                 battleWindow.Show();
             };
         }

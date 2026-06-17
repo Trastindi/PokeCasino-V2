@@ -14,24 +14,29 @@ namespace PK_Proyect.ViewModels
     {
         private readonly MensajeRepository _repo;
 
+        /// <summary>Lista de mensajes recibidos por el usuario autenticado.</summary>
         public ObservableCollection<Mensaje> Mensajes { get; set; }
 
-        // Mensaje seleccionado en la lista (binding desde la View)
+        /// <summary>Mensaje seleccionado en la lista (binding desde la View).</summary>
         public Mensaje MensajeSeleccionado { get; set; }
 
-        // Se dispara cuando el usuario acepta un desafio; lleva el battleId
+        /// <summary>
+        /// Se dispara cuando el usuario acepta un desafío de batalla.
+        /// Parámetro: battleId del mensaje seleccionado.
+        /// </summary>
         public event Action<string> BatallaAceptada;
 
         public ICommand AceptarDesafioCommand { get; }
 
         public MisMensajesViewModel()
         {
-            _repo = new MensajeRepository();
+            _repo    = new MensajeRepository();
             Mensajes = new ObservableCollection<Mensaje>();
 
             AceptarDesafioCommand = new RelayCommand(
                 _ => AceptarDesafio(),
-                _ => MensajeSeleccionado != null && MensajeSeleccionado.TipoBatallaId != null
+                _ => MensajeSeleccionado != null
+                     && !string.IsNullOrEmpty(MensajeSeleccionado.TipoBatallaId)
             );
 
             _ = CargarMensajesAsync();
@@ -39,9 +44,10 @@ namespace PK_Proyect.ViewModels
 
         private void AceptarDesafio()
         {
-            if (MensajeSeleccionado?.TipoBatallaId == null)
+            if (MensajeSeleccionado == null
+                || string.IsNullOrEmpty(MensajeSeleccionado.TipoBatallaId))
             {
-                MessageBox.Show("Selecciona un mensaje de desafio primero.");
+                MessageBox.Show("Selecciona un mensaje de desafío primero.");
                 return;
             }
 
@@ -53,8 +59,8 @@ namespace PK_Proyect.ViewModels
         {
             var lista = await Task.Run(() =>
                 _repo.GetMisMensajes()
-                    .OrderByDescending(m => m.Fecha)
-                    .ToList()
+                     .OrderByDescending(m => m.Fecha)
+                     .ToList()
             );
 
             foreach (var m in lista)
