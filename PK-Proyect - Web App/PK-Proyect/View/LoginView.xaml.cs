@@ -25,7 +25,8 @@ namespace PK_Proyect.View
             if (usuario.Role == "admin")
                 new AdminMenuView(usuario, new AdminService()).Show();
             else
-                new MainMenuView(usuario, new UserService()).Show();
+                // MainMenuView(User) — un solo argumento
+                new MainMenuView(usuario).Show();
 
             Close();
         }

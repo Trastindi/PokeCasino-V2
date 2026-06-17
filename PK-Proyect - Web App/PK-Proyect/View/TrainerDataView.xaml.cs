@@ -21,7 +21,8 @@ namespace PK_Proyect.View
             // Tras registro exitoso → MainMenuView con el usuario ya autenticado
             vm.NavigateToMainMenuRequested += (user) =>
             {
-                var menu = new MainMenuView(user, new UserService());
+                // MainMenuView(User) — un solo argumento, el UserService se crea internamente
+                var menu = new MainMenuView(user);
                 menu.Show();
                 this.Close();
             };

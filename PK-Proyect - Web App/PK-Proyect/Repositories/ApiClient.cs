@@ -9,30 +9,27 @@ namespace PK_Proyect.Repositories
 {
     /// <summary>
     /// Cliente HTTP centralizado para comunicarse con el servidor Flask.
-    /// Todos los services usan esta clase en lugar de conectarse directamente a MongoDB.
     /// </summary>
     public static class ApiClient
     {
         public static string BaseUrl { get; set; } = "https://pokecasino.dpdns.org";
 
+        /// <summary>ID del usuario autenticado, guardado al hacer login.</summary>
+        public static string CurrentUserId { get; private set; }
+
         private static string _token = null;
         private static readonly HttpClient _http = new HttpClient();
 
-        /// <summary>
-        /// Opciones JSON globales:
-        /// - PropertyNameCaseInsensitive: acepta claves en cualquier casing (Fecha/fecha/FECHA).
-        /// - Converters: DateTimeConverter tolera el formato isoformat de Python
-        ///   (sin 'Z' ni offset, e.g. "2026-06-04T10:17:46.123456").
-        /// </summary>
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new FlexibleDateTimeConverter() }
         };
 
-        public static void SetToken(string token)
+        public static void SetToken(string token, string userId = null)
         {
             _token = token;
+            CurrentUserId = userId;
             _http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
         }
@@ -40,10 +37,10 @@ namespace PK_Proyect.Repositories
         public static void ClearToken()
         {
             _token = null;
+            CurrentUserId = null;
             _http.DefaultRequestHeaders.Authorization = null;
         }
 
-        /// <summary>Crea un HttpClient con el JWT ya configurado (para servicios que lo necesiten).</summary>
         public static HttpClient CreateHttpClient()
         {
             var client = new HttpClient();
@@ -53,7 +50,7 @@ namespace PK_Proyect.Repositories
             return client;
         }
 
-        // ── Helpers ────────────────────────────────────────────────────────────
+        // ── Helpers ─────────────────────────────────────────────────────────
 
         private static StringContent Json(object body)
             => new StringContent(
@@ -61,7 +58,7 @@ namespace PK_Proyect.Repositories
                 Encoding.UTF8,
                 "application/json");
 
-        // ── Versiones asíncronas ──────────────────────────────────────────────
+        // ── Asíncronas ───────────────────────────────────────────────────────
 
         public static async System.Threading.Tasks.Task<T> GetAsync<T>(string path)
         {
@@ -90,7 +87,7 @@ namespace PK_Proyect.Repositories
             resp.EnsureSuccessStatusCode();
         }
 
-        // ── Versiones síncronas (compatibilidad WPF) ──────────────────────────
+        // ── Síncronas (compatibilidad WPF) ───────────────────────────────────
 
         public static T Get<T>(string path)
             => GetAsync<T>(path).GetAwaiter().GetResult();
@@ -105,11 +102,6 @@ namespace PK_Proyect.Repositories
             => DeleteAsync(path).GetAwaiter().GetResult();
     }
 
-    /// <summary>
-    /// Converter de DateTime flexible: acepta el formato isoformat de Python
-    /// ("2026-06-04T10:17:46", "2026-06-04T10:17:46.123456") además
-    /// del formato estándar con 'Z' o con offset.
-    /// </summary>
     internal class FlexibleDateTimeConverter : JsonConverter<System.DateTime>
     {
         private static readonly string[] _formats =
@@ -120,7 +112,7 @@ namespace PK_Proyect.Repositories
             "yyyy-MM-ddTHH:mm:ssZ",
             "yyyy-MM-ddTHH:mm:ss.fffffffZ",
             "yyyy-MM-ddTHH:mm:ss.fffZ",
-            "o",   // round-trip ISO 8601
+            "o",
         };
 
         public override System.DateTime Read(

@@ -1,3 +1,4 @@
+using PK_Proyect.Repositories;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
 using System.Windows;
@@ -10,30 +11,27 @@ namespace PK_Proyect.View
         {
             InitializeComponent();
 
-            // Antes de entrar en la batalla, pedir al jugador que elija su equipo
+            // userId del usuario autenticado, almacenado en ApiClient al hacer login
+            string currentUserId = ApiClient.CurrentUserId;
+
+            // Primero el selector de equipo
             var equipoVM = new EquipoPokemonViewModel(
-                userId: SessionManager.CurrentUserId,
+                userId: currentUserId,
                 modoSeleccion: true
             );
-
             var equipoView = new EquipoPokemonView(equipoVM, modoSeleccion: true);
 
-            // Si el usuario cancela la seleccion de equipo, cerrar esta ventana
-            equipoVM.SeleccionCancelada += () =>
-            {
-                this.Close();
-                return;
-            };
+            // Si cancela la selección, cerrar esta ventana
+            equipoVM.SeleccionCancelada += () => this.Close();
 
-            // Cuando el jugador confirme su equipo, inicializar el ViewModel de batalla
+            // Al confirmar equipo, montar el ViewModel de batalla y mostrar esta ventana
             equipoVM.EquipoConfirmado += equipoSeleccionado =>
             {
                 equipoView.Close();
-                DataContext = new BattleWindowViewModel(battleService, battleId, opponentId, equipoSeleccionado);
+                DataContext = new BattleWindowViewModel(battleService, battleId);
                 this.Show();
             };
 
-            // Mostrar primero el selector de equipo; la ventana de batalla aparece tras confirmar
             this.Hide();
             equipoView.ShowDialog();
         }

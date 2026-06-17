@@ -18,27 +18,26 @@ namespace PK_Proyect.ViewModels
 
         public event Action CerrarSesionRequested;
 
-        public ICommand AbrirCasinoCommand { get; }
-        public ICommand AbrirMapaCommand { get; }
-        public ICommand AbrirMenuPokemonCommand { get; }
-        public ICommand AbrirMedallasCommand { get; }
-        public ICommand AbrirPerfilCommand { get; }
-
-        public ICommand AbrirBatallaCommand { get; }
-        public ICommand CerrarSesionCommand { get; }
+        public ICommand AbrirCasinoCommand        { get; }
+        public ICommand AbrirMapaCommand          { get; }
+        public ICommand AbrirMenuPokemonCommand   { get; }
+        public ICommand AbrirMedallasCommand      { get; }
+        public ICommand AbrirPerfilCommand        { get; }
+        public ICommand AbrirBatallaCommand       { get; }
+        public ICommand CerrarSesionCommand       { get; }
 
         public MainMenuViewModel(User usuario, UserService userService)
         {
             UsuarioConectado = usuario;
             _userService     = userService;
 
-            AbrirCasinoCommand   = new RelayCommand(_ => AbrirCasino());
-            AbrirMapaCommand     = new RelayCommand(_ => AbrirMapa());
+            AbrirCasinoCommand        = new RelayCommand(_ => AbrirCasino());
+            AbrirMapaCommand          = new RelayCommand(_ => AbrirMapa());
             AbrirMenuPokemonCommand   = new RelayCommand(_ => AbrirMenuPokemon());
-            AbrirMedallasCommand = new RelayCommand(_ => AbrirMedallas());
-            AbrirPerfilCommand   = new RelayCommand(_ => AbrirPerfil());
-            AbrirBatallaCommand = new RelayCommand(_ => AbrirBatalla());
-            CerrarSesionCommand  = new RelayCommand(_ => CerrarSesion());
+            AbrirMedallasCommand      = new RelayCommand(_ => AbrirMedallas());
+            AbrirPerfilCommand        = new RelayCommand(_ => AbrirPerfil());
+            AbrirBatallaCommand       = new RelayCommand(_ => AbrirBatalla());
+            CerrarSesionCommand       = new RelayCommand(_ => CerrarSesion());
         }
 
         private void AbrirMedallas()
@@ -50,12 +49,8 @@ namespace PK_Proyect.ViewModels
         private void AbrirBatalla()
         {
             IBattleService battleService = new BattleService();
-
-            var ventana = new SearchBattleView(
-                battleService,
-                UsuarioConectado
-            );
-
+            // SearchBattleView recibe IBattleService y el userId como string
+            var ventana = new SearchBattleView(battleService, UsuarioConectado.Id);
             ventana.ShowDialog();
         }
 
@@ -63,9 +58,7 @@ namespace PK_Proyect.ViewModels
         {
             try
             {
-                // Cargar usuario en background para no bloquear UI
                 var userActualizado = await Task.Run(() => _userService.GetUserById(UsuarioConectado.Id));
-                
                 if (userActualizado != null)
                 {
                     var casino = new SlotMachineView(userActualizado, new CasinoService());
@@ -80,7 +73,8 @@ namespace PK_Proyect.ViewModels
 
         private void AbrirMenuPokemon()
         {
-            var ventana = new MenuPokemonView(new MenuPokemonViewModel(UsuarioConectado.Id));
+            // MenuPokemonView(User, UserService)
+            var ventana = new MenuPokemonView(UsuarioConectado, new UserService());
             ventana.ShowDialog();
         }
 

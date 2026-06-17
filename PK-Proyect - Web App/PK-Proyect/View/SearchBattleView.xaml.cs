@@ -16,11 +16,11 @@ namespace PK_Proyect.View
                 closeAction: () => this.Close()
             );
 
-            // Cuando la batalla sea aceptada, cerrar esta ventana y abrir BattleWindow
+            // Al aceptar la batalla, cerrar esta ventana y abrir BattleWindowView
             vm.BattleAccepted += () =>
             {
                 this.Close();
-                var battleWindow = new BattleWindowView();
+                var battleWindow = new BattleWindowView(battleService, currentUserId);
                 battleWindow.Show();
             };
 
