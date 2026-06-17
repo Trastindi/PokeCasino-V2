@@ -1455,6 +1455,7 @@ def _resolver_turno(battle_id: str, battle: dict):
         tipo_accion = accion.get("type", "move")
 
         if tipo_accion == "switch":
+            _reset_stat_stages(atacante)
             nuevo_idx    = int(accion.get("pokemon_index", idx_atk))
             nombre_nuevo = equipo_atk[nuevo_idx].get("Nombre", f"#{nuevo_idx}")
             if jugador == "p1":
@@ -1508,6 +1509,8 @@ def _resolver_turno(battle_id: str, battle: dict):
                 if state_enter["weather"] != (field_status or "normal").lower():
                     field_status = state_enter["weather"]
                     log.append({"event": "weather_change", "weather": field_status})
+
+                
 
         elif tipo_accion == "move":
             mov_index = int(accion.get("move_index", 0))
@@ -1578,6 +1581,7 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "event":   "fainted",
                     "pokemon": defensor.get("Nombre", "???"),
                 })
+                _reset_stat_stages(defensor)
                 equipo_vivo = any(p.get("CurrentHp", 0) > 0 for p in equipo_def)
                 if not equipo_vivo:
                     winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
@@ -1735,6 +1739,14 @@ def _resolver_turno(battle_id: str, battle: dict):
 
     battles.update_one({"_id": ObjectId(battle_id)}, {"$set": update})
 
+
+def _reset_stat_stages(poke: dict):
+    """Resetea todos los modificadores de estadísticas a 0 al salir del campo."""
+    poke["modificador_estadisticas"] = {
+        "ataque": 0, "defensa": 0,
+        "ataque_especial": 0, "defensa_especial": 0,
+        "velocidad": 0, "precision": 0, "evasion": 0,
+    }
 
 # ---------------------------------------------------------------------------
 # TABLA DE CAMBIO DE ESTADISTICAS
