@@ -1,48 +1,30 @@
-using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
-using System.Reflection;
 using System.Windows;
 
 namespace PK_Proyect.View
 {
     public partial class SearchBattleView : Window
     {
-        private readonly SearchBattleViewModel _vm;
-
-        public SearchBattleView(IBattleService battleService, User currentUser)
+        public SearchBattleView(IBattleService battleService, string currentUserId)
         {
             InitializeComponent();
-            
-            if (currentUser == null)
+
+            var vm = new SearchBattleViewModel(
+                battleService,
+                currentUserId,
+                closeAction: () => this.Close()
+            );
+
+            // Cuando la batalla sea aceptada, cerrar esta ventana y abrir BattleWindow
+            vm.BattleAccepted += () =>
             {
-                MessageBox.Show("Error: No se encontró el usuario actual.");
                 this.Close();
-                return;
-            }
-
-            _vm = new SearchBattleViewModel(battleService, currentUser.Id, Close);
-            _vm.BattleAccepted += OnBattleAccepted;
-            DataContext = _vm;
-        }
-
-        private void OnBattleAccepted()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Usar el nombre correcto de la ventana: BattleWindowView
-                var battleWindow = new BattleWindowView(
-                (IBattleService)((SearchBattleViewModel)this.DataContext)
-                .GetType()
-                .GetField("_battleService", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.GetValue((SearchBattleViewModel)this.DataContext)
-                ?? new BattleService()
-                );
-
-                battleWindow.Owner = this.Owner;
+                var battleWindow = new BattleWindowView();
                 battleWindow.Show();
-                this.Close();
-            });
+            };
+
+            DataContext = vm;
         }
     }
 }

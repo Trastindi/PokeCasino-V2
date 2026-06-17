@@ -1,37 +1,26 @@
-using PK_Proyect.Models;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace PK_Proyect.View
 {
     public partial class MainMenuView : Window
     {
-        private readonly MainMenuViewModel _vm;
+        private readonly string _userId;
 
-        public MainMenuView(User usuario, UserService userService)
+        public MainMenuView(string userId)
         {
             InitializeComponent();
-            _vm = new MainMenuViewModel(usuario, userService);
-            DataContext = _vm;
-            _vm.CerrarSesionRequested += OnCerrarSesion;
+            _userId = userId;
         }
 
-        private void OnCerrarSesion()
+        // Boton Buscar Combate
+        private void BuscarCombate_Click(object sender, RoutedEventArgs e)
         {
-            new LoginView().Show();
-            Close();
+            var battleService = new BattleService();
+            var searchView = new SearchBattleView(battleService, _userId);
+            searchView.ShowDialog();
         }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
-        }
-
-        private void btnMinimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-        private void btnClose_Click(object sender, RoutedEventArgs e) => Close();
-
-       
     }
 }
