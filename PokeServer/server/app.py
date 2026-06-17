@@ -1076,10 +1076,69 @@ def _efectividad_tipo(tipo_ataque: str, tipo_defensor: str) -> float:
 
 
 # ---------------------------------------------------------------------------
+# ABILITY HOOKS — helper para obtener docs de habilidad de un Pokémon
+# ---------------------------------------------------------------------------
+
+def _get_ability_docs(poke: dict) -> list:
+    """Devuelve la lista de documentos de habilidad desde MongoDB para un Pokémon."""
+    ability_raw = poke.get("Ability")
+    if not ability_raw:
+        return []
+    # Ability puede ser un dict expandido o una lista con un dict
+    if isinstance(ability_raw, dict):
+        return [ability_raw]
+    if isinstance(ability_raw, list):
+        return [a for a in ability_raw if isinstance(a, dict)]
+    return []
+
+
+def _make_battle_state() -> dict:
+    """Crea un battle_state vacío con todos los campos que usan los hooks."""
+    return {
+        "stat_multipliers":            {"self": {}, "opponent": {}},
+        "stat_stages":                 {"self": {}, "opponent": {}},
+        "move_power_multiplier":       1.0,
+        "damage_multiplier":           1.0,
+        "accuracy_multiplier":         1.0,
+        "evasion_multiplier":          1.0,
+        "move_blocked":                False,
+        "status_blocked":              False,
+        "stat_drop_blocked":           False,
+        "flinch_blocked":              False,
+        "escape_blocked":              False,
+        "forced_switch_blocked":       False,
+        "item_removal_blocked":        False,
+        "escape_guaranteed":           False,
+        "weather":                     "normal",
+        "weather_turns":               None,
+        "weather_suppressed":          False,
+        "volatile_flags":              {},
+        "type_override":               None,
+        "heal_fraction":               0.0,
+        "drain_inverted":              False,
+        "extra_pp_cost":               0,
+        "pending_status":              None,
+        "reflect_status":              False,
+        "cure_status":                 False,
+        "copied_ability":              None,
+        "crit_blocked":                False,
+        "recoil_blocked":              False,
+        "burn_penalty_suppressed":     False,
+        "secondary_chance_multiplier": 1.0,
+        "secondary_effects_blocked":   False,
+        "sleep_duration_multiplier":   1.0,
+        "contact_damage_fraction":     0.0,
+        "skip_turn":                   False,
+        "redirect_target":             None,
+    }
+
+
+# ---------------------------------------------------------------------------
 # FÓRMULA DE DAÑO GEN III
 # ---------------------------------------------------------------------------
 
-def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
+def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
+                  atk_abilities=None, def_abilities=None):
     if isinstance(movimiento, str):
         return 0
 
@@ -1095,17 +1154,51 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     if potencia == 0:
         return 0
 
-    stats_atk      = atacante.get("estadisticas_base") or {}
+    tipo_mov    = (movimiento.get("type") or movimiento.get("tipo") or "").lower()
+    tipo1_atk   = (atacante.get("TipoPrincipal")  or "").lower()
+    tipo2_atk   = (atacante.get("TipoSecundario") or "").lower()
+    tipo1_def   = (defensor.get("TipoPrincipal")  or "").title()
+    tipo2_def   = (defensor.get("TipoSecundario") or "")
+    tipo_titulo = tipo_mov.title() if tipo_mov else ""
+
+    # ── Contexto para los hooks ──────────────────────────────────────────────
+    ctx = {
+        "move_type":        tipo_mov,
+        "move_category":    categoria,
+        "move_is_damaging": True,
+        "weather":          (field_status or "normal").lower(),
+        "target_types":     [tipo1_def.lower(), tipo2_def.lower()] if tipo2_def else [tipo1_def.lower()],
+        "target_status":    defensor.get("Status"),
+        "hp_fraction":      defensor.get("CurrentHp", 0) / max(int((defensor.get("estadisticas_base") or {}).get("ps", 1)), 1),
+        "volatile_flags":   {},
+    }
+
+    battle_state = _make_battle_state()
+    battle_state["weather"] = ctx["weather"]
+
+    # Hook fase move_power (atacante modifica potencia del movimiento)
+    if atk_abilities:
+        apply_hooks("move_power", atk_abilities, ctx, battle_state)
+
+    # Hook fase receive_move (defensor puede bloquear o modificar daño recibido)
+    if def_abilities:
+        apply_hooks("receive_move", def_abilities, ctx, battle_state)
+
+    if battle_state["move_blocked"]:
+        return 0, False
+
+    # Aplicar multiplicador de potencia del movimiento
+    potencia_final = potencia * battle_state["move_power_multiplier"]
+
+    stats_atk       = atacante.get("estadisticas_base") or {}
     atk_modificator = atacante.get("modificador_estadisticas") or {}
-    stats_def      = defensor.get("estadisticas_base") or {}
+    stats_def       = defensor.get("estadisticas_base") or {}
     def_modificator = defensor.get("modificador_estadisticas") or {}
 
     if categoria == "special":
-        # FIX: defensor usa "defensa_especial", no "ataque_especial"
         A = int(stats_atk.get("ataque_especial", stats_atk.get("sp_ataque", 50))) * stat_stage_table[int(atk_modificator.get("ataque_especial", 0))]
         D = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50))) * stat_stage_table[int(def_modificator.get("defensa_especial", 0))]
     else:
-        # FIX: atacante usa "ataque", no "defensa"
         A = int(stats_atk.get("ataque", 50)) * stat_stage_table[int(atk_modificator.get("ataque", 0))]
         D = int(stats_def.get("defensa", 50)) * stat_stage_table[int(def_modificator.get("defensa", 0))]
 
@@ -1117,17 +1210,19 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
     # ── Base damage ─────────────────────────────────────────────────────────
     base = math.floor(
         math.floor(
-            math.floor((2 * nivel / 5) + 2) * potencia * A / D
+            math.floor((2 * nivel / 5) + 2) * potencia_final * A / D
         ) / 50
     ) + 2
 
     # ── Burn ────────────────────────────────────────────────────────────────
     status_atk = (atacante.get("Status") or "").lower()
-    burn = 0.5 if (status_atk == "quemado" or status_atk == "burn") and categoria == "physical" else 1
+    if battle_state["burn_penalty_suppressed"]:
+        burn = 1
+    else:
+        burn = 0.5 if (status_atk == "quemado" or status_atk == "burn") and categoria == "physical" else 1
 
     # ── Weather ─────────────────────────────────────────────────────────────
-    tipo_mov = (movimiento.get("type") or movimiento.get("tipo") or "").lower()
-    campo    = (field_status or "normal").lower()
+    campo = battle_state["weather"]
     if campo == "lluvia" or campo == "rain":
         weather = 1.5 if tipo_mov in ("agua", "water") else (0.5 if tipo_mov in ("fuego", "fire") else 1)
     elif campo in ("sol", "sun", "harsh sunlight"):
@@ -1138,25 +1233,23 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal"):
         weather = 1
 
     # ── STAB ────────────────────────────────────────────────────────────────
-    tipo1_atk = (atacante.get("TipoPrincipal")  or "").lower()
-    tipo2_atk = (atacante.get("TipoSecundario") or "").lower()
     stab = 1.5 if tipo_mov and tipo_mov in (tipo1_atk, tipo2_atk) else 1
 
     # ── Efectividad de tipos ─────────────────────────────────────────────────
-    tipo1_def      = (defensor.get("TipoPrincipal")  or "").title()
-    tipo2_def      = (defensor.get("TipoSecundario") or "")
-    tipo_titulo    = tipo_mov.title() if tipo_mov else ""
-    type1_eff      = _efectividad_tipo(tipo_titulo, tipo1_def)
-    type2_eff      = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
+    type1_eff = _efectividad_tipo(tipo_titulo, tipo1_def)
+    type2_eff = _efectividad_tipo(tipo_titulo, tipo2_def) if tipo2_def else 1.0
 
     # ── Crítico ─────────────────────────────────────────────────────────────
-    critical = 2 if random.randint(1, 16) == 1 else 1
+    if battle_state["crit_blocked"]:
+        critical = 1
+    else:
+        critical = 2 if random.randint(1, 16) == 1 else 1
 
     # ── Random [85..100] / 100 ──────────────────────────────────────────────
     rand = random.randint(85, 100) / 100
 
-    # ── Daño final ──────────────────────────────────────────────────────────
-    dano = math.floor(base * burn * weather * stab * type1_eff * type2_eff * critical * rand)
+    # ── Daño final (con multiplicador de daño recibido de hooks) ────────────
+    dano = math.floor(base * burn * weather * stab * type1_eff * type2_eff * critical * rand * battle_state["damage_multiplier"])
     dano = max(1, dano)
 
     hp_actual = int(defensor.get("CurrentHp", 0))
@@ -1170,7 +1263,6 @@ def _aplicar_stat_change(objetivo, stat: str, stages: int):
     modificador = objetivo.get("modificador_estadisticas") or {}
     valor_actual = int(modificador.get(stat, 0))
     nuevo_valor = valor_actual + stages
-    # FIX: clamp correcto
     nuevo_valor = max(-6, min(6, nuevo_valor))
     modificador[stat] = nuevo_valor
     objetivo["modificador_estadisticas"] = modificador
@@ -1198,7 +1290,6 @@ def _resolver_turno(battle_id: str, battle: dict):
         modificador = poke.get("modificador_estadisticas") or {}
         return stat_stage_table[int(modificador.get("velocidad", 0))]
 
-    # FIX: p2_speed usaba p1_team en lugar de p2_team
     p1_speed = get_speed(p1_team[p1_idx]) * get_speed_stage(p1_team[p1_idx])
     p2_speed = get_speed(p2_team[p2_idx]) * get_speed_stage(p2_team[p2_idx])
 
@@ -1220,6 +1311,10 @@ def _resolver_turno(battle_id: str, battle: dict):
     for jugador, accion, equipo_atk, idx_atk, equipo_def, idx_def in orden:
         atacante = equipo_atk[idx_atk]
         defensor = equipo_def[idx_def]
+
+        # Obtener habilidades expandidas del atacante y defensor
+        atk_abilities = _get_ability_docs(atacante)
+        def_abilities = _get_ability_docs(defensor)
 
         tipo_accion = accion.get("type", "move")
 
@@ -1266,7 +1361,11 @@ def _resolver_turno(battle_id: str, battle: dict):
                         })
                 continue
 
-            resultado = _aplicar_dano(atacante, defensor, movimiento, field_status)
+            resultado = _aplicar_dano(
+                atacante, defensor, movimiento, field_status,
+                atk_abilities=atk_abilities,
+                def_abilities=def_abilities,
+            )
             if resultado:
                 dano, es_critico = resultado
             else:
@@ -1305,6 +1404,41 @@ def _resolver_turno(battle_id: str, battle: dict):
                 if not equipo_vivo:
                     winner = battle["player1_id"] if jugador == "p1" else battle["player2_id"]
                     break
+
+    # ── Fase turn_end: efectos al final del turno (veneno, quemadura, etc.) ──
+    for jugador_label, equipo, idx in [("p1", p1_team, p1_idx), ("p2", p2_team, p2_idx)]:
+        poke = equipo[idx]
+        poke_abilities = _get_ability_docs(poke)
+        if poke_abilities:
+            turn_end_state = _make_battle_state()
+            turn_end_state["weather"] = (field_status or "normal").lower()
+            ctx_end = {
+                "weather":       turn_end_state["weather"],
+                "target_status": poke.get("Status"),
+                "hp_fraction":   poke.get("CurrentHp", 0) / max(int((poke.get("estadisticas_base") or {}).get("ps", 1)), 1),
+                "volatile_flags": {},
+            }
+            apply_hooks("turn_end", poke_abilities, ctx_end, turn_end_state)
+
+            # Aplicar curación si alguna habilidad la concedió
+            if turn_end_state["heal_fraction"] > 0:
+                max_hp  = int((poke.get("estadisticas_base") or {}).get("ps", 1))
+                heal    = max(1, math.floor(max_hp * turn_end_state["heal_fraction"]))
+                poke["CurrentHp"] = min(max_hp, poke.get("CurrentHp", 0) + heal)
+                log.append({
+                    "event":   "heal",
+                    "pokemon": poke.get("Nombre", jugador_label),
+                    "amount":  heal,
+                })
+
+            # Curar estado si el hook lo indica
+            if turn_end_state["cure_status"] and poke.get("Status"):
+                log.append({
+                    "event":   "status_cured",
+                    "pokemon": poke.get("Nombre", jugador_label),
+                    "status":  poke.get("Status"),
+                })
+                poke["Status"] = None
 
     # Construir update de la batalla
     update = {
