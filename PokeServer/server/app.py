@@ -13,6 +13,7 @@ import string
 import os
 from functools import wraps
 from bson import ObjectId
+from ability_hooks import apply_hooks
 
 app = Flask(__name__)
 CORS(app)
