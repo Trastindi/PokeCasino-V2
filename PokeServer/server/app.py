@@ -1197,10 +1197,7 @@ def _apply_enter_battle_hooks(battle_id, battle, entering_side="both"):
     if entering_side in ("p2", "both"):
         pairs.append((p2_team[p2_idx], p1_team[p1_idx], "p2", "p1"))
 
-    for (attacker, opponent, atk_label, def_label) in [
-        (p1_team[p1_idx], p2_team[p2_idx], "p1", "p2"),
-        (p2_team[p2_idx], p1_team[p1_idx], "p2", "p1"),
-    ]:
+    for (attacker, opponent, atk_label, def_label) in pairs:
         abilities = _get_ability_docs(attacker)
         if not abilities:
             continue
@@ -1413,7 +1410,8 @@ def _aplicar_stat_change(objetivo, stat: str, stages: int):
 
 def _resolver_turno(battle_id: str, battle: dict):
     """Resuelve las acciones de ambos jugadores, actualiza HP y estado en la BD."""
-    log = []
+    
+    log = list(battle.get("turn_log") or [])
 
     p1_team  = battle["player1_team"]["pokemon"]
     p2_team  = battle["player2_team"]["pokemon"]
@@ -1463,70 +1461,31 @@ def _resolver_turno(battle_id: str, battle: dict):
 
         if tipo_accion == "switch":
             _reset_stat_stages(atacante)
-            nuevo_idx    = int(accion.get("pokemon_index", idx_atk))
+            nuevo_idx = int(accion.get("pokemon_index", idx_atk))
             nombre_nuevo = equipo_atk[nuevo_idx].get("Nombre", f"#{nuevo_idx}")
             if jugador == "p1":
                 p1_idx = nuevo_idx
             else:
                 p2_idx = nuevo_idx
-            log.append({
-                "event":  "switch",
-                "player": jugador,
-                "to":     nombre_nuevo,
-            })
-
-            # FIX: disparar enter_battle para el Pokémon que entra tras el cambio
-            nuevo_poke   = equipo_atk[nuevo_idx]
-            nuevo_abilities = _get_ability_docs(nuevo_poke)
-            rival        = defensor  # el defensor sigue siendo el mismo
-            if nuevo_abilities:
-                ctx_enter = {
-                    "weather":          (field_status or "normal").lower(),
-                    "target_status":    rival.get("Status"),
-                    "target_species":   rival.get("Nombre", ""),
-                    "target_types":     [
-                        (rival.get("TipoPrincipal") or "").lower(),
-                        (rival.get("TipoSecundario") or "").lower(),
-                    ],
-                    "hp_fraction":      1.0,
-                    "source_is_opponent": False,
-                    "volatile_flags":   {},
-                }
-                state_enter = _make_battle_state()
-                state_enter["weather"] = ctx_enter["weather"]
-                
-                p1_switched = p1_action.get("type") == "switch"
-                p2_switched = p2_action.get("type") == "switch"
-
-                if p1_switched and not p2_switched:
-                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="p1")
-                elif p2_switched and not p1_switched:
-                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="p2")
-                elif p1_switched and p2_switched:
-                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="both")
-
-                opp_stages = state_enter["stat_stages"].get("opponent", {})
-                if opp_stages:
-                    _apply_stat_stages_from_hook(rival, opp_stages)
-                    for stat, delta in opp_stages.items():
-                        log.append({
-                            "event":   "stat_change",
-                            "ability": (nuevo_abilities[0].get("name", "?") if nuevo_abilities else "?"),
-                            "pokemon": rival.get("Nombre", ""),
-                            "stat":    stat,
-                            "stages":  delta,
-                            "new_stage": (rival.get("modificador_estadisticas") or {}).get(stat, 0),
-                        })
-
-                self_stages = state_enter["stat_stages"].get("self", {})
-                if self_stages:
-                    _apply_stat_stages_from_hook(nuevo_poke, self_stages)
-
-                if state_enter["weather"] != (field_status or "normal").lower():
-                    field_status = state_enter["weather"]
-                    log.append({"event": "weather_change", "weather": field_status})
-
-                
+            log.append({"event": "switch", "player": jugador, "to": nombre_nuevo})
+            
+            # Persistir el nuevo índice activo ANTES de llamar al hook
+            battles.update_one(
+                {"_id": ObjectId(battle_id)},
+                {"$set": {
+                    "player1_active": p1_idx,
+                    "player2_active": p2_idx,
+                    "player1_team.pokemon": p1_team,
+                    "player2_team.pokemon": p2_team,
+                }}
+            )
+            entering = "p1" if jugador == "p1" else "p2"
+            battle_post_switch = battles.find_one({"_id": ObjectId(battle_id)})
+            _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side=entering)
+            # Releer equipos actualizados por el hook (Intimidación ya aplicada)
+            battle_reread = battles.find_one({"_id": ObjectId(battle_id)})
+            p1_team = battle_reread["player1_team"]["pokemon"]
+            p2_team = battle_reread["player2_team"]["pokemon"]     
 
         elif tipo_accion == "move":
             mov_index = int(accion.get("move_index", 0))
