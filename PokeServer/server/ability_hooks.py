@@ -214,12 +214,13 @@ def apply_hooks(phase: str, abilities: list[dict], ctx: dict, battle_state: dict
     Devuelve battle_state modificado.
     """
     for ability in abilities:
-        for hook in ability.get("hooks", []):
-            if hook["phase"] != phase:
-                continue
+        hooks_of_phase = sorted(
+            [h for h in ability.get("hooks", []) if h.get("phase") == phase],
+            key=lambda h: h.get("priority", 0)
+        )
+        for hook in hooks_of_phase:
             if not _conditions_met(hook.get("conditions", []), ctx):
                 continue
-            # Ordenar por priority (menor = primero)
             _handle_effect(
                 hook["effectType"],
                 hook.get("params", {}),
@@ -227,4 +228,5 @@ def apply_hooks(phase: str, abilities: list[dict], ctx: dict, battle_state: dict
                 ctx,
                 battle_state
             )
+            
     return battle_state

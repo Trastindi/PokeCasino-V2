@@ -1256,13 +1256,13 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
     damage_class_obj = movimiento.get("damageClass") or {}
     categoria = damage_class_obj.get("value", "physical")
     if categoria == "status":
-        return 0
+        return 0, False
 
     # power está en powerModel.basePower
     power_model = movimiento.get("powerModel") or {}
     potencia = int(power_model.get("basePower") or movimiento.get("power") or 0)
     if potencia == 0:
-        return 0
+        return 0, False
 
     tipo_mov    = (movimiento.get("type") or movimiento.get("tipo") or "").lower()
     tipo1_atk   = (atacante.get("TipoPrincipal")  or "").lower()
@@ -1629,6 +1629,20 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "status":  poke.get("Status"),
                 })
                 poke["Status"] = None
+            
+            
+            if turn_end_state["contact_damage_fraction"] > 0:
+                max_hp = int((poke.get("estadisticas_base") or {}).get("ps", 1))
+                dmg = max(1, math.floor(max_hp * turn_end_state["contact_damage_fraction"]))
+                poke["CurrentHp"] = max(0, poke.get("CurrentHp", 0) - dmg)
+                log.append({"event": "turn_end_damage", "pokemon": poke.get("Nombre", "?"), "damage": dmg})
+
+            if turn_end_state["pending_status"] and not poke.get("Status"):
+                poke["Status"] = turn_end_state["pending_status"]["status"]
+                log.append({"event": "status_applied", "pokemon": poke.get("Nombre", "?"),
+                            "status": poke["Status"]})
+
+            _apply_stat_stages_from_hook(poke, turn_end_state["stat_stages"].get("self", {}))
 
             # FIX: aplicar daño por contacto (Piel Tosca, Barras de Hierro, etc.)
             if turn_end_state["contact_damage_fraction"] > 0:
