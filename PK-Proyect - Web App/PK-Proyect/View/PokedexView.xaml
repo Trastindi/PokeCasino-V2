@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Pokédex"
-        Height="1000" Width="460"
-        MinHeight="900" MinWidth="460"
+        Height="800" Width="460"
+        MinHeight="800" MinWidth="460"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -69,9 +69,9 @@
                 <!-- Barra título -->
                 <RowDefinition Height="40"/>
                 <!-- Panel superior (cámara + pantalla + D-Pad) -->
-                <RowDefinition Height="*"/>
+                <RowDefinition/>
                 <!-- Panel inferior (teclado + tipos + acciones) -->
-                <RowDefinition Height="420"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- ════════════ BARRA TÍTULO ════════════ -->
