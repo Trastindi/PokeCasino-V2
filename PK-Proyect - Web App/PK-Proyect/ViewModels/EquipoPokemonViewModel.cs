@@ -1,8 +1,11 @@
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PK_Proyect.ViewModels
 {
@@ -10,14 +13,35 @@ namespace PK_Proyect.ViewModels
     {
         private readonly PokemonUserRepository _repo;
 
+        // Modo normal: gestionar equipo. Modo seleccion: elegir equipo para batalla.
+        public bool ModoSeleccion { get; }
+
         public ObservableCollection<PokemonUser> Equipo { get; set; }
 
-        public EquipoPokemonViewModel(string userId)
-        {
-            _repo = new PokemonUserRepository();
-            Equipo = new ObservableCollection<PokemonUser>();
+        // Evento: el jugador confirmo su equipo (modo seleccion)
+        public event Action<ObservableCollection<PokemonUser>> EquipoConfirmado;
 
-            // Cargar de forma asincrónica para no bloquear el UI
+        // Evento: el jugador cancelo la seleccion
+        public event Action SeleccionCancelada;
+
+        public ICommand ConfirmarEquipoCommand { get; }
+        public ICommand CancelarCommand        { get; }
+
+        public EquipoPokemonViewModel(string userId, bool modoSeleccion = false)
+        {
+            _repo         = new PokemonUserRepository();
+            ModoSeleccion = modoSeleccion;
+            Equipo        = new ObservableCollection<PokemonUser>();
+
+            ConfirmarEquipoCommand = new RelayCommand(
+                _ => EquipoConfirmado?.Invoke(Equipo),
+                _ => Equipo.Count > 0
+            );
+
+            CancelarCommand = new RelayCommand(
+                _ => SeleccionCancelada?.Invoke()
+            );
+
             _ = CargarEquipoAsync(userId);
         }
 
@@ -30,10 +54,7 @@ namespace PK_Proyect.ViewModels
             );
 
             foreach (var p in lista)
-            {
-                Console.WriteLine($"Pokemon: {p.Nombre}, Nivel: {p.Nivel}, Cantidad: {p.Cantidad}");
                 Equipo.Add(p);
-            }
         }
     }
 }
