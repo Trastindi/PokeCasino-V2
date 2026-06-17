@@ -25,6 +25,7 @@
     <None Remove="Images\Oak.png" />
     <None Remove="Images\perfil.webp" />
     <None Remove="Images\PokeAdmin.jpg" />
+    <None Remove="Images\pokedexhiddenicons.png" />
     <None Remove="Images\PokeYellow2.webp" />
     <None Remove="Images\Pueblo_Paleta_RfVh.png" />
     <None Remove="Images\SlotMachine.png" />
@@ -64,6 +65,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\perfil.webp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\pokedexhiddenicons.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\SlotMachine.png">
