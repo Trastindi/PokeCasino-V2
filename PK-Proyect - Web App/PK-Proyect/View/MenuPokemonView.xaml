@@ -108,7 +108,7 @@
                     <Button Content="🗺️ Ver Pokemon"
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
-                            Command="{Binding AbrirEquipoCommand}"/>
+                            Command="{Binding VerPokemonCommand}"/>
 
                     <Button Content="◓ Pokedex"
                             FontFamily="{StaticResource PokemonClassic}"
