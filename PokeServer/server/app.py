@@ -1176,7 +1176,8 @@ def _apply_stat_stages_from_hook(poke: dict, stages_dict: dict):
     poke["modificador_estadisticas"] = mod
 
 
-def _apply_enter_battle_hooks(battle_id: str, battle: dict):
+def _apply_enter_battle_hooks(battle_id, battle, entering_side="both"):
+
     """
     Dispara la fase enter_battle para ambos Pokémon activos y persiste
     los stat_stages (e.g. Intimidación) y el clima en la batalla.
@@ -1189,6 +1190,12 @@ def _apply_enter_battle_hooks(battle_id: str, battle: dict):
 
     log = list(battle.get("turn_log") or [])
     update = {}
+
+    pairs = []
+    if entering_side in ("p1", "both"):
+        pairs.append((p1_team[p1_idx], p2_team[p2_idx], "p1", "p2"))
+    if entering_side in ("p2", "both"):
+        pairs.append((p2_team[p2_idx], p1_team[p1_idx], "p2", "p1"))
 
     for (attacker, opponent, atk_label, def_label) in [
         (p1_team[p1_idx], p2_team[p2_idx], "p1", "p2"),
@@ -1487,7 +1494,16 @@ def _resolver_turno(battle_id: str, battle: dict):
                 }
                 state_enter = _make_battle_state()
                 state_enter["weather"] = ctx_enter["weather"]
-                apply_hooks("enter_battle", nuevo_abilities, ctx_enter, state_enter)
+                
+                p1_switched = p1_action.get("type") == "switch"
+                p2_switched = p2_action.get("type") == "switch"
+
+                if p1_switched and not p2_switched:
+                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="p1")
+                elif p2_switched and not p1_switched:
+                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="p2")
+                elif p1_switched and p2_switched:
+                    _apply_enter_battle_hooks(battle_id, battle_post_switch, entering_side="both")
 
                 opp_stages = state_enter["stat_stages"].get("opponent", {})
                 if opp_stages:
