@@ -17,6 +17,7 @@ def _check_condition(cond, ctx):
     if t == "status_is":         return ctx.get("applied_status") == v
     if t == "status_in":         return ctx.get("applied_status") in v
     if t == "has_major_status":  return bool(ctx.get("target_status")) == v
+    if t == "own_status_is":     return ctx.get("own_status") == v
     if t == "species_is":        return ctx.get("target_species") == v
     if t == "target_has_type":   return v in ctx.get("target_types", [])
     if t == "hp_lte_fraction":   return ctx.get("hp_fraction", 1.0) <= v
@@ -28,7 +29,7 @@ def _check_condition(cond, ctx):
     if t == "battle_type_in":    return ctx.get("battle_type") in v
     if t == "source_is_opponent":return ctx.get("source_is_opponent") == v
     if t == "is_opposite_gender":return ctx.get("is_opposite_gender") == v
-    # FIX: condición desconocida → bloquea el hook en vez de ignorarla
+    # Condición desconocida → bloquea el hook en vez de ignorarla
     print(f"[ability_hooks] WARN: condición desconocida '{t}' — hook bloqueado")
     return False
 
@@ -235,5 +236,5 @@ def apply_hooks(phase: str, abilities: list[dict], ctx: dict, battle_state: dict
                 ctx,
                 battle_state
             )
-            
+
     return battle_state
