@@ -1563,7 +1563,8 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "stages": stages,
                     "new_stage": (objetivo.get("modificador_estadisticas") or {}).get(stat, 0),
                 })
-            continue
+            # sin continue — cae al final donde se persiste
+            dano, es_critico = 0, False
 
         dano, es_critico = _aplicar_dano(
             atacante,
