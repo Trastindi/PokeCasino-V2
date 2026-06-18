@@ -7,9 +7,22 @@ namespace PK_Proyect.View
 {
     public partial class BattleWindowView : Window
     {
-        public BattleWindowView(IBattleService battleService, string battleId = null, string opponentId = null)
+        /// <param name="skipTeamSelection">
+        /// Pasar true cuando el equipo ya fue enviado al servidor antes de abrir
+        /// esta ventana (p.ej. desde SearchBattleView). En ese caso se salta la
+        /// pantalla de selección de equipo y se muestra la batalla directamente.
+        /// </param>
+        public BattleWindowView(IBattleService battleService, string battleId = null,
+                                string opponentId = null, bool skipTeamSelection = false)
         {
             InitializeComponent();
+
+            if (skipTeamSelection)
+            {
+                // El equipo ya fue enviado: montar el ViewModel y mostrar directamente
+                DataContext = new BattleWindowViewModel(battleService, battleId);
+                return;
+            }
 
             // El userId ya no es necesario: el servidor lo deduce del JWT
             var equipoVM = new EquipoPokemonViewModel(modoSeleccion: true);

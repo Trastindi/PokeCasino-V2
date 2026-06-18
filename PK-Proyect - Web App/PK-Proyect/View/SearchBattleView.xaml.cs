@@ -32,7 +32,9 @@ namespace PK_Proyect.View
                         {
                             equipoView.Close();
                             this.Close();
-                            var battleWindow = new BattleWindowView(battleService, battleId);
+                            // skipTeamSelection: true — el equipo ya fue enviado arriba
+                            var battleWindow = new BattleWindowView(battleService, battleId,
+                                                                    skipTeamSelection: true);
                             battleWindow.Show();
                         }
                         else
