@@ -23,6 +23,10 @@ namespace PK_Proyect.ViewModels
     ///   choosing_action  → combate activo (movimientos o cambio voluntario)
     ///   waiting_switch   → cambio forzado (el Pokémon activo fue derrotado)
     ///   finished         → mensaje victoria/derrota, polling parado
+    ///
+    /// NOTA: ChoosePokemonAsync y SwitchPokemonAsync reciben el índice (int)
+    ///       dentro del equipo, no el pokemon_id string.
+    ///       El servidor extrae el jugador del JWT — no se envía player_id.
     /// </summary>
     public class BattleWindowViewModel : INotifyPropertyChanged, IDisposable
     {
@@ -58,14 +62,12 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        // Visibilidad de cada panel (una sola sección visible a la vez)
         public bool ShowPokemonPicker => BattleStatus == "ready";
         public bool ShowBattle        => BattleStatus == "choosing_action";
         public bool ShowForcedSwitch  => BattleStatus == "waiting_switch";
         public bool ShowFinished      => BattleStatus == "finished";
         public bool IsBattleActive    => BattleStatus == "choosing_action";
 
-        // Dentro de ShowBattle: alterna acciones ↔ movimientos
         private bool _showMoves;
         public  bool ShowMoves
         {
@@ -111,7 +113,6 @@ namespace PK_Proyect.ViewModels
         private string _battleMessage = string.Empty;
         public  string BattleMessage  { get => _battleMessage; set { _battleMessage = value; OnPropertyChanged(); } }
 
-        // Mensaje final (victoria / derrota)
         private string _finishMessage = string.Empty;
         public  string FinishMessage  { get => _finishMessage; set { _finishMessage = value; OnPropertyChanged(); } }
 
@@ -122,14 +123,10 @@ namespace PK_Proyect.ViewModels
         public RelayCommand SwitchPokemonCommand  { get; }
         public RelayCommand RunCommand            { get; }
         public RelayCommand UseMoveCommand        { get; }
-        /// <summary>Usado en ready: confirmar Pokémon inicial seleccionado.</summary>
         public RelayCommand ConfirmPickCommand    { get; }
-        /// <summary>Usado en waiting_switch: confirmar cambio forzado.</summary>
         public RelayCommand ConfirmSwitchCommand  { get; }
-        /// <summary>Cierra la ventana desde la pantalla de fin.</summary>
         public RelayCommand CloseCommand          { get; }
 
-        // Pokémon seleccionado en el picker (ready y waiting_switch)
         private PokemonEquipoItem _pickedPokemon;
         public  PokemonEquipoItem PickedPokemon
         {
@@ -138,7 +135,6 @@ namespace PK_Proyect.ViewModels
         }
         public bool CanConfirmPick => PickedPokemon != null;
 
-        // Equipo completo para los pickers
         public ObservableCollection<PokemonEquipoItem> Equipo { get; } = new();
 
         // ── Constructor ───────────────────────────────────────────────
@@ -150,13 +146,11 @@ namespace PK_Proyect.ViewModels
             _battleId      = battleId;
             _myPlayerId    = myPlayerId;
 
-            // — Comandos de navegación entre paneles —
             OpenMovesCommand    = new RelayCommand(_ => { ShowMoves = true;  BattleMessage = "¿Qué movimiento usará?"; return Task.CompletedTask; });
             BackToActionsCommand= new RelayCommand(_ => { ShowMoves = false; BattleMessage = "Selecciona una acción.";  return Task.CompletedTask; });
             UseItemCommand      = new RelayCommand(_ => { BattleMessage = "La bolsa aún no está disponible.";          return Task.CompletedTask; });
             CloseCommand        = new RelayCommand(_ => { StopPolling(); OwnerWindow?.Close(); return Task.CompletedTask; });
 
-            // — Usar movimiento —
             UseMoveCommand = new RelayCommand(async param =>
             {
                 if (param is not MoveModel move) return;
@@ -165,34 +159,30 @@ namespace PK_Proyect.ViewModels
                 await SendMoveAsync(move);
             });
 
-            // — PKMN voluntario —
             SwitchPokemonCommand = new RelayCommand(_ =>
             {
                 OpenSwitchDialog(forced: false);
                 return Task.CompletedTask;
             });
 
-            // — ESC: confirmar huida —
             RunCommand = new RelayCommand(async _ => await TryRunAsync());
 
-            // — Confirmar elección inicial (ready) —
+            // Confirmar elección inicial (ready): busca el índice en el equipo
             ConfirmPickCommand = new RelayCommand(async _ =>
             {
                 if (PickedPokemon == null) return;
                 await ConfirmInitialPickAsync();
             });
 
-            // — Confirmar cambio forzado (waiting_switch) —
+            // Confirmar cambio forzado (waiting_switch): busca el índice en el equipo
             ConfirmSwitchCommand = new RelayCommand(async _ =>
             {
                 if (PickedPokemon == null) return;
                 await ConfirmForcedSwitchAsync();
             });
 
-            // Cargar equipo placeholder (sustituir con sesión real cuando esté disponible)
             CargarEquipoPlaceholder();
 
-            // Arrancar
             if (!string.IsNullOrWhiteSpace(battleId))
                 _ = StartPollingAsync();
             else
@@ -214,12 +204,11 @@ namespace PK_Proyect.ViewModels
                     if (state != null)
                         await Application.Current.Dispatcher.InvokeAsync(() => ApplyState(state));
 
-                    // Parar polling si la batalla terminó
                     if (BattleStatus == "finished") break;
                 }
                 catch { /* ignorar errores de red transitorios */ }
 
-                await Task.Delay(2000, token).ContinueWith(_ => { }); // no lanzar TaskCanceled
+                await Task.Delay(2000, token).ContinueWith(_ => { });
             }
         }
 
@@ -229,7 +218,6 @@ namespace PK_Proyect.ViewModels
 
         private void ApplyState(BattleState state)
         {
-            // Actualizar datos del jugador
             var myPk = state.Player1Id == _myPlayerId ? state.Player1Pokemon : state.Player2Pokemon;
             var opPk = state.Player1Id == _myPlayerId ? state.Player2Pokemon : state.Player1Pokemon;
 
@@ -243,7 +231,6 @@ namespace PK_Proyect.ViewModels
                 OnPropertyChanged(nameof(PlayerHpPercent));
                 OnPropertyChanged(nameof(PlayerHpText));
 
-                // Sincronizar movimientos si cambiaron
                 var serverMoves = myPk.Moves ?? new();
                 bool movesChanged = serverMoves.Count != PlayerMoves.Count
                     || serverMoves.Any((m, i) => PlayerMoves[i].Name != m.Name || PlayerMoves[i].Pp != m.Pp);
@@ -267,7 +254,6 @@ namespace PK_Proyect.ViewModels
                 OnPropertyChanged(nameof(OpponentHpText));
             }
 
-            // Actualizar log del turno
             if (state.TurnLog?.Count > 0)
             {
                 foreach (var line in state.TurnLog)
@@ -277,10 +263,8 @@ namespace PK_Proyect.ViewModels
                 BattleMessage = state.TurnLog[^1];
             }
 
-            // Transición de estado
             BattleStatus = state.Status ?? BattleStatus;
 
-            // Mensaje final
             if (state.Status == "finished")
             {
                 StopPolling();
@@ -289,41 +273,60 @@ namespace PK_Proyect.ViewModels
                     : "¡Has perdido el combate...";
             }
 
-            // Si waiting_switch y es nuestro turno de cambiar, abrir picker forzado
             if (state.Status == "waiting_switch" && state.SwitchTurnId == _myPlayerId)
                 BattleMessage = "¡Tu Pokémon fue derrotado! Elige otro.";
         }
 
         // ── Acciones de turno ─────────────────────────────────────────────
 
+        /// <summary>
+        /// Busca el índice del Pokémon elegido en el equipo cargado y llama a
+        /// ChoosePokemonAsync(battleId, index) — app.py espera pokemon_index int.
+        /// </summary>
         private async Task ConfirmInitialPickAsync()
         {
-            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
-            var ok = await _battleService.ChoosePokemonAsync(_battleId, _myPlayerId, PickedPokemon.PokemonId);
-            if (ok)
-                BattleMessage = $"¡Adelante, {PickedPokemon.Nombre}!";
-            else
-                BattleMessage = "Error al elegir Pokémon, inténtalo de nuevo.";
-            // El polling detectará el cambio a choosing_action automáticamente
+            if (string.IsNullOrWhiteSpace(_battleId)) return;
+
+            int idx = Equipo.IndexOf(PickedPokemon);
+            if (idx < 0)
+            {
+                BattleMessage = "Error: Pokémon no encontrado en el equipo.";
+                return;
+            }
+
+            var ok = await _battleService.ChoosePokemonAsync(_battleId, idx);
+            BattleMessage = ok
+                ? $"¡Adelante, {PickedPokemon.Nombre}!"
+                : "Error al elegir Pokémon, inténtalo de nuevo.";
         }
 
+        /// <summary>
+        /// Busca el índice del Pokémon en el equipo y envía la acción de cambio
+        /// vía SwitchPokemonAsync(battleId, index).
+        /// </summary>
         private async Task ConfirmForcedSwitchAsync()
         {
-            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
-            var ok = await _battleService.SwitchPokemonAsync(_battleId, _myPlayerId, PickedPokemon.PokemonId);
-            if (ok)
-                BattleMessage = $"¡Adelante, {PickedPokemon.Nombre}!";
-            else
-                BattleMessage = "Error al cambiar Pokémon.";
+            if (string.IsNullOrWhiteSpace(_battleId)) return;
+
+            int idx = Equipo.IndexOf(PickedPokemon);
+            if (idx < 0)
+            {
+                BattleMessage = "Error: Pokémon no encontrado en el equipo.";
+                return;
+            }
+
+            var ok = await _battleService.SwitchPokemonAsync(_battleId, idx);
+            BattleMessage = ok
+                ? $"¡Adelante, {PickedPokemon.Nombre}!"
+                : "Error al cambiar Pokémon.";
         }
 
         private async Task SendMoveAsync(MoveModel move)
         {
-            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
-            var result = await _battleService.UseMoveAsync(_battleId, _myPlayerId, move.Name);
+            if (string.IsNullOrWhiteSpace(_battleId)) return;
+            var result = await _battleService.UseMoveAsync(_battleId, move.Name);
             if (result == null) return;
 
-            // Mostrar log inmediatamente sin esperar al siguiente poll
             if (result.Log?.Count > 0)
             {
                 foreach (var line in result.Log)
@@ -339,10 +342,12 @@ namespace PK_Proyect.ViewModels
             if (win.ShowDialog() == true && vm.SelectedPokemon != null)
             {
                 if (!forced)
-                    // Cambio voluntario: enviarlo directamente
-                    _ = _battleService.SwitchPokemonAsync(_battleId, _myPlayerId, vm.SelectedPokemon.PokemonId);
+                {
+                    int idx = Equipo.IndexOf(vm.SelectedPokemon);
+                    if (idx >= 0)
+                        _ = _battleService.SwitchPokemonAsync(_battleId, idx);
+                }
 
-                // Actualizar UI local (el siguiente poll traerá la confirmación del servidor)
                 PlayerName   = vm.SelectedPokemon.Nombre;
                 PlayerLevel  = vm.SelectedPokemon.Nivel;
                 _playerHp    = vm.SelectedPokemon.HpActual;
@@ -424,9 +429,9 @@ namespace PK_Proyect.ViewModels
             catch { return null; }
         }
 
-        public void Dispose() => StopPolling();
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        public void Dispose() => StopPolling();
     }
 }
