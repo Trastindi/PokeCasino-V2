@@ -52,22 +52,22 @@ namespace PK_Proyect.Models
         [JsonPropertyName("responded")]
         public bool Respondido { get; set; }
 
-        /// <summary>Lección de compatibilidad con código anterior que usaba "leido".</summary>
+        /// <summary>Compatibilidad con campo "leido" anterior.</summary>
         [BsonElement("leido")]
         [JsonPropertyName("leido")]
         public bool Leido { get; set; }
 
         /// <summary>
-        /// Si el mensaje es un desafío de batalla, contiene el battleId.
-        /// Null si es un mensaje normal.
+        /// ID de la batalla asociada al mensaje (campo "battle_id" en el servidor).
+        /// Presente en mensajes de tipo "battle_request" y "battle_response".
         /// </summary>
-        [BsonElement("tipoBatallaId")]
-        [JsonPropertyName("tipoBatallaId")]
+        [BsonElement("battle_id")]
+        [JsonPropertyName("battle_id")]
         public string TipoBatallaId { get; set; }
 
         /// <summary>
-        /// Si el mensaje es una solicitud de intercambio, contiene el tradeId.
-        /// Null si no es un trade_request.
+        /// ID del intercambio asociado (campo "trade_id" en el servidor).
+        /// Presente en mensajes de tipo "trade_request" y "trade_response".
         /// </summary>
         [BsonElement("trade_id")]
         [JsonPropertyName("trade_id")]
