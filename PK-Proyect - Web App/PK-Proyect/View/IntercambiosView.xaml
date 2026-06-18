@@ -14,17 +14,24 @@
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Título -->
+            <RowDefinition Height="Auto"/>   <!-- Título + Recargar -->
             <RowDefinition Height="Auto"/>   <!-- Enviar solicitud -->
             <RowDefinition Height="*"/>      <!-- Panel intercambio activo -->
             <RowDefinition Height="Auto"/>   <!-- Historial -->
             <RowDefinition Height="Auto"/>   <!-- Mensaje -->
         </Grid.RowDefinitions>
 
-        <!-- ── Título ─────────────────────────────────────────────── -->
-        <TextBlock Grid.Row="0" Text="Intercambios" FontSize="24" FontWeight="Bold" Margin="0 0 0 16"/>
+        <!-- ── Título + botón Recargar ─────────────────────────── -->
+        <DockPanel Grid.Row="0" Margin="0 0 0 16">
+            <TextBlock Text="Intercambios" FontSize="24" FontWeight="Bold"
+                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <Button Content="🔄 Recargar" DockPanel.Dock="Right"
+                    Padding="12 4" HorizontalAlignment="Right"
+                    Click="BtnRecargar_Click"
+                    ToolTip="Comprueba si hay un intercambio activo y actualiza el estado"/>
+        </DockPanel>
 
-        <!-- ── Enviar solicitud ──────────────────────────────────── -->
+        <!-- ── Enviar solicitud ───────────────────────────────── -->
         <GroupBox Grid.Row="1" Header="Nueva solicitud de intercambio" Margin="0 0 0 16">
             <StackPanel Orientation="Horizontal" Margin="8">
                 <TextBlock Text="ID del usuario:" VerticalAlignment="Center" Margin="0 0 8 0"/>
@@ -35,7 +42,7 @@
             </StackPanel>
         </GroupBox>
 
-        <!-- ── Panel intercambio activo ─────────────────────────── -->
+        <!-- ── Panel intercambio activo ──────────────────────── -->
         <GroupBox Grid.Row="2" Header="Intercambio en curso"
                   Visibility="{Binding HayIntercambioActivo, Converter={StaticResource BoolToVisibility}}"
                   Margin="0 0 0 16">
@@ -79,23 +86,16 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Selector de Pokémon + acciones -->
+                <!-- Selector Pokémon + acciones -->
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal"
                             HorizontalAlignment="Center" Margin="0 12 0 0">
-
-                    <!-- Pokémon seleccionado (nombre o placeholder) -->
                     <Border BorderBrush="#888" BorderThickness="1" CornerRadius="4"
-                            Padding="8 4" Margin="0 0 8 0" MinWidth="160"
-                            VerticalAlignment="Center">
-                        <TextBlock x:Name="TxtPokemonElegido"
-                                   Text="{Binding PokemonOfrecido.Nombre, FallbackValue='Ninguno seleccionado'}"
+                            Padding="8 4" Margin="0 0 8 0" MinWidth="160" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding PokemonOfrecido.Nombre, FallbackValue='Ninguno seleccionado'}"
                                    VerticalAlignment="Center"/>
                     </Border>
-
-                    <!-- Botón que abre la ventana de selección -->
                     <Button Content="🎒 Elegir Pokémon" Padding="10 4" Margin="0 0 8 0"
                             Click="BtnElegirPokemon_Click"/>
-
                     <Button Content="Ofrecer Pokémon" Padding="10 4" Margin="0 0 8 0"
                             Click="BtnOfrecer_Click"/>
                     <Button Content="✔ Confirmar intercambio" Padding="10 4" Margin="0 0 8 0"
@@ -108,19 +108,32 @@
             </Grid>
         </GroupBox>
 
-        <!-- ── Historial de intercambios ─────────────────────────── -->
+        <!-- Aviso cuando NO hay intercambio activo -->
+        <Border Grid.Row="2"
+                Visibility="{Binding NoHayIntercambioActivo, Converter={StaticResource BoolToVisibility}}"
+                BorderBrush="#ccc" BorderThickness="1" CornerRadius="8"
+                Padding="20" Margin="0 0 0 16" Background="#f9f9f9">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Sin intercambio activo" FontSize="16" Foreground="#888"
+                           HorizontalAlignment="Center" Margin="0 0 0 8"/>
+                <TextBlock Text="Pulsa 🔄 Recargar si acabas de aceptar una solicitud."
+                           Foreground="#aaa" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Historial de intercambios ─────────────────────── -->
         <GroupBox Grid.Row="3" Header="Mis intercambios" Margin="0 0 0 8">
             <DataGrid ItemsSource="{Binding MisIntercambios}"
                       AutoGenerateColumns="False" IsReadOnly="True"
                       CanUserAddRows="False" MaxHeight="180">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Con" Binding="{Binding Player2Name}" Width="*"/>
-                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100"/>
-                    <DataGridTextColumn Header="Fecha" Binding="{Binding CreatedAt}" Width="160"/>
+                    <DataGridTextColumn Header="Con"    Binding="{Binding Player2Name}" Width="*"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}"      Width="100"/>
+                    <DataGridTextColumn Header="Fecha"  Binding="{Binding CreatedAt}"   Width="160"/>
                     <DataGridTemplateColumn Header="Acción" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Ver" Padding="6 2"
+                                <Button Content="Entrar" Padding="6 2"
                                         Click="BtnVerIntercambio_Click"
                                         Tag="{Binding Id}"/>
                             </DataTemplate>
@@ -130,15 +143,15 @@
             </DataGrid>
         </GroupBox>
 
-        <!-- ── Mensaje / feedback ────────────────────────────────── -->
+        <!-- ── Mensaje / feedback ─────────────────────────────── -->
         <StackPanel Grid.Row="4" Orientation="Horizontal">
             <Border Padding="12 6" CornerRadius="6" Background="#2ecc71"
                     Visibility="{Binding IntercambioExitoso, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="¡Intercambio completado con éxito! 🎉"
                            Foreground="White" FontWeight="Bold"/>
             </Border>
-            <TextBlock Text="{Binding Mensaje}" VerticalAlignment="Center"
-                       Foreground="#555" Margin="8 0 0 0"
+            <TextBlock Text="{Binding Mensaje}" VerticalAlignment="Center" Foreground="#555"
+                       Margin="8 0 0 0"
                        Visibility="{Binding Mensaje, Converter={StaticResource StringToVisibility}}"/>
         </StackPanel>
     </Grid>

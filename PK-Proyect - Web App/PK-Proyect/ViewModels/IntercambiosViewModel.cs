@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows;
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
 
@@ -13,18 +12,14 @@ namespace PK_Proyect.ViewModels
 {
     public class IntercambiosViewModel : INotifyPropertyChanged
     {
-        private readonly ITradeRepository       _tradeRepo;
-        private readonly PokemonUserRepository  _pokemonRepo;
+        private readonly ITradeRepository      _tradeRepo;
+        private readonly PokemonUserRepository _pokemonRepo;
 
         public ObservableCollection<TradeModel>  MisIntercambios { get; } = new();
         public ObservableCollection<PokemonUser> MisPokemon      { get; } = new();
 
-        private string _rivalUsername = string.Empty;
-        public string RivalUsername
-        {
-            get => _rivalUsername;
-            set { _rivalUsername = value; OnPropertyChanged(); }
-        }
+        // ID del intercambio que viene del mensaje aceptado (se asigna desde MisMensajesView)
+        public string TradeIdPendiente { get; set; }
 
         private string _rivalId = string.Empty;
         public string RivalId
@@ -42,9 +37,11 @@ namespace PK_Proyect.ViewModels
                 _intercambioActivo = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HayIntercambioActivo));
+                OnPropertyChanged(nameof(NoHayIntercambioActivo));
             }
         }
-        public bool HayIntercambioActivo => IntercambioActivo != null;
+        public bool HayIntercambioActivo   => IntercambioActivo != null;
+        public bool NoHayIntercambioActivo => IntercambioActivo == null;
 
         private PokemonUser _pokemonOfrecido;
         public PokemonUser PokemonOfrecido
@@ -82,6 +79,36 @@ namespace PK_Proyect.ViewModels
 
         // ── Métodos públicos ─────────────────────────────────────────
 
+        /// <summary>
+        /// Llamado al abrir la ventana y al pulsar Recargar.
+        /// Si hay un TradeIdPendiente (del mensaje aceptado) lo carga directamente.
+        /// Si no, busca en el historial el primer intercambio en estado 'pending' o 'active'.
+        /// </summary>
+        public async Task IntentarReanudarIntercambioAsync()
+        {
+            // 1. Si tenemos un tradeId concreto del mensaje, úsalo directamente
+            if (!string.IsNullOrEmpty(TradeIdPendiente))
+            {
+                await CargarIntercambioPublicoAsync(TradeIdPendiente);
+                TradeIdPendiente = null;
+                return;
+            }
+
+            // 2. Si ya hay uno activo, solo refresca
+            if (IntercambioActivo != null)
+            {
+                await RefrescarIntercambioPublicoAsync();
+                return;
+            }
+
+            // 3. Buscar en el historial el primer intercambio activo o pendiente
+            var activo = MisIntercambios.FirstOrDefault(t =>
+                t.Status == "pending" || t.Status == "active" || t.Status == "waiting");
+
+            if (activo != null)
+                await CargarIntercambioPublicoAsync(activo.Id);
+        }
+
         public async Task EnviarSolicitudAsync()
         {
             if (string.IsNullOrWhiteSpace(RivalId))
@@ -93,9 +120,9 @@ namespace PK_Proyect.ViewModels
             Mensaje = string.Empty;
             try
             {
-                var msg = await _tradeRepo.SendTradeRequestAsync(RivalId);
-                Mensaje = msg != null
-                    ? $"Solicitud enviada a {RivalUsername}. Esperando respuesta..."
+                var ok = await _tradeRepo.SendTradeRequestAsync(RivalId);
+                Mensaje = ok != null
+                    ? "Solicitud enviada. Esperando respuesta..."
                     : "Error al enviar la solicitud.";
             }
             catch (Exception ex) { Mensaje = $"Error: {ex.Message}"; }
@@ -147,15 +174,10 @@ namespace PK_Proyect.ViewModels
             try
             {
                 var ok = await _tradeRepo.OfferPokemonAsync(IntercambioActivo.Id, PokemonOfrecido.Id);
-                if (ok)
-                {
-                    Mensaje = "Pokémon ofrecido. Esperando al otro jugador...";
-                    await RefrescarIntercambioPublicoAsync();
-                }
-                else
-                {
-                    Mensaje = "Error al ofrecer el Pokémon.";
-                }
+                Mensaje = ok
+                    ? "Pokémon ofrecido. Esperando al otro jugador..."
+                    : "Error al ofrecer el Pokémon.";
+                if (ok) await RefrescarIntercambioPublicoAsync();
             }
             catch (Exception ex) { Mensaje = $"Error: {ex.Message}"; }
             finally { EstaCargando = false; }
@@ -208,11 +230,10 @@ namespace PK_Proyect.ViewModels
                 MisIntercambios.Clear();
                 foreach (var t in lista) MisIntercambios.Add(t);
             }
-            catch (Exception ex) { Mensaje = $"Error: {ex.Message}"; }
+            catch (Exception ex) { Mensaje = $"Error cargando intercambios: {ex.Message}"; }
             finally { EstaCargando = false; }
         }
 
-        /// <summary>Carga un intercambio concreto por ID y lo muestra como activo.</summary>
         public async Task CargarIntercambioPublicoAsync(string tradeId)
         {
             var trade = await _tradeRepo.GetTradeAsync(tradeId);
@@ -221,7 +242,6 @@ namespace PK_Proyect.ViewModels
                 await CargarMisPokemonAsync();
         }
 
-        /// <summary>Refresca el intercambio activo (usado por el polling).</summary>
         public async Task RefrescarIntercambioPublicoAsync()
         {
             if (IntercambioActivo == null) return;

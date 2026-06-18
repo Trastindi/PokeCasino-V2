@@ -19,10 +19,16 @@ namespace PK_Proyect.Views
             Unloaded += OnUnloaded;
         }
 
-        // ── Polling: refresca el intercambio activo cada 4 s ──
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        // ── Al cargar: lanza carga inicial + polling ──
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _pollingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
+            if (VM == null) return;
+
+            // Cargar historial e intentar recuperar intercambio activo pendiente
+            await VM.CargarMisIntercambiosAsync();
+            await VM.IntentarReanudarIntercambioAsync();
+
+            _pollingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
             _pollingTimer.Tick += async (_, __) =>
             {
                 if (VM?.HayIntercambioActivo == true)
@@ -37,17 +43,23 @@ namespace PK_Proyect.Views
             _pollingTimer = null;
         }
 
+        // ── Botón Recargar ──
+        private async void BtnRecargar_Click(object sender, RoutedEventArgs e)
+        {
+            if (VM == null) return;
+            await VM.CargarMisIntercambiosAsync();
+            await VM.IntentarReanudarIntercambioAsync();
+            VM.Mensaje = string.IsNullOrEmpty(VM.Mensaje)
+                ? "Actualizado."
+                : VM.Mensaje;
+        }
+
         // ── Botón: abrir ventana de selección de Pokémon ──
         private void BtnElegirPokemon_Click(object sender, RoutedEventArgs e)
         {
             if (VM == null) return;
-
             var selVM  = new SeleccionarPokemonViewModel(VM.MisPokemon);
-            var window = new SeleccionarPokemonWindow(selVM)
-            {
-                Owner = Window.GetWindow(this)
-            };
-
+            var window = new SeleccionarPokemonWindow(selVM) { Owner = Window.GetWindow(this) };
             if (window.ShowDialog() == true && selVM.PokemonElegido != null)
                 VM.PokemonOfrecido = selVM.PokemonElegido;
         }
