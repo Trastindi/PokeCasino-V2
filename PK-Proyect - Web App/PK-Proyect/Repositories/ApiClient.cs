@@ -18,13 +18,26 @@ namespace PK_Proyect.Repositories
         public static string CurrentUserId { get; private set; }
 
         private static string _token = null;
-        private static readonly HttpClient _http = new HttpClient();
+        private static readonly HttpClient _http = CreateDefaultClient();
 
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new FlexibleDateTimeConverter() }
         };
+
+        /// <summary>
+        /// Crea el HttpClient con un User-Agent válido para evitar que Cloudflare
+        /// bloquee las peticiones con 403 al detectar el User-Agent genérico de .NET.
+        /// </summary>
+        private static HttpClient CreateDefaultClient()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
+            );
+            return client;
+        }
 
         public static void SetToken(string token, string userId = null)
         {
@@ -43,7 +56,7 @@ namespace PK_Proyect.Repositories
 
         public static HttpClient CreateHttpClient()
         {
-            var client = new HttpClient();
+            var client = CreateDefaultClient();
             if (_token != null)
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", _token);
