@@ -1,84 +1,119 @@
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
-using System.Collections.Generic;
+using PK_Proyect.Repositories;
+using PK_Proyect.View;
+using PK_Proyect.ViewModels;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace PK_Proyect.ViewModels
 {
-    /// <summary>
-    /// Wrapper sobre PokemonUser que expone propiedades calculadas
-    /// listas para bindear directamente desde DetallePokemonView.xaml.
-    /// </summary>
     public class DetallePokemonViewModel
     {
         private readonly PokemonUser _pokemon;
+        private readonly EquipoRepository _equipoRepo;
 
         public DetallePokemonViewModel(PokemonUser pokemon)
         {
-            _pokemon = pokemon;
+            _pokemon = pokemon ?? throw new ArgumentNullException(nameof(pokemon));
+            _equipoRepo = new EquipoRepository();
+
+            AddToTeamCommand = new RelayCommand(param => _ = AddToTeamAsync(param as string));
         }
 
-        // ── Datos básicos ────────────────────────────────────────────────────
-        public string Nombre         => _pokemon.Nombre;
-        public int    NumeroPokedex  => _pokemon.numero_pokedex;
-        public int    Nivel          => _pokemon.Nivel;
-        public string TipoPrincipal  => _pokemon.TipoPrincipal;
-        public string TipoSecundario => string.IsNullOrWhiteSpace(_pokemon.TipoSecundario)
-                                            ? "—"
-                                            : _pokemon.TipoSecundario;
-        public string Habilidad      => string.IsNullOrWhiteSpace(_pokemon.AbilityId)
-                                            ? "—"
-                                            : _pokemon.AbilityId;
-        public string Objeto         => string.IsNullOrWhiteSpace(_pokemon.ItemId)
-                                            ? "—"
-                                            : _pokemon.ItemId;
-        public string FechaObtenido  => _pokemon.FechaObtenido.ToString("dd/MM/yyyy");
-        public int    CurrentHp      => _pokemon.CurrentHp;
-        public string Status         => string.IsNullOrWhiteSpace(_pokemon.Status)
-                                            ? "—"
-                                            : _pokemon.Status;
+        // Propiedades para binding (adapta/añade las que necesites)
+        public string Nombre => _pokemon?.Nombre;
+        public int NumeroPokedex => _pokemon?.numero_pokedex ?? 0;
+        public string SpriteUrl => _pokemon != null
+            ? $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{_pokemon.numero_pokedex}.png"
+            : null;
 
-        // ── Sprite (PokeAPI) ─────────────────────────────────────────────────
+        // Comando público enlazable desde la vista
+        public ICommand AddToTeamCommand { get; }
+
         /// <summary>
-        /// URL del sprite frontal oficial desde PokeAPI.
-        /// Usa numero_pokedex para construirla (no depende de datos del servidor).
+        /// Añade el Pokémon al equipo indicado.
+        /// - Si se recibe equipoId lo usa.
+        /// - Si no, abre el selector de equipos (EquipoPokemonView en modo selección).
+        /// Permite duplicados; solo comprueba límite de 6.
         /// </summary>
-        public string SpriteUrl =>
-            $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{_pokemon.numero_pokedex}.png";
-
-        // ── Estadísticas base (Dictionary<string,int> con claves en minúscula) ──
-        /// <summary>PS / HP</summary>
-        public int StatPs              => GetStat("ps");
-        /// <summary>Ataque</summary>
-        public int StatAtaque          => GetStat("ataque");
-        /// <summary>Defensa</summary>
-        public int StatDefensa         => GetStat("defensa");
-        /// <summary>Ataque especial</summary>
-        public int StatAtaqueEspecial  => GetStat("ataque_especial");
-        /// <summary>Defensa especial</summary>
-        public int StatDefensaEspecial => GetStat("defensa_especial");
-        /// <summary>Velocidad</summary>
-        public int StatVelocidad       => GetStat("velocidad");
-
-        // ── Moveset ──────────────────────────────────────────────────────────
-        /// <summary>Cadena de movimientos separados por coma.</summary>
-        public string MovimientosTexto =>
-            (_pokemon.MoveSet == null || !_pokemon.MoveSet.Any())
-                ? "—"
-                : string.Join(", ", _pokemon.MoveSet);
-
-        /// <summary>Lista de movimientos para ItemsControl.</summary>
-        public IEnumerable<string> Movimientos =>
-            (_pokemon.MoveSet != null && _pokemon.MoveSet.Any())
-                ? _pokemon.MoveSet
-                : new List<string> { "—" };
-
-        // ── Helpers ──────────────────────────────────────────────────────────
-        private int GetStat(string clave)
+        private async Task AddToTeamAsync(string equipoIdParam)
         {
-            if (_pokemon.estadisticas_base != null &&
-                _pokemon.estadisticas_base.TryGetValue(clave, out int val))
-                return val;
-            return 0;
+            try
+            {
+                string equipoSeleccionadoId = equipoIdParam;
+
+                // Si no se pasó equipoId, abrir selector de equipos en UI thread
+                if (string.IsNullOrEmpty(equipoSeleccionadoId))
+                {
+                    EquipoPokemonViewModel vmEquipos = null;
+                    EquipoPokemonView ventanaEquipos = null;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        vmEquipos = new EquipoPokemonViewModel(modoSeleccion: true);
+                        ventanaEquipos = new EquipoPokemonView(vmEquipos, modoSeleccion: true)
+                        {
+                            Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+                        };
+                    });
+
+                    // Suscribirse al evento para obtener el id seleccionado
+                    void OnEquipoConfirmado(string id) => equipoSeleccionadoId = id;
+                    vmEquipos.EquipoConfirmado += OnEquipoConfirmado;
+
+                    // Mostrar modal (UI thread)
+                    Application.Current.Dispatcher.Invoke(() => ventanaEquipos.ShowDialog());
+
+                    vmEquipos.EquipoConfirmado -= OnEquipoConfirmado;
+                }
+
+                // Si sigue sin equipo seleccionado, el usuario canceló
+                if (string.IsNullOrEmpty(equipoSeleccionadoId))
+                    return;
+
+                // Operaciones de I/O en background
+                var resultado = await Task.Run(() =>
+                {
+                    var equipos = _equipoRepo.GetMisEquipos();
+                    var equipo = equipos?.FirstOrDefault(t => t.Id == equipoSeleccionadoId);
+                    if (equipo == null)
+                        return (success: false, message: "Equipo no encontrado.");
+
+                    if (equipo.PokemonIds == null)
+                        equipo.PokemonIds = new System.Collections.Generic.List<string>();
+
+                    // Permitir duplicados: no comprobamos si el ID ya existe.
+                    if (equipo.PokemonIds.Count >= 6)
+                        return (success: false, message: $"El equipo {equipo.Nombre} ya tiene 6 Pokémon. Elimina uno antes de añadir otro.");
+
+                    equipo.PokemonIds.Add(_pokemon.Id);
+                    _equipoRepo.ActualizarEquipo(equipo.Id, equipo.PokemonIds);
+
+                    return (success: true, message: $"Se añadió {_pokemon.Nombre} al equipo {equipo.Nombre}.");
+                });
+
+                // Feedback en UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (resultado.success)
+                    {
+                        MessageBox.Show(resultado.message, "Añadido", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(resultado.message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Error al añadir al equipo: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+            }
         }
     }
 }
