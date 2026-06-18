@@ -1,10 +1,8 @@
 using PK_Proyect.Commands;
+using PK_Proyect.Repositories;   // ApiClient
 using PK_Proyect.Services;
 using System.ComponentModel;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -23,7 +21,7 @@ namespace PK_Proyect.ViewModels
         private bool _teamSubmitted;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        // Ahora lleva el battle_id para que el code-behind pueda abrirlo en EquipoPokemon
+        // Lleva el battle_id para que el code-behind pueda abrir EquipoPokemon
         public event System.Action<string> BattleAccepted;
 
         public RelayCommand DesafiarCommand { get; }
@@ -119,7 +117,7 @@ namespace PK_Proyect.ViewModels
         public bool IsValidUserId   => !string.IsNullOrWhiteSpace(IdUserToChallenge);
         public bool IsValidBattleId => !string.IsNullOrWhiteSpace(IdBattleToJoin);
 
-        // ── Enviar equipo al servidor ────────────────────────────────────────
+        // ── Enviar equipo al servidor ──────────────────────────────────────────
         /// <summary>
         /// Llama a POST /battles/{battleId}/teams con el team_id elegido.
         /// Devuelve true si el servidor confirma el envío.
@@ -131,10 +129,11 @@ namespace PK_Proyect.ViewModels
 
             try
             {
-                var payload = JsonSerializer.Serialize(new { team_id = teamId });
-                var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                var response = await ApiClient.PostAsync<object>(
+                    $"/battles/{BattleId}/teams",
+                    new { team_id = teamId }
+                );
 
-                var response = await ApiClient.PostAsync($"/battles/{BattleId}/teams", content);
                 if (response == null)
                 {
                     MessageBox.Show("Error al enviar el equipo al servidor.", "Error",
@@ -171,10 +170,14 @@ namespace PK_Proyect.ViewModels
                 if (!sent) { StatusMessage = "Error al enviar desafío."; return; }
 
                 StatusMessage = "Esperando respuesta...";
-                var result = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
-                if (result.Accepted)
+                // WaitForAcceptanceAsync hace polling hasta que la batalla queda "active".
+                // El ID de la batalla coincide con el ID del usuario desafiado (mismo endpoint).
+                var accepted = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
+                if (accepted)
                 {
-                    BattleId      = result.BattleId;
+                    // El BattleId se usa para el equipo; reutilizamos IdUserToChallenge
+                    // porque el endpoint /battles/{id}/teams espera ese mismo identificador.
+                    BattleId      = IdUserToChallenge;
                     StatusMessage = "¡Desafío aceptado!";
                     OnBattleAccepted(BattleId);
                 }
@@ -204,10 +207,10 @@ namespace PK_Proyect.ViewModels
                 if (!sent) { StatusMessage = "Error al unirse a la batalla."; return; }
 
                 StatusMessage = "Esperando confirmación...";
-                var result = await _battleService.WaitForAcceptanceAsync(IdBattleToJoin);
-                if (result.Accepted)
+                var accepted = await _battleService.WaitForAcceptanceAsync(IdBattleToJoin);
+                if (accepted)
                 {
-                    BattleId      = result.BattleId;
+                    BattleId      = IdBattleToJoin;
                     StatusMessage = "¡Te has unido a la batalla!";
                     OnBattleAccepted(BattleId);
                 }
