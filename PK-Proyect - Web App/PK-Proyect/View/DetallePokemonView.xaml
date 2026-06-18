@@ -63,6 +63,16 @@
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8"/>
 
+                        <Button x:Name="BtnAgregarAlEquipo"
+                            Content="Añadir al equipo"
+                            Width="140" Height="30"
+                            FontFamily="{StaticResource PokemonClassic}"
+                            HorizontalAlignment="Center"
+                            Margin="0,8,0,0"
+                            Command="{Binding AddToTeamCommand}"/>
+
+
+
                         <!-- Nº Pokédex — TextBlock simple con Mode=OneWay para evitar error TwoWay en propiedad readonly -->
                         <TextBlock Text="{Binding NumeroPokedex, Mode=OneWay, StringFormat='#{0}'}"
                                    FontFamily="{StaticResource PokemonClassic}"
