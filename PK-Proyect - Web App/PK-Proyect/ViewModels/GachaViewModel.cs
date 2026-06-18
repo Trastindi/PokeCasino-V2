@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Globalization;
+using System.Text;
 
 namespace PK_Proyect.ViewModels.Banners
 {
@@ -69,7 +71,8 @@ namespace PK_Proyect.ViewModels.Banners
             Tirar1Command  = new AsyncRelayCommand(async () => await TiradaSingleAsync());
             Tirar10Command = new AsyncRelayCommand(async () => await TiradaMultiAsync());
 
-            MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
+            // MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
+            MostrarPokemonCommand = new AsyncRelayCommand(async() => await MostrarPokemonAsync());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new AsyncRelayCommand(async () => await MostrarHistorialAsync());
             _pokemonUserService   = new PokemonUserService();
@@ -352,22 +355,106 @@ namespace PK_Proyect.ViewModels.Banners
             }
         }
 
-        private void MostrarPokemon()
-        {
-            var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
-            if (zona == null) { MessageBox.Show($"No se encontr\u00f3 '{NombreZona}'.", "Zona no encontrada"); return; }
-            if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show($"Zona vac\u00eda.", "Zona vac\u00eda"); return; }
+        // private void MostrarPokemon()
+        // {
+        //     var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
+        //     if (zona == null) { MessageBox.Show($"No se encontr\u00f3 '{NombreZona}'.", "Zona no encontrada"); return; }
+        //     if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show($"Zona vac\u00eda.", "Zona vac\u00eda"); return; }
 
-            string lista = "";
+        //     string lista = "";
+        //     foreach (var p in zona.Pokemon)
+        //     {
+        //         var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
+        //         lista += poke == null
+        //             ? $"ID {p.numero_pokedex} (No encontrado) - Prob: {p.prob}%\n"
+        //             : $"{poke.Nombre} - Prob: {p.prob}%\n";
+        //     }
+        //     MessageBox.Show(lista, $"Pok\u00e9mon disponibles en {zona.Nombre}");
+        // }
+
+
+        private static string NormalizarNombres(string s)
+{
+    if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+    // Trim, colapsar espacios múltiples, pasar a minúsculas
+    var trimmed = System.Text.RegularExpressions.Regex.Replace(s.Trim(), @"\s+", " ");
+    // Normalizar y quitar diacríticos (tildes)
+    var normalized = trimmed.Normalize(NormalizationForm.FormD);
+    var sb = new StringBuilder();
+    foreach (var ch in normalized)
+    {
+        var uc = CharUnicodeInfo.GetUnicodeCategory(ch);
+        if (uc != UnicodeCategory.NonSpacingMark) sb.Append(ch);
+    }
+    return sb.ToString().Normalize(NormalizationForm.FormC).ToLowerInvariant();
+}
+
+private async Task MostrarPokemonAsync()
+{
+    try
+    {
+        Debug.WriteLine($"[MostrarPokemonAsync] Inicio. NombreZona='{NombreZona}'");
+
+        var zona = await Task.Run(() =>
+        {
+            // Intento rápido por nombre exacto en repo
+            var z = _zonaRepo.ObtenerPorNombre(NombreZona);
+            if (z != null) return z;
+
+            // Si no hay coincidencia exacta, buscar en todas normalizando
+            var todas = _zonaRepo.ObtenerTodas();
+            if (todas == null) return null;
+
+            var buscada = NormalizarNombres(NombreZona);
+
+            // Búsqueda exacta normalizada
+            z = todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre) == buscada);
+            if (z != null) return z;
+
+   
+            z = todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre).Contains(buscada));
+            return z;
+        });
+
+        Debug.WriteLine($"[MostrarPokemonAsync] Zona encontrada: '{zona?.Nombre ?? "null"}'");
+
+        if (zona == null)
+        {
+            MessageBox.Show($"No se encontró '{NombreZona}'.", "Zona no encontrada");
+            return;
+        }
+
+        if (zona.Pokemon == null || zona.Pokemon.Count == 0)
+        {
+            MessageBox.Show($"Zona vacía.", "Zona vacía");
+            return;
+        }
+
+        var lines = await Task.Run(() =>
+        {
+            var lista = new List<string>();
             foreach (var p in zona.Pokemon)
             {
                 var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-                lista += poke == null
-                    ? $"ID {p.numero_pokedex} (No encontrado) - Prob: {p.prob}%\n"
-                    : $"{poke.Nombre} - Prob: {p.prob}%\n";
+                lista.Add(poke == null
+                    ? $"ID {p.numero_pokedex} (No encontrado) - Prob: {p.prob}%"
+                    : $"{poke.Nombre} - Prob: {p.prob}%");
             }
-            MessageBox.Show(lista, $"Pok\u00e9mon disponibles en {zona.Nombre}");
-        }
+            return lista;
+        });
+
+        MessageBox.Show(string.Join("\n", lines), $"Pokémon disponibles en {zona.Nombre}");
+        Debug.WriteLine("[MostrarPokemonAsync] Fin OK");
+    }
+    catch (Exception ex)
+    {
+        Debug.WriteLine($"[MostrarPokemonAsync] Excepción: {ex}");
+        MessageBox.Show($"Error al mostrar los Pokémon de la zona:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+}
+
+
+        
 
         public void MostrarZonasBD()
         {
