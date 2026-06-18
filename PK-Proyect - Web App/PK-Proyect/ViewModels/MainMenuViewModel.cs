@@ -1,8 +1,8 @@
-using PK_Proyect.Commands;
 using PK_Proyect.Models;
-using PK_Proyect.Repositories;
 using PK_Proyect.Services;
+using PK_Proyect.Commands;
 using PK_Proyect.View;
+using PK_Proyect.Repositories;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,13 +10,13 @@ using System.Windows.Input;
 
 namespace PK_Proyect.ViewModels
 {
-    public class MainMenuViewModel
+    public class MainMenuViewModel : ViewModelBase
     {
-        public User UsuarioConectado { get; }
-
         private readonly UserService _userService;
 
-        public event Action CerrarSesionRequested;
+        public User UsuarioConectado { get; }
+
+        public event Action? CerrarSesionRequested;
 
         public ICommand AbrirCasinoCommand        { get; }
         public ICommand AbrirMapaCommand          { get; }
@@ -57,7 +57,9 @@ namespace PK_Proyect.ViewModels
 
         private void AbrirMensajes()
         {
-            var vm = new MisMensajesViewModel();
+            // Pasamos el ID del usuario logueado para que el rival pueda
+            // enviar su equipo y abrirse como myPlayerId en la ventana de batalla.
+            var vm = new MisMensajesViewModel(UsuarioConectado.Id);
             var ventana = new MisMensajesView(vm);
             ventana.ShowDialog();
         }

@@ -13,18 +13,49 @@ namespace PK_Proyect.View
             InitializeComponent();
             DataContext = vm;
 
-            // ── Batalla aceptada ──────────────────────────────────────────
+            // ── Batalla aceptada (RIVAL) ──────────────────────────────────────────
+            // Igual que el retador: primero elegir equipo, luego POST /battles/{id}/teams,
+            // y solo después abrir BattleWindowView con el myPlayerId correcto.
             vm.BatallaAceptada += battleId =>
             {
-                this.Close();
-                var battleService = new BattleService();
-                var battleWindow  = new BattleWindowView(battleService, battleId, vm.MensajeSeleccionado?.RemitenteId);
-                battleWindow.Show();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var battleService = new BattleService();
+                    var currentUserId = vm.CurrentUserId;
+
+                    var equipoVm   = new EquipoPokemonViewModel(modoSeleccion: true);
+                    var equipoView = new EquipoPokemonView(equipoVm, modoSeleccion: true);
+
+                    equipoVm.EquipoConfirmado += async teamId =>
+                    {
+                        // Enviar equipo al servidor
+                        var ok = await battleService.SubmitTeamAsync(battleId, teamId);
+                        if (ok)
+                        {
+                            equipoView.Close();
+                            this.Close();
+                            var battleWindow = new BattleWindowView(
+                                battleService,
+                                battleId,
+                                myPlayerId: currentUserId);
+                            battleWindow.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                "No se pudo enviar el equipo. Inténtalo de nuevo.",
+                                "Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                    };
+
+                    equipoVm.SeleccionCancelada += () => equipoView.Close();
+                    equipoView.Show();
+                });
             };
 
-            // ── Intercambio aceptado (RECEPTOR) ───────────────────────────
-            // El receptor pulsa "Aceptar": hay que llamar a AceptarSolicitudAsync
-            // con el msgId para que el servidor cree el trade y devuelva el trade_id.
+            // ── Intercambio aceptado (RECEPTOR) ───────────────────────────────────
             vm.IntercambioAceptado += tradeId =>
             {
                 this.Close();
@@ -54,10 +85,7 @@ namespace PK_Proyect.View
                 window.Show();
             };
 
-            // ── Intercambio abierto por el REMITENTE ──────────────────────
-            // El remitente recibe un mensaje tipo "trade_response" con el trade_id
-            // ya creado. Solo hay que cargar el trade existente, NO volver a llamar
-            // a /trade_requests/.../respond (eso causaría un 404 de estado pending).
+            // ── Intercambio abierto por el REMITENTE ──────────────────────────────
             vm.IntercambioAbiertoPorRemitente += tradeId =>
             {
                 this.Close();
@@ -81,7 +109,6 @@ namespace PK_Proyect.View
 
                 uc.Loaded += async (_, __) =>
                 {
-                    // Cargar directamente el trade por su ID sin intentar aceptar nada
                     await tradeVM.CargarIntercambioPublicoAsync(tradeId);
                     await tradeVM.CargarMisIntercambiosAsync();
                 };

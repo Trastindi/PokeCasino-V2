@@ -14,6 +14,9 @@ namespace PK_Proyect.ViewModels
     {
         private readonly MensajeRepository _repo;
 
+        /// <summary>ID del usuario que está logueado (el rival que acepta el desafío).</summary>
+        public string CurrentUserId { get; }
+
         public ObservableCollection<Mensaje> Mensajes { get; set; }
 
         private Mensaje _mensajeSeleccionado;
@@ -33,11 +36,7 @@ namespace PK_Proyect.ViewModels
 
         // --- Eventos hacia la View ---
         public event Action<string> BatallaAceptada;
-
-        /// <summary>Disparado cuando el RECEPTOR acepta: msgId para llamar a /battle_requests/{msgId}/respond.</summary>
         public event Action<string> IntercambioAceptado;
-
-        /// <summary>Disparado cuando el REMITENTE abre su trade_response: tradeId ya existe en BD.</summary>
         public event Action<string> IntercambioAbiertoPorRemitente;
 
         // --- Comandos ---
@@ -48,8 +47,9 @@ namespace PK_Proyect.ViewModels
         public ICommand RechazarIntercambioCommand { get; }
         public ICommand AbrirIntercambioCommand    { get; }
 
-        public MisMensajesViewModel()
+        public MisMensajesViewModel(string currentUserId = "")
         {
+            CurrentUserId = currentUserId;
             _repo    = new MensajeRepository();
             Mensajes = new ObservableCollection<Mensaje>();
 
@@ -85,15 +85,12 @@ namespace PK_Proyect.ViewModels
             _ = CargarMensajesAsync();
         }
 
-        // ── Acciones ─────────────────────────────────────────────────────
+        // ── Acciones ────────────────────────────────────────────────────────────
 
         private void AceptarDesafio()
         {
             if (MensajeSeleccionado == null) return;
 
-            // TipoBatallaId está mapeado a "battle_id" del servidor (fix: antes era "tipoBatallaId").
-            // El servidor espera el _id del MENSAJE en /battle_requests/{msg_id}/respond,
-            // pero necesitamos el battle_id real para abrir la ventana de batalla.
             var battleId = MensajeSeleccionado.TipoBatallaId;
             if (string.IsNullOrEmpty(battleId))
             {
@@ -104,8 +101,6 @@ namespace PK_Proyect.ViewModels
                 return;
             }
 
-            // Pasamos el msgId al servidor para que marque el request como respondido,
-            // y el battleId a la vista para abrir la batalla correcta.
             _ = ResponderDesafioAsync(MensajeSeleccionado.Id, battleId, accepted: true);
         }
 
@@ -113,9 +108,7 @@ namespace PK_Proyect.ViewModels
         {
             try
             {
-                // Llamar al servidor: POST /battle_requests/{msgId}/respond
-                var ok = await System.Threading.Tasks.Task.Run(() =>
-                    _repo.ResponderDesafio(msgId, accepted));
+                var ok = await Task.Run(() => _repo.ResponderDesafio(msgId, accepted));
 
                 if (!ok)
                 {
@@ -144,8 +137,7 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
             var id = MensajeSeleccionado.Id;
-            await System.Threading.Tasks.Task.Run(() =>
-                _repo.ResponderDesafio(id, accepted: false));
+            await Task.Run(() => _repo.ResponderDesafio(id, accepted: false));
             App.Current.Dispatcher.Invoke(() =>
             {
                 Mensajes.Remove(MensajeSeleccionado);
@@ -166,7 +158,7 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
             var id = MensajeSeleccionado.Id;
-            await System.Threading.Tasks.Task.Run(() => _repo.EliminarMensaje(id));
+            await Task.Run(() => _repo.EliminarMensaje(id));
             App.Current.Dispatcher.Invoke(() =>
             {
                 Mensajes.Remove(MensajeSeleccionado);
@@ -190,7 +182,7 @@ namespace PK_Proyect.ViewModels
 
         private async Task CargarMensajesAsync()
         {
-            var lista = await System.Threading.Tasks.Task.Run(() =>
+            var lista = await Task.Run(() =>
                 _repo.GetMisMensajes()
                      .OrderByDescending(m => m.Fecha)
                      .ToList()
