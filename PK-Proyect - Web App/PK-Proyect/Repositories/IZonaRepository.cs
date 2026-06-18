@@ -1,11 +1,23 @@
-﻿using System.Collections.Generic;
 using PK_Proyect.Models;
+using System.Collections.Generic;
 
 namespace PK_Proyect.Repositories
 {
-    public interface IZonaRepository
+    public class ZonaRepository : IZonaRepository
     {
-        List<Zona> ObtenerTodas();
-        Zona ObtenerPorNombre(string nombre);
+        public List<Zona> ObtenerTodas()
+            => ApiClient.Get<List<Zona>>("/zonas");
+
+        public Zona ObtenerPorNombre(string nombre)
+        {
+            try
+            {
+                return ApiClient.Get<Zona>($"/zonas/{nombre}");
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
