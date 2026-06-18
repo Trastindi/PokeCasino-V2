@@ -23,5 +23,20 @@ namespace PK_Proyect.View
                 detalle.ShowDialog();
             }
         }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+            => Close();
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
+        }
+
+        private void BtnLimpiarBusqueda_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PokemonObtenidosViewModel vm)
+                vm.TextoBusqueda = string.Empty;
+        }
     }
 }

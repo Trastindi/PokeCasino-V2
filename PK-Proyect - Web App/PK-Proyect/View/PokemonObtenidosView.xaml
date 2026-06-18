@@ -2,91 +2,200 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Pokémon Obtenidos"
-        Height="550" Width="450"
+        Height="580" Width="460"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#F8F0D8">
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
 
-    <Border BorderBrush="Black" BorderThickness="3" Margin="10" Background="#F8F0D8">
-        <Grid Margin="10">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PkYellow" Color="#FFD733"/>
+        <SolidColorBrush x:Key="PkBlue"   Color="#2A2AA8"/>
+        <SolidColorBrush x:Key="PkRed"    Color="#E00000"/>
+        <SolidColorBrush x:Key="PkBox"    Color="#FFF5F2DF"/>
+    </Window.Resources>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Border CornerRadius="18" BorderThickness="3" BorderBrush="{StaticResource PkBlue}">
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/PokeYellow2.webp" Stretch="UniformToFill"/>
+        </Border.Background>
 
-            <!-- TÍTULO RETRO -->
-            <TextBlock Text="Pokémon Obtenidos"
-                       Grid.Row="0"
-                       FontSize="22"
-                       FontFamily="{StaticResource PokemonClassic}"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0 0 0 15"
-                       Foreground="Black"/>
+        <Border CornerRadius="15" BorderThickness="3"
+                BorderBrush="{StaticResource PkBlue}"
+                Background="{StaticResource PkBox}">
 
-            <!-- LISTA SCROLL RETRO -->
-            <ScrollViewer Grid.Row="1"
-                          VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="44"/>   <!-- barra superior -->
+                    <RowDefinition Height="Auto"/> <!-- buscador -->
+                    <RowDefinition Height="*"/>    <!-- lista -->
+                </Grid.RowDefinitions>
 
-                <ItemsControl ItemsSource="{Binding Lista}"
-                              x:Name="listaPokemon">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                <!-- ── Barra superior ── -->
+                <Border Grid.Row="0" Background="{StaticResource PkYellow}"
+                        CornerRadius="15,15,0,0">
+                    <Grid>
+                        <TextBlock Text="MIS POKÉMON"
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="16" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Foreground="{StaticResource PkBlue}"/>
+                        <Button Content="X"
+                                FontFamily="{StaticResource PokemonClassic}"
+                                FontSize="18"
+                                Background="{StaticResource PkRed}"
+                                BorderBrush="{StaticResource PkBlue}"
+                                HorizontalAlignment="Right" Margin="0,4,8,4"
+                                Click="btnClose_Click"/>
+                    </Grid>
+                </Border>
 
-                            <Border BorderBrush="Black"
-                                    BorderThickness="2"
-                                    Margin="5"
-                                    Padding="5"
-                                    Background="#E0D0A8"
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="PokemonCard_Click">
+                <!-- ── Buscador ── -->
+                <Border Grid.Row="1" Margin="12,8,12,4"
+                        BorderBrush="#2A2AA8" BorderThickness="2"
+                        CornerRadius="4" Background="White">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                                <StackPanel Orientation="Horizontal">
+                        <!-- Icono lupa -->
+                        <TextBlock Grid.Column="0" Text="🔍"
+                                   FontSize="14" VerticalAlignment="Center"
+                                   Margin="8,0,4,0" Foreground="#555"/>
 
-                                    <!-- SPRITE -->
-                                    <Image Source="{Binding Sprite}"
-                                           Width="64" Height="64"
-                                           Margin="0 0 10 0"/>
+                        <!-- Campo de texto -->
+                        <TextBox Grid.Column="1"
+                                 x:Name="TxtBuscar"
+                                 Text="{Binding TextoBusqueda, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 FontFamily="{StaticResource PokemonClassic}"
+                                 FontSize="13"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 VerticalContentAlignment="Center"
+                                 Padding="0,6"
+                                 Foreground="Black"/>
 
-                                    <!-- INFO -->
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Nombre}"
-                                                   FontFamily="{StaticResource PokemonClassic}"
-                                                   FontSize="16"
-                                                   FontWeight="Bold"
-                                                   Foreground="Black"/>
+                        <!-- Placeholder manual (visible cuando está vacío) -->
+                        <TextBlock Grid.Column="1"
+                                   Text="Buscar por nombre..."
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="13" Foreground="#AAAAAA"
+                                   VerticalAlignment="Center" Margin="2,0"
+                                   IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TextoBusqueda}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
 
-                                        <TextBlock Text="{Binding Nivel, StringFormat='Nivel: {0}'}"
-                                                   FontFamily="{StaticResource PokemonClassic}"
-                                                   Foreground="Black"/>
+                        <!-- Botón limpiar -->
+                        <Button Grid.Column="2" Content="✕"
+                                FontSize="12" Background="Transparent"
+                                BorderThickness="0" Foreground="#888"
+                                Cursor="Hand" Margin="0,0,6,0"
+                                Click="BtnLimpiarBusqueda_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TextoBusqueda}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding TextoBusqueda}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
 
-                                        <TextBlock Text="{Binding TipoPrincipal, StringFormat='Tipo: {0}'}"
-                                                   FontFamily="{StaticResource PokemonClassic}"
-                                                   Foreground="Black"/>
+                <!-- ── Lista filtrada ── -->
+                <ScrollViewer Grid.Row="2" Margin="8,4,8,10"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding ListaFiltrada}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" BorderThickness="2"
+                                        Margin="4,4,4,0" Padding="8"
+                                        Background="#E0D0A8" Cursor="Hand"
+                                        MouseLeftButtonUp="PokemonCard_Click">
+                                    <StackPanel Orientation="Horizontal">
 
-                                        <TextBlock Text="{Binding FechaObtenido, StringFormat='Obtenido: {0:dd/MM/yyyy}'}"
-                                                   FontFamily="{StaticResource PokemonClassic}"
-                                                   Foreground="Black"/>
+                                        <!-- Sprite via PokeAPI -->
+                                        <Image Width="64" Height="64" Margin="0,0,10,0">
+                                            <Image.Source>
+                                                <Binding Path="numero_pokedex" Mode="OneWay"
+                                                         StringFormat="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{0}.png"/>
+                                            </Image.Source>
+                                        </Image>
+
+                                        <!-- Info -->
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Nombre, Mode=OneWay}"
+                                                       FontFamily="{StaticResource PokemonClassic}"
+                                                       FontSize="15" FontWeight="Bold" Foreground="Black"/>
+                                            <TextBlock Text="{Binding Nivel, Mode=OneWay, StringFormat='Nivel: {0}'}"
+                                                       FontFamily="{StaticResource PokemonClassic}"
+                                                       FontSize="12" Foreground="Black"/>
+                                            <TextBlock Text="{Binding TipoPrincipal, Mode=OneWay, StringFormat='Tipo: {0}'}"
+                                                       FontFamily="{StaticResource PokemonClassic}"
+                                                       FontSize="12" Foreground="Black"/>
+                                            <TextBlock Text="{Binding FechaObtenido, Mode=OneWay, StringFormat='Obtenido: {0:dd/MM/yyyy}'}"
+                                                       FontFamily="{StaticResource PokemonClassic}"
+                                                       FontSize="11" Foreground="#555"/>
+                                        </StackPanel>
+
+                                        <!-- Flecha -->
+                                        <TextBlock Text="▶" FontSize="18"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#2A2AA8"
+                                                   Margin="10,0,0,0"
+                                                   HorizontalAlignment="Right"/>
                                     </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
 
-                                    <!-- Flecha -->
-                                    <TextBlock Text="▶"
-                                               FontSize="18"
-                                               VerticalAlignment="Center"
-                                               Foreground="#2A2AA8"
-                                               Margin="10,0,0,0"/>
+                        <!-- Empty state -->
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ListaFiltrada.IsEmpty}" Value="True">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <StackPanel HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Margin="0,40">
+                                                        <TextBlock Text="No se encontraron Pokémon."
+                                                                   FontFamily="{StaticResource PokemonClassic}"
+                                                                   FontSize="13" Foreground="#888"
+                                                                   HorizontalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                    </ItemsControl>
+                </ScrollViewer>
 
-                                </StackPanel>
-
-                            </Border>
-
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-            </ScrollViewer>
-
-        </Grid>
+            </Grid>
+        </Border>
     </Border>
 </Window>
