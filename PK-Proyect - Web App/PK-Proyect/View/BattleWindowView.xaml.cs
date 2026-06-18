@@ -2,6 +2,7 @@ using PK_Proyect.Repositories;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
 using System.Windows;
+using System.Windows.Input;
 
 namespace PK_Proyect.View
 {
@@ -19,28 +20,40 @@ namespace PK_Proyect.View
 
             if (skipTeamSelection)
             {
-                // El equipo ya fue enviado: montar el ViewModel y mostrar directamente
-                DataContext = new BattleWindowViewModel(battleService, battleId);
+                var vm = new BattleWindowViewModel(battleService, battleId);
+                vm.OwnerWindow = this;
+                DataContext = vm;
                 return;
             }
 
-            // El userId ya no es necesario: el servidor lo deduce del JWT
             var equipoVM = new EquipoPokemonViewModel(modoSeleccion: true);
             var equipoView = new EquipoPokemonView(equipoVM, modoSeleccion: true);
 
-            // Si cancela la selección, cerrar esta ventana
             equipoVM.SeleccionCancelada += () => this.Close();
 
-            // Al confirmar equipo, montar el ViewModel de batalla y mostrar esta ventana
             equipoVM.EquipoConfirmado += equipoSeleccionado =>
             {
                 equipoView.Close();
-                DataContext = new BattleWindowViewModel(battleService, battleId);
+                var vm = new BattleWindowViewModel(battleService, battleId);
+                vm.OwnerWindow = this;
+                DataContext = vm;
                 this.Show();
             };
 
             this.Hide();
             equipoView.ShowDialog();
+        }
+
+        /// <summary>
+        /// Backspace vuelve al menú de acciones si el panel de movimientos está abierto.
+        /// </summary>
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Back && DataContext is BattleWindowViewModel vm && vm.ShowMoves)
+            {
+                vm.BackToActionsCommand.Execute(null);
+                e.Handled = true;
+            }
         }
     }
 }

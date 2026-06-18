@@ -1,0 +1,82 @@
+<Window x:Class="PK_Proyect.View.SwitchBattlePokemonWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cambiar Pokémon"
+        Width="480" Height="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="{StaticResource PokemonClassic}">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Elige el Pokémon al que cambiar:"
+                   FontWeight="Bold" FontSize="13" Margin="0,0,0,10"/>
+
+        <!-- Lista de Pokémon del equipo -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Equipo}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,6" Padding="8" CornerRadius="6"
+                                Background="White" BorderBrush="#CCCCCC" BorderThickness="1"
+                                Cursor="Hand">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Background" Value="#FFD4EDFF"/>
+                                            <Setter Property="BorderBrush" Value="#FF3B82F6"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                              CommandParameter="{Binding}"/>
+                            </Border.InputBindings>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="56"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding ImagenUrl}" Width="48" Height="48" Stretch="Uniform"/>
+                                <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="12"/>
+                                    <TextBlock FontSize="10" Foreground="Gray">
+                                        <Run Text="Nv."/>
+                                        <Run Text="{Binding Nivel}"/>
+                                        <Run Text=" — "/>
+                                        <Run Text="{Binding TipoPrincipal}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="8,0,0,0">
+                                    <TextBlock FontSize="10" Foreground="Gray" Text="PS"/>
+                                    <TextBlock FontSize="11" FontWeight="Bold">
+                                        <Run Text="{Binding HpActual}"/><Run Text="/"/><Run Text="{Binding HpMax}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="✔ Cambiar" Padding="12,4" Margin="0,0,8,0"
+                    Background="#FF3B82F6" Foreground="White" FontWeight="Bold"
+                    IsEnabled="{Binding HaySeleccion}"
+                    Click="BtnConfirmar_Click"/>
+            <Button Content="Cancelar" Padding="12,4"
+                    Click="BtnCancelar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
