@@ -98,7 +98,9 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
 
-            var id = MensajeSeleccionado.TipoBatallaId;
+            // El servidor espera el _id del documento battle_request,
+            // no el campo tipoBatallaId (que no existe en ese documento).
+            var id = MensajeSeleccionado.Id;
             if (string.IsNullOrEmpty(id))
             {
                 MessageBox.Show("Este mensaje no tiene un ID de batalla válido.",
