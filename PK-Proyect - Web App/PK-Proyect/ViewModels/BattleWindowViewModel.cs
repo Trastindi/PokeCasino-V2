@@ -5,7 +5,9 @@ using PK_Proyect.View;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -13,199 +15,372 @@ using System.Windows.Media.Imaging;
 
 namespace PK_Proyect.ViewModels
 {
-    public class BattleWindowViewModel : INotifyPropertyChanged
+    /// <summary>
+    /// ViewModel principal del combate.
+    /// Máquina de estados guiada por el campo "status" de la BD:
+    ///
+    ///   ready            → panel selección inicial de Pokémon
+    ///   choosing_action  → combate activo (movimientos o cambio voluntario)
+    ///   waiting_switch   → cambio forzado (el Pokémon activo fue derrotado)
+    ///   finished         → mensaje victoria/derrota, polling parado
+    /// </summary>
+    public class BattleWindowViewModel : INotifyPropertyChanged, IDisposable
     {
+        // ── Dependencias ───────────────────────────────────────────────
         private readonly IBattleService _battleService;
-        private string _battleId;
+        private string   _battleId;
+        private string   _myPlayerId;
+        private CancellationTokenSource _pollCts;
 
         public event PropertyChangedEventHandler? PropertyChanged;
+        public Window OwnerWindow { get; set; }
 
-        // Visual
-        public Brush BackgroundBrush { get; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3C04A"));
+        // ── Visual fija ───────────────────────────────────────────────
+        public Brush BackgroundBrush  { get; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3C04A"));
         public Brush ButtonBackground { get; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2B2B2B"));
         public Brush ButtonForeground { get; } = Brushes.White;
 
-        // Jugador
-        private string _playerName = "Pikachu";
-        public string PlayerName { get => _playerName; set { _playerName = value; OnPropertyChanged(); } }
-
-        private int _playerLevel = 5;
-        public int PlayerLevel { get => _playerLevel; set { _playerLevel = value; OnPropertyChanged(); } }
-
-        private int _playerHp = 19;
-        private int _playerMaxHp = 19;
-        public double PlayerHpPercent => _playerMaxHp == 0 ? 0 : (_playerHp * 100.0 / _playerMaxHp);
-        public string PlayerHpText => $"{_playerHp}/{_playerMaxHp} PS";
-
-        private ImageSource? _playerSprite;
-        public ImageSource? PlayerSprite { get => _playerSprite; set { _playerSprite = value; OnPropertyChanged(); } }
-
-        // Rival
-        private string _opponentName = "Eevee";
-        public string OpponentName { get => _opponentName; set { _opponentName = value; OnPropertyChanged(); } }
-
-        private int _opponentLevel = 5;
-        public int OpponentLevel { get => _opponentLevel; set { _opponentLevel = value; OnPropertyChanged(); } }
-
-        private int _opponentHp = 20;
-        private int _opponentMaxHp = 20;
-        public double OpponentHpPercent => _opponentMaxHp == 0 ? 0 : (_opponentHp * 100.0 / _opponentMaxHp);
-        public string OpponentHpText => $"{_opponentHp}/{_opponentMaxHp} PS";
-
-        private ImageSource? _opponentSprite;
-        public ImageSource? OpponentSprite { get => _opponentSprite; set { _opponentSprite = value; OnPropertyChanged(); } }
-
-        // Movimientos
-        private ObservableCollection<MoveModel> _playerMoves;
-        public ObservableCollection<MoveModel> PlayerMoves
+        // ── Estado de la máquina ──────────────────────────────────────────
+        private string _battleStatus = "ready";
+        public  string BattleStatus
         {
-            get => _playerMoves;
-            set { _playerMoves = value; OnPropertyChanged(); }
+            get => _battleStatus;
+            private set
+            {
+                if (_battleStatus == value) return;
+                _battleStatus = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowPokemonPicker));
+                OnPropertyChanged(nameof(ShowBattle));
+                OnPropertyChanged(nameof(ShowForcedSwitch));
+                OnPropertyChanged(nameof(ShowFinished));
+                OnPropertyChanged(nameof(IsBattleActive));
+            }
         }
 
-        // Visibilidad paneles
-        private bool _showMoves = false;
-        public bool ShowMoves
+        // Visibilidad de cada panel (una sola sección visible a la vez)
+        public bool ShowPokemonPicker => BattleStatus == "ready";
+        public bool ShowBattle        => BattleStatus == "choosing_action";
+        public bool ShowForcedSwitch  => BattleStatus == "waiting_switch";
+        public bool ShowFinished      => BattleStatus == "finished";
+        public bool IsBattleActive    => BattleStatus == "choosing_action";
+
+        // Dentro de ShowBattle: alterna acciones ↔ movimientos
+        private bool _showMoves;
+        public  bool ShowMoves
         {
             get => _showMoves;
-            set
-            {
-                _showMoves = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ShowActions));
-            }
+            set { _showMoves = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowActions)); }
         }
         public bool ShowActions => !_showMoves;
 
-        // Commands
-        public RelayCommand OpenMovesCommand     { get; }
-        public RelayCommand BackToActionsCommand { get; }
-        public RelayCommand UseItemCommand       { get; }
-        public RelayCommand SwitchPokemonCommand { get; }
-        public RelayCommand RunCommand           { get; }
-        public RelayCommand UseMoveCommand       { get; }
+        // ── Datos del jugador ────────────────────────────────────────────
+        private string _playerName = "Pikachu";
+        public  string PlayerName  { get => _playerName; set { _playerName = value; OnPropertyChanged(); } }
 
-        // Estado
+        private int _playerLevel = 5;
+        public  int PlayerLevel    { get => _playerLevel; set { _playerLevel = value; OnPropertyChanged(); } }
+
+        private int _playerHp = 19, _playerMaxHp = 19;
+        public  double PlayerHpPercent => _playerMaxHp == 0 ? 0 : _playerHp * 100.0 / _playerMaxHp;
+        public  string PlayerHpText    => $"{_playerHp}/{_playerMaxHp} PS";
+
+        private ImageSource? _playerSprite;
+        public  ImageSource? PlayerSprite { get => _playerSprite; set { _playerSprite = value; OnPropertyChanged(); } }
+
+        // ── Datos del rival ─────────────────────────────────────────────
+        private string _opponentName = "Eevee";
+        public  string OpponentName  { get => _opponentName; set { _opponentName = value; OnPropertyChanged(); } }
+
+        private int _opponentLevel = 5;
+        public  int OpponentLevel    { get => _opponentLevel; set { _opponentLevel = value; OnPropertyChanged(); } }
+
+        private int _opponentHp = 20, _opponentMaxHp = 20;
+        public  double OpponentHpPercent => _opponentMaxHp == 0 ? 0 : _opponentHp * 100.0 / _opponentMaxHp;
+        public  string OpponentHpText    => $"{_opponentHp}/{_opponentMaxHp} PS";
+
+        private ImageSource? _opponentSprite;
+        public  ImageSource? OpponentSprite { get => _opponentSprite; set { _opponentSprite = value; OnPropertyChanged(); } }
+
+        // ── Movimientos del Pokémon activo ─────────────────────────────────
+        public ObservableCollection<MoveModel> PlayerMoves { get; } = new();
+
+        // ── Log del turno ────────────────────────────────────────────────
+        public ObservableCollection<string> TurnLog { get; } = new();
+
         private string _battleMessage = string.Empty;
-        public string BattleMessage { get => _battleMessage; set { _battleMessage = value; OnPropertyChanged(); } }
+        public  string BattleMessage  { get => _battleMessage; set { _battleMessage = value; OnPropertyChanged(); } }
 
-        private bool _isBattleActive = true;
-        public bool IsBattleActive { get => _isBattleActive; set { _isBattleActive = value; OnPropertyChanged(); } }
+        // Mensaje final (victoria / derrota)
+        private string _finishMessage = string.Empty;
+        public  string FinishMessage  { get => _finishMessage; set { _finishMessage = value; OnPropertyChanged(); } }
 
-        // Ventana propietaria (para abrir diálogos modales)
-        public Window OwnerWindow { get; set; }
+        // ── Comandos ───────────────────────────────────────────────────
+        public RelayCommand OpenMovesCommand      { get; }
+        public RelayCommand BackToActionsCommand  { get; }
+        public RelayCommand UseItemCommand        { get; }
+        public RelayCommand SwitchPokemonCommand  { get; }
+        public RelayCommand RunCommand            { get; }
+        public RelayCommand UseMoveCommand        { get; }
+        /// <summary>Usado en ready: confirmar Pokémon inicial seleccionado.</summary>
+        public RelayCommand ConfirmPickCommand    { get; }
+        /// <summary>Usado en waiting_switch: confirmar cambio forzado.</summary>
+        public RelayCommand ConfirmSwitchCommand  { get; }
+        /// <summary>Cierra la ventana desde la pantalla de fin.</summary>
+        public RelayCommand CloseCommand          { get; }
 
-        public BattleWindowViewModel(IBattleService battleService, string battleId = null)
+        // Pokémon seleccionado en el picker (ready y waiting_switch)
+        private PokemonEquipoItem _pickedPokemon;
+        public  PokemonEquipoItem PickedPokemon
+        {
+            get => _pickedPokemon;
+            set { _pickedPokemon = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanConfirmPick)); }
+        }
+        public bool CanConfirmPick => PickedPokemon != null;
+
+        // Equipo completo para los pickers
+        public ObservableCollection<PokemonEquipoItem> Equipo { get; } = new();
+
+        // ── Constructor ───────────────────────────────────────────────
+        public BattleWindowViewModel(IBattleService battleService,
+                                     string battleId   = null,
+                                     string myPlayerId = null)
         {
             _battleService = battleService;
             _battleId      = battleId;
+            _myPlayerId    = myPlayerId;
 
-            PlayerMoves = new ObservableCollection<MoveModel>();
+            // — Comandos de navegación entre paneles —
+            OpenMovesCommand    = new RelayCommand(_ => { ShowMoves = true;  BattleMessage = "¿Qué movimiento usará?"; return Task.CompletedTask; });
+            BackToActionsCommand= new RelayCommand(_ => { ShowMoves = false; BattleMessage = "Selecciona una acción.";  return Task.CompletedTask; });
+            UseItemCommand      = new RelayCommand(_ => { BattleMessage = "La bolsa aún no está disponible.";          return Task.CompletedTask; });
+            CloseCommand        = new RelayCommand(_ => { StopPolling(); OwnerWindow?.Close(); return Task.CompletedTask; });
 
-            // Botón LUCHAR → muestra el panel de movimientos
-            OpenMovesCommand = new RelayCommand(_ =>
+            // — Usar movimiento —
+            UseMoveCommand = new RelayCommand(async param =>
             {
-                ShowMoves = true;
-                BattleMessage = "¿Qué movimiento usará?";
-                return Task.CompletedTask;
-            });
-
-            // Backspace (BackToActions) → vuelve al menú principal
-            BackToActionsCommand = new RelayCommand(_ =>
-            {
+                if (param is not MoveModel move) return;
                 ShowMoves = false;
-                BattleMessage = "Selecciona una acción.";
-                return Task.CompletedTask;
+                BattleMessage = $"Usando {move.Name}...";
+                await SendMoveAsync(move);
             });
 
-            // Botón OBJ. → pendiente de implementación
-            UseItemCommand = new RelayCommand(_ =>
-            {
-                BattleMessage = "La bolsa aún no está disponible.";
-                return Task.CompletedTask;
-            });
-
-            // Botón PKMN → abre ventana para cambiar el Pokémon activo
+            // — PKMN voluntario —
             SwitchPokemonCommand = new RelayCommand(_ =>
             {
-                var vm = new SwitchBattlePokemonViewModel();
-                var win = new SwitchBattlePokemonWindow(vm) { Owner = OwnerWindow };
-                if (win.ShowDialog() == true && vm.SelectedPokemon != null)
-                {
-                    PlayerName   = vm.SelectedPokemon.Nombre;
-                    PlayerLevel  = vm.SelectedPokemon.Nivel;
-                    _playerHp    = vm.SelectedPokemon.HpActual;
-                    _playerMaxHp = vm.SelectedPokemon.HpMax;
-                    PlayerSprite = LoadBitmap(vm.SelectedPokemon.ImagenUrl);
-                    OnPropertyChanged(nameof(PlayerHpPercent));
-                    OnPropertyChanged(nameof(PlayerHpText));
-                    BattleMessage = $"¡Adelante, {PlayerName}!";
-                    PlayerMoves.Clear();
-                    if (vm.SelectedPokemon.Movimientos != null)
-                        foreach (var m in vm.SelectedPokemon.Movimientos)
-                            PlayerMoves.Add(m);
-                }
+                OpenSwitchDialog(forced: false);
                 return Task.CompletedTask;
             });
 
-            // Botón ESC → confirmar huida
+            // — ESC: confirmar huida —
             RunCommand = new RelayCommand(async _ => await TryRunAsync());
 
-            // Usar un movimiento concreto desde el panel de ataques
-            UseMoveCommand = new RelayCommand(param =>
+            // — Confirmar elección inicial (ready) —
+            ConfirmPickCommand = new RelayCommand(async _ =>
             {
-                if (param is MoveModel move)
-                    UseMove(move);
-                ShowMoves = false;
-                return Task.CompletedTask;
+                if (PickedPokemon == null) return;
+                await ConfirmInitialPickAsync();
             });
 
+            // — Confirmar cambio forzado (waiting_switch) —
+            ConfirmSwitchCommand = new RelayCommand(async _ =>
+            {
+                if (PickedPokemon == null) return;
+                await ConfirmForcedSwitchAsync();
+            });
+
+            // Cargar equipo placeholder (sustituir con sesión real cuando esté disponible)
+            CargarEquipoPlaceholder();
+
+            // Arrancar
             if (!string.IsNullOrWhiteSpace(battleId))
-                _ = LoadBattleDataAsync(battleId);
+                _ = StartPollingAsync();
             else
                 InitializeWithPlaceholders();
         }
 
-        private async Task LoadBattleDataAsync(string battleId)
+        // ── Polling ──────────────────────────────────────────────────────
+
+        private async Task StartPollingAsync()
         {
-            try
+            _pollCts = new CancellationTokenSource();
+            var token = _pollCts.Token;
+
+            while (!token.IsCancellationRequested)
             {
-                var battleData = await _battleService.GetBattleDataAsync(battleId);
-                if (battleData != null)
+                try
                 {
-                    PlayerName   = battleData.PlayerPokemonName;
-                    PlayerLevel  = battleData.PlayerLevel;
-                    _playerHp    = battleData.PlayerHp;
-                    _playerMaxHp = battleData.PlayerMaxHp;
+                    var state = await _battleService.GetBattleStateAsync(_battleId);
+                    if (state != null)
+                        await Application.Current.Dispatcher.InvokeAsync(() => ApplyState(state));
 
-                    OpponentName   = battleData.OpponentPokemonName;
-                    OpponentLevel  = battleData.OpponentLevel;
-                    _opponentHp    = battleData.OpponentHp;
-                    _opponentMaxHp = battleData.OpponentMaxHp;
-
-                    if (!string.IsNullOrWhiteSpace(battleData.PlayerSpriteUrl))
-                        PlayerSprite = LoadBitmap(battleData.PlayerSpriteUrl);
-                    if (!string.IsNullOrWhiteSpace(battleData.OpponentSpriteUrl))
-                        OpponentSprite = LoadBitmap(battleData.OpponentSpriteUrl);
-
-                    OnPropertyChanged(nameof(PlayerHpPercent));
-                    OnPropertyChanged(nameof(PlayerHpText));
-                    OnPropertyChanged(nameof(OpponentHpPercent));
-                    OnPropertyChanged(nameof(OpponentHpText));
+                    // Parar polling si la batalla terminó
+                    if (BattleStatus == "finished") break;
                 }
-                else
-                    InitializeWithPlaceholders();
-            }
-            catch (Exception ex)
-            {
-                BattleMessage = $"Error al cargar batalla: {ex.Message}";
-                InitializeWithPlaceholders();
+                catch { /* ignorar errores de red transitorios */ }
+
+                await Task.Delay(2000, token).ContinueWith(_ => { }); // no lanzar TaskCanceled
             }
         }
 
+        public void StopPolling() => _pollCts?.Cancel();
+
+        // ── Aplicar snapshot del servidor ───────────────────────────────────
+
+        private void ApplyState(BattleState state)
+        {
+            // Actualizar datos del jugador
+            var myPk = state.Player1Id == _myPlayerId ? state.Player1Pokemon : state.Player2Pokemon;
+            var opPk = state.Player1Id == _myPlayerId ? state.Player2Pokemon : state.Player1Pokemon;
+
+            if (myPk != null)
+            {
+                PlayerName   = myPk.Name;
+                PlayerLevel  = myPk.Level;
+                _playerHp    = myPk.HpCurrent;
+                _playerMaxHp = myPk.HpMax;
+                PlayerSprite = LoadBitmap(myPk.SpriteUrl);
+                OnPropertyChanged(nameof(PlayerHpPercent));
+                OnPropertyChanged(nameof(PlayerHpText));
+
+                // Sincronizar movimientos si cambiaron
+                var serverMoves = myPk.Moves ?? new();
+                bool movesChanged = serverMoves.Count != PlayerMoves.Count
+                    || serverMoves.Any((m, i) => PlayerMoves[i].Name != m.Name || PlayerMoves[i].Pp != m.Pp);
+
+                if (movesChanged)
+                {
+                    PlayerMoves.Clear();
+                    foreach (var m in serverMoves)
+                        PlayerMoves.Add(new MoveModel { Name = m.Name, Type = m.Type, Power = m.Power, Pp = m.Pp, MaxPp = m.MaxPp });
+                }
+            }
+
+            if (opPk != null)
+            {
+                OpponentName   = opPk.Name;
+                OpponentLevel  = opPk.Level;
+                _opponentHp    = opPk.HpCurrent;
+                _opponentMaxHp = opPk.HpMax;
+                OpponentSprite = LoadBitmap(opPk.SpriteUrl);
+                OnPropertyChanged(nameof(OpponentHpPercent));
+                OnPropertyChanged(nameof(OpponentHpText));
+            }
+
+            // Actualizar log del turno
+            if (state.TurnLog?.Count > 0)
+            {
+                foreach (var line in state.TurnLog)
+                    if (!TurnLog.Contains(line))
+                        TurnLog.Add(line);
+
+                BattleMessage = state.TurnLog[^1];
+            }
+
+            // Transición de estado
+            BattleStatus = state.Status ?? BattleStatus;
+
+            // Mensaje final
+            if (state.Status == "finished")
+            {
+                StopPolling();
+                FinishMessage = state.WinnerId == _myPlayerId
+                    ? "¡Has ganado el combate!"
+                    : "¡Has perdido el combate...";
+            }
+
+            // Si waiting_switch y es nuestro turno de cambiar, abrir picker forzado
+            if (state.Status == "waiting_switch" && state.SwitchTurnId == _myPlayerId)
+                BattleMessage = "¡Tu Pokémon fue derrotado! Elige otro.";
+        }
+
+        // ── Acciones de turno ─────────────────────────────────────────────
+
+        private async Task ConfirmInitialPickAsync()
+        {
+            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
+            var ok = await _battleService.ChoosePokemonAsync(_battleId, _myPlayerId, PickedPokemon.PokemonId);
+            if (ok)
+                BattleMessage = $"¡Adelante, {PickedPokemon.Nombre}!";
+            else
+                BattleMessage = "Error al elegir Pokémon, inténtalo de nuevo.";
+            // El polling detectará el cambio a choosing_action automáticamente
+        }
+
+        private async Task ConfirmForcedSwitchAsync()
+        {
+            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
+            var ok = await _battleService.SwitchPokemonAsync(_battleId, _myPlayerId, PickedPokemon.PokemonId);
+            if (ok)
+                BattleMessage = $"¡Adelante, {PickedPokemon.Nombre}!";
+            else
+                BattleMessage = "Error al cambiar Pokémon.";
+        }
+
+        private async Task SendMoveAsync(MoveModel move)
+        {
+            if (string.IsNullOrWhiteSpace(_battleId) || string.IsNullOrWhiteSpace(_myPlayerId)) return;
+            var result = await _battleService.UseMoveAsync(_battleId, _myPlayerId, move.Name);
+            if (result == null) return;
+
+            // Mostrar log inmediatamente sin esperar al siguiente poll
+            if (result.Log?.Count > 0)
+            {
+                foreach (var line in result.Log)
+                    TurnLog.Add(line);
+                BattleMessage = result.Log[^1];
+            }
+        }
+
+        private void OpenSwitchDialog(bool forced)
+        {
+            var vm  = new SwitchBattlePokemonViewModel();
+            var win = new SwitchBattlePokemonWindow(vm) { Owner = OwnerWindow };
+            if (win.ShowDialog() == true && vm.SelectedPokemon != null)
+            {
+                if (!forced)
+                    // Cambio voluntario: enviarlo directamente
+                    _ = _battleService.SwitchPokemonAsync(_battleId, _myPlayerId, vm.SelectedPokemon.PokemonId);
+
+                // Actualizar UI local (el siguiente poll traerá la confirmación del servidor)
+                PlayerName   = vm.SelectedPokemon.Nombre;
+                PlayerLevel  = vm.SelectedPokemon.Nivel;
+                _playerHp    = vm.SelectedPokemon.HpActual;
+                _playerMaxHp = vm.SelectedPokemon.HpMax;
+                PlayerSprite = LoadBitmap(vm.SelectedPokemon.ImagenUrl);
+                OnPropertyChanged(nameof(PlayerHpPercent));
+                OnPropertyChanged(nameof(PlayerHpText));
+                BattleMessage = $"¡Adelante, {PlayerName}!";
+                PlayerMoves.Clear();
+                if (vm.SelectedPokemon.Movimientos != null)
+                    foreach (var m in vm.SelectedPokemon.Movimientos)
+                        PlayerMoves.Add(m);
+            }
+        }
+
+        private async Task TryRunAsync()
+        {
+            var r = MessageBox.Show("¿Abandonar el combate?", "Abandonar",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (r != MessageBoxResult.Yes) return;
+
+            BattleMessage = "Intentas huir...";
+            await Task.Delay(300);
+            if (new Random().Next(100) < 50)
+            {
+                BattleMessage = "¡Huiste con éxito!";
+                StopPolling();
+                OwnerWindow?.Close();
+            }
+            else
+                BattleMessage = "¡No pudiste huir!";
+        }
+
+        // ── Helpers ──────────────────────────────────────────────────────
+
         private void InitializeWithPlaceholders()
         {
-            BattleMessage = "Batalla iniciada. ¡Selecciona tu acción!";
+            BattleMessage = "Modo demo — sin batalla real.";
             PlayerMoves.Clear();
             PlayerMoves.Add(new MoveModel { Name = "Placaje",     Pp = 35, MaxPp = 35, Type = "Normal",    Power = 40 });
             PlayerMoves.Add(new MoveModel { Name = "Lanzallamas", Pp = 15, MaxPp = 15, Type = "Fuego",     Power = 90 });
@@ -213,52 +388,33 @@ namespace PK_Proyect.ViewModels
             PlayerMoves.Add(new MoveModel { Name = "Protección",  Pp = 5,  MaxPp = 5,  Type = "Normal",    Power = 0  });
         }
 
-        private async Task TryRunAsync()
+        private void CargarEquipoPlaceholder()
         {
-            var result = MessageBox.Show(
-                "¿Seguro que quieres abandonar el combate?",
-                "Abandonar combate",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes) return;
-
-            BattleMessage = "Intentas huir...";
-            await Task.Delay(300);
-            if (new Random().Next(100) < 50)
+            Equipo.Clear();
+            Equipo.Add(new PokemonEquipoItem
             {
-                BattleMessage = "¡Huiste con éxito!";
-                IsBattleActive = false;
-                OwnerWindow?.Close();
-            }
-            else
+                PokemonId = "25", Nombre = "Pikachu", Nivel = 5, TipoPrincipal = "Eléctrico",
+                HpActual = 19, HpMax = 19,
+                ImagenUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                Movimientos = new() {
+                    new MoveModel { Name = "Impactrueno", Pp = 30, MaxPp = 30, Type = "Eléctrico", Power = 40 },
+                    new MoveModel { Name = "Placaje",     Pp = 35, MaxPp = 35, Type = "Normal",    Power = 40 },
+                    new MoveModel { Name = "Cola Férrea", Pp = 15, MaxPp = 15, Type = "Acero",     Power = 100 },
+                    new MoveModel { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal",    Power = 0 }
+                }
+            });
+            Equipo.Add(new PokemonEquipoItem
             {
-                BattleMessage = "¡No pudiste huir!";
-            }
-        }
-
-        public void ApplyDamageToOpponent(int damage)
-        {
-            _opponentHp = Math.Max(0, _opponentHp - damage);
-            OnPropertyChanged(nameof(OpponentHpPercent));
-            OnPropertyChanged(nameof(OpponentHpText));
-            if (_opponentHp <= 0) { BattleMessage = $"¡{PlayerName} ganó la batalla!"; IsBattleActive = false; }
-        }
-
-        public void ApplyDamageToPlayer(int damage)
-        {
-            _playerHp = Math.Max(0, _playerHp - damage);
-            OnPropertyChanged(nameof(PlayerHpPercent));
-            OnPropertyChanged(nameof(PlayerHpText));
-            if (_playerHp <= 0) { BattleMessage = $"¡{OpponentName} ganó la batalla!"; IsBattleActive = false; }
-        }
-
-        public void UseMove(MoveModel move)
-        {
-            if (move == null || !IsBattleActive) return;
-            if (move.Pp <= 0) { BattleMessage = "No hay PP disponible para ese movimiento."; return; }
-            move.Pp--;
-            BattleMessage = $"¡{PlayerName} usa {move.Name}!";
+                PokemonId = "4", Nombre = "Charmander", Nivel = 5, TipoPrincipal = "Fuego",
+                HpActual = 22, HpMax = 22,
+                ImagenUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+                Movimientos = new() {
+                    new MoveModel { Name = "Arañazo",     Pp = 35, MaxPp = 35, Type = "Normal", Power = 40 },
+                    new MoveModel { Name = "Ascuas",      Pp = 25, MaxPp = 25, Type = "Fuego",  Power = 40 },
+                    new MoveModel { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal", Power = 0 },
+                    new MoveModel { Name = "Lanzallamas", Pp = 15, MaxPp = 15, Type = "Fuego",  Power = 90 }
+                }
+            });
         }
 
         private BitmapImage? LoadBitmap(string uri)
@@ -267,6 +423,8 @@ namespace PK_Proyect.ViewModels
             try { return new BitmapImage(new Uri(uri, UriKind.RelativeOrAbsolute)); }
             catch { return null; }
         }
+
+        public void Dispose() => StopPolling();
 
         protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
