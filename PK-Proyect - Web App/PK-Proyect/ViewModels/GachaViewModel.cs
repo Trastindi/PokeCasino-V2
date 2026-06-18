@@ -221,7 +221,7 @@ namespace PK_Proyect.ViewModels.Banners
                     return;
                 }
 
-                var poke = _pokedexRepo.ObtenerPorId(s.Id)
+                var poke = await Task.Run(() => _pokedexRepo.ObtenerPorId(sorteo.Id));
                 if (poke == null)
                 {
                     MessageBox.Show($"No se encontr\u00f3 el Pok\u00e9mon con ID {sorteo.Id} en la Pok\u00e9dex.",
