@@ -233,7 +233,6 @@ namespace PK_Proyect.ViewModels.Banners
                     poke.TipoPrincipal, poke.TipoSecundario,
                     poke.EstadisticasBase?.Ps ?? 0);
 
-                // Fecha como string ISO 8601 para que Flask la acepte y deserialice sin problemas
                 await new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
                 {
                     UserId        = Usuario.Id,
@@ -241,7 +240,7 @@ namespace PK_Proyect.ViewModels.Banners
                     NombrePokemon = poke.Nombre,
                     Zona          = NombreZona,
                     TipoTirada    = "single",
-                    Fecha         = DateTime.Now.ToString("o")  // ISO 8601 round-trip
+                    Fecha         = DateTime.UtcNow   // DateTime? — el converter lo serializa como ISO 8601
                 });
 
                 await ActualizarFichasAsync();
@@ -311,7 +310,6 @@ namespace PK_Proyect.ViewModels.Banners
                         poke.TipoPrincipal, poke.TipoSecundario,
                         poke.EstadisticasBase?.Ps ?? 0);
 
-                    // Fecha como string ISO 8601 para que Flask la acepte y deserialice sin problemas
                     await repoHist.RegistrarTirada(new HistoricoTirada
                     {
                         UserId        = Usuario.Id,
@@ -319,7 +317,7 @@ namespace PK_Proyect.ViewModels.Banners
                         NombrePokemon = poke.Nombre,
                         Zona          = NombreZona,
                         TipoTirada    = "multi",
-                        Fecha         = DateTime.Now.ToString("o")  // ISO 8601 round-trip
+                        Fecha         = DateTime.UtcNow   // DateTime? — el converter lo serializa como ISO 8601
                     });
 
                     if (obtenido != null)
