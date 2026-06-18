@@ -16,6 +16,9 @@
         <SolidColorBrush x:Key="PkRed"    Color="#E00000"/>
         <SolidColorBrush x:Key="PkWhite"  Color="#FFFFFF"/>
         <SolidColorBrush x:Key="PkBox"    Color="#FFF5F2DF"/>
+        <SolidColorBrush x:Key="PkGreen"  Color="#1a8a2e"/>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <Style x:Key="RetroBtn" TargetType="Button">
             <Setter Property="FontFamily"       Value="{StaticResource PokemonClassic}"/>
@@ -28,7 +31,11 @@
             <Setter Property="Cursor"           Value="Hand"/>
         </Style>
 
-        <!-- Estilo para cada fila de equipo (clickable) -->
+        <Style x:Key="RetroBtnGreen" TargetType="Button" BasedOn="{StaticResource RetroBtn}">
+            <Setter Property="Background"    Value="{StaticResource PkGreen}"/>
+            <Setter Property="BorderBrush"   Value="{StaticResource PkBlue}"/>
+        </Style>
+
         <Style x:Key="EquipoItem" TargetType="Border">
             <Setter Property="Background"       Value="#E0D0A8"/>
             <Setter Property="BorderBrush"      Value="Black"/>
@@ -50,9 +57,9 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="44"/>  <!-- barra superior -->
-                    <RowDefinition Height="Auto"/> <!-- botón crear -->
-                    <RowDefinition Height="*"/>    <!-- lista -->
+                    <RowDefinition Height="44"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <!-- ── Barra superior ── -->
@@ -74,13 +81,26 @@
                     </Grid>
                 </Border>
 
-                <!-- ── Botón Crear Equipo ── -->
+                <!-- ── Botón Crear Equipo (solo en modo gestión) ── -->
                 <Button Grid.Row="1"
                         Content="+ Crear Equipo"
                         Style="{StaticResource RetroBtn}"
                         Command="{Binding CrearEquipoCommand}"
                         Margin="12,10,12,4"
-                        HorizontalAlignment="Stretch"/>
+                        HorizontalAlignment="Stretch"
+                        Visibility="{Binding ModoSeleccion,
+                                     Converter={StaticResource BoolToVis},
+                                     ConverterParameter=Inverse}"/>
+
+                <!-- ── Subtítulo modo selección ── -->
+                <TextBlock Grid.Row="1"
+                           Text="Elige el equipo con el que entrarás a batalla:"
+                           FontFamily="{StaticResource PokemonClassic}"
+                           FontSize="12" Foreground="{StaticResource PkBlue}"
+                           TextWrapping="Wrap"
+                           Margin="12,10,12,4"
+                           Visibility="{Binding ModoSeleccion,
+                                        Converter={StaticResource BoolToVis}}"/>
 
                 <!-- ── Lista de equipos ── -->
                 <ScrollViewer Grid.Row="2" Margin="8,4,8,10"
@@ -89,7 +109,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource EquipoItem}">
-                                    <!-- Abrir detalle al pulsar -->
+                                    <!-- Click izquierdo abre detalle solo en modo gestión -->
                                     <Border.InputBindings>
                                         <MouseBinding MouseAction="LeftClick"
                                             Command="{Binding DataContext.VerDetalleCommand,
@@ -114,13 +134,40 @@
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <!-- Flecha indicadora -->
+                                        <!-- Modo selección: botón Elegir Equipo -->
+                                        <Button Grid.Column="1"
+                                                Content="Elegir Equipo"
+                                                Style="{StaticResource RetroBtnGreen}"
+                                                FontSize="11"
+                                                Padding="8,4"
+                                                Margin="8,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding DataContext.ElegirEquipoCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Visibility="{Binding DataContext.ModoSeleccion,
+                                                             RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                             Converter={StaticResource BoolToVis}}"/>
+
+                                        <!-- Modo gestión: flecha indicadora -->
                                         <TextBlock Grid.Column="1"
-                                                   Text="▶"
+                                                   Text="&#9654;"
                                                    FontSize="18"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource PkBlue}"
-                                                   Margin="8,0,0,0"/>
+                                                   Margin="8,0,0,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.ModoSeleccion,
+                                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                     Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

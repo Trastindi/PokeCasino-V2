@@ -1,7 +1,10 @@
 using PK_Proyect.Commands;
 using PK_Proyect.Services;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -16,11 +19,13 @@ namespace PK_Proyect.ViewModels
         private string _idBattleToJoin;
         private bool _isBusy;
         private string _statusMessage;
+        private string _battleId;
+        private bool _teamSubmitted;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event System.Action BattleAccepted;
+        // Ahora lleva el battle_id para que el code-behind pueda abrirlo en EquipoPokemon
+        public event System.Action<string> BattleAccepted;
 
-        // Commands — RelayCommand(Func<object,Task>, Func<object,bool>)
         public RelayCommand DesafiarCommand { get; }
         public RelayCommand UnirseCommand   { get; }
         public RelayCommand CancelCommand   { get; }
@@ -33,17 +38,30 @@ namespace PK_Proyect.ViewModels
         public double ButtonHeight { get; } = 40;
         public double InputHeight  { get; } = 36;
 
+        /// <summary>ID de la batalla activa (asignado tras aceptación).</summary>
+        public string BattleId
+        {
+            get => _battleId;
+            private set { _battleId = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>True cuando el equipo ya fue enviado al servidor.</summary>
+        public bool TeamSubmitted
+        {
+            get => _teamSubmitted;
+            private set { _teamSubmitted = value; OnPropertyChanged(); }
+        }
+
         public SearchBattleViewModel(IBattleService battleService, string currentUserId, System.Action closeAction)
         {
             _battleService = battleService;
             _currentUserId = currentUserId;
 
-            BackgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3C04A"));
-            FontFamily      = new FontFamily("PokemonClassic");
+            BackgroundBrush  = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3C04A"));
+            FontFamily       = new FontFamily("PokemonClassic");
             ButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2B2B2B"));
             ButtonForeground = Brushes.White;
 
-            // Lambdas con parámetro _ para Func<object,Task> y Func<object,bool>
             DesafiarCommand = new RelayCommand(
                 async _ => await DesafiarAsync(),
                 _       => IsValidUserId && !IsBusy
@@ -98,9 +116,45 @@ namespace PK_Proyect.ViewModels
             set { if (_statusMessage == value) return; _statusMessage = value; OnPropertyChanged(); }
         }
 
-        public bool IsValidUserId  => !string.IsNullOrWhiteSpace(IdUserToChallenge);
+        public bool IsValidUserId   => !string.IsNullOrWhiteSpace(IdUserToChallenge);
         public bool IsValidBattleId => !string.IsNullOrWhiteSpace(IdBattleToJoin);
 
+        // ── Enviar equipo al servidor ────────────────────────────────────────
+        /// <summary>
+        /// Llama a POST /battles/{battleId}/teams con el team_id elegido.
+        /// Devuelve true si el servidor confirma el envío.
+        /// </summary>
+        public async Task<bool> SubmitTeamAsync(string teamId)
+        {
+            if (string.IsNullOrWhiteSpace(BattleId) || string.IsNullOrWhiteSpace(teamId))
+                return false;
+
+            try
+            {
+                var payload = JsonSerializer.Serialize(new { team_id = teamId });
+                var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                var response = await ApiClient.PostAsync($"/battles/{BattleId}/teams", content);
+                if (response == null)
+                {
+                    MessageBox.Show("Error al enviar el equipo al servidor.", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
+
+                TeamSubmitted = true;
+                StatusMessage = "¡Equipo enviado! Esperando al rival...";
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Error al enviar equipo: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        // ── Flujos de batalla ────────────────────────────────────────────────
         private async Task DesafiarAsync()
         {
             if (string.IsNullOrWhiteSpace(_currentUserId))
@@ -117,9 +171,17 @@ namespace PK_Proyect.ViewModels
                 if (!sent) { StatusMessage = "Error al enviar desafío."; return; }
 
                 StatusMessage = "Esperando respuesta...";
-                var accepted = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
-                StatusMessage = accepted ? "¡Desafío aceptado!" : "El desafío fue rechazado o expiró.";
-                if (accepted) OnBattleAccepted();
+                var result = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
+                if (result.Accepted)
+                {
+                    BattleId      = result.BattleId;
+                    StatusMessage = "¡Desafío aceptado!";
+                    OnBattleAccepted(BattleId);
+                }
+                else
+                {
+                    StatusMessage = "El desafío fue rechazado o expiró.";
+                }
             }
             catch (System.Exception ex)
             {
@@ -142,9 +204,17 @@ namespace PK_Proyect.ViewModels
                 if (!sent) { StatusMessage = "Error al unirse a la batalla."; return; }
 
                 StatusMessage = "Esperando confirmación...";
-                var accepted = await _battleService.WaitForAcceptanceAsync(IdBattleToJoin);
-                StatusMessage = accepted ? "¡Te has unido a la batalla!" : "La batalla fue cancelada o expiró.";
-                if (accepted) OnBattleAccepted();
+                var result = await _battleService.WaitForAcceptanceAsync(IdBattleToJoin);
+                if (result.Accepted)
+                {
+                    BattleId      = result.BattleId;
+                    StatusMessage = "¡Te has unido a la batalla!";
+                    OnBattleAccepted(BattleId);
+                }
+                else
+                {
+                    StatusMessage = "La batalla fue cancelada o expiró.";
+                }
             }
             catch (System.Exception ex)
             {
@@ -154,7 +224,7 @@ namespace PK_Proyect.ViewModels
             finally { IsBusy = false; }
         }
 
-        protected void OnBattleAccepted() => BattleAccepted?.Invoke();
+        protected void OnBattleAccepted(string battleId) => BattleAccepted?.Invoke(battleId);
 
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

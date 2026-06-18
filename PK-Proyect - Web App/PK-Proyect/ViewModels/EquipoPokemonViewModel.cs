@@ -15,18 +15,18 @@ namespace PK_Proyect.ViewModels
         private readonly EquipoRepository      _equipoRepo;
         private readonly PokemonUserRepository _pokemonRepo;
 
-        // Modo selección: elegir equipo para batalla
         public bool ModoSeleccion { get; }
 
         public ObservableCollection<Equipo> Equipos { get; } = new ObservableCollection<Equipo>();
 
-        // Eventos para modo selección (compatibilidad con BattleWindow)
-        public event Action<ObservableCollection<PokemonUser>> EquipoConfirmado;
+        // EquipoConfirmado ahora lleva el team_id (string) para enviarlo al endpoint
+        public event Action<string> EquipoConfirmado;
         public event Action SeleccionCancelada;
 
-        public ICommand CrearEquipoCommand { get; }
-        public ICommand VerDetalleCommand  { get; }
-        public ICommand CancelarCommand    { get; }
+        public ICommand CrearEquipoCommand  { get; }
+        public ICommand VerDetalleCommand   { get; }
+        public ICommand ElegirEquipoCommand { get; }
+        public ICommand CancelarCommand     { get; }
 
         public EquipoPokemonViewModel(bool modoSeleccion = false)
         {
@@ -34,23 +34,32 @@ namespace PK_Proyect.ViewModels
             _equipoRepo   = new EquipoRepository();
             _pokemonRepo  = new PokemonUserRepository();
 
-            CrearEquipoCommand = new RelayCommand(_ => CrearEquipo());
-            VerDetalleCommand  = new RelayCommand(equipo => AbrirDetalle(equipo as Equipo));
-            CancelarCommand    = new RelayCommand(_ => SeleccionCancelada?.Invoke());
+            CrearEquipoCommand  = new RelayCommand(_ => CrearEquipo());
+            VerDetalleCommand   = new RelayCommand(equipo => AbrirDetalle(equipo as Equipo));
+            ElegirEquipoCommand = new RelayCommand(equipo => ElegirEquipo(equipo as Equipo));
+            CancelarCommand     = new RelayCommand(_ => SeleccionCancelada?.Invoke());
 
             _ = CargarEquiposAsync();
         }
 
         private async Task CargarEquiposAsync()
         {
-            // El servidor filtra por el token JWT del usuario autenticado
-            var lista = await Task.Run(() => _equipoRepo.GetMisEquipos());
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                Equipos.Clear();
-                foreach (var e in lista)
-                    Equipos.Add(e);
-            });
+                var lista = await Task.Run(() => _equipoRepo.GetMisEquipos());
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Equipos.Clear();
+                    foreach (var e in lista)
+                        Equipos.Add(e);
+                });
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Error al cargar equipos: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning));
+            }
         }
 
         private void CrearEquipo()
@@ -69,22 +78,20 @@ namespace PK_Proyect.ViewModels
             });
         }
 
+        /// <summary>Modo normal: abre el detalle del equipo.</summary>
         private void AbrirDetalle(Equipo equipo)
         {
             if (equipo == null) return;
             var vm      = new DetalleEquipoViewModel(equipo);
             var ventana = new DetalleEquipoView(vm);
-
-            if (ModoSeleccion)
-            {
-                vm.EquipoSeleccionado += pokes =>
-                {
-                    EquipoConfirmado?.Invoke(pokes);
-                    ventana.Close();
-                };
-            }
-
             ventana.ShowDialog();
+        }
+
+        /// <summary>Modo selección: confirma el equipo elegido enviando su ID.</summary>
+        private void ElegirEquipo(Equipo equipo)
+        {
+            if (equipo == null) return;
+            EquipoConfirmado?.Invoke(equipo.Id);
         }
     }
 }
