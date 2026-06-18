@@ -32,9 +32,10 @@ namespace PK_Proyect.View
                         {
                             equipoView.Close();
                             this.Close();
-                            // skipTeamSelection: true — el equipo ya fue enviado arriba
+                            // FIX CS1739: BattleWindowView NO tiene parámetro skipTeamSelection.
+                            // El equipo ya se envió en SubmitTeamAsync; simplemente abrimos la batalla.
                             var battleWindow = new BattleWindowView(battleService, battleId,
-                                                                    skipTeamSelection: true);
+                                                                    myPlayerId: currentUserId);
                             battleWindow.Show();
                         }
                         else
