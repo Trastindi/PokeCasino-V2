@@ -1,0 +1,67 @@
+﻿<Window x:Class="PK_Proyect.Views.MostrarPokemonView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Pokémon en la Zona"
+        Height="420" Width="380"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#F8F0D8">
+
+    <Border BorderBrush="Black" BorderThickness="3" Margin="10" Background="#F8F0D8">
+        <StackPanel Margin="10">
+
+            <TextBlock Text="{Binding Titulo}"
+                       FontSize="20"
+                       FontFamily="{StaticResource PokemonClassic}"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0 0 0 12"
+                       Foreground="Black"/>
+
+            <ScrollViewer Height="300">
+                <ItemsControl ItemsSource="{Binding Pokemon}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black"
+                                    BorderThickness="2"
+                                    Margin="6"
+                                    Padding="8"
+                                    Background="#E0D0A8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Nombre}"
+                                               FontSize="14"
+                                               FontFamily="{StaticResource PokemonClassic}"
+                                               FontWeight="Bold"
+                                               Foreground="Black"
+                                               VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Probabilidad, StringFormat={}{0}%}"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               Foreground="Black"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Button Content="Cerrar"
+                    Width="100" Height="30"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    HorizontalAlignment="Center"
+                    Margin="0 10 0 0"
+                    Background="#D8C090"
+                    Click="Cerrar"/>
+        </StackPanel>
+    </Border>
+</Window>
