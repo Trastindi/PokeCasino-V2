@@ -9,35 +9,44 @@ namespace PK_Proyect.Repositories
     /// </summary>
     public class PokemonUserRepository
     {
+        /// <summary>
+        /// Devuelve los pokémon del usuario autenticado (usa JWT, no necesita userId).
+        /// Endpoint: GET /usuarios/mis_pokemon
+        /// </summary>
+        public List<PokemonUser> GetMisPokemon()
+            => ApiClient.Get<List<PokemonUser>>("/usuarios/mis_pokemon");
+
+        /// <summary>
+        /// Devuelve los pokémon de cualquier usuario por su ID (requiere ser admin o el propio usuario).
+        /// Endpoint: GET /usuarios/{userId}/pokemon
+        /// </summary>
+        public List<PokemonUser> GetPokemonsByUser(string userId)
+            => ApiClient.Get<List<PokemonUser>>($"/usuarios/{userId}/pokemon");
+
         public PokemonUser GetPokemon(string userId, int pokemonId)
         {
             var lista = GetPokemonsByUser(userId);
             return lista.Find(p => p.PokemonId == pokemonId);
         }
 
-        public List<PokemonUser> GetPokemonsByUser(string userId)
-            => ApiClient.Get<List<PokemonUser>>($"/usuarios/{userId}/pokemon");
-
         public PokemonUser InsertPokemon(PokemonUser pokemon)
-        => ApiClient.Post<PokemonUser>("/pokemon/obtener", new
-        {
-            pokemon_id = pokemon.PokemonId,
-            nombre = pokemon.Nombre,
-            tipo1 = pokemon.TipoPrincipal,
-            tipo2 = pokemon.TipoSecundario
-        });
+            => ApiClient.Post<PokemonUser>("/pokemon/obtener", new
+            {
+                pokemon_id = pokemon.PokemonId,
+                nombre     = pokemon.Nombre,
+                tipo1      = pokemon.TipoPrincipal,
+                tipo2      = pokemon.TipoSecundario
+            });
 
         /// <summary>
-        /// Actualización de moveset. Para subida de nivel usa InsertPokemon (que llama a /pokemon/obtener).
+        /// Actualización de moveset.
         /// </summary>
         public void UpdatePokemon(PokemonUser pokemon, int pokemonIdOriginal)
         {
-            // Solo se actualiza el moveset directamente
-            // Las subidas de nivel se delegan a /pokemon/obtener
             ApiClient.Put<object>("/pokemon/movimiento", new
             {
-                pokemon_id     = pokemonIdOriginal,
-                indice_a_borrar = -1,          // sin reemplazo, solo sincroniza
+                pokemon_id       = pokemonIdOriginal,
+                indice_a_borrar  = -1,
                 movimiento_nuevo = string.Join(",", pokemon.MoveSet)
             });
         }

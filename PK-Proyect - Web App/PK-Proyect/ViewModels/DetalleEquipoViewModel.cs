@@ -31,10 +31,10 @@ namespace PK_Proyect.ViewModels
 
         private async Task CargarIntegrantesAsync()
         {
-            // Cargamos todos los pokémon del usuario (filtrado por JWT en el servidor)
-            var todosLosPokemon = await Task.Run(() => _pokemonRepo.GetPokemonsByUser(null));
+            // Usamos /usuarios/mis_pokemon (filtra por JWT, no por userId en la URL)
+            var todosLosPokemon = await Task.Run(() => _pokemonRepo.GetMisPokemon());
 
-            // Filtramos por _id (ObjectId string) en lugar de por PokemonId (número Pokédex)
+            // Filtramos por _id (ObjectId string) de PokemonUser
             var integrantes = todosLosPokemon
                 .Where(p => Equipo.PokemonIds.Contains(p.Id))
                 .OrderBy(p => Equipo.PokemonIds.IndexOf(p.Id))
