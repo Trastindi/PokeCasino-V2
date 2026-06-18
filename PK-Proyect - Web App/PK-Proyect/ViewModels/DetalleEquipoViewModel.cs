@@ -11,7 +11,7 @@ namespace PK_Proyect.ViewModels
     public class DetalleEquipoViewModel
     {
         private readonly PokemonUserRepository _pokemonRepo;
-        private readonly string               _userId;
+        private readonly EquipoRepository      _equipoRepo;
 
         public Equipo Equipo { get; }
 
@@ -20,23 +20,24 @@ namespace PK_Proyect.ViewModels
         /// <summary>Solo usado en modo selección de batalla.</summary>
         public event Action<ObservableCollection<PokemonUser>> EquipoSeleccionado;
 
-        public DetalleEquipoViewModel(string userId, Equipo equipo)
+        public DetalleEquipoViewModel(Equipo equipo)
         {
-            _userId      = userId;
             Equipo       = equipo;
             _pokemonRepo = new PokemonUserRepository();
+            _equipoRepo  = new EquipoRepository();
 
             _ = CargarIntegrantesAsync();
         }
 
         private async Task CargarIntegrantesAsync()
         {
-            var todosLosPokemon = await Task.Run(() => _pokemonRepo.GetPokemonsByUser(_userId));
+            // Cargamos todos los pokémon del usuario (filtrado por JWT en el servidor)
+            var todosLosPokemon = await Task.Run(() => _pokemonRepo.GetPokemonsByUser(null));
 
-            // Filtrar solo los pokemon cuyo PokemonId está en la lista de integrantes del equipo
+            // Filtramos por _id (ObjectId string) en lugar de por PokemonId (número Pokédex)
             var integrantes = todosLosPokemon
-                .Where(p => Equipo.Integrantes.Contains(p.PokemonId))
-                .OrderBy(p => Equipo.Integrantes.IndexOf(p.PokemonId))
+                .Where(p => Equipo.PokemonIds.Contains(p.Id))
+                .OrderBy(p => Equipo.PokemonIds.IndexOf(p.Id))
                 .ToList();
 
             Application.Current.Dispatcher.Invoke(() =>
@@ -45,6 +46,21 @@ namespace PK_Proyect.ViewModels
                 foreach (var p in integrantes)
                     Integrantes.Add(p);
             });
+        }
+
+        /// <summary>
+        /// Confirma el equipo actual y lanza el evento EquipoSeleccionado (modo batalla).
+        /// </summary>
+        public void ConfirmarEquipo()
+            => EquipoSeleccionado?.Invoke(Integrantes);
+
+        /// <summary>
+        /// Persiste los cambios en la lista de integrantes llamando al endpoint PUT.
+        /// </summary>
+        public async Task GuardarCambiosAsync()
+        {
+            var ids = Integrantes.Select(p => p.Id).ToList();
+            await Task.Run(() => _equipoRepo.ActualizarEquipo(Equipo.Id, ids));
         }
     }
 }

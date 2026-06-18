@@ -12,9 +12,8 @@ namespace PK_Proyect.ViewModels
 {
     public class EquipoPokemonViewModel
     {
-        private readonly EquipoRepository     _equipoRepo;
+        private readonly EquipoRepository      _equipoRepo;
         private readonly PokemonUserRepository _pokemonRepo;
-        private readonly string               _userId;
 
         // Modo selección: elegir equipo para batalla
         public bool ModoSeleccion { get; }
@@ -25,13 +24,12 @@ namespace PK_Proyect.ViewModels
         public event Action<ObservableCollection<PokemonUser>> EquipoConfirmado;
         public event Action SeleccionCancelada;
 
-        public ICommand CrearEquipoCommand   { get; }
-        public ICommand VerDetalleCommand    { get; }
-        public ICommand CancelarCommand      { get; }
+        public ICommand CrearEquipoCommand { get; }
+        public ICommand VerDetalleCommand  { get; }
+        public ICommand CancelarCommand    { get; }
 
-        public EquipoPokemonViewModel(string userId, bool modoSeleccion = false)
+        public EquipoPokemonViewModel(bool modoSeleccion = false)
         {
-            _userId       = userId;
             ModoSeleccion = modoSeleccion;
             _equipoRepo   = new EquipoRepository();
             _pokemonRepo  = new PokemonUserRepository();
@@ -45,7 +43,8 @@ namespace PK_Proyect.ViewModels
 
         private async Task CargarEquiposAsync()
         {
-            var lista = await Task.Run(() => _equipoRepo.GetEquiposByUser(_userId));
+            // El servidor filtra por el token JWT del usuario autenticado
+            var lista = await Task.Run(() => _equipoRepo.GetMisEquipos());
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Equipos.Clear();
@@ -64,7 +63,7 @@ namespace PK_Proyect.ViewModels
 
             _ = Task.Run(async () =>
             {
-                var nuevo = await Task.Run(() => _equipoRepo.CrearEquipo(_userId, nombre));
+                var nuevo = await Task.Run(() => _equipoRepo.CrearEquipo(nombre));
                 if (nuevo != null)
                     Application.Current.Dispatcher.Invoke(() => Equipos.Add(nuevo));
             });
@@ -73,12 +72,11 @@ namespace PK_Proyect.ViewModels
         private void AbrirDetalle(Equipo equipo)
         {
             if (equipo == null) return;
-            var vm = new DetalleEquipoViewModel(_userId, equipo);
+            var vm      = new DetalleEquipoViewModel(equipo);
             var ventana = new DetalleEquipoView(vm);
 
             if (ModoSeleccion)
             {
-                // En modo selección confirmamos el equipo elegido
                 vm.EquipoSeleccionado += pokes =>
                 {
                     EquipoConfirmado?.Invoke(pokes);
