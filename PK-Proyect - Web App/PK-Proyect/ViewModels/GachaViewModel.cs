@@ -202,39 +202,41 @@ namespace PK_Proyect.ViewModels.Banners
                 {
                     var compra = new ComprarFichasWindow(Usuario);
                     if (compra.ShowDialog() != true) return;
+                    await ActualizarFichasAsync();
                     Fichas = Usuario.FichasCasino;
                 }
-
-                // Parte sincrona CPU-bound
-                var sorteo = await Task.Run(() =>
+        
+                // Cobrar, persistir y obtener el sorteo + Pokémon en background para no bloquear la UI
+                (Pokemon poke, PokemonZonaViewModel sorteo) resultado = await Task.Run(() =>
                 {
                     Usuario.FichasCasino -= COSTE;
                     new UserRepository().UpdateUser(Usuario);
-                    Debug.WriteLine($"[TIRADA SINGLE] Fichas despu\u00e9s de cobro: {Usuario.FichasCasino}");
-                    return Tirar();
+                    Debug.WriteLine($"[TIRADA SINGLE] Fichas después de cobro: {Usuario.FichasCasino}");
+        
+                    var s = Tirar();
+                    if (s == null) return (poke: (Pokemon)null, sorteo: (PokemonZonaViewModel)null);
+        
+                    var p = _pokedexRepo.ObtenerPorId(s.Id);
+                    return (p, s);
                 });
-
-                if (sorteo == null)
+        
+                var poke = resultado.poke;
+                var sorteo = resultado.sorteo;
+        
+                if (sorteo == null || poke == null)
                 {
-                    MessageBox.Show("No se pudo realizar el sorteo. La zona no tiene Pok\u00e9mon disponibles.",
+                    MessageBox.Show("No se pudo realizar el sorteo. La zona no tiene Pokémon disponibles o falta la entrada en la Pokédex.",
                         "Sorteo fallido", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
-
-                var poke = await Task.Run(() => _pokedexRepo.ObtenerPorId(sorteo.Id));
-                if (poke == null)
-                {
-                    MessageBox.Show($"No se encontr\u00f3 el Pok\u00e9mon con ID {sorteo.Id} en la Pok\u00e9dex.",
-                        "Error de datos", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Parte asincrona fuera de Task.Run para evitar Task<Task> no unwrapped
+        
+                // Crear/obtener el PokemonUser (operación async)
                 var pokemon = await _pokemonUserService.ObtenerPokemonAsync(
                     poke.numero_pokedex, poke.Nombre,
                     poke.TipoPrincipal, poke.TipoSecundario,
                     poke.EstadisticasBase?.Ps ?? 0);
-
+        
+                // Registrar histórico en background
                 await Task.Run(() => new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
                 {
                     UserId        = Usuario.Id,
@@ -244,26 +246,25 @@ namespace PK_Proyect.ViewModels.Banners
                     TipoTirada    = "single",
                     Fecha         = DateTime.Now
                 }));
-
+        
+                // Refrescar fichas desde servidor y actualizar propiedad
                 await ActualizarFichasAsync();
-
+                Fichas = Usuario.FichasCasino;
+        
+                // Mostrar resultado en UI
                 if (pokemon != null)
-                    MessageBox.Show(
-                        $"\u00a1Has obtenido a {pokemon.Nombre}!",
-                        "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"¡Has obtenido a {pokemon.Nombre}!", "Resultado del Gacha", MessageBoxButton.OK, MessageBoxImage.Information);
                 else
-                    MessageBox.Show(
-                        $"Se registr\u00f3 la tirada pero hubo un problema al guardar {poke.Nombre}. Intenta de nuevo.",
+                    MessageBox.Show($"Se registró la tirada pero hubo un problema al guardar {poke.Nombre}. Intenta de nuevo.",
                         "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[TiradaSingleAsync] Excepci\u00f3n: {ex}");
-                MessageBox.Show(
-                    $"Error al realizar la tirada:\n{ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"[TiradaSingleAsync] Excepción: {ex}");
+                MessageBox.Show($"Error al realizar la tirada:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private async Task TiradaMultiAsync()
         {
