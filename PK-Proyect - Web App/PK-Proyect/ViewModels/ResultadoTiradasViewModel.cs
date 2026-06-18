@@ -15,7 +15,7 @@ namespace PK_Proyect.ViewModels
 
         public ResultadoTiradasViewModel(string nombreZona)
         {
-            Titulo = $"Resultados de la tirada en {nombreZona}";
+            Titulo = $"Resultados";
         }
 
         public void Cargar(System.Collections.Generic.IEnumerable<PokemonUser> items)
