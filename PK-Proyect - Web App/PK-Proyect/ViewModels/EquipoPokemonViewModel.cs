@@ -19,9 +19,8 @@ namespace PK_Proyect.ViewModels
 
         public ObservableCollection<Equipo> Equipos { get; } = new ObservableCollection<Equipo>();
 
-        // EquipoConfirmado ahora lleva el team_id (string) para enviarlo al endpoint
         public event Action<string> EquipoConfirmado;
-        public event Action SeleccionCancelada;
+        public event Action         SeleccionCancelada;
 
         public ICommand CrearEquipoCommand  { get; }
         public ICommand VerDetalleCommand   { get; }
@@ -34,7 +33,7 @@ namespace PK_Proyect.ViewModels
             _equipoRepo   = new EquipoRepository();
             _pokemonRepo  = new PokemonUserRepository();
 
-            CrearEquipoCommand  = new RelayCommand(_ => CrearEquipo());
+            CrearEquipoCommand  = new RelayCommand(_ => { _ = CrearEquipoAsync(); });
             VerDetalleCommand   = new RelayCommand(equipo => AbrirDetalle(equipo as Equipo));
             ElegirEquipoCommand = new RelayCommand(equipo => ElegirEquipo(equipo as Equipo));
             CancelarCommand     = new RelayCommand(_ => SeleccionCancelada?.Invoke());
@@ -62,20 +61,38 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        private void CrearEquipo()
+        private async Task CrearEquipoAsync()
         {
+            // El dialog debe abrirse en el hilo UI
             var dialog = new CrearEquipoDialog();
             if (dialog.ShowDialog() != true) return;
 
             var nombre = dialog.NombreEquipo?.Trim();
             if (string.IsNullOrEmpty(nombre)) return;
 
-            _ = Task.Run(async () =>
+            try
             {
+                // Llamada de red en hilo de fondo
                 var nuevo = await Task.Run(() => _equipoRepo.CrearEquipo(nombre));
-                if (nuevo != null)
-                    Application.Current.Dispatcher.Invoke(() => Equipos.Add(nuevo));
-            });
+
+                if (nuevo == null)
+                {
+                    MessageBox.Show(
+                        "El servidor no devolvió el equipo creado. Comprueba la conexión.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Actualizar la lista en el hilo UI
+                Application.Current.Dispatcher.Invoke(() => Equipos.Add(nuevo));
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show(
+                        $"Error al crear el equipo:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+            }
         }
 
         /// <summary>Modo normal: abre el detalle del equipo.</summary>
