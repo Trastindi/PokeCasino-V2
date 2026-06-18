@@ -1,7 +1,10 @@
 using PK_Proyect.Commands;
 using PK_Proyect.Models;
+using PK_Proyect.Repositories;
 using PK_Proyect.Services;
 using PK_Proyect.View;
+using PK_Proyect.ViewModels;
+using PK_Proyect.Views;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -50,7 +53,6 @@ namespace PK_Proyect.ViewModels
 
         private void AbrirEquipoPokemon()
         {
-            // El userId ya no es necesario: el servidor lo deduce del JWT
             var ventana = new EquipoPokemonView(new EquipoPokemonViewModel());
             ventana.ShowDialog();
         }
@@ -63,7 +65,18 @@ namespace PK_Proyect.ViewModels
 
         private void AbrirIntercambios()
         {
-            var ventana = new IntercambiosView(new IntercambiosViewModel());
+            var vm      = new IntercambiosViewModel(new TradeRepository(), new PokemonUserRepository());
+            var control = new IntercambiosView { DataContext = vm };
+            var ventana = new Window
+            {
+                Title                  = "Intercambios",
+                Content                = control,
+                Width                  = 800,
+                Height                 = 600,
+                WindowStyle            = WindowStyle.ToolWindow,
+                ResizeMode             = ResizeMode.NoResize,
+                WindowStartupLocation  = WindowStartupLocation.CenterScreen
+            };
             ventana.ShowDialog();
         }
 
