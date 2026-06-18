@@ -29,8 +29,8 @@ namespace PK_Proyect.Models
         public string? Player2Pokemon  { get; set; }
 
         // Detalle enriquecido del pokémon (rellenado por el servidor en GET /trades/{id})
-        public PokemonUserModel? Player1PokemonDetail { get; set; }
-        public PokemonUserModel? Player2PokemonDetail { get; set; }
+        public PokemonUser? Player1PokemonDetail { get; set; }
+        public PokemonUser? Player2PokemonDetail { get; set; }
 
         public bool Player1Confirmed   { get; set; }
         public bool Player2Confirmed   { get; set; }

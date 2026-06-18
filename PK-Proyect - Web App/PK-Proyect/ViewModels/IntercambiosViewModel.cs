@@ -13,12 +13,12 @@ namespace PK_Proyect.ViewModels
 {
     public class IntercambiosViewModel : INotifyPropertyChanged
     {
-        private readonly ITradeRepository      _tradeRepo;
-        private readonly IPokemonUserRepository _pokemonRepo;
+        private readonly ITradeRepository       _tradeRepo;
+        private readonly PokemonUserRepository  _pokemonRepo;
 
         // ── Observable collections ───────────────────────────────────
-        public ObservableCollection<TradeModel>        MisIntercambios  { get; } = new();
-        public ObservableCollection<PokemonUserModel>  MisPokemon       { get; } = new();
+        public ObservableCollection<TradeModel>   MisIntercambios { get; } = new();
+        public ObservableCollection<PokemonUser>  MisPokemon      { get; } = new();
 
         // ── Propiedades enlazadas ────────────────────────────────────
 
@@ -44,8 +44,8 @@ namespace PK_Proyect.ViewModels
         }
         public bool HayIntercambioActivo => IntercambioActivo != null;
 
-        private PokemonUserModel? _pokemonOfrecido;
-        public PokemonUserModel? PokemonOfrecido
+        private PokemonUser? _pokemonOfrecido;
+        public PokemonUser? PokemonOfrecido
         {
             get => _pokemonOfrecido;
             set { _pokemonOfrecido = value; OnPropertyChanged(); }
@@ -73,7 +73,7 @@ namespace PK_Proyect.ViewModels
         }
 
         // ── Constructor ──────────────────────────────────────────────
-        public IntercambiosViewModel(ITradeRepository tradeRepo, IPokemonUserRepository pokemonRepo)
+        public IntercambiosViewModel(ITradeRepository tradeRepo, PokemonUserRepository pokemonRepo)
         {
             _tradeRepo   = tradeRepo;
             _pokemonRepo = pokemonRepo;
@@ -228,7 +228,8 @@ namespace PK_Proyect.ViewModels
 
         private async Task CargarMisPokemonAsync()
         {
-            var lista = await _pokemonRepo.GetMisPokemonAsync();
+            // PokemonUserRepository no tiene métodos async: ejecutamos en hilo de fondo
+            var lista = await Task.Run(() => _pokemonRepo.GetMisPokemon());
             MisPokemon.Clear();
             foreach (var p in lista) MisPokemon.Add(p);
         }
