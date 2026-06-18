@@ -16,11 +16,8 @@ namespace PK_Proyect.ViewModels
         private readonly ITradeRepository       _tradeRepo;
         private readonly PokemonUserRepository  _pokemonRepo;
 
-        // ── Observable collections ───────────────────────────────────
-        public ObservableCollection<TradeModel>   MisIntercambios { get; } = new();
-        public ObservableCollection<PokemonUser>  MisPokemon      { get; } = new();
-
-        // ── Propiedades enlazadas ────────────────────────────────────
+        public ObservableCollection<TradeModel>  MisIntercambios { get; } = new();
+        public ObservableCollection<PokemonUser> MisPokemon      { get; } = new();
 
         private string _rivalUsername = string.Empty;
         public string RivalUsername
@@ -36,16 +33,21 @@ namespace PK_Proyect.ViewModels
             set { _rivalId = value; OnPropertyChanged(); }
         }
 
-        private TradeModel? _intercambioActivo;
-        public TradeModel? IntercambioActivo
+        private TradeModel _intercambioActivo;
+        public TradeModel IntercambioActivo
         {
             get => _intercambioActivo;
-            set { _intercambioActivo = value; OnPropertyChanged(); OnPropertyChanged(nameof(HayIntercambioActivo)); }
+            set
+            {
+                _intercambioActivo = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HayIntercambioActivo));
+            }
         }
         public bool HayIntercambioActivo => IntercambioActivo != null;
 
-        private PokemonUser? _pokemonOfrecido;
-        public PokemonUser? PokemonOfrecido
+        private PokemonUser _pokemonOfrecido;
+        public PokemonUser PokemonOfrecido
         {
             get => _pokemonOfrecido;
             set { _pokemonOfrecido = value; OnPropertyChanged(); }
@@ -72,14 +74,13 @@ namespace PK_Proyect.ViewModels
             set { _intercambioExitoso = value; OnPropertyChanged(); }
         }
 
-        // ── Constructor ──────────────────────────────────────────────
         public IntercambiosViewModel(ITradeRepository tradeRepo, PokemonUserRepository pokemonRepo)
         {
             _tradeRepo   = tradeRepo;
             _pokemonRepo = pokemonRepo;
         }
 
-        // ── Comandos / métodos públicos ──────────────────────────────
+        // ── Métodos públicos ─────────────────────────────────────────
 
         public async Task EnviarSolicitudAsync()
         {
@@ -97,10 +98,7 @@ namespace PK_Proyect.ViewModels
                     ? $"Solicitud enviada a {RivalUsername}. Esperando respuesta..."
                     : "Error al enviar la solicitud.";
             }
-            catch (Exception ex)
-            {
-                Mensaje = $"Error: {ex.Message}";
-            }
+            catch (Exception ex) { Mensaje = $"Error: {ex.Message}"; }
             finally { EstaCargando = false; }
         }
 
@@ -114,7 +112,7 @@ namespace PK_Proyect.ViewModels
                 if (tradeId != null)
                 {
                     Mensaje = "¡Solicitud aceptada! Selecciona el Pokémon que quieres ofrecer.";
-                    await CargarIntercambioAsync(tradeId);
+                    await CargarIntercambioPublicoAsync(tradeId);
                     await CargarMisPokemonAsync();
                 }
                 else
@@ -152,7 +150,7 @@ namespace PK_Proyect.ViewModels
                 if (ok)
                 {
                     Mensaje = "Pokémon ofrecido. Esperando al otro jugador...";
-                    await RefrescarIntercambioAsync();
+                    await RefrescarIntercambioPublicoAsync();
                 }
                 else
                 {
@@ -180,7 +178,7 @@ namespace PK_Proyect.ViewModels
                 else
                 {
                     Mensaje = "Confirmación registrada. Esperando al otro jugador...";
-                    await RefrescarIntercambioAsync();
+                    await RefrescarIntercambioPublicoAsync();
                 }
             }
             catch (Exception ex) { Mensaje = $"Error: {ex.Message}"; }
@@ -214,13 +212,17 @@ namespace PK_Proyect.ViewModels
             finally { EstaCargando = false; }
         }
 
-        private async Task CargarIntercambioAsync(string tradeId)
+        /// <summary>Carga un intercambio concreto por ID y lo muestra como activo.</summary>
+        public async Task CargarIntercambioPublicoAsync(string tradeId)
         {
             var trade = await _tradeRepo.GetTradeAsync(tradeId);
             IntercambioActivo = trade;
+            if (trade != null)
+                await CargarMisPokemonAsync();
         }
 
-        private async Task RefrescarIntercambioAsync()
+        /// <summary>Refresca el intercambio activo (usado por el polling).</summary>
+        public async Task RefrescarIntercambioPublicoAsync()
         {
             if (IntercambioActivo == null) return;
             IntercambioActivo = await _tradeRepo.GetTradeAsync(IntercambioActivo.Id);
@@ -228,15 +230,13 @@ namespace PK_Proyect.ViewModels
 
         private async Task CargarMisPokemonAsync()
         {
-            // PokemonUserRepository no tiene métodos async: ejecutamos en hilo de fondo
             var lista = await Task.Run(() => _pokemonRepo.GetMisPokemon());
             MisPokemon.Clear();
             foreach (var p in lista) MisPokemon.Add(p);
         }
 
-        // ── INotifyPropertyChanged ───────────────────────────────────
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
