@@ -1,8 +1,8 @@
+using PK_Proyect.Repositories;
 using PK_Proyect.Services;
 using PK_Proyect.ViewModels;
-using PK_Proyect.Views;          // namespace correcto de IntercambiosView
+using PK_Proyect.Views;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace PK_Proyect.View
 {
@@ -25,8 +25,15 @@ namespace PK_Proyect.View
             {
                 this.Close();
 
-                // IntercambiosView es un UserControl → se envuelve en una Window
-                var uc     = new IntercambiosView();
+                // Crear el ViewModel del intercambio e inyectárselo al UserControl
+                var tradeVM = new IntercambiosViewModel(
+                    new TradeRepository(),
+                    new PokemonUserRepository()
+                );
+
+                var uc = new IntercambiosView();
+                uc.DataContext = tradeVM;
+
                 var window = new Window
                 {
                     Title   = "Intercambios",
@@ -36,11 +43,10 @@ namespace PK_Proyect.View
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 };
 
-                // Pasamos el tradeId al ViewModel una vez cargado el UserControl
+                // Una vez cargado, aceptamos la solicitud usando el tradeId del mensaje
                 uc.Loaded += async (_, __) =>
                 {
-                    if (uc.DataContext is IntercambiosViewModel ivm && !string.IsNullOrEmpty(tradeId))
-                        await ivm.CargarMisIntercambiosAsync();
+                    await tradeVM.AceptarSolicitudAsync(tradeId);
                 };
 
                 window.Show();

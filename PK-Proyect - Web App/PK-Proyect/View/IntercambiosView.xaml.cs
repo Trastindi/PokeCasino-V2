@@ -1,4 +1,3 @@
-using PK_Proyect.Models;
 using PK_Proyect.View;
 using PK_Proyect.ViewModels;
 using System;
@@ -16,19 +15,14 @@ namespace PK_Proyect.Views
         public IntercambiosView()
         {
             InitializeComponent();
-
-            // Arrancar polling cuando el UserControl esté cargado
             Loaded   += OnLoaded;
             Unloaded += OnUnloaded;
         }
 
-        // ── Polling: refresca el intercambio activo cada 4 segundos ──
+        // ── Polling: refresca el intercambio activo cada 4 s ──
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _pollingTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(4)
-            };
+            _pollingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
             _pollingTimer.Tick += async (_, __) =>
             {
                 if (VM?.HayIntercambioActivo == true)
@@ -40,10 +34,10 @@ namespace PK_Proyect.Views
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             _pollingTimer?.Stop();
-            _pollingTimer  = null;
+            _pollingTimer = null;
         }
 
-        // ── Botón: abrir ventana de selección de Pokémon ─────────────
+        // ── Botón: abrir ventana de selección de Pokémon ──
         private void BtnElegirPokemon_Click(object sender, RoutedEventArgs e)
         {
             if (VM == null) return;
@@ -58,21 +52,34 @@ namespace PK_Proyect.Views
                 VM.PokemonOfrecido = selVM.PokemonElegido;
         }
 
-        // ── Otros handlers ───────────────────────────────────────────
+        // ── Otros handlers ──
         private async void BtnEnviarSolicitud_Click(object sender, RoutedEventArgs e)
-            => await VM.EnviarSolicitudAsync();
+        {
+            if (VM == null) return;
+            await VM.EnviarSolicitudAsync();
+        }
 
         private async void BtnOfrecer_Click(object sender, RoutedEventArgs e)
-            => await VM.OfrecerPokemonAsync();
+        {
+            if (VM == null) return;
+            await VM.OfrecerPokemonAsync();
+        }
 
         private async void BtnConfirmar_Click(object sender, RoutedEventArgs e)
-            => await VM.ConfirmarIntercambioAsync();
+        {
+            if (VM == null) return;
+            await VM.ConfirmarIntercambioAsync();
+        }
 
         private async void BtnCancelar_Click(object sender, RoutedEventArgs e)
-            => await VM.CancelarIntercambioAsync();
+        {
+            if (VM == null) return;
+            await VM.CancelarIntercambioAsync();
+        }
 
         private async void BtnVerIntercambio_Click(object sender, RoutedEventArgs e)
         {
+            if (VM == null) return;
             if (sender is Button btn && btn.Tag is string tradeId)
                 await VM.CargarIntercambioPublicoAsync(tradeId);
         }
