@@ -118,6 +118,10 @@
                             FontFamily="{StaticResource PokemonClassic}"
                             Style="{StaticResource RetroButton}"
                             Command="{Binding GestionarEquipoCommand}"/>
+                    <Button Content="◓ Intercambiar"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        Style="{StaticResource RetroButton}"
+                        Command="{Binding AbrirIntercambiosCommand}"/>
 
                 </StackPanel>
 
@@ -188,6 +192,51 @@
                                     Margin="0,0,0,15"/>
                             </Grid>
                         </ControlTemplate>
+                    </Button.Template>
+
+                </Button>
+                <Button Content=""
+                    Style="{StaticResource RetroButton}"
+                    BorderBrush="{StaticResource PkRed}"
+                    Foreground="{StaticResource PkWhite}"
+                    FontFamily="{StaticResource PokemonClassic}"
+                    FontSize="36"
+                    Width="80"
+                    Height="80"
+                    Command="{Binding AbrirMensajesCommand}" 
+                    Margin="0,118,881,353"
+                    
+                    Grid.Row="1" 
+                    RenderTransformOrigin="0.5,0.5">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Images/messages_ico.png"/>
+                    </Button.Background>
+
+                    <Button.Template>
+
+                        <ControlTemplate 
+        
+                            TargetType="{x:Type Button}">
+
+                            <Grid>
+
+                                <Ellipse Fill="{TemplateBinding Background}" 
+                                    Stroke="{TemplateBinding BorderBrush}" 
+                                    StrokeThickness="2"/>
+
+                                <ContentPresenter
+                                    ContentSource="Content"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    TextElement.Foreground="{TemplateBinding Foreground}"
+                                    TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                    TextElement.FontSize="{TemplateBinding FontSize}"
+                                    Margin="0,0,0,15"/>
+
+                            </Grid>
+
+                        </ControlTemplate>
+
                     </Button.Template>
 
                 </Button>

@@ -141,9 +141,9 @@
                                    Visibility="{Binding SpritePanelVisible}" Margin="141,27,141,-19"/>
 
                             <!-- MODO DESCRIPCIÓN -->
-                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                            <ScrollViewer VerticalScrollBarVisibility="Disabled"
                                           Visibility="{Binding DescripcionPanelVisible}"
-                                          Margin="10,20,0,61">
+                                          Margin="10,20,0,-23">
                                 <ScrollViewer.Background>
                                     <ImageBrush/>
                                 </ScrollViewer.Background>
