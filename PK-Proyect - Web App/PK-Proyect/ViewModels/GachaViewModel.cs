@@ -12,8 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Globalization;
-using System.Text;
 
 namespace PK_Proyect.ViewModels.Banners
 {
@@ -71,7 +69,7 @@ namespace PK_Proyect.ViewModels.Banners
             Tirar1Command  = new AsyncRelayCommand(async () => await TiradaSingleAsync());
             Tirar10Command = new AsyncRelayCommand(async () => await TiradaMultiAsync());
 
-            MostrarPokemonCommand = new AsyncRelayCommand(async() => await MostrarPokemonAsync());
+            MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new AsyncRelayCommand(async () => await MostrarHistorialAsync());
             _pokemonUserService   = new PokemonUserService();
@@ -375,9 +373,6 @@ namespace PK_Proyect.ViewModels.Banners
             MessageBox.Show(lista, $"Pok\u00e9mon disponibles en {zona.Nombre}");
         }
 
-
-        
-
         public void MostrarZonasBD()
         {
             var zonas = _zonaRepo.ObtenerTodas();
@@ -420,6 +415,3 @@ namespace PK_Proyect.ViewModels.Banners
         }
     }
 }
-
-
-
