@@ -1,3 +1,4 @@
+using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Services;
 using System;
@@ -12,11 +13,9 @@ using System.Windows.Media.Imaging;
 
 namespace PK_Proyect.ViewModels
 {
-    // FIX CS0103: hereda de ViewModelBase (la clase base real del proyecto),
-    // no de BaseViewModel que no existe.
     public class BattleWindowViewModel : ViewModelBase, IDisposable
     {
-        // ─ Dependencias ──────────────────────────────────────────────────────────
+        // ─ Dependencias
         private readonly IBattleService _battleService;
         private readonly string?        _battleId;
         private readonly string?        _myPlayerId;
@@ -24,11 +23,11 @@ namespace PK_Proyect.ViewModels
 
         public Window? OwnerWindow { get; set; }
 
-        // ─ HP internos ─────────────────────────────────────────────────────────
+        // ─ HP internos
         private int _playerHp,   _playerMaxHp   = 1;
         private int _opponentHp, _opponentMaxHp = 1;
 
-        // ─═ Visibilidad de paneles ═────────────────────────────────────────────────────
+        // ─ Visibilidad de paneles
         private bool _showPokemonPicker = true;
         private bool _showBattle;
         private bool _showForcedSwitch;
@@ -41,15 +40,15 @@ namespace PK_Proyect.ViewModels
         public bool ShowFinished      { get => _showFinished;      set { _showFinished      = value; OnPropertyChanged(); } }
         public bool ShowTurnSummary   { get => _showTurnSummary;   set { _showTurnSummary   = value; OnPropertyChanged(); } }
 
-        // ─═ Sub-paneles ═─────────────────────────────────────────────────────────────────────
+        // ─ Sub-paneles
         private bool _showActions = true;
         private bool _showMoves;
         public bool ShowActions { get => _showActions; set { _showActions = value; OnPropertyChanged(); } }
         public bool ShowMoves   { get => _showMoves;   set { _showMoves   = value; OnPropertyChanged(); } }
 
-        // ─═ Jugador ═─────────────────────────────────────────────────────────────────────
-        private string _playerName  = "Tu Pokémon";
-        private int    _playerLevel = 1;
+        // ─ Jugador
+        private string       _playerName   = "Tu Pokémon";
+        private int          _playerLevel  = 1;
         private BitmapImage? _playerSprite;
         public string       PlayerName   { get => _playerName;   set { _playerName   = value; OnPropertyChanged(); } }
         public int          PlayerLevel  { get => _playerLevel;  set { _playerLevel  = value; OnPropertyChanged(); } }
@@ -57,9 +56,9 @@ namespace PK_Proyect.ViewModels
         public double PlayerHpPercent => _playerMaxHp == 0 ? 0 : _playerHp * 100.0 / _playerMaxHp;
         public string PlayerHpText    => $"{_playerHp} / {_playerMaxHp}";
 
-        // ─═ Rival ═───────────────────────────────────────────────────────────────────────
-        private string _opponentName  = "Rival";
-        private int    _opponentLevel = 1;
+        // ─ Rival
+        private string       _opponentName   = "Rival";
+        private int          _opponentLevel  = 1;
         private BitmapImage? _opponentSprite;
         public string       OpponentName   { get => _opponentName;   set { _opponentName   = value; OnPropertyChanged(); } }
         public int          OpponentLevel  { get => _opponentLevel;  set { _opponentLevel  = value; OnPropertyChanged(); } }
@@ -67,10 +66,10 @@ namespace PK_Proyect.ViewModels
         public double OpponentHpPercent => _opponentMaxHp == 0 ? 0 : _opponentHp * 100.0 / _opponentMaxHp;
         public string OpponentHpText    => $"{_opponentHp} / {_opponentMaxHp}";
 
-        // ─═ Movimientos ═────────────────────────────────────────────────────────────────
-        public ObservableCollection<MoveModel>         PlayerMoves { get; } = new();
-        public ObservableCollection<PokemonEquipoItem> Equipo      { get; } = new();
-        public ObservableCollection<string>            TurnLog     { get; } = new();
+        // ─ Colecciones
+        public ObservableCollection<MoveModel>         PlayerMoves     { get; } = new();
+        public ObservableCollection<PokemonEquipoItem> Equipo          { get; } = new();
+        public ObservableCollection<string>            TurnLog         { get; } = new();
         public ObservableCollection<string>            LastTurnSummary { get; } = new();
 
         private PokemonEquipoItem? _selectedPokemon;
@@ -97,7 +96,7 @@ namespace PK_Proyect.ViewModels
         private string _finishMessage = string.Empty;
         public  string FinishMessage  { get => _finishMessage; set { _finishMessage = value; OnPropertyChanged(); } }
 
-        // ─═ Comandos ═─────────────────────────────────────────────────────────────────────
+        // ─ Comandos
         public ICommand ConfirmPickCommand        { get; }
         public ICommand OpenMovesCommand          { get; }
         public ICommand BackToActionsCommand      { get; }
@@ -109,8 +108,7 @@ namespace PK_Proyect.ViewModels
         public ICommand CloseCommand              { get; }
         public ICommand DismissTurnSummaryCommand { get; }
 
-        // ─═ Constructor ═─────────────────────────────────────────────────────────────────────
-
+        // ─ Constructor
         public BattleWindowViewModel(IBattleService battleService,
                                      string?        battleId   = null,
                                      string?        myPlayerId = null)
@@ -119,12 +117,13 @@ namespace PK_Proyect.ViewModels
             _battleId      = battleId;
             _myPlayerId    = myPlayerId;
 
-            ConfirmPickCommand        = new RelayCommand(_ => ConfirmPickAsync(),  _ => CanConfirmPick);
+            // RelayCommand acepta Action<object> — lambdas síncronas
+            ConfirmPickCommand        = new RelayCommand(_ => ConfirmPickAsync(),               _ => CanConfirmPick);
             OpenMovesCommand          = new RelayCommand(_ => { ShowActions = false; ShowMoves = true; });
             BackToActionsCommand      = new RelayCommand(_ => { ShowMoves = false; ShowActions = true; });
-            UseMoveCommand            = new RelayCommand(p  => _ = UseMoveAsync(p as MoveModel), _ => IsBattleActive);
-            SwitchPokemonCommand      = new RelayCommand(_ => _ = ShowSwitchPanel(),              _ => IsBattleActive);
-            ConfirmSwitchCommand      = new RelayCommand(_ => _ = ConfirmSwitchAsync(),           _ => CanConfirmPick);
+            UseMoveCommand            = new RelayCommand(p  => { _ = UseMoveAsync(p as MoveModel); },  _ => IsBattleActive);
+            SwitchPokemonCommand      = new RelayCommand(_ => { _ = ShowSwitchPanel(); },               _ => IsBattleActive);
+            ConfirmSwitchCommand      = new RelayCommand(_ => { _ = ConfirmSwitchAsync(); },            _ => CanConfirmPick);
             UseItemCommand            = new RelayCommand(_ => MessageBox.Show("Sin objetos."));
             RunCommand                = new RelayCommand(_ => OwnerWindow?.Close());
             CloseCommand              = new RelayCommand(_ => OwnerWindow?.Close());
@@ -133,11 +132,10 @@ namespace PK_Proyect.ViewModels
             if (string.IsNullOrEmpty(_battleId))
                 CargarEquipoPlaceholder();
             else
-                _ = IniciarBatallaAsync();
+                IniciarBatallaAsync();   // async void — no asignar con _ =
         }
 
-        // ─═ Inicio ═───────────────────────────────────────────────────────────────────────
-
+        // ─ Inicio (async void: fire-and-forget controlado desde constructor)
         private async void IniciarBatallaAsync()
         {
             try
@@ -153,8 +151,7 @@ namespace PK_Proyect.ViewModels
             catch (Exception ex) { BattleMessage = $"Error: {ex.Message}"; }
         }
 
-        // ─═ Confirmar Pokémon ═─────────────────────────────────────────────────────────────
-
+        // ─ Confirmar Pokémon
         private async void ConfirmPickAsync()
         {
             if (_selectedPokemon == null) return;
@@ -179,8 +176,7 @@ namespace PK_Proyect.ViewModels
             catch (Exception ex) { BattleMessage = ex.Message; }
         }
 
-        // ─═ Polling ═───────────────────────────────────────────────────────────────────────
-
+        // ─ Polling
         private async Task PollLoopAsync()
         {
             while (!_pollCts.IsCancellationRequested)
@@ -197,8 +193,7 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        // ─═ Aplicar estado ═──────────────────────────────────────────────────────────────────
-
+        // ─ Aplicar estado
         private string _lastSeenTurnLogHash = string.Empty;
 
         private void ApplyState(BattleState state, bool fromPoll = false)
@@ -216,7 +211,7 @@ namespace PK_Proyect.ViewModels
                 OnPropertyChanged(nameof(PlayerHpPercent));
                 OnPropertyChanged(nameof(PlayerHpText));
 
-                var serverMoves  = myPk.Moves ?? new();
+                var serverMoves   = myPk.Moves ?? new();
                 bool movesChanged = serverMoves.Count != PlayerMoves.Count
                     || serverMoves.Where((m, i) => i < PlayerMoves.Count &&
                                                    (PlayerMoves[i].Name != m.Name ||
@@ -225,8 +220,12 @@ namespace PK_Proyect.ViewModels
                 {
                     PlayerMoves.Clear();
                     foreach (var m in serverMoves)
-                        PlayerMoves.Add(new MoveModel { Name = m.Name, Type = m.Type,
-                                                        Power = m.Power, Pp = m.Pp, MaxPp = m.MaxPp });
+                        PlayerMoves.Add(new MoveModel
+                        {
+                            Name  = m.Name,  Type  = m.Type,
+                            Power = m.Power, Pp    = m.Pp,
+                            MaxPp = m.MaxPp
+                        });
                 }
             }
 
@@ -283,8 +282,7 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        // ─═ Resumen de turno ═───────────────────────────────────────────────────────────────
-
+        // ─ Resumen de turno
         private void ShowTurnSummaryLines(List<string> lines)
         {
             LastTurnSummary.Clear();
@@ -299,14 +297,13 @@ namespace PK_Proyect.ViewModels
             if (ShowBattle) IsBattleActive = true;
         }
 
-        // ─═ Usar movimiento ═────────────────────────────────────────────────────────────────────
-
+        // ─ Usar movimiento
         private async Task UseMoveAsync(MoveModel? move)
         {
             if (move == null || string.IsNullOrEmpty(_battleId)) return;
             IsBattleActive = false;
-            ShowMoves  = false;
-            ShowActions = true;
+            ShowMoves      = false;
+            ShowActions    = true;
             try
             {
                 var result = await _battleService.UseMoveAsync(_battleId!, move.Name);
@@ -316,8 +313,7 @@ namespace PK_Proyect.ViewModels
             catch (Exception ex) { TurnLog.Add($"Error: {ex.Message}"); }
         }
 
-        // ─═ Cambio de Pokémon ═─────────────────────────────────────────────────────────────────
-
+        // ─ Cambio de Pokémon
         private Task ShowSwitchPanel()
         {
             BattleMessage    = "Elige el Pokémon que enviarás.";
@@ -338,8 +334,7 @@ namespace PK_Proyect.ViewModels
             SelectedPokemon  = null;
         }
 
-        // ─═ Placeholder (modo demo) ═────────────────────────────────────────────────────────
-
+        // ─ Placeholder (modo demo)
         private void ApplyDemoPokemon(PokemonEquipoItem pk)
         {
             PlayerName   = pk.Nombre;
@@ -366,44 +361,58 @@ namespace PK_Proyect.ViewModels
             Equipo.Clear();
             Equipo.Add(new PokemonEquipoItem
             {
-                PokemonId = "25", Nombre = "Pikachu", Nivel = 5, TipoPrincipal = "Eléctrico",
-                HpActual = 19, HpMax = 19,
-                ImagenUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-                Movimientos = new List<MoveModel> {
-                    new MoveModel { Name = "Impactrueno", Pp = 30, MaxPp = 30, Type = "Eléctrico", Power = 40 },
-                    new MoveModel { Name = "Placaje",     Pp = 35, MaxPp = 35, Type = "Normal",    Power = 40 },
-                    new MoveModel { Name = "Cola Férrea", Pp = 15, MaxPp = 15, Type = "Acero",     Power = 100 },
-                    new MoveModel { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal",    Power = 0 }
+                PokemonId     = "25",
+                Nombre        = "Pikachu",
+                Nivel         = 5,
+                TipoPrincipal = "Eléctrico",
+                HpActual      = 19,
+                HpMax         = 19,
+                ImagenUrl     = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                Movimientos   = new List<MoveModel>
+                {
+                    new() { Name = "Impactrueno", Pp = 30, MaxPp = 30, Type = "Eléctrico", Power = 40  },
+                    new() { Name = "Placaje",     Pp = 35, MaxPp = 35, Type = "Normal",    Power = 40  },
+                    new() { Name = "Cola Férrea", Pp = 15, MaxPp = 15, Type = "Acero",     Power = 100 },
+                    new() { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal",    Power = 0   }
                 }
             });
             Equipo.Add(new PokemonEquipoItem
             {
-                PokemonId = "4", Nombre = "Charmander", Nivel = 5, TipoPrincipal = "Fuego",
-                HpActual = 22, HpMax = 22,
-                ImagenUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
-                Movimientos = new List<MoveModel> {
-                    new MoveModel { Name = "Arañazo",     Pp = 35, MaxPp = 35, Type = "Normal", Power = 40 },
-                    new MoveModel { Name = "Ascuas",      Pp = 25, MaxPp = 25, Type = "Fuego",  Power = 40 },
-                    new MoveModel { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal", Power = 0 },
-                    new MoveModel { Name = "Lanzallamas", Pp = 15, MaxPp = 15, Type = "Fuego",  Power = 90 }
+                PokemonId     = "4",
+                Nombre        = "Charmander",
+                Nivel         = 5,
+                TipoPrincipal = "Fuego",
+                HpActual      = 22,
+                HpMax         = 22,
+                ImagenUrl     = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+                Movimientos   = new List<MoveModel>
+                {
+                    new() { Name = "Arañazo",     Pp = 35, MaxPp = 35, Type = "Normal", Power = 40 },
+                    new() { Name = "Ascuas",      Pp = 25, MaxPp = 25, Type = "Fuego",  Power = 40 },
+                    new() { Name = "Gruñido",     Pp = 40, MaxPp = 40, Type = "Normal", Power = 0  },
+                    new() { Name = "Lanzallamas", Pp = 15, MaxPp = 15, Type = "Fuego",  Power = 90 }
                 }
             });
             Equipo.Add(new PokemonEquipoItem
             {
-                PokemonId = "7", Nombre = "Squirtle", Nivel = 5, TipoPrincipal = "Agua",
-                HpActual = 20, HpMax = 20,
-                ImagenUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
-                Movimientos = new List<MoveModel> {
-                    new MoveModel { Name = "Pistola Agua", Pp = 25, MaxPp = 25, Type = "Agua",   Power = 40 },
-                    new MoveModel { Name = "Placaje",      Pp = 35, MaxPp = 35, Type = "Normal", Power = 40 },
-                    new MoveModel { Name = "Defensa",      Pp = 40, MaxPp = 40, Type = "Normal", Power = 0 },
-                    new MoveModel { Name = "Burbuja",      Pp = 30, MaxPp = 30, Type = "Agua",   Power = 20 }
+                PokemonId     = "7",
+                Nombre        = "Squirtle",
+                Nivel         = 5,
+                TipoPrincipal = "Agua",
+                HpActual      = 20,
+                HpMax         = 20,
+                ImagenUrl     = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+                Movimientos   = new List<MoveModel>
+                {
+                    new() { Name = "Pistola Agua", Pp = 25, MaxPp = 25, Type = "Agua",   Power = 40 },
+                    new() { Name = "Placaje",      Pp = 35, MaxPp = 35, Type = "Normal", Power = 40 },
+                    new() { Name = "Defensa",      Pp = 40, MaxPp = 40, Type = "Normal", Power = 0  },
+                    new() { Name = "Burbuja",      Pp = 30, MaxPp = 30, Type = "Agua",   Power = 20 }
                 }
             });
         }
 
-        // ─═ Helpers ═───────────────────────────────────────────────────────────────────────
-
+        // ─ Helpers
         private static BitmapImage? LoadBitmap(string? url)
         {
             if (string.IsNullOrEmpty(url)) return null;
