@@ -1,102 +1,80 @@
-using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// Modelo de una tirada del historial.
-/// Se aceptan múltiples nombres de clave JSON para cubrir cualquier
-/// convención que use el servidor Flask (snake_case, PascalCase, camelCase).
+/// Convierte el formato de fecha MongoDB Extended JSON { "$date": "..." }
+/// o un string ISO normal en un DateTime?.
 /// </summary>
-[BsonIgnoreExtraElements]
-public class HistoricoTirada
+public class MongoDateConverter : JsonConverter<DateTime?>
 {
-    // --- user_id / UserId / userId ---
-    [JsonPropertyName("user_id")]
-    public string UserId { get; set; }
-
-    // --- pokemon_id / PokemonId / pokemonId ---
-    [JsonPropertyName("pokemon_id")]
-    public int PokemonId { get; set; }
-
-    // --- nombre_pokemon / NombrePokemon / nombrePokemon ---
-    // Flask puede devolver cualquiera de estos nombres; el primero es el
-    // que usa [JsonPropertyName], pero añadimos un setter alternativo
-    // mediante una propiedad extra para los otros casings.
-    [JsonPropertyName("nombre_pokemon")]
-    public string NombrePokemon { get; set; }
-
-    [JsonPropertyName("NombrePokemon")]
-    public string NombrePokemonPascal
+    public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        get => NombrePokemon;
-        set { if (string.IsNullOrEmpty(NombrePokemon)) NombrePokemon = value; }
-    }
-
-    [JsonPropertyName("nombrePokemon")]
-    public string NombrePokemonCamel
-    {
-        get => NombrePokemon;
-        set { if (string.IsNullOrEmpty(NombrePokemon)) NombrePokemon = value; }
-    }
-
-    // --- zona / Zona ---
-    [JsonPropertyName("zona")]
-    public string Zona { get; set; }
-
-    [JsonPropertyName("Zona")]
-    public string ZonaPascal
-    {
-        get => Zona;
-        set { if (string.IsNullOrEmpty(Zona)) Zona = value; }
-    }
-
-    // --- tipo_tirada / TipoTirada / tipoTirada ---
-    [JsonPropertyName("tipo_tirada")]
-    public string TipoTirada { get; set; }
-
-    [JsonPropertyName("TipoTirada")]
-    public string TipoTiradaPascal
-    {
-        get => TipoTirada;
-        set { if (string.IsNullOrEmpty(TipoTirada)) TipoTirada = value; }
-    }
-
-    [JsonPropertyName("tipoTirada")]
-    public string TipoTiradaCamel
-    {
-        get => TipoTirada;
-        set { if (string.IsNullOrEmpty(TipoTirada)) TipoTirada = value; }
-    }
-
-    // --- fecha / Fecha ---
-    // Se guarda como string para evitar JsonException con formatos no estándar.
-    [JsonPropertyName("fecha")]
-    public string Fecha { get; set; }
-
-    [JsonPropertyName("Fecha")]
-    public string FechaPascal
-    {
-        get => Fecha;
-        set { if (string.IsNullOrEmpty(Fecha)) Fecha = value; }
-    }
-
-    /// <summary>Parsea Fecha a DateTime de forma segura. Null si el formato es desconocido.</summary>
-    [JsonIgnore]
-    public DateTime? FechaDateTime
-    {
-        get
+        // Caso 1: objeto { "$date": "2026-02-27T10:32:56.549Z" }
+        if (reader.TokenType == JsonTokenType.StartObject)
         {
-            if (string.IsNullOrWhiteSpace(Fecha)) return null;
-            if (DateTime.TryParse(Fecha,
+            string dateValue = null;
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            {
+                if (reader.TokenType == JsonTokenType.PropertyName)
+                {
+                    reader.Read(); // avanzar al valor
+                    dateValue = reader.GetString();
+                }
+            }
+            if (DateTime.TryParse(dateValue,
                     System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.RoundtripKind,
-                    out var dt))
-                return dt;
+                    out var dt1))
+                return dt1;
             return null;
         }
+
+        // Caso 2: string ISO directo "2026-02-27T10:32:56.549Z"
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            if (DateTime.TryParse(reader.GetString(),
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.RoundtripKind,
+                    out var dt2))
+                return dt2;
+            return null;
+        }
+
+        // Null / desconocido
+        reader.Skip();
+        return null;
     }
 
-    /// <summary>Fecha formateada para la UI: "18/06/2026 19:25". Si no parsea, muestra el string crudo.</summary>
+    public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
+    {
+        if (value.HasValue)
+            writer.WriteStringValue(value.Value.ToString("o"));
+        else
+            writer.WriteNullValue();
+    }
+}
+
+/// <summary>
+/// Modelo de una tirada del histórico.
+/// Usa PropertyNameCaseInsensitive=true (ya configurado en ApiClient._jsonOptions)
+/// por lo que no se necesitan [JsonPropertyName] adicionales.
+/// </summary>
+public class HistoricoTirada
+{
+    public string UserId       { get; set; }
+    public int    PokemonId    { get; set; }
+    public string NombrePokemon { get; set; }
+    public string Zona         { get; set; }
+    public string TipoTirada   { get; set; }
+
+    /// <summary>
+    /// Acepta tanto un objeto { "$date": "..." } como un string ISO.
+    /// </summary>
+    [JsonConverter(typeof(MongoDateConverter))]
+    public DateTime? Fecha { get; set; }
+
+    /// <summary>Fecha formateada para la UI: "18/06/2026 19:25".</summary>
     [JsonIgnore]
-    public string FechaDisplay => FechaDateTime?.ToString("dd/MM/yyyy HH:mm") ?? Fecha ?? "-";
+    public string FechaDisplay => Fecha?.ToString("dd/MM/yyyy HH:mm") ?? "-";
 }
