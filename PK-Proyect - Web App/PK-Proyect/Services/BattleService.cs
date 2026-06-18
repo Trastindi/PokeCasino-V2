@@ -15,7 +15,7 @@ namespace PK_Proyect.Services
         public BattleService(HttpClient http) { _http = http; }
         public BattleService() : this(ApiClient.Client) { }
 
-        // ── POST /battle_requests/<rival_id> ─────────────────────────────
+        // ── POST /battle_requests/<rival_id> ───────────────────────────────────────
         public async Task<string?> SendChallengeAsync(string challengerId, string challengedId)
         {
             try
@@ -45,14 +45,14 @@ namespace PK_Proyect.Services
             }
         }
 
-        // ── GET /battles/{battleId} ──────────────────────────────────────
+        // ── GET /battles/{battleId} ───────────────────────────────────────────────
         public async Task<BattleState?> GetBattleStateAsync(string battleId)
         {
             try { return await _http.GetFromJsonAsync<BattleState>($"/battles/{battleId}"); }
             catch { return null; }
         }
 
-        // ── WaitForAcceptance: polling hasta status != pending_acceptance ────
+        // ── WaitForAcceptance: polling hasta status != pending_acceptance ──────────
         public async Task<bool> WaitForAcceptanceAsync(string battleId)
         {
             var deadline = DateTime.UtcNow.AddSeconds(120);
@@ -74,7 +74,36 @@ namespace PK_Proyect.Services
         public async Task<bool> RequestJoinAsync(string playerId, string battleId)
             => await Task.FromResult(true);
 
-        // ── POST /battles/{battleId}/choose_pokemon ──────────────────────
+        // ── POST /battles/{battleId}/teams ─────────────────────────────────────────
+        public async Task<bool> SubmitTeamAsync(string battleId, string teamId)
+        {
+            try
+            {
+                var r = await _http.PostAsJsonAsync(
+                    $"/battles/{battleId}/teams",
+                    new { team_id = teamId });
+
+                if (!r.IsSuccessStatusCode)
+                {
+                    var body = await r.Content.ReadAsStringAsync();
+                    Application.Current.Dispatcher.Invoke(() =>
+                        MessageBox.Show(
+                            $"Error al enviar equipo ({(int)r.StatusCode}):\n{body}",
+                            "Error equipo", MessageBoxButton.OK, MessageBoxImage.Warning));
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Excepción en SubmitTeamAsync:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+                return false;
+            }
+        }
+
+        // ── POST /battles/{battleId}/choose_pokemon ──────────────────────────────
         public async Task<bool> ChoosePokemonAsync(string battleId, int pokemonIndex)
         {
             try
@@ -87,7 +116,7 @@ namespace PK_Proyect.Services
             catch { return false; }
         }
 
-        // ── POST /battles/{battleId}/action  (movimiento) ────────────────
+        // ── POST /battles/{battleId}/action  (movimiento) ──────────────────────
         public async Task<TurnResult?> UseMoveAsync(string battleId, string moveName)
         {
             try
@@ -101,7 +130,7 @@ namespace PK_Proyect.Services
             catch { return null; }
         }
 
-        // ── POST /battles/{battleId}/action  (cambio) ────────────────────
+        // ── POST /battles/{battleId}/action  (cambio) ─────────────────────────
         public async Task<bool> SwitchPokemonAsync(string battleId, int pokemonIndex)
         {
             try
