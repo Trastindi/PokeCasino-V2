@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using PK_Proyect.Models;
+using PK_Proyect.ViewModels;
 
 namespace PK_Proyect.View
 {
@@ -9,7 +10,7 @@ namespace PK_Proyect.View
         public DetallePokemonView(PokemonUser pokemon)
         {
             InitializeComponent();
-            DataContext = pokemon;
+            DataContext = new DetallePokemonViewModel(pokemon);
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)

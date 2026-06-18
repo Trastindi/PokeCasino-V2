@@ -57,13 +57,13 @@
                               VerticalScrollBarVisibility="Auto">
                     <StackPanel>
 
-                        <!-- Sprite centrado -->
-                        <Image Source="{Binding Sprite}"
+                        <!-- Sprite (URL desde PokeAPI via SpriteUrl) -->
+                        <Image Source="{Binding SpriteUrl}"
                                Width="120" Height="120"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8"/>
 
-                        <!-- Nº Pokédex + Nombre -->
+                        <!-- Nº Pokédex -->
                         <TextBlock FontFamily="{StaticResource PokemonClassic}"
                                    FontSize="13" HorizontalAlignment="Center"
                                    Foreground="#555"
@@ -101,7 +101,7 @@
                                 <TextBlock Text="Habilidad: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding AbilityId}"
+                                <TextBlock Text="{Binding Habilidad}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -110,7 +110,7 @@
                                 <TextBlock Text="Objeto: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding ItemId, TargetNullValue='Ninguno'}"
+                                <TextBlock Text="{Binding Objeto}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -119,7 +119,7 @@
                                 <TextBlock Text="Obtenido: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding FechaObtenido, StringFormat='{}{0:dd/MM/yyyy}'}"
+                                <TextBlock Text="{Binding FechaObtenido}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -148,32 +148,32 @@
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="PS"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EstadisticasBase.Ps}"
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding StatPs}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Ataque"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding EstadisticasBase.Ataque}"
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding StatAtaque}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Defensa"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding EstadisticasBase.Defensa}"
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding StatDefensa}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Atk. Esp."
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding EstadisticasBase.AtaqueEspecial}"
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding StatAtaqueEspecial}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Def. Esp."
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding EstadisticasBase.DefensaEspecial}"
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding StatDefensaEspecial}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="Velocidad"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding EstadisticasBase.Velocidad}"
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding StatVelocidad}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
                         </Grid>
 
@@ -188,7 +188,7 @@
                                    Foreground="{StaticResource PkBlue}"
                                    Margin="0,0,0,4"/>
 
-                        <ItemsControl ItemsSource="{Binding MoveSet}" Margin="8,0,8,8">
+                        <ItemsControl ItemsSource="{Binding Movimientos}" Margin="8,0,8,8">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Background="#D0C090" BorderBrush="Black" BorderThickness="1"
