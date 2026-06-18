@@ -781,22 +781,37 @@ def make_battle_request(current_user, rival_id):
         if not rival:
             return jsonify({"error": "Rival no encontrado"}), 404
 
+        # Crear la batalla al enviar el desafío (el retador = player1 ya está dentro)
+        battle_id = ObjectId()
+        battles.insert_one({
+            "_id":          battle_id,
+            "player1_id":   str(current_user["_id"]),   # retador = player1
+            "player2_id":   str(rival_id),               # retado  = player2
+            "status":       "pending_acceptance",        # esperando que el rival acepte
+            "created_at":   datetime.datetime.utcnow().isoformat(),
+            "player1_team": {},
+            "player2_team": {},
+            "turn":         0,
+            "field_status": "normal",
+        })
+
         doc = {
-            "_id":     ObjectId(),
-            "from":    str(gf(current_user, "Username", "username", default="")),
-            "from_id": str(current_user["_id"]),
-            "to":      str(rival_id),
-            "title":   "Battle Request",
-            "text":    "You have received a battle request from "
-                       + gf(current_user, "Username", "username", default="")
-                       + ". Do you accept?",
-            "Fecha":   datetime.datetime.utcnow().isoformat(),
-            "type":    "battle_request",
+            "_id":       ObjectId(),
+            "from":      str(gf(current_user, "Username", "username", default="")),
+            "from_id":   str(current_user["_id"]),
+            "to":        str(rival_id),
+            "title":     "Battle Request",
+            "text":      "You have received a battle request from "
+                         + gf(current_user, "Username", "username", default="")
+                         + ". Do you accept?",
+            "Fecha":     datetime.datetime.utcnow().isoformat(),
+            "type":      "battle_request",
+            "battle_id": str(battle_id),              # ID real desde el inicio
             "responded": False,
         }
         mensajes.insert_one(doc)
         doc["_id"] = str(doc["_id"])
-        return jsonify(doc), 201
+        return jsonify({**doc, "battle_id": str(battle_id)}), 201
     except Exception:
         import traceback; traceback.print_exc()
         return jsonify({"error": "Error interno del servidor"}), 500
@@ -807,11 +822,10 @@ def make_battle_request(current_user, rival_id):
 def respond_battle_request(current_user, msg_id):
     """
     Acepta o rechaza una solicitud de batalla.
-    - Si acepta: genera un battle_id placeholder y manda mensaje
-      type=battle_response al retador con ese ID.
-    - Si rechaza: manda mensaje type=battle_rejected al retador.
+    - La batalla ya fue creada al enviar el desafío (status='pending_acceptance').
+    - Si acepta: cambia status a 'pending' y notifica al retador con el battle_id.
+    - Si rechaza: cambia status a 'cancelled' y notifica al retador.
     - Marca el mensaje original como responded=True.
-    El battle_id será reemplazado por el ID real cuando exista el endpoint de batalla.
     """
     try:
         data     = request.json or {}
@@ -827,6 +841,11 @@ def respond_battle_request(current_user, msg_id):
         if not msg:
             return jsonify({"error": "Solicitud no encontrada o ya respondida"}), 404
 
+        # Obtener el battle_id que ya existe desde que se creó el desafío
+        battle_id = msg.get("battle_id")
+        if not battle_id:
+            return jsonify({"error": "La solicitud no tiene battle_id asociado"}), 500
+
         # Marcar como respondida
         mensajes.update_one(
             {"_id": ObjectId(msg_id)},
@@ -836,24 +855,30 @@ def respond_battle_request(current_user, msg_id):
         retador_id = msg.get("from_id", "")
 
         if not accepted:
+            # Cancelar la batalla pendiente
+            battles.update_one(
+                {"_id": ObjectId(battle_id)},
+                {"$set": {"status": "cancelled"}}
+            )
             mensajes.insert_one({
-                "_id":   ObjectId(),
-                "from":  str(gf(current_user, "Username", "username", default="?")),
-                "from_id": str(current_user["_id"]),
-                "to":    retador_id,
-                "title": "Battle Rejected",
-                "text":  gf(current_user, "Username", "username", default="?")
-                         + " ha rechazado tu solicitud de batalla.",
-                "Fecha": datetime.datetime.utcnow().isoformat(),
-                "type":  "battle_rejected",
+                "_id":       ObjectId(),
+                "from":      str(gf(current_user, "Username", "username", default="?")),
+                "from_id":   str(current_user["_id"]),
+                "to":        retador_id,
+                "title":     "Battle Rejected",
+                "text":      gf(current_user, "Username", "username", default="?")
+                             + " ha rechazado tu solicitud de batalla.",
+                "Fecha":     datetime.datetime.utcnow().isoformat(),
+                "type":      "battle_rejected",
                 "responded": False,
             })
             return jsonify({"msg": "Solicitud rechazada"}), 200
 
-        # ── ACEPTADO ────────────────────────────────────────────────────────
-        # TODO: sustituir por battle_id real cuando exista el endpoint de batalla
-        battle_id = str(ObjectId())
-
+        # ── ACEPTADO: activar la batalla ya creada ──────────────────────────
+        battles.update_one(
+            {"_id": ObjectId(battle_id)},
+            {"$set": {"status": "pending"}}       # pending_acceptance → pending
+        )
         mensajes.insert_one({
             "_id":       ObjectId(),
             "from":      str(gf(current_user, "Username", "username", default="?")),
@@ -865,17 +890,6 @@ def respond_battle_request(current_user, msg_id):
             "type":      "battle_response",
             "battle_id": battle_id,
             "responded": False,
-        })
-        battles.insert_one({
-            "_id": ObjectId(battle_id),
-            "player1_id": str(retador_id),
-            "player2_id": str(current_user["_id"]),
-            "status": "pending",
-            "created_at": datetime.datetime.utcnow().isoformat(),
-            "player1_team": {},
-            "player2_team": {},
-            "turn": 0,
-            "field_status": "normal",
         })
         return jsonify({"msg": "Batalla aceptada", "battle_id": battle_id}), 200
 
@@ -1204,7 +1218,7 @@ def _make_battle_state() -> dict:
     }
 
 def _apply_stat_stages_from_hook(poke: dict, stages_dict: dict):
-    """Transfiere stat_stages calculados por un hook al PokÃ©mon en memoria."""
+    """Transfiere stat_stages calculados por un hook al Pokémon en memoria."""
     if not stages_dict:
         return
     mod = poke.get("modificador_estadisticas") or {}
@@ -1333,35 +1347,32 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
     max_hp_def = max(int((defensor.get("estadisticas_base") or {}).get("ps", 1)), 1)
 
     # ── Contexto para los hooks ──────────────────────────────────────────────
-    # FIX: hp_fraction usa la HP del atacante en move_power y la del defensor
-    # en receive_move; se construye un ctx único con ambas fracciones nombradas.
     ctx = {
         "move_type":          tipo_mov,
         "move_name":          movimiento.get("name", ""),
         "move_group":         (movimiento.get("moveGroup") or movimiento.get("group") or "").lower(),
         "move_category":      categoria,
         "move_is_damaging":   True,
-        "move_dealt_damage":  False,  # se actualiza tras el cálculo si hay daño
+        "move_dealt_damage":  False,
         "weather":            (field_status or "normal").lower(),
         "target_types":       [tipo1_def.lower(), tipo2_def.lower()] if tipo2_def else [tipo1_def.lower()],
         "target_status":      defensor.get("Status"),
         "target_species":     defensor.get("Nombre", ""),
         "source_is_opponent": True,
         "battle_type":        "pvp",
-        # FIX: hp_fraction separadas por rol
-        "hp_fraction":        atacante.get("CurrentHp", 0) / max_hp_atk,   # para move_power (Blaze/Torrent/Overgrow)
-        "hp_fraction_def":    defensor.get("CurrentHp", 0) / max_hp_def,   # para receive_move
+        "hp_fraction":        atacante.get("CurrentHp", 0) / max_hp_atk,
+        "hp_fraction_def":    defensor.get("CurrentHp", 0) / max_hp_def,
         "volatile_flags":     {},
     }
 
     battle_state = _make_battle_state()
     battle_state["weather"] = ctx["weather"]
 
-    # Hook fase move_power (atacante: usa hp_fraction del atacante)
+    # Hook fase move_power (atacante)
     if atk_abilities:
         apply_hooks("move_power", atk_abilities, ctx, battle_state)
 
-    # Hook fase receive_move (defensor: swap hp_fraction al del defensor antes de evaluar)
+    # Hook fase receive_move (defensor)
     if def_abilities:
         ctx_def = dict(ctx)
         ctx_def["hp_fraction"] = ctx["hp_fraction_def"]
@@ -1383,7 +1394,6 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
         D_base = int(stats_def.get("defensa_especial", stats_def.get("sp_defensa", 50)))
         A = A_base * stat_stage_table[int(atk_modificator.get("ataque_especial", 0))]
         D = D_base * stat_stage_table[int(def_modificator.get("defensa_especial", 0))]
-        # FIX: aplicar stat_multipliers de hooks sobre A y D
         A *= battle_state["stat_multipliers"]["self"].get("ataque_especial", 1.0)
         D *= battle_state["stat_multipliers"]["opponent"].get("defensa_especial", 1.0)
     else:
@@ -1391,7 +1401,6 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
         D_base = int(stats_def.get("defensa", 50))
         A = A_base * stat_stage_table[int(atk_modificator.get("ataque", 0))]
         D = D_base * stat_stage_table[int(def_modificator.get("defensa", 0))]
-        # FIX: aplicar stat_multipliers de hooks sobre A y D
         A *= battle_state["stat_multipliers"]["self"].get("ataque", 1.0)
         D *= battle_state["stat_multipliers"]["opponent"].get("defensa", 1.0)
 
@@ -1441,7 +1450,7 @@ def _aplicar_dano(atacante, defensor, movimiento, field_status="normal",
     # ── Random [85..100] / 100 ──────────────────────────────────────────────
     rand = random.randint(85, 100) / 100
 
-    # ── Daño final (con multiplicador de daño recibido de hooks) ────────────
+    # ── Daño final ────────────────────────────────────────────────────────────
     dano = math.floor(base * burn * weather * stab * type1_eff * type2_eff * critical * rand * battle_state["damage_multiplier"])
     dano = max(1, dano)
 
@@ -1596,7 +1605,6 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "stages": stages,
                     "new_stage": (objetivo.get("modificador_estadisticas") or {}).get(stat, 0),
                 })
-            # sin continue — cae al final donde se persiste
             dano, es_critico = 0, False
 
         dano, es_critico = _aplicar_dano(
@@ -1656,7 +1664,6 @@ def _resolver_turno(battle_id: str, battle: dict):
                 "target_status":      poke.get("Status"),
                 "hp_fraction":        poke.get("CurrentHp", 0) / max_hp_end,
                 "volatile_flags":     {},
-                # Campos adicionales para condiciones de habilidades en turn_end
                 "source_is_opponent": False,
                 "battle_type":        "pvp",
                 "move_type":          None,
@@ -1671,7 +1678,6 @@ def _resolver_turno(battle_id: str, battle: dict):
             }
             apply_hooks("turn_end", poke_abilities, ctx_end, turn_end_state)
 
-            # Aplicar curación si alguna habilidad la concedió
             if turn_end_state["heal_fraction"] > 0:
                 max_hp  = int((poke.get("estadisticas_base") or {}).get("ps", 1))
                 heal    = max(1, math.floor(max_hp * turn_end_state["heal_fraction"]))
@@ -1682,7 +1688,6 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "amount":  heal,
                 })
 
-            # Curar estado si el hook lo indica
             if turn_end_state["cure_status"] and poke.get("Status"):
                 log.append({
                     "event":   "status_cured",
@@ -1690,7 +1695,6 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "status":  poke.get("Status"),
                 })
                 poke["Status"] = None
-            
             
             if turn_end_state["contact_damage_fraction"] > 0:
                 max_hp = int((poke.get("estadisticas_base") or {}).get("ps", 1))
@@ -1705,7 +1709,6 @@ def _resolver_turno(battle_id: str, battle: dict):
 
             _apply_stat_stages_from_hook(poke, turn_end_state["stat_stages"].get("self", {}))
 
-            # FIX: aplicar daño por contacto (Piel Tosca, Barras de Hierro, etc.)
             if turn_end_state["contact_damage_fraction"] > 0:
                 max_hp = int((poke.get("estadisticas_base") or {}).get("ps", 1))
                 dmg    = max(1, math.floor(max_hp * turn_end_state["contact_damage_fraction"]))
@@ -1716,11 +1719,9 @@ def _resolver_turno(battle_id: str, battle: dict):
                     "amount":  dmg,
                 })
 
-            # FIX: aplicar estado pendiente (Punto Veneno, Llama Cuerpo, etc.)
             if turn_end_state["pending_status"] and not poke.get("Status"):
                 pending = turn_end_state["pending_status"]
                 if pending.get("target") == "opponent":
-                    # El oponente de este Pokémon en turno_end
                     rival_equipo = p2_team if jugador_label == "p1" else p1_team
                     rival_idx    = p2_idx   if jugador_label == "p1" else p1_idx
                     rival_poke   = rival_equipo[rival_idx]
@@ -1739,12 +1740,10 @@ def _resolver_turno(battle_id: str, battle: dict):
                         "status":  pending["status"],
                     })
 
-            # FIX: persistir cambio de clima provocado por habilidad en turn_end
             if turn_end_state["weather"] not in ("normal", field_status.lower()):
                 field_status = turn_end_state["weather"]
                 log.append({"event": "weather_change", "weather": field_status})
 
-            # FIX: aplicar stat_stages del turno (Speed Boost, Moody, etc.)
             self_stages_end = turn_end_state["stat_stages"].get("self", {})
             if self_stages_end:
                 _apply_stat_stages_from_hook(poke, self_stages_end)
