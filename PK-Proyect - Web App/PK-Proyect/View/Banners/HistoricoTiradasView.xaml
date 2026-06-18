@@ -56,7 +56,8 @@
                                         <TextBlock Text="Fecha: "
                                                    FontWeight="Bold"
                                                    Foreground="Black"/>
-                                        <TextBlock Text="{Binding Fecha}" Foreground="Black"/>
+                                        <!-- FechaDisplay formatea dd/MM/yyyy HH:mm en lugar del ISO crudo -->
+                                        <TextBlock Text="{Binding FechaDisplay}" Foreground="Black"/>
                                     </StackPanel>
 
                                 </StackPanel>
