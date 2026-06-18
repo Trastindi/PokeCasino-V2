@@ -50,8 +50,6 @@ namespace PK_Proyect.ViewModels
                 param => MensajeSeleccionado = param as Mensaje
             );
 
-            // CanExecute simplificado: solo requiere que el tipo sea correcto.
-            // La validación del ID se hace dentro del método para dar feedback al usuario.
             AceptarDesafioCommand = new RelayCommand(
                 _ => AceptarDesafio(),
                 _ => MensajeSeleccionado?.Tipo == "battle_request"
@@ -81,6 +79,7 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
 
+            // Usa TipoBatallaId si existe, si no cae en el propio Id del mensaje
             var id = MensajeSeleccionado.TipoBatallaId;
             if (string.IsNullOrEmpty(id))
             {
@@ -107,14 +106,13 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
 
-            var id = MensajeSeleccionado.TradeId;
-            if (string.IsNullOrEmpty(id))
-            {
-                MessageBox.Show("Este mensaje no tiene un ID de intercambio válido.",
-                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            IntercambioAceptado?.Invoke(id);
+            // trade_id puede no existir en el doc de MongoDB.
+            // En ese caso usamos el _id del propio mensaje como identificador del trade.
+            var tradeId = MensajeSeleccionado.TradeId;
+            if (string.IsNullOrEmpty(tradeId))
+                tradeId = MensajeSeleccionado.Id;
+
+            IntercambioAceptado?.Invoke(tradeId);
         }
 
         private async void RechazarIntercambio()
