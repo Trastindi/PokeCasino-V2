@@ -42,7 +42,7 @@ namespace PK_Proyect.Models
         [JsonPropertyName("Fecha")]
         public DateTime Fecha { get; set; }
 
-        /// <summary>Tipo de mensaje (ej. "battle_request").</summary>
+        /// <summary>Tipo de mensaje (ej. "battle_request", "trade_request").</summary>
         [BsonElement("type")]
         [JsonPropertyName("type")]
         public string Tipo { get; set; }
@@ -64,5 +64,13 @@ namespace PK_Proyect.Models
         [BsonElement("tipoBatallaId")]
         [JsonPropertyName("tipoBatallaId")]
         public string TipoBatallaId { get; set; }
+
+        /// <summary>
+        /// Si el mensaje es una solicitud de intercambio, contiene el tradeId.
+        /// Null si no es un trade_request.
+        /// </summary>
+        [BsonElement("trade_id")]
+        [JsonPropertyName("trade_id")]
+        public string TradeId { get; set; }
     }
 }

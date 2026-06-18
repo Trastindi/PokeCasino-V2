@@ -25,7 +25,6 @@ namespace PK_Proyect.ViewModels
             set
             {
                 _mensajeSeleccionado = value;
-                // Refresca el CanExecute de todos los comandos
                 ((RelayCommand)AceptarDesafioCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)RechazarDesafioCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)AceptarIntercambioCommand).RaiseCanExecuteChanged();
@@ -34,18 +33,15 @@ namespace PK_Proyect.ViewModels
         }
 
         // --- Eventos hacia la View ---
-        /// <summary>Se dispara cuando el usuario acepta un desafío de batalla. Parámetro: battleId.</summary>
         public event Action<string> BatallaAceptada;
-
-        /// <summary>Se dispara cuando el usuario acepta un intercambio. Parámetro: tradeId.</summary>
         public event Action<string> IntercambioAceptado;
 
         // --- Comandos ---
-        public ICommand SeleccionarMensajeCommand { get; }
-        public ICommand AceptarDesafioCommand     { get; }
-        public ICommand RechazarDesafioCommand    { get; }
-        public ICommand AceptarIntercambioCommand { get; }
-        public ICommand RechazarIntercambioCommand { get; }
+        public ICommand SeleccionarMensajeCommand    { get; }
+        public ICommand AceptarDesafioCommand        { get; }
+        public ICommand RechazarDesafioCommand       { get; }
+        public ICommand AceptarIntercambioCommand    { get; }
+        public ICommand RechazarIntercambioCommand   { get; }
 
         public MisMensajesViewModel()
         {
@@ -97,8 +93,8 @@ namespace PK_Proyect.ViewModels
         private async void RechazarDesafio()
         {
             if (MensajeSeleccionado == null) return;
-
-            await Task.Run(() => _repo.EliminarMensaje(MensajeSeleccionado.Id));
+            var id = MensajeSeleccionado.Id;
+            await Task.Run(() => _repo.EliminarMensaje(id));
             App.Current.Dispatcher.Invoke(() =>
             {
                 Mensajes.Remove(MensajeSeleccionado);
@@ -120,8 +116,8 @@ namespace PK_Proyect.ViewModels
         private async void RechazarIntercambio()
         {
             if (MensajeSeleccionado == null) return;
-
-            await Task.Run(() => _repo.EliminarMensaje(MensajeSeleccionado.Id));
+            var id = MensajeSeleccionado.Id;
+            await Task.Run(() => _repo.EliminarMensaje(id));
             App.Current.Dispatcher.Invoke(() =>
             {
                 Mensajes.Remove(MensajeSeleccionado);
@@ -137,8 +133,11 @@ namespace PK_Proyect.ViewModels
                      .ToList()
             );
 
-            foreach (var m in lista)
-                Mensajes.Add(m);
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var m in lista)
+                    Mensajes.Add(m);
+            });
         }
     }
 }

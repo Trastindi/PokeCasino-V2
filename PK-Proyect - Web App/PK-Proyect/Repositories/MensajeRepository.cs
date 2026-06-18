@@ -12,5 +12,9 @@ namespace PK_Proyect.Repositories
         /// <summary>Devuelve todos los mensajes recibidos por el usuario autenticado.</summary>
         public List<Mensaje> GetMisMensajes()
             => ApiClient.Get<List<Mensaje>>("/messages/mis_mensajes");
+
+        /// <summary>Elimina un mensaje por su Id.</summary>
+        public void EliminarMensaje(string id)
+            => ApiClient.Delete($"/messages/{id}");
     }
 }
