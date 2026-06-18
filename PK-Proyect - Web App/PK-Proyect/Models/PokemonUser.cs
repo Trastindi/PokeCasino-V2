@@ -67,8 +67,9 @@ namespace PK_Proyect.Models
         [JsonPropertyName("HiddenPowerPower")]
         public int HiddenPowerPower { get; set; } = 0;
 
-        [JsonPropertyName("Stats")]
-        public Dictionary<string, int> estadisticas_base { get; private set; } = new Dictionary<string, int>();
+        // El servidor Python devuelve este campo como "estadisticas_base" (no "Stats")
+        [JsonPropertyName("estadisticas_base")]
+        public Dictionary<string, int> estadisticas_base { get; set; } = new Dictionary<string, int>();
 
         /// <summary>
         /// Moneda de fragmentos. Reservado para uso futuro.
