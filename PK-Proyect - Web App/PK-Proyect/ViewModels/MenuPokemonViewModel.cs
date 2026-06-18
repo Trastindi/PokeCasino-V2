@@ -32,24 +32,22 @@ namespace PK_Proyect.ViewModels
             CerrarSesionCommand    = new RelayCommand(_ => CerrarSesion());
         }
 
-        // Ver Pokemon -> PokemonObtenidosView
         private void AbrirPokemonObtenidos()
         {
             var ventana = new PokemonObtenidosView(new PokemonObtenidosViewModel(UsuarioConectado.Id));
             ventana.ShowDialog();
         }
 
-        // Pokedex -> PokedexView
         private void AbrirPokedex()
         {
             var ventana = new PokedexView(UsuarioConectado.Id);
             ventana.ShowDialog();
         }
 
-        // Gestionar Equipo -> EquipoPokemonView
         private void AbrirEquipoPokemon()
         {
-            var ventana = new EquipoPokemonView(new EquipoPokemonViewModel(UsuarioConectado.Id));
+            // El userId ya no es necesario: el servidor lo deduce del JWT
+            var ventana = new EquipoPokemonView(new EquipoPokemonViewModel());
             ventana.ShowDialog();
         }
 

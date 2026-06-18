@@ -79,7 +79,9 @@ namespace PK_Proyect.ViewModels
                 return;
             }
 
-            var vm = new EquipoPokemonViewModel(UsuarioSeleccionado.Id);
+            // El servidor filtra por JWT; desde admin solo se puede ver el equipo del usuario autenticado.
+            // Si en el futuro se necesita ver el equipo de otro usuario, añadir endpoint admin en el servidor.
+            var vm = new EquipoPokemonViewModel();
             var ventana = new EquipoPokemonView(vm);
             ventana.ShowDialog();
         }
@@ -225,9 +227,6 @@ namespace PK_Proyect.ViewModels
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-
-
-
         private void VerMedallas()
         {
             if (UsuarioSeleccionado == null)
@@ -240,13 +239,5 @@ namespace PK_Proyect.ViewModels
             var ventana = new MedallasView(vm);
             ventana.ShowDialog();
         }
-
-
-
     }
-
-
-
-
-
 }

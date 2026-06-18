@@ -11,14 +11,8 @@ namespace PK_Proyect.View
         {
             InitializeComponent();
 
-            // userId del usuario autenticado, almacenado en ApiClient al hacer login
-            string currentUserId = ApiClient.CurrentUserId;
-
-            // Primero el selector de equipo
-            var equipoVM = new EquipoPokemonViewModel(
-                userId: currentUserId,
-                modoSeleccion: true
-            );
+            // El userId ya no es necesario: el servidor lo deduce del JWT
+            var equipoVM = new EquipoPokemonViewModel(modoSeleccion: true);
             var equipoView = new EquipoPokemonView(equipoVM, modoSeleccion: true);
 
             // Si cancela la selección, cerrar esta ventana

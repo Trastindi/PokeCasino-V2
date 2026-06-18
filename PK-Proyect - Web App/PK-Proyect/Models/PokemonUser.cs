@@ -9,6 +9,12 @@ namespace PK_Proyect.Models
     [BsonIgnoreExtraElements]
     public class PokemonUser
     {
+        /// <summary>ObjectId del documento en MongoDB (clave primaria).</summary>
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonPropertyName("_id")]
+        public string Id { get; set; }
+
         [BsonElement("numero_pokedex")]
         [JsonPropertyName("numero_pokedex")]
         public int numero_pokedex { get; set; }
@@ -63,9 +69,9 @@ namespace PK_Proyect.Models
 
         [JsonPropertyName("Stats")]
         public Dictionary<string, int> estadisticas_base { get; private set; } = new Dictionary<string, int>();
+
         /// <summary>
         /// Moneda de fragmentos. Reservado para uso futuro.
-        /// Se obtiene acumulando Pokémon duplicados u otras acciones.
         /// </summary>
         [JsonPropertyName("Shards")]
         public int Shards { get; set; } = 0;
