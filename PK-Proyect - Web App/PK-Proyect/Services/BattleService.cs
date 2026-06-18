@@ -24,14 +24,13 @@ namespace PK_Proyect.Services
             }
         }
 
-        // POST /battles/{battleId}/join
+        // GET /battles/{battleId}  — consulta el estado de la batalla para unirse
         public async Task<bool> RequestJoinAsync(string currentUserId, string battleId)
         {
             try
             {
-                var result = await ApiClient.PostAsync<object>(
-                    $"/battles/{battleId}/join",
-                    new { }
+                var result = await ApiClient.GetAsync<object>(
+                    $"/battles/{battleId}"
                 );
                 return result != null;
             }
