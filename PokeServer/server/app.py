@@ -695,7 +695,38 @@ def get_pokemon(current_user, pokemon_id):
         return jsonify({"error": "Pokémon no encontrado"}), 404
     return jsonify(doc), 200
 
+# ---------------------------------------------------------------------------
+# ZONAS
+# ---------------------------------------------------------------------------
 
+@app.get("/zonas")
+@token_required
+def get_zonas(current_user):
+    try:
+        docs = list(zonas.find({}, {"_id": 0}))
+        return jsonify(docs), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+
+@app.get("/zonas/<nombre>")
+@token_required
+def get_zona_por_nombre(current_user, nombre):
+    try:
+        doc = zonas.find_one({"Nombre": nombre}, {"_id": 0})
+        if not doc:
+            doc = zonas.find_one(
+                {"Nombre": {"$regex": f"^{nombre}$", "$options": "i"}},
+                {"_id": 0}
+            )
+        if not doc:
+            return jsonify({"error": "Zona no encontrada"}), 404
+        return jsonify(doc), 200
+    except Exception:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": "Error interno del servidor"}), 500
+        
 # ---------------------------------------------------------------------------
 # HISTORIAL DE TIRADAS
 # ---------------------------------------------------------------------------
