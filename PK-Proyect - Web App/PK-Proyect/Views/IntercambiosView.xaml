@@ -1,0 +1,131 @@
+<UserControl x:Class="PK_Proyect.Views.IntercambiosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="900">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Título -->
+            <RowDefinition Height="Auto"/>   <!-- Enviar solicitud -->
+            <RowDefinition Height="*"/>      <!-- Panel intercambio activo -->
+            <RowDefinition Height="Auto"/>   <!-- Historial -->
+            <RowDefinition Height="Auto"/>   <!-- Mensaje -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Título ─────────────────────────────────────────────── -->
+        <TextBlock Grid.Row="0" Text="Intercambios" FontSize="24" FontWeight="Bold" Margin="0 0 0 16"/>
+
+        <!-- ── Enviar solicitud ──────────────────────────────────── -->
+        <GroupBox Grid.Row="1" Header="Nueva solicitud de intercambio" Margin="0 0 0 16">
+            <StackPanel Orientation="Horizontal" Margin="8">
+                <TextBlock Text="ID del usuario:" VerticalAlignment="Center" Margin="0 0 8 0"/>
+                <TextBox Width="220" Text="{Binding RivalId, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"/>
+                <Button Content="Enviar solicitud" Margin="12 0 0 0" Padding="10 4"
+                        Click="BtnEnviarSolicitud_Click"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- ── Panel intercambio activo ─────────────────────────── -->
+        <GroupBox Grid.Row="2" Header="Intercambio en curso"
+                  Visibility="{Binding HayIntercambioActivo, Converter={StaticResource BoolToVisibility}}"
+                  Margin="0 0 0 16">
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Cabeceras jugadores -->
+                <TextBlock Grid.Column="0" Text="{Binding IntercambioActivo.Player1Name}"
+                           FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="⇄" FontSize="20" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="{Binding IntercambioActivo.Player2Name}"
+                           FontWeight="Bold" HorizontalAlignment="Center"/>
+
+                <!-- Pokémon ofrecidos -->
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1"
+                        CornerRadius="6" Margin="4" Padding="8" MinHeight="80">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding IntercambioActivo.Player1PokemonDetail.Nombre, FallbackValue='(sin seleccionar)'}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding IntercambioActivo.Player1PokemonDetail.TipoPrincipal}"
+                                   FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="2" BorderBrush="Gray" BorderThickness="1"
+                        CornerRadius="6" Margin="4" Padding="8" MinHeight="80">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding IntercambioActivo.Player2PokemonDetail.Nombre, FallbackValue='(sin seleccionar)'}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding IntercambioActivo.Player2PokemonDetail.TipoPrincipal}"
+                                   FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Selector de mi pokémon + acciones -->
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal"
+                            HorizontalAlignment="Center" Margin="0 12 0 0">
+                    <ComboBox ItemsSource="{Binding MisPokemon}"
+                              SelectedItem="{Binding PokemonOfrecido}"
+                              DisplayMemberPath="Nombre"
+                              Width="180" Margin="0 0 8 0"/>
+                    <Button Content="Ofrecer Pokémon" Padding="10 4" Margin="0 0 8 0"
+                            Click="BtnOfrecer_Click"/>
+                    <Button Content="✔ Confirmar intercambio" Padding="10 4" Margin="0 0 8 0"
+                            Background="#2ecc71" Foreground="White"
+                            Click="BtnConfirmar_Click"/>
+                    <Button Content="✘ Cancelar" Padding="10 4"
+                            Background="#e74c3c" Foreground="White"
+                            Click="BtnCancelar_Click"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <!-- ── Historial de intercambios ─────────────────────────── -->
+        <GroupBox Grid.Row="3" Header="Mis intercambios" Margin="0 0 0 8">
+            <DataGrid ItemsSource="{Binding MisIntercambios}"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      CanUserAddRows="False" MaxHeight="180">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Con" Binding="{Binding Player2Name}" Width="*"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100"/>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding CreatedAt}" Width="160"/>
+                    <DataGridTemplateColumn Header="Acción" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Ver" Padding="6 2"
+                                        Click="BtnVerIntercambio_Click"
+                                        Tag="{Binding Id}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- ── Mensaje / feedback ────────────────────────────────── -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <!-- Éxito -->
+            <Border Padding="12 6" CornerRadius="6" Background="#2ecc71"
+                    Visibility="{Binding IntercambioExitoso, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="¡Intercambio completado con éxito! 🎉"
+                           Foreground="White" FontWeight="Bold"/>
+            </Border>
+            <!-- Mensaje genérico -->
+            <TextBlock Text="{Binding Mensaje}" VerticalAlignment="Center"
+                       Foreground="#555" Margin="8 0 0 0"
+                       Visibility="{Binding Mensaje, Converter={StaticResource StringToVisibility}}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
