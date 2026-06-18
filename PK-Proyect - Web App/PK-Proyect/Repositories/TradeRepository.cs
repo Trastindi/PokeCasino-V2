@@ -8,11 +8,12 @@ namespace PK_Proyect.Repositories
 {
     public class TradeRepository : ITradeRepository
     {
-        private static readonly JsonSerializerOptions _opts = new(JsonSerializerDefaults.Web);
+        // Sin constructor con parámetro ApiClient: ApiClient es una clase estática
+        // y sus métodos se invocan directamente (ApiClient.PostAsync<T>(...)).
 
-        // ── 1. Enviar solicitud ──────────────────────────────────────
+        // ── 1. Enviar solicitud ────────────────────────────────────────
         public async Task<TradeMensajeModel?> SendTradeRequestAsync(string rivalId)
-            => await ApiClient.PostAsync<TradeMensajeModel>($"/trade_requests/{rivalId}", null);
+            => await ApiClient.PostAsync<TradeMensajeModel>($"/trade_requests/{rivalId}", (object?)null);
 
         // ── 2. Responder solicitud ───────────────────────────────────
         /// <returns>trade_id si se aceptó, null si se rechazó</returns>
@@ -24,7 +25,7 @@ namespace PK_Proyect.Repositories
             return doc.TryGetProperty("trade_id", out var t) ? t.GetString() : null;
         }
 
-        // ── 3. Consultar estado ──────────────────────────────────────
+        // ── 3. Consultar estado ───────────────────────────────────────
         public async Task<TradeModel?> GetTradeAsync(string tradeId)
         {
             try
@@ -37,11 +38,11 @@ namespace PK_Proyect.Repositories
             }
         }
 
-        // ── 4. Listar intercambios del usuario ───────────────────────
+        // ── 4. Listar intercambios del usuario ───────────────────────────
         public async Task<List<TradeModel>> GetMyTradesAsync()
             => await ApiClient.GetAsync<List<TradeModel>>("/trades");
 
-        // ── 5. Ofrecer pokémon ───────────────────────────────────────
+        // ── 5. Ofrecer pokémon ───────────────────────────────────────────
         public async Task<bool> OfferPokemonAsync(string tradeId, string pokemonObjectId)
         {
             try
@@ -57,21 +58,21 @@ namespace PK_Proyect.Repositories
             }
         }
 
-        // ── 6. Confirmar ─────────────────────────────────────────────
+        // ── 6. Confirmar ───────────────────────────────────────────────
         /// <returns>"done" si el intercambio se completó, mensaje de espera si no</returns>
         public async Task<string> ConfirmTradeAsync(string tradeId)
         {
             var doc = await ApiClient.PostAsync<JsonElement>(
-                $"/trades/{tradeId}/confirm", null);
+                $"/trades/{tradeId}/confirm", (object?)null);
             return doc.TryGetProperty("status", out var s) ? s.GetString() ?? "" : "waiting";
         }
 
-        // ── 7. Cancelar ──────────────────────────────────────────────
+        // ── 7. Cancelar ────────────────────────────────────────────────
         public async Task<bool> CancelTradeAsync(string tradeId)
         {
             try
             {
-                await ApiClient.PostAsync<JsonElement>($"/trades/{tradeId}/cancel", null);
+                await ApiClient.PostAsync<JsonElement>($"/trades/{tradeId}/cancel", (object?)null);
                 return true;
             }
             catch
