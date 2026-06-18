@@ -199,8 +199,6 @@ namespace PK_Proyect.ViewModels.Banners
                 {
                     var compra = new ComprarFichasWindow(Usuario);
                     if (compra.ShowDialog() != true) return;
-                    await ActualizarFichasAsync();
-
                     Fichas = Usuario.FichasCasino;
                 }
 
@@ -273,8 +271,6 @@ namespace PK_Proyect.ViewModels.Banners
                 {
                     var compra = new ComprarFichasWindow(Usuario);
                     if (compra.ShowDialog() != true) return;
-                    await ActualizarFichasAsync();
-
                     Fichas = Usuario.FichasCasino;
                 }
 
