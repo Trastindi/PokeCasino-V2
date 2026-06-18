@@ -10,6 +10,7 @@
 #      Cuando ambos ofrecen → status=offered
 #   5. POST /trades/<trade_id>/confirm          → cada jugador confirma
 #      Cuando ambos confirman → ejecuta el intercambio real en PokemonUser
+#      + comprueba evolución por intercambio en el pokémon RECIBIDO
 #   6. POST /trades/<trade_id>/cancel           → cualquiera puede cancelar
 # ---------------------------------------------------------------------------
 
@@ -18,7 +19,81 @@ from bson import ObjectId
 import datetime
 
 
-def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_required, gf):
+# ---------------------------------------------------------------------------
+# HELPER: evolución por intercambio
+# ---------------------------------------------------------------------------
+
+def _intentar_evolucion_intercambio(poke_doc, pokedex, pokemon_user):
+    """
+    Comprueba si el pokémon tiene método de evolución 'intercambio'.
+    Si es así, actualiza el documento en PokemonUser con los datos
+    de la evolución (nombre, tipos, estadísticas, etc.).
+
+    Devuelve (evolucionado: bool, nombre_evolucion: str).
+    """
+    evolucion = poke_doc.get("evolucion") or {}
+    metodo    = (evolucion.get("metodo") or "").lower()
+
+    if metodo != "intercambio":
+        return False, ""
+
+    evo_nombre     = evolucion.get("nombre", "")
+    evo_pokemon_id = evolucion.get("pokemon_id", "")
+
+    # Buscar la forma evolucionada en la Pokédex
+    evo_pdex = pokedex.find_one(
+        {"$or": [
+            {"pokemon_id": evo_pokemon_id},
+            {"nombre":     {"$regex": f"^{evo_nombre}$", "$options": "i"}},
+        ]}
+    )
+    if not evo_pdex:
+        # No encontrado en la Pokédex → no evolucionamos pero no rompemos el intercambio
+        print(f"[TRADE-EVO] Pokédex entry not found for '{evo_pokemon_id}' / '{evo_nombre}'")
+        return False, evo_nombre
+
+    # Construir el update con los datos de la evolución
+    stats_base  = evo_pdex.get("estadisticas_base", poke_doc.get("estadisticas_base", {}))
+    nuevo_nombre = evo_pdex.get("nombre", evo_nombre)
+    tipo1        = ""
+    tipo2        = ""
+    tipos_lista  = evo_pdex.get("tipos", [])
+    if len(tipos_lista) > 0:
+        tipo1 = tipos_lista[0]
+    if len(tipos_lista) > 1:
+        tipo2 = tipos_lista[1]
+
+    nuevo_numero = evo_pdex.get("numero_pokedex", poke_doc.get("numero_pokedex", 0))
+
+    evo_update = {
+        "PokemonId":        nuevo_numero,
+        "numero_pokedex":   nuevo_numero,
+        "Nombre":           nuevo_nombre,
+        "TipoPrincipal":    tipo1,
+        "TipoSecundario":   tipo2,
+        "estadisticas_base": stats_base,
+        "CurrentHp":        int(stats_base.get("ps", poke_doc.get("CurrentHp", 0))),
+        "evolucion":        evo_pdex.get("evolucion"),   # próxima evo (si la hay)
+    }
+
+    pokemon_user.update_one(
+        {"_id": poke_doc["_id"]},
+        {"$set": evo_update}
+    )
+
+    print(f"[TRADE-EVO] {poke_doc.get('Nombre')} → {nuevo_nombre} (intercambio)")
+    return True, nuevo_nombre
+
+
+# ---------------------------------------------------------------------------
+# RUTAS
+# ---------------------------------------------------------------------------
+
+def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, pokedex, token_required, gf):
+    """
+    Registra todas las rutas de intercambio.
+    Requiere 'pokedex' para la comprobación de evolución.
+    """
 
     # ── 1. ENVIAR SOLICITUD ────────────────────────────────────────────────
     @app.post("/trade_requests/<rival_id>")
@@ -93,22 +168,21 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
             # ── ACEPTADO: crear documento Trade ───────────────────────────
             trade_id = ObjectId()
             trades.insert_one({
-                "_id":             trade_id,
-                "player1_id":      sender_id,
-                "player2_id":      str(current_user["_id"]),
-                "player1_name":    msg.get("from", ""),
-                "player2_name":    str(gf(current_user, "Username", "username", default="")),
-                "status":          "pending",   # pending → offered → confirmed → done | cancelled
-                "player1_pokemon": None,         # ObjectId string del PokemonUser
-                "player2_pokemon": None,
+                "_id":               trade_id,
+                "player1_id":        sender_id,
+                "player2_id":        str(current_user["_id"]),
+                "player1_name":      msg.get("from", ""),
+                "player2_name":      str(gf(current_user, "Username", "username", default="")),
+                "status":            "pending",
+                "player1_pokemon":   None,
+                "player2_pokemon":   None,
                 "player1_confirmed": False,
                 "player2_confirmed": False,
-                "created_at":      datetime.datetime.utcnow().isoformat(),
+                "created_at":        datetime.datetime.utcnow().isoformat(),
             })
 
             trade_id_str = str(trade_id)
 
-            # Notificar al solicitante
             mensajes.insert_one({
                 "_id":       ObjectId(),
                 "from":      str(gf(current_user, "Username", "username", default="?")),
@@ -144,7 +218,6 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
 
             trade["_id"] = str(trade["_id"])
 
-            # Enriquecer con datos del pokémon ofrecido (si existe)
             for slot in ("player1_pokemon", "player2_pokemon"):
                 poke_id = trade.get(slot)
                 if poke_id:
@@ -167,8 +240,6 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
     def offer_pokemon(current_user, trade_id):
         """
         Body: { "pokemon_id": "<ObjectId del PokemonUser>" }
-        El jugador elige qué pokémon ofrece.
-        Cuando ambos hayan ofrecido → status pasa a 'offered'.
         """
         try:
             data       = request.json or {}
@@ -187,7 +258,6 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
             if trade["status"] not in ("pending", "offered"):
                 return jsonify({"error": f"El intercambio ya está en estado '{trade['status']}'"}), 409
 
-            # Verificar que el pokémon pertenece al usuario
             poke = pokemon_user.find_one({"_id": ObjectId(pokemon_id), "UserId": uid})
             if not poke:
                 return jsonify({"error": "Pokémon no encontrado o no te pertenece"}), 404
@@ -195,7 +265,6 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
             slot = "player1_pokemon" if trade["player1_id"] == uid else "player2_pokemon"
             trades.update_one({"_id": ObjectId(trade_id)}, {"$set": {slot: pokemon_id}})
 
-            # Comprobar si ambos han ofrecido
             updated = trades.find_one({"_id": ObjectId(trade_id)})
             if updated["player1_pokemon"] and updated["player2_pokemon"]:
                 trades.update_one({"_id": ObjectId(trade_id)}, {"$set": {"status": "offered"}})
@@ -211,9 +280,12 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
     @token_required
     def confirm_trade(current_user, trade_id):
         """
-        Cada jugador llama a este endpoint para confirmar.
-        Cuando ambos confirman → se intercambian los UserId en PokemonUser
-        y el status pasa a 'done'.
+        Cuando ambos confirman:
+          1. Se intercambian los propietarios en PokemonUser.
+          2. Tras el cambio de dueño, se comprueba si el pokémon RECIBIDO
+             tiene método de evolución 'intercambio'; si es así, evoluciona
+             automáticamente en la BD.
+          3. Se envían mensajes de notificación (incluyendo la evolución si ocurrió).
         """
         try:
             trade = trades.find_one({"_id": ObjectId(trade_id)})
@@ -233,15 +305,16 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
             updated = trades.find_one({"_id": ObjectId(trade_id)})
 
             if updated["player1_confirmed"] and updated["player2_confirmed"]:
-                # ── EJECUTAR EL INTERCAMBIO ───────────────────────────────
-                p1_poke_id = updated["player1_pokemon"]
-                p2_poke_id = updated["player2_pokemon"]
+                # ── A. Datos del intercambio ──────────────────────────────
+                p1_poke_id = updated["player1_pokemon"]   # ofrecido por player1
+                p2_poke_id = updated["player2_pokemon"]   # ofrecido por player2
                 p1_id      = updated["player1_id"]
                 p2_id      = updated["player2_id"]
                 p1_name    = updated["player1_name"]
                 p2_name    = updated["player2_name"]
 
-                # Cambiar el propietario de cada pokémon
+                # ── B. Cambiar propietario ────────────────────────────────
+                # p1_poke va a player2; p2_poke va a player1
                 pokemon_user.update_one(
                     {"_id": ObjectId(p1_poke_id)},
                     {"$set": {"UserId": p2_id, "Username": p2_name}}
@@ -251,27 +324,63 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
                     {"$set": {"UserId": p1_id, "Username": p1_name}}
                 )
 
+                # ── C. Comprobar evolución por intercambio ────────────────
+                # El pokémon que recibe player1 es p2_poke (antes de player2)
+                # El pokémon que recibe player2 es p1_poke (antes de player1)
+                evoluciones = {}  # { user_id: nombre_evolucion }
+
+                p2_poke_doc = pokemon_user.find_one({"_id": ObjectId(p2_poke_id)})
+                if p2_poke_doc:
+                    evolucionado, evo_nombre = _intentar_evolucion_intercambio(
+                        p2_poke_doc, pokedex, pokemon_user
+                    )
+                    if evolucionado:
+                        evoluciones[p1_id] = evo_nombre   # player1 recibe este poke
+
+                p1_poke_doc = pokemon_user.find_one({"_id": ObjectId(p1_poke_id)})
+                if p1_poke_doc:
+                    evolucionado, evo_nombre = _intentar_evolucion_intercambio(
+                        p1_poke_doc, pokedex, pokemon_user
+                    )
+                    if evolucionado:
+                        evoluciones[p2_id] = evo_nombre   # player2 recibe este poke
+
+                # ── D. Actualizar estado del trade ────────────────────────
                 trades.update_one(
                     {"_id": ObjectId(trade_id)},
-                    {"$set": {"status": "done", "completed_at": datetime.datetime.utcnow().isoformat()}}
+                    {"$set": {
+                        "status":       "done",
+                        "completed_at": datetime.datetime.utcnow().isoformat(),
+                        "evoluciones":  evoluciones,
+                    }}
                 )
 
-                # Notificar a ambos jugadores
-                for recipient, other in ((p1_id, p2_name), (p2_id, p1_name)):
+                # ── E. Notificar a ambos jugadores ────────────────────────
+                for recipient_id, other_name in ((p1_id, p2_name), (p2_id, p1_name)):
+                    evo_texto = ""
+                    if recipient_id in evoluciones:
+                        evo_texto = f" Además, ¡tu nuevo Pokémon ha evolucionado a {evoluciones[recipient_id]}!"
+
                     mensajes.insert_one({
                         "_id":       ObjectId(),
                         "from":      "Sistema",
                         "from_id":   "",
-                        "to":        recipient,
+                        "to":        recipient_id,
                         "title":     "¡Intercambio exitoso!",
-                        "text":      f"Tu intercambio con {other} se ha completado con éxito. ¡Revisa tu equipo!",
+                        "text":      f"Tu intercambio con {other_name} se ha completado con éxito."
+                                     f"{evo_texto} ¡Revisa tu equipo!",
                         "Fecha":     datetime.datetime.utcnow().isoformat(),
                         "type":      "trade_done",
                         "trade_id":  trade_id,
+                        "evolucion": evoluciones.get(recipient_id),
                         "responded": False,
                     })
 
-                return jsonify({"msg": "¡Intercambio completado con éxito!", "status": "done"}), 200
+                return jsonify({
+                    "msg":        "¡Intercambio completado con éxito!",
+                    "status":     "done",
+                    "evoluciones": evoluciones,   # { user_id: nombre_nueva_forma }
+                }), 200
 
             return jsonify({"msg": "Confirmación registrada, esperando al otro jugador"}), 200
 
@@ -300,7 +409,6 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, token_r
                 {"$set": {"status": "cancelled", "cancelled_by": uid}}
             )
 
-            # Notificar al otro jugador
             other_id = trade["player2_id"] if trade["player1_id"] == uid else trade["player1_id"]
             mensajes.insert_one({
                 "_id":       ObjectId(),
