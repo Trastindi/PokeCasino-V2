@@ -71,7 +71,6 @@ namespace PK_Proyect.ViewModels.Banners
             Tirar1Command  = new AsyncRelayCommand(async () => await TiradaSingleAsync());
             Tirar10Command = new AsyncRelayCommand(async () => await TiradaMultiAsync());
 
-            // MostrarPokemonCommand = new RelayCommand(_ => MostrarPokemon());
             MostrarPokemonCommand = new AsyncRelayCommand(async() => await MostrarPokemonAsync());
             MostrarZonasCommand   = new RelayCommand(_ => MostrarZonasBD());
             HistorialCommand      = new AsyncRelayCommand(async () => await MostrarHistorialAsync());
@@ -194,196 +193,162 @@ namespace PK_Proyect.ViewModels.Banners
         }
 
         private async Task TiradaSingleAsync()
-{
-    const int COSTE = 300;
-    try
-    {
-        if (Usuario.FichasCasino < COSTE)
         {
-            var compra = new ComprarFichasWindow(Usuario);
-            if (compra.ShowDialog() != true) return;
-            await ActualizarFichasAsync();
-
-            Fichas = Usuario.FichasCasino;
-        }
-
-        // Cobro y sorteo en background (CPU-bound)
-        (Pokemon poke, PokemonZonaViewModel sorteo) resultado = await Task.Run(() =>
-        {
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            Debug.WriteLine($"[TIRADA SINGLE] Fichas después de cobro: {Usuario.FichasCasino}");
-
-            var s = Tirar();
-            if (s == null) return (poke: (Pokemon)null, sorteo: (PokemonZonaViewModel)null);
-
-            var p = _pokedexRepo.ObtenerPorId(s.Id);
-            return (p, s);
-        });
-
-        var poke = resultado.poke;
-        var sorteo = resultado.sorteo;
-
-        if (sorteo == null || poke == null)
-        {
-            MessageBox.Show("No se pudo realizar el sorteo. La zona no tiene Pokémon disponibles o falta la entrada en la Pokédex.",
-                "Sorteo fallido", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        // Crear/obtener el PokemonUser (operación async)
-        var pokemon = await _pokemonUserService.ObtenerPokemonAsync(
-            poke.numero_pokedex, poke.Nombre,
-            poke.TipoPrincipal, poke.TipoSecundario,
-            poke.EstadisticasBase?.Ps ?? 0);
-
-        // Registrar histórico directamente con await
-        await new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
-        {
-            UserId = Usuario.Id,
-            PokemonId = poke.numero_pokedex,
-            NombrePokemon = poke.Nombre,
-            Zona = NombreZona,
-            TipoTirada = "single",
-            Fecha = DateTime.Now
-        });
-
-        // Refrescar fichas desde servidor y actualizar propiedad
-        await ActualizarFichasAsync();
-        Fichas = Usuario.FichasCasino;
-
-        // Mostrar resultado: ventana con sprite + nombre (lista con 1 elemento)
-        if (pokemon != null)
-        {
-            var vmResultados = new ResultadoTiradasViewModel(NombreZona);
-            vmResultados.Cargar(new[] { pokemon });
-
-            var ventanaResultados = new ResultadoTiradasView(vmResultados);
-            ventanaResultados.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
-            ventanaResultados.ShowDialog();
-        }
-        else
-        {
-            MessageBox.Show(
-                $"Se registró la tirada pero hubo un problema al guardar {poke.Nombre}. Intenta de nuevo.",
-                "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
-    catch (Exception ex)
-    {
-        Debug.WriteLine($"[TiradaSingleAsync] Excepción: {ex}");
-
-        try
-        {
-            await ActualizarFichasAsync();
-        }
-        catch (Exception inner)
-        {
-            Debug.WriteLine($"[TiradaSingleAsync] Error al refrescar fichas tras excepción: {inner}");
-        }
-
-        MessageBox.Show(
-            $"Error al realizar la tirada:\n{ex.Message}",
-            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-}
-
-
-
-private async Task TiradaMultiAsync()
-{
-    const int COSTE = 3000;
-    try
-    {
-        if (Usuario.FichasCasino < COSTE)
-        {
-            var compra = new ComprarFichasWindow(Usuario);
-            if (compra.ShowDialog() != true) return;
-            await ActualizarFichasAsync();
-
-            Fichas = Usuario.FichasCasino;
-        }
-
-        // Parte sincrona CPU-bound: cobro y 10 sorteos
-        List<(Pokemon poke, PokemonZonaViewModel sorteo)> sorteos = null;
-        sorteos = await Task.Run(() =>
-        {
-            Usuario.FichasCasino -= COSTE;
-            new UserRepository().UpdateUser(Usuario);
-            Debug.WriteLine($"[TIRADA MULTI] Fichas después de cobro: {Usuario.FichasCasino}");
-
-            var lista = new List<(Pokemon, PokemonZonaViewModel)>();
-            for (int i = 0; i < 10; i++)
+            const int COSTE = 300;
+            try
             {
-                var s = Tirar();
-                if (s == null) continue;
-                var p = _pokedexRepo.ObtenerPorId(s.Id);
-                if (p != null) lista.Add((p, s));
+                if (Usuario.FichasCasino < COSTE)
+                {
+                    var compra = new ComprarFichasWindow(Usuario);
+                    if (compra.ShowDialog() != true) return;
+                    await ActualizarFichasAsync();
+                    Fichas = Usuario.FichasCasino;
+                }
+
+                (Pokemon poke, PokemonZonaViewModel sorteo) resultado = await Task.Run(() =>
+                {
+                    Usuario.FichasCasino -= COSTE;
+                    new UserRepository().UpdateUser(Usuario);
+                    Debug.WriteLine($"[TIRADA SINGLE] Fichas después de cobro: {Usuario.FichasCasino}");
+
+                    var s = Tirar();
+                    if (s == null) return (poke: (Pokemon)null, sorteo: (PokemonZonaViewModel)null);
+
+                    var p = _pokedexRepo.ObtenerPorId(s.Id);
+                    return (p, s);
+                });
+
+                var poke   = resultado.poke;
+                var sorteo = resultado.sorteo;
+
+                if (sorteo == null || poke == null)
+                {
+                    MessageBox.Show("No se pudo realizar el sorteo. La zona no tiene Pokémon disponibles o falta la entrada en la Pokédex.",
+                        "Sorteo fallido", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var pokemon = await _pokemonUserService.ObtenerPokemonAsync(
+                    poke.numero_pokedex, poke.Nombre,
+                    poke.TipoPrincipal, poke.TipoSecundario,
+                    poke.EstadisticasBase?.Ps ?? 0);
+
+                // Fecha como string ISO 8601 para que Flask la acepte y deserialice sin problemas
+                await new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
+                {
+                    UserId        = Usuario.Id,
+                    PokemonId     = poke.numero_pokedex,
+                    NombrePokemon = poke.Nombre,
+                    Zona          = NombreZona,
+                    TipoTirada    = "single",
+                    Fecha         = DateTime.Now.ToString("o")  // ISO 8601 round-trip
+                });
+
+                await ActualizarFichasAsync();
+                Fichas = Usuario.FichasCasino;
+
+                if (pokemon != null)
+                {
+                    var vmResultados = new ResultadoTiradasViewModel(NombreZona);
+                    vmResultados.Cargar(new[] { pokemon });
+                    var ventanaResultados = new ResultadoTiradasView(vmResultados);
+                    ventanaResultados.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                    ventanaResultados.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Se registró la tirada pero hubo un problema al guardar {poke.Nombre}. Intenta de nuevo.",
+                        "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            return lista;
-        });
-
-        // Parte asincrona: crear PokemonUser y registrar histórico
-        var pokemonesObtenidos = new List<PokemonUser>();
-        var repoHist = new HistoricoTiradasRepository();
-
-        foreach (var (poke, _) in sorteos)
-        {
-            var obtenido = await _pokemonUserService.ObtenerPokemonAsync(
-                poke.numero_pokedex, poke.Nombre,
-                poke.TipoPrincipal, poke.TipoSecundario,
-                poke.EstadisticasBase?.Ps ?? 0);
-
-            // Registrar histórico directamente con await
-            await repoHist.RegistrarTirada(new HistoricoTirada
+            catch (Exception ex)
             {
-                UserId = Usuario.Id,
-                PokemonId = poke.numero_pokedex,
-                NombrePokemon = poke.Nombre,
-                Zona = NombreZona,
-                TipoTirada = "multi",
-                Fecha = DateTime.Now
-            });
-
-            if (obtenido != null)
-                pokemonesObtenidos.Add(obtenido);
+                Debug.WriteLine($"[TiradaSingleAsync] Excepción: {ex}");
+                try { await ActualizarFichasAsync(); }
+                catch (Exception inner) { Debug.WriteLine($"[TiradaSingleAsync] Error al refrescar fichas: {inner}"); }
+                MessageBox.Show($"Error al realizar la tirada:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        // Refrescar fichas y mostrar ventana de resultados (lista con sprites + nombres)
-        await ActualizarFichasAsync();
-        Fichas = Usuario.FichasCasino;
-
-        if (pokemonesObtenidos == null || pokemonesObtenidos.Count == 0)
+        private async Task TiradaMultiAsync()
         {
-            MessageBox.Show("No se obtuvieron Pokémon en la tirada múltiple.", "Resultado", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
+            const int COSTE = 3000;
+            try
+            {
+                if (Usuario.FichasCasino < COSTE)
+                {
+                    var compra = new ComprarFichasWindow(Usuario);
+                    if (compra.ShowDialog() != true) return;
+                    await ActualizarFichasAsync();
+                    Fichas = Usuario.FichasCasino;
+                }
+
+                List<(Pokemon poke, PokemonZonaViewModel sorteo)> sorteos = await Task.Run(() =>
+                {
+                    Usuario.FichasCasino -= COSTE;
+                    new UserRepository().UpdateUser(Usuario);
+                    Debug.WriteLine($"[TIRADA MULTI] Fichas después de cobro: {Usuario.FichasCasino}");
+
+                    var lista = new List<(Pokemon, PokemonZonaViewModel)>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var s = Tirar();
+                        if (s == null) continue;
+                        var p = _pokedexRepo.ObtenerPorId(s.Id);
+                        if (p != null) lista.Add((p, s));
+                    }
+                    return lista;
+                });
+
+                var pokemonesObtenidos = new List<PokemonUser>();
+                var repoHist = new HistoricoTiradasRepository();
+
+                foreach (var (poke, _) in sorteos)
+                {
+                    var obtenido = await _pokemonUserService.ObtenerPokemonAsync(
+                        poke.numero_pokedex, poke.Nombre,
+                        poke.TipoPrincipal, poke.TipoSecundario,
+                        poke.EstadisticasBase?.Ps ?? 0);
+
+                    // Fecha como string ISO 8601 para que Flask la acepte y deserialice sin problemas
+                    await repoHist.RegistrarTirada(new HistoricoTirada
+                    {
+                        UserId        = Usuario.Id,
+                        PokemonId     = poke.numero_pokedex,
+                        NombrePokemon = poke.Nombre,
+                        Zona          = NombreZona,
+                        TipoTirada    = "multi",
+                        Fecha         = DateTime.Now.ToString("o")  // ISO 8601 round-trip
+                    });
+
+                    if (obtenido != null)
+                        pokemonesObtenidos.Add(obtenido);
+                }
+
+                await ActualizarFichasAsync();
+                Fichas = Usuario.FichasCasino;
+
+                if (pokemonesObtenidos == null || pokemonesObtenidos.Count == 0)
+                {
+                    MessageBox.Show("No se obtuvieron Pokémon en la tirada múltiple.", "Resultado", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var vmResultados = new ResultadoTiradasViewModel(NombreZona);
+                vmResultados.Cargar(pokemonesObtenidos);
+                var ventanaResultados = new ResultadoTiradasView(vmResultados);
+                ventanaResultados.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                ventanaResultados.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[TiradaMultiAsync] Excepción: {ex}");
+                try { await ActualizarFichasAsync(); }
+                catch (Exception inner) { Debug.WriteLine($"[TiradaMultiAsync] Error al refrescar fichas: {inner}"); }
+                MessageBox.Show($"Error al realizar la tirada múltiple:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
-        var vmResultados = new ResultadoTiradasViewModel(NombreZona);
-        vmResultados.Cargar(pokemonesObtenidos);
-
-        var ventanaResultados = new ResultadoTiradasView(vmResultados);
-        ventanaResultados.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
-        ventanaResultados.ShowDialog();
-    }
-    catch (Exception ex)
-    {
-        Debug.WriteLine($"[TiradaMultiAsync] Excepción: {ex}");
-
-        try
-        {
-            await ActualizarFichasAsync();
-        }
-        catch (Exception inner)
-        {
-            Debug.WriteLine($"[TiradaMultiAsync] Error al refrescar fichas tras excepción: {inner}");
-        }
-
-        MessageBox.Show(
-            $"Error al realizar la tirada múltiple:\n{ex.Message}",
-            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-}
 
         // ----------------------------------------------------------------
         // Helpers
@@ -420,55 +385,51 @@ private async Task TiradaMultiAsync()
             return sb.ToString().Normalize(NormalizationForm.FormC).ToLowerInvariant();
         }
 
-private async Task MostrarPokemonAsync()
-{
-    try
-    {
-        var zona = await Task.Run(() =>
+        private async Task MostrarPokemonAsync()
         {
-            var z = _zonaRepo.ObtenerPorNombre(NombreZona);
-            if (z != null) return z;
-            var todas = _zonaRepo.ObtenerTodas();
-            if (todas == null) return null;
-            var buscada = NormalizarNombres(NombreZona);
-            z = todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre) == buscada)
-                ?? todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre).Contains(buscada));
-            return z;
-        });
-
-        if (zona == null) { MessageBox.Show($"No se encontró '{NombreZona}'.", "Zona no encontrada"); return; }
-        if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show("Zona vacía.", "Zona vacía"); return; }
-
-        var items = await Task.Run(() =>
-        {
-            var lista = new System.Collections.Generic.List<MostrarPokemonViewModel.PokemonItemViewModel>();
-            foreach (var p in zona.Pokemon)
+            try
             {
-                var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-                if (poke == null)
-                    lista.Add(new MostrarPokemonViewModel.PokemonItemViewModel { Nombre = $"ID {p.numero_pokedex}", Probabilidad = p.prob });
-                else
-                    lista.Add(new MostrarPokemonViewModel.PokemonItemViewModel { Nombre = poke.Nombre, Probabilidad = p.prob });
+                var zona = await Task.Run(() =>
+                {
+                    var z = _zonaRepo.ObtenerPorNombre(NombreZona);
+                    if (z != null) return z;
+                    var todas = _zonaRepo.ObtenerTodas();
+                    if (todas == null) return null;
+                    var buscada = NormalizarNombres(NombreZona);
+                    z = todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre) == buscada)
+                        ?? todas.FirstOrDefault(x => NormalizarNombres(x?.Nombre).Contains(buscada));
+                    return z;
+                });
+
+                if (zona == null) { MessageBox.Show($"No se encontró '{NombreZona}'.", "Zona no encontrada"); return; }
+                if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show("Zona vacía.", "Zona vacía"); return; }
+
+                var items = await Task.Run(() =>
+                {
+                    var lista = new List<MostrarPokemonViewModel.PokemonItemViewModel>();
+                    foreach (var p in zona.Pokemon)
+                    {
+                        var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
+                        if (poke == null)
+                            lista.Add(new MostrarPokemonViewModel.PokemonItemViewModel { Nombre = $"ID {p.numero_pokedex}", Probabilidad = p.prob });
+                        else
+                            lista.Add(new MostrarPokemonViewModel.PokemonItemViewModel { Nombre = poke.Nombre, Probabilidad = p.prob });
+                    }
+                    return lista;
+                });
+
+                var vm = new MostrarPokemonViewModel(zona.Nombre);
+                vm.Cargar(items);
+                var ventana = new MostrarPokemonView(vm);
+                ventana.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                ventana.ShowDialog();
             }
-            return lista;
-        });
-
-        var vm = new MostrarPokemonViewModel(zona.Nombre);
-        vm.Cargar(items);
-
-        var ventana = new MostrarPokemonView(vm);
-        ventana.Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
-        ventana.ShowDialog();
-    }
-    catch (Exception ex)
-    {
-        Debug.WriteLine($"[MostrarPokemonAsync] Excepción: {ex}");
-        MessageBox.Show($"Error al mostrar los Pokémon de la zona:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-}
-
-
-        
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[MostrarPokemonAsync] Excepción: {ex}");
+                MessageBox.Show($"Error al mostrar los Pokémon de la zona:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         public void MostrarZonasBD()
         {
