@@ -21,14 +21,12 @@ namespace PK_Proyect.ViewModels
         private bool _teamSubmitted;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        // Lleva el battle_id para que el code-behind pueda abrir EquipoPokemon
         public event System.Action<string> BattleAccepted;
 
         public RelayCommand DesafiarCommand { get; }
         public RelayCommand UnirseCommand   { get; }
         public RelayCommand CancelCommand   { get; }
 
-        // Propiedades visuales
         public Brush BackgroundBrush  { get; }
         public FontFamily FontFamily  { get; }
         public Brush ButtonBackground { get; }
@@ -36,14 +34,12 @@ namespace PK_Proyect.ViewModels
         public double ButtonHeight { get; } = 40;
         public double InputHeight  { get; } = 36;
 
-        /// <summary>ID de la batalla activa (asignado tras aceptación).</summary>
         public string BattleId
         {
             get => _battleId;
             private set { _battleId = value; OnPropertyChanged(); }
         }
 
-        /// <summary>True cuando el equipo ya fue enviado al servidor.</summary>
         public bool TeamSubmitted
         {
             get => _teamSubmitted;
@@ -118,10 +114,6 @@ namespace PK_Proyect.ViewModels
         public bool IsValidBattleId => !string.IsNullOrWhiteSpace(IdBattleToJoin);
 
         // ── Enviar equipo al servidor ──────────────────────────────────────────
-        /// <summary>
-        /// Llama a POST /battles/{battleId}/teams con el team_id elegido.
-        /// Devuelve true si el servidor confirma el envío.
-        /// </summary>
         public async Task<bool> SubmitTeamAsync(string teamId)
         {
             if (string.IsNullOrWhiteSpace(BattleId) || string.IsNullOrWhiteSpace(teamId))
@@ -166,25 +158,19 @@ namespace PK_Proyect.ViewModels
             StatusMessage = "Enviando desafío...";
             try
             {
-                var sent = await _battleService.SendChallengeAsync(_currentUserId, IdUserToChallenge);
-                if (!sent) { StatusMessage = "Error al enviar desafío."; return; }
+                // SendChallengeAsync devuelve el battle_id creado por el servidor
+                string battleId = await _battleService.SendChallengeAsync(_currentUserId, IdUserToChallenge);
 
-                StatusMessage = "Esperando respuesta...";
-                // WaitForAcceptanceAsync hace polling hasta que la batalla queda "active".
-                // El ID de la batalla coincide con el ID del usuario desafiado (mismo endpoint).
-                var accepted = await _battleService.WaitForAcceptanceAsync(IdUserToChallenge);
-                if (accepted)
+                if (string.IsNullOrWhiteSpace(battleId))
                 {
-                    // El BattleId se usa para el equipo; reutilizamos IdUserToChallenge
-                    // porque el endpoint /battles/{id}/teams espera ese mismo identificador.
-                    BattleId      = IdUserToChallenge;
-                    StatusMessage = "¡Desafío aceptado!";
-                    OnBattleAccepted(BattleId);
+                    StatusMessage = "Error al enviar desafío.";
+                    return;
                 }
-                else
-                {
-                    StatusMessage = "El desafío fue rechazado o expiró.";
-                }
+
+                // Tenemos el battle_id real → entramos directamente a la batalla
+                BattleId      = battleId;
+                StatusMessage = "¡Desafío enviado! Entrando a la batalla...";
+                OnBattleAccepted(BattleId);
             }
             catch (System.Exception ex)
             {
