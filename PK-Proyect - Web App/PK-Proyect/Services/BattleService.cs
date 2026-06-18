@@ -4,35 +4,45 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PK_Proyect.Services
 {
-    /// <summary>
-    /// Implementación HTTP de IBattleService alineada con los endpoints de app.py.
-    /// </summary>
     public class BattleService : IBattleService
     {
         private readonly HttpClient _http;
 
         public BattleService(HttpClient http) { _http = http; }
-
-        /// <summary>Usa el HttpClient compartido con token JWT ya configurado.</summary>
         public BattleService() : this(ApiClient.Client) { }
 
         // ── POST /battle_requests/<rival_id> ─────────────────────────────
-        // El servidor crea la batalla y devuelve { battle_id: "..." }
-        // El challengerId ya va implícito en el JWT; solo se pasa el rival en la URL.
         public async Task<string?> SendChallengeAsync(string challengerId, string challengedId)
         {
             try
             {
-                // challengerId está en el token JWT — no hace falta en el body.
                 var r = await _http.PostAsJsonAsync($"/battle_requests/{challengedId}", new { });
+                var rawJson = await r.Content.ReadAsStringAsync();
+
+                // ► DEBUG temporal: muestra el JSON crudo del servidor
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show(
+                        $"Status: {(int)r.StatusCode}\n\nJSON:\n{rawJson}",
+                        "[DEBUG] Respuesta /battle_requests",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information));
+
                 if (!r.IsSuccessStatusCode) return null;
-                var data = await r.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+
+                var data = System.Text.Json.JsonDocument.Parse(rawJson).RootElement;
                 return data.TryGetProperty("battle_id", out var id) ? id.GetString() : null;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                    MessageBox.Show($"Excepción en SendChallengeAsync:\n{ex}",
+                        "[DEBUG] Error", MessageBoxButton.OK, MessageBoxImage.Error));
+                return null;
+            }
         }
 
         // ── GET /battles/{battleId} ──────────────────────────────────────
@@ -42,8 +52,7 @@ namespace PK_Proyect.Services
             catch { return null; }
         }
 
-        // ── WaitForAcceptance: polling hasta status != pending_acceptance ─
-        // El servidor usa: pending_acceptance → pending → ready → in_progress
+        // ── WaitForAcceptance: polling hasta status != pending_acceptance ────
         public async Task<bool> WaitForAcceptanceAsync(string battleId)
         {
             var deadline = DateTime.UtcNow.AddSeconds(120);
@@ -52,23 +61,18 @@ namespace PK_Proyect.Services
                 try
                 {
                     var state = await GetBattleStateAsync(battleId);
-                    if (state == null)                             { await Task.Delay(2000); continue; }
-                    if (state.Status == "cancelled")               return false;
-                    if (state.Status != "pending_acceptance")      return true;  // aceptado
+                    if (state == null)                        { await Task.Delay(2000); continue; }
+                    if (state.Status == "cancelled")          return false;
+                    if (state.Status != "pending_acceptance") return true;
                 }
-                catch { /* red transitoria */ }
+                catch { }
                 await Task.Delay(2000);
             }
-            return false; // timeout
+            return false;
         }
 
-        // ── POST /battles/{battleId}/teams ───────────────────────────────
         public async Task<bool> RequestJoinAsync(string playerId, string battleId)
-        {
-            // Método legacy mantenido por compatibilidad con la interfaz.
-            // El flujo real usa SubmitTeamAsync desde SearchBattleViewModel.
-            return await Task.FromResult(true);
-        }
+            => await Task.FromResult(true);
 
         // ── POST /battles/{battleId}/choose_pokemon ──────────────────────
         public async Task<bool> ChoosePokemonAsync(string battleId, int pokemonIndex)
