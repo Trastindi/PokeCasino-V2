@@ -63,13 +63,12 @@
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8"/>
 
-                        <!-- Nº Pokédex -->
-                        <TextBlock FontFamily="{StaticResource PokemonClassic}"
+                        <!-- Nº Pokédex — TextBlock simple con Mode=OneWay para evitar error TwoWay en propiedad readonly -->
+                        <TextBlock Text="{Binding NumeroPokedex, Mode=OneWay, StringFormat='#{0}'}"
+                                   FontFamily="{StaticResource PokemonClassic}"
                                    FontSize="13" HorizontalAlignment="Center"
                                    Foreground="#555"
-                                   Margin="0,0,0,2">
-                            <Run Text="#"/><Run Text="{Binding NumeroPokedex}"/>
-                        </TextBlock>
+                                   Margin="0,0,0,2"/>
 
                         <!-- Separador -->
                         <Separator Margin="0,6,0,6" Background="#BBAA88"/>
@@ -80,7 +79,7 @@
                                 <TextBlock Text="Nivel: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding Nivel}"
+                                <TextBlock Text="{Binding Nivel, Mode=OneWay}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -89,10 +88,10 @@
                                 <TextBlock Text="Tipo: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding TipoPrincipal}"
+                                <TextBlock Text="{Binding TipoPrincipal, Mode=OneWay}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
-                                <TextBlock Text="{Binding TipoSecundario, StringFormat=' / {0}'}"
+                                <TextBlock Text="{Binding TipoSecundario, Mode=OneWay, StringFormat=' / {0}'}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="#555"/>
                             </StackPanel>
@@ -101,7 +100,7 @@
                                 <TextBlock Text="Habilidad: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding Habilidad}"
+                                <TextBlock Text="{Binding Habilidad, Mode=OneWay}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -110,7 +109,7 @@
                                 <TextBlock Text="Objeto: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding Objeto}"
+                                <TextBlock Text="{Binding Objeto, Mode=OneWay}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -119,7 +118,7 @@
                                 <TextBlock Text="Obtenido: "
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" FontWeight="Bold" Foreground="#333"/>
-                                <TextBlock Text="{Binding FechaObtenido}"
+                                <TextBlock Text="{Binding FechaObtenido, Mode=OneWay}"
                                            FontFamily="{StaticResource PokemonClassic}"
                                            FontSize="13" Foreground="Black"/>
                             </StackPanel>
@@ -148,32 +147,32 @@
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="PS"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding StatPs}"
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding StatPs, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Ataque"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding StatAtaque}"
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding StatAtaque, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Defensa"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding StatDefensa}"
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding StatDefensa, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Atk. Esp."
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding StatAtaqueEspecial}"
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding StatAtaqueEspecial, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Def. Esp."
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding StatDefensaEspecial}"
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding StatDefensaEspecial, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
 
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="Velocidad"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" Foreground="#333"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding StatVelocidad}"
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding StatVelocidad, Mode=OneWay}"
                                        FontFamily="{StaticResource PokemonClassic}" FontSize="12" FontWeight="Bold" Foreground="Black"/>
                         </Grid>
 
@@ -188,7 +187,7 @@
                                    Foreground="{StaticResource PkBlue}"
                                    Margin="0,0,0,4"/>
 
-                        <ItemsControl ItemsSource="{Binding Movimientos}" Margin="8,0,8,8">
+                        <ItemsControl ItemsSource="{Binding Movimientos, Mode=OneWay}" Margin="8,0,8,8">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Background="#D0C090" BorderBrush="Black" BorderThickness="1"
