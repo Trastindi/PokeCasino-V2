@@ -212,8 +212,8 @@ def register():
         "Password":       hash_password(password),
         "Birthdate":      birthdate,
         "Role":           "user",
-        "Pokes":          300,
-        "FichasCasino":   0,
+        "Pokes":          3000,
+        "FichasCasino":   9000,
         "Medallas":       [],
         "Messages":       [
             {
