@@ -14,6 +14,7 @@ import os
 from functools import wraps
 from bson import ObjectId
 from ability_hooks import apply_hooks
+from intercambios import register_trade_routes
 
 app = Flask(__name__)
 CORS(app)
@@ -105,6 +106,7 @@ try:
     tabla_tipos      = _db["TablaTipos"]
     historico_tiradas = _db["HistoricoTiradas"]
     battles          = _db["Battles"]
+    trades           = _db["Trades"]  
     usuarios         = _db["Users"]
     pokemon_user     = _db["PokemonUser"]
     zonas            = _db["Zonas"]
@@ -1957,6 +1959,10 @@ def team_clone(current_user, pokemon_id):
     except Exception:
         return jsonify({"error": "error al extraer los movimientos"}), 500
 
+# ---------------------------------------------------------------------------
+# REGISTRO DE RUTAS DE INTERCAMBIO
+# ---------------------------------------------------------------------------
+register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, pokedex, token_required, gf)
 
 # ---------------------------------------------------------------------------
 # MAIN
