@@ -237,8 +237,8 @@ namespace PK_Proyect.ViewModels.Banners
             poke.TipoPrincipal, poke.TipoSecundario,
             poke.EstadisticasBase?.Ps ?? 0);
 
-        // Registrar histórico en background
-        await Task.Run(() => new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
+        // Registrar histórico directamente con await
+        await new HistoricoTiradasRepository().RegistrarTirada(new HistoricoTirada
         {
             UserId = Usuario.Id,
             PokemonId = poke.numero_pokedex,
@@ -246,7 +246,7 @@ namespace PK_Proyect.ViewModels.Banners
             Zona = NombreZona,
             TipoTirada = "single",
             Fecha = DateTime.Now
-        }));
+        });
 
         // Refrescar fichas desde servidor y actualizar propiedad
         await ActualizarFichasAsync();
@@ -273,7 +273,6 @@ namespace PK_Proyect.ViewModels.Banners
     {
         Debug.WriteLine($"[TiradaSingleAsync] Excepción: {ex}");
 
-        // Intentar refrescar fichas para mantener consistencia si el cobro ya se realizó
         try
         {
             await ActualizarFichasAsync();
@@ -335,7 +334,8 @@ private async Task TiradaMultiAsync()
                 poke.TipoPrincipal, poke.TipoSecundario,
                 poke.EstadisticasBase?.Ps ?? 0);
 
-            await Task.Run(() => repoHist.RegistrarTirada(new HistoricoTirada
+            // Registrar histórico directamente con await
+            await repoHist.RegistrarTirada(new HistoricoTirada
             {
                 UserId = Usuario.Id,
                 PokemonId = poke.numero_pokedex,
@@ -343,7 +343,7 @@ private async Task TiradaMultiAsync()
                 Zona = NombreZona,
                 TipoTirada = "multi",
                 Fecha = DateTime.Now
-            }));
+            });
 
             if (obtenido != null)
                 pokemonesObtenidos.Add(obtenido);
@@ -370,7 +370,6 @@ private async Task TiradaMultiAsync()
     {
         Debug.WriteLine($"[TiradaMultiAsync] Excepción: {ex}");
 
-        // Intentar refrescar fichas por si el cobro parcial se aplicó
         try
         {
             await ActualizarFichasAsync();
@@ -400,7 +399,6 @@ private async Task TiradaMultiAsync()
             catch (Exception ex)
             {
                 Debug.WriteLine($"[ActualizarFichasAsync] Error al refrescar fichas: {ex.Message}");
-                // No cerramos la app: simplemente actualizamos con el valor local
                 Fichas = Usuario.FichasCasino;
                 MessageBox.Show(
                     "No se pudieron refrescar las fichas desde el servidor.\nSe muestra el saldo local.",
@@ -408,30 +406,10 @@ private async Task TiradaMultiAsync()
             }
         }
 
-        // private void MostrarPokemon()
-        // {
-        //     var zona = _zonaRepo.ObtenerPorNombre(NombreZona);
-        //     if (zona == null) { MessageBox.Show($"No se encontr\u00f3 '{NombreZona}'.", "Zona no encontrada"); return; }
-        //     if (zona.Pokemon == null || zona.Pokemon.Count == 0) { MessageBox.Show($"Zona vac\u00eda.", "Zona vac\u00eda"); return; }
-
-        //     string lista = "";
-        //     foreach (var p in zona.Pokemon)
-        //     {
-        //         var poke = _pokedexRepo.ObtenerPorId(p.numero_pokedex);
-        //         lista += poke == null
-        //             ? $"ID {p.numero_pokedex} (No encontrado) - Prob: {p.prob}%\n"
-        //             : $"{poke.Nombre} - Prob: {p.prob}%\n";
-        //     }
-        //     MessageBox.Show(lista, $"Pok\u00e9mon disponibles en {zona.Nombre}");
-        // }
-
-
         private static string NormalizarNombres(string s)
         {
             if (string.IsNullOrWhiteSpace(s)) return string.Empty;
-            // Trim, colapsar espacios múltiples, pasar a minúsculas
             var trimmed = System.Text.RegularExpressions.Regex.Replace(s.Trim(), @"\s+", " ");
-            // Normalizar y quitar diacríticos (tildes)
             var normalized = trimmed.Normalize(NormalizationForm.FormD);
             var sb = new StringBuilder();
             foreach (var ch in normalized)
