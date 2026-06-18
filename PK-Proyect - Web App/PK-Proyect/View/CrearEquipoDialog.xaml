@@ -1,0 +1,68 @@
+<Window x:Class="PK_Proyect.View.CrearEquipoDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nuevo Equipo"
+        Height="200" Width="380"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="Transparent"
+        AllowsTransparency="True">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PkYellow" Color="#FFD733"/>
+        <SolidColorBrush x:Key="PkBlue"   Color="#2A2AA8"/>
+        <SolidColorBrush x:Key="PkRed"    Color="#E00000"/>
+        <SolidColorBrush x:Key="PkWhite"  Color="#FFFFFF"/>
+    </Window.Resources>
+
+    <Border CornerRadius="14" BorderThickness="3"
+            BorderBrush="{StaticResource PkBlue}"
+            Background="#FFF5F2DF">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <TextBlock Grid.Row="0"
+                       Text="NOMBRE DEL EQUIPO"
+                       FontFamily="{StaticResource PokemonClassic}"
+                       FontSize="14" FontWeight="Bold"
+                       Foreground="{StaticResource PkBlue}"
+                       VerticalAlignment="Center"/>
+
+            <!-- Input -->
+            <TextBox Grid.Row="1"
+                     x:Name="txtNombre"
+                     FontFamily="{StaticResource PokemonClassic}"
+                     FontSize="15"
+                     BorderBrush="{StaticResource PkBlue}"
+                     BorderThickness="2"
+                     Padding="6,4"
+                     VerticalAlignment="Center"
+                     MaxLength="30"/>
+
+            <!-- Botones -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Cancelar"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        FontSize="13"
+                        Background="#888" Foreground="White"
+                        BorderBrush="{StaticResource PkBlue}" BorderThickness="2"
+                        Padding="10,5" Cursor="Hand" Margin="0,0,8,0"
+                        Click="btnCancelar_Click"/>
+                <Button Content="Crear"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        FontSize="13"
+                        Background="{StaticResource PkBlue}" Foreground="White"
+                        BorderBrush="{StaticResource PkRed}" BorderThickness="2"
+                        Padding="10,5" Cursor="Hand"
+                        Click="btnCrear_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

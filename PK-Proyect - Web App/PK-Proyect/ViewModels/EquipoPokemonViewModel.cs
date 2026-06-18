@@ -1,60 +1,92 @@
 using PK_Proyect.Commands;
 using PK_Proyect.Models;
 using PK_Proyect.Repositories;
+using PK_Proyect.View;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PK_Proyect.ViewModels
 {
     public class EquipoPokemonViewModel
     {
-        private readonly PokemonUserRepository _repo;
+        private readonly EquipoRepository     _equipoRepo;
+        private readonly PokemonUserRepository _pokemonRepo;
+        private readonly string               _userId;
 
-        // Modo normal: gestionar equipo. Modo seleccion: elegir equipo para batalla.
+        // Modo selección: elegir equipo para batalla
         public bool ModoSeleccion { get; }
 
-        public ObservableCollection<PokemonUser> Equipo { get; set; }
+        public ObservableCollection<Equipo> Equipos { get; } = new ObservableCollection<Equipo>();
 
-        // Evento: el jugador confirmo su equipo (modo seleccion)
+        // Eventos para modo selección (compatibilidad con BattleWindow)
         public event Action<ObservableCollection<PokemonUser>> EquipoConfirmado;
-
-        // Evento: el jugador cancelo la seleccion
         public event Action SeleccionCancelada;
 
-        public ICommand ConfirmarEquipoCommand { get; }
-        public ICommand CancelarCommand        { get; }
+        public ICommand CrearEquipoCommand   { get; }
+        public ICommand VerDetalleCommand    { get; }
+        public ICommand CancelarCommand      { get; }
 
         public EquipoPokemonViewModel(string userId, bool modoSeleccion = false)
         {
-            _repo         = new PokemonUserRepository();
+            _userId       = userId;
             ModoSeleccion = modoSeleccion;
-            Equipo        = new ObservableCollection<PokemonUser>();
+            _equipoRepo   = new EquipoRepository();
+            _pokemonRepo  = new PokemonUserRepository();
 
-            ConfirmarEquipoCommand = new RelayCommand(
-                _ => EquipoConfirmado?.Invoke(Equipo),
-                _ => Equipo.Count > 0
-            );
+            CrearEquipoCommand = new RelayCommand(_ => CrearEquipo());
+            VerDetalleCommand  = new RelayCommand(equipo => AbrirDetalle(equipo as Equipo));
+            CancelarCommand    = new RelayCommand(_ => SeleccionCancelada?.Invoke());
 
-            CancelarCommand = new RelayCommand(
-                _ => SeleccionCancelada?.Invoke()
-            );
-
-            _ = CargarEquipoAsync(userId);
+            _ = CargarEquiposAsync();
         }
 
-        private async Task CargarEquipoAsync(string userId)
+        private async Task CargarEquiposAsync()
         {
-            var lista = await Task.Run(() =>
-                _repo.GetPokemonsByUser(userId)
-                    .OrderBy(p => p.PokemonId)
-                    .ToList()
-            );
+            var lista = await Task.Run(() => _equipoRepo.GetEquiposByUser(_userId));
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Equipos.Clear();
+                foreach (var e in lista)
+                    Equipos.Add(e);
+            });
+        }
 
-            foreach (var p in lista)
-                Equipo.Add(p);
+        private void CrearEquipo()
+        {
+            var dialog = new CrearEquipoDialog();
+            if (dialog.ShowDialog() != true) return;
+
+            var nombre = dialog.NombreEquipo?.Trim();
+            if (string.IsNullOrEmpty(nombre)) return;
+
+            _ = Task.Run(async () =>
+            {
+                var nuevo = await Task.Run(() => _equipoRepo.CrearEquipo(_userId, nombre));
+                if (nuevo != null)
+                    Application.Current.Dispatcher.Invoke(() => Equipos.Add(nuevo));
+            });
+        }
+
+        private void AbrirDetalle(Equipo equipo)
+        {
+            if (equipo == null) return;
+            var vm = new DetalleEquipoViewModel(_userId, equipo);
+            var ventana = new DetalleEquipoView(vm);
+
+            if (ModoSeleccion)
+            {
+                // En modo selección confirmamos el equipo elegido
+                vm.EquipoSeleccionado += pokes =>
+                {
+                    EquipoConfirmado?.Invoke(pokes);
+                    ventana.Close();
+                };
+            }
+
+            ventana.ShowDialog();
         }
     }
 }

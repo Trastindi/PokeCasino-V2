@@ -1,18 +1,19 @@
-using System.Windows;
 using PK_Proyect.ViewModels;
+using System.Windows;
+using System.Windows.Input;
 
 namespace PK_Proyect.View
 {
     public partial class EquipoPokemonView : Window
     {
-        // Constructor normal: gestion de equipo desde el menu
+        // Constructor normal: gestión desde el menú
         public EquipoPokemonView(EquipoPokemonViewModel vm)
         {
             InitializeComponent();
             DataContext = vm;
         }
 
-        // Constructor modo seleccion: elegir equipo antes de la batalla
+        // Constructor modo selección: elegir equipo antes de la batalla
         public EquipoPokemonView(EquipoPokemonViewModel vm, bool modoSeleccion)
         {
             InitializeComponent();
@@ -20,13 +21,17 @@ namespace PK_Proyect.View
 
             if (modoSeleccion)
             {
-                // Adaptar titulo para dejar claro al usuario que debe elegir su equipo
                 Title = "Elige tu equipo para la batalla";
-
-                // Cerrar la ventana automaticamente si el VM confirma o cancela
-                vm.EquipoConfirmado  += _ => this.Close();
-                vm.SeleccionCancelada += () => this.Close();
+                vm.EquipoConfirmado   += _ => Close();
+                vm.SeleccionCancelada += () => Close();
             }
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e) => Close();
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
     }
 }
