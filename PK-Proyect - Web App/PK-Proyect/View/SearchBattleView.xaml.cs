@@ -32,7 +32,7 @@ namespace PK_Proyect.View
                         {
                             equipoView.Close();
                             this.Close();
-                            var battleWindow = new BattleWindowView(battleService, currentUserId);
+                            var battleWindow = new BattleWindowView(battleService, battleId);
                             battleWindow.Show();
                         }
                         else
