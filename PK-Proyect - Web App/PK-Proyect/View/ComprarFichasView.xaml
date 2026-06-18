@@ -26,24 +26,25 @@
                        Foreground="Black"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Comprar 300"
+                
+                <Button x:Name ="btnComprar30" Content="Comprar 300"
                         FontFamily="{StaticResource PokemonClassic}"
                         Width="90" Height="30"
                         Margin="5"
                         FontSize="7"
-                        Background="#E0D0A8"
-                        Click="Comprar30"/>
-
-                <Button Content="Comprar 3000"
-                        Width="90" Height="30"
-                        FontFamily="{StaticResource PokemonClassic}"
-                        FontSize="7"
-                        Margin="5"
                         Background="#E0D0A8"
                         Click="Comprar300"/>
+
+                <Button x:Name ="btnComprar300" Content="Comprar 3000"
+                        Width="90" Height="30"
+                        FontFamily="{StaticResource PokemonClassic}"
+                        FontSize="7"
+                        Margin="5"
+                        Background="#E0D0A8"
+                        Click="Comprar3000"/>
             </StackPanel>
 
-            <Button Content="Cancelar"
+            <Button x:Name ="btnCancelar" Content="Cancelar"
                     Width="100" Height="28"
                     FontFamily="{StaticResource PokemonClassic}"
                     FontSize="10"
