@@ -6,14 +6,14 @@ namespace PK_Proyect.Services
 {
     public class BattleService : IBattleService
     {
-        // POST /battles/challenge  {target_id: ...}
+        // POST /battle_requests/{targetUserId}
         public async Task<bool> SendChallengeAsync(string currentUserId, string targetUserId)
         {
             try
             {
                 var result = await ApiClient.PostAsync<object>(
-                    "/battles/challenge",
-                    new { target_id = targetUserId }
+                    $"/battle_requests/{targetUserId}",
+                    (object?)null
                 );
                 return result != null;
             }
