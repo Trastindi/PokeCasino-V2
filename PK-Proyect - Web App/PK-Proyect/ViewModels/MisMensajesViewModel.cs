@@ -14,11 +14,9 @@ namespace PK_Proyect.ViewModels
     {
         private readonly MensajeRepository _repo;
 
-        /// <summary>Lista de mensajes recibidos por el usuario autenticado.</summary>
         public ObservableCollection<Mensaje> Mensajes { get; set; }
 
         private Mensaje _mensajeSeleccionado;
-        /// <summary>Mensaje actualmente seleccionado en la lista.</summary>
         public Mensaje MensajeSeleccionado
         {
             get => _mensajeSeleccionado;
@@ -37,11 +35,11 @@ namespace PK_Proyect.ViewModels
         public event Action<string> IntercambioAceptado;
 
         // --- Comandos ---
-        public ICommand SeleccionarMensajeCommand    { get; }
-        public ICommand AceptarDesafioCommand        { get; }
-        public ICommand RechazarDesafioCommand       { get; }
-        public ICommand AceptarIntercambioCommand    { get; }
-        public ICommand RechazarIntercambioCommand   { get; }
+        public ICommand SeleccionarMensajeCommand  { get; }
+        public ICommand AceptarDesafioCommand      { get; }
+        public ICommand RechazarDesafioCommand     { get; }
+        public ICommand AceptarIntercambioCommand  { get; }
+        public ICommand RechazarIntercambioCommand { get; }
 
         public MisMensajesViewModel()
         {
@@ -52,10 +50,11 @@ namespace PK_Proyect.ViewModels
                 param => MensajeSeleccionado = param as Mensaje
             );
 
+            // CanExecute simplificado: solo requiere que el tipo sea correcto.
+            // La validación del ID se hace dentro del método para dar feedback al usuario.
             AceptarDesafioCommand = new RelayCommand(
                 _ => AceptarDesafio(),
                 _ => MensajeSeleccionado?.Tipo == "battle_request"
-                     && !string.IsNullOrEmpty(MensajeSeleccionado.TipoBatallaId)
             );
 
             RechazarDesafioCommand = new RelayCommand(
@@ -66,7 +65,6 @@ namespace PK_Proyect.ViewModels
             AceptarIntercambioCommand = new RelayCommand(
                 _ => AceptarIntercambio(),
                 _ => MensajeSeleccionado?.Tipo == "trade_request"
-                     && !string.IsNullOrEmpty(MensajeSeleccionado.TradeId)
             );
 
             RechazarIntercambioCommand = new RelayCommand(
@@ -77,17 +75,20 @@ namespace PK_Proyect.ViewModels
             _ = CargarMensajesAsync();
         }
 
-        // ── Acciones ────────────────────────────────────────────────────────────
+        // ── Acciones ─────────────────────────────────────────────────────
 
         private void AceptarDesafio()
         {
-            if (MensajeSeleccionado == null
-                || string.IsNullOrEmpty(MensajeSeleccionado.TipoBatallaId))
+            if (MensajeSeleccionado == null) return;
+
+            var id = MensajeSeleccionado.TipoBatallaId;
+            if (string.IsNullOrEmpty(id))
             {
-                MessageBox.Show("Selecciona un mensaje de desafío primero.");
+                MessageBox.Show("Este mensaje no tiene un ID de batalla válido.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            BatallaAceptada?.Invoke(MensajeSeleccionado.TipoBatallaId);
+            BatallaAceptada?.Invoke(id);
         }
 
         private async void RechazarDesafio()
@@ -104,13 +105,16 @@ namespace PK_Proyect.ViewModels
 
         private void AceptarIntercambio()
         {
-            if (MensajeSeleccionado == null
-                || string.IsNullOrEmpty(MensajeSeleccionado.TradeId))
+            if (MensajeSeleccionado == null) return;
+
+            var id = MensajeSeleccionado.TradeId;
+            if (string.IsNullOrEmpty(id))
             {
-                MessageBox.Show("Selecciona un mensaje de intercambio primero.");
+                MessageBox.Show("Este mensaje no tiene un ID de intercambio válido.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            IntercambioAceptado?.Invoke(MensajeSeleccionado.TradeId);
+            IntercambioAceptado?.Invoke(id);
         }
 
         private async void RechazarIntercambio()
