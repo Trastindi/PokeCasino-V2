@@ -1,6 +1,5 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -21,9 +20,8 @@ namespace PK_Proyect.Repositories
         private static readonly HttpClient _http = CreateDefaultClient();
 
         /// <summary>
-        /// FIX CS0117: Expone el HttpClient interno como propiedad pública estática
-        /// para que BattleService pueda inyectarlo con ApiClient.Client.
-        /// El cliente ya tiene BaseAddress y Authorization configurados.
+        /// HttpClient compartido (ya tiene BaseAddress y Authorization configurados).
+        /// Usado por BattleService con ApiClient.Client.
         /// </summary>
         public static HttpClient Client => _http;
 
@@ -33,10 +31,6 @@ namespace PK_Proyect.Repositories
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        /// <summary>
-        /// Crea el HttpClient con un User-Agent válido para evitar que Cloudflare
-        /// bloquee las peticiones.
-        /// </summary>
         private static HttpClient CreateDefaultClient()
         {
             var client = new HttpClient();
@@ -77,6 +71,8 @@ namespace PK_Proyect.Repositories
             => new StringContent(JsonSerializer.Serialize(body, _jsonOptions),
                                  Encoding.UTF8, "application/json");
 
+        // ── Async ────────────────────────────────────────────────────────────────
+
         public static async System.Threading.Tasks.Task<T> GetAsync<T>(string path)
         {
             var r = await _http.GetAsync(path);
@@ -104,11 +100,22 @@ namespace PK_Proyect.Repositories
             r.EnsureSuccessStatusCode();
         }
 
+        // ── Sync (wrappers bloqueantes para repositorios síncronos) ──────────────
+
         public static T Get<T>(string path)
             => GetAsync<T>(path).GetAwaiter().GetResult();
+
         public static T Post<T>(string path, object body)
             => PostAsync<T>(path, body).GetAwaiter().GetResult();
+
         public static T Put<T>(string path, object body)
             => PutAsync<T>(path, body).GetAwaiter().GetResult();
+
+        /// <summary>
+        /// FIX CS0117: wrapper síncrono de DeleteAsync.
+        /// Usado por MensajeRepository, AdminRepository y EquipoRepository.
+        /// </summary>
+        public static void Delete(string path)
+            => DeleteAsync(path).GetAwaiter().GetResult();
     }
 }

@@ -24,7 +24,6 @@ namespace PK_Proyect.View
                     var equipoVm   = new EquipoPokemonViewModel(modoSeleccion: true);
                     var equipoView = new EquipoPokemonView(equipoVm, modoSeleccion: true);
 
-                    // Al confirmar el equipo elegido, enviarlo al servidor
                     equipoVm.EquipoConfirmado += async teamId =>
                     {
                         var ok = await vm.SubmitTeamAsync(teamId);
@@ -32,10 +31,12 @@ namespace PK_Proyect.View
                         {
                             equipoView.Close();
                             this.Close();
-                            // FIX CS1739: BattleWindowView NO tiene parámetro skipTeamSelection.
-                            // El equipo ya se envió en SubmitTeamAsync; simplemente abrimos la batalla.
-                            var battleWindow = new BattleWindowView(battleService, battleId,
-                                                                    myPlayerId: currentUserId);
+                            // FIX CS1739: BattleWindowView solo acepta (battleService, battleId, myPlayerId).
+                            // NO existe el parámetro skipTeamSelection.
+                            var battleWindow = new BattleWindowView(
+                                battleService,
+                                battleId,
+                                myPlayerId: currentUserId);
                             battleWindow.Show();
                         }
                         else
@@ -48,9 +49,7 @@ namespace PK_Proyect.View
                         }
                     };
 
-                    // Al cancelar la selección de equipo, solo cerrar esa ventana
                     equipoVm.SeleccionCancelada += () => equipoView.Close();
-
                     equipoView.Show();
                 });
             };
