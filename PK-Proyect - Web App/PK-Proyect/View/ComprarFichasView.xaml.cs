@@ -17,19 +17,19 @@ namespace PK_Proyect.Views
             _repo = new UserRepository();
         }
 
+        private void Comprar30(object sender, RoutedEventArgs e)
+        {
+            Comprar(30);
+        }
+
         private void Comprar300(object sender, RoutedEventArgs e)
         {
             Comprar(300);
         }
 
-        private void Comprar3000(object sender, RoutedEventArgs e)
-        {
-            Comprar(3000);
-        }
-
         private void Comprar(int cantidad)
         {
-            int precio = cantidad * 40;
+            int precio = cantidad * 4;
 
             if (_usuario.Pokes < precio)
             {
