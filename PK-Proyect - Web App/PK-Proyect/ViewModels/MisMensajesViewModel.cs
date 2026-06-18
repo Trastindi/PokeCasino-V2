@@ -17,30 +17,71 @@ namespace PK_Proyect.ViewModels
         /// <summary>Lista de mensajes recibidos por el usuario autenticado.</summary>
         public ObservableCollection<Mensaje> Mensajes { get; set; }
 
-        /// <summary>Mensaje seleccionado en la lista (binding desde la View).</summary>
-        public Mensaje MensajeSeleccionado { get; set; }
+        private Mensaje _mensajeSeleccionado;
+        /// <summary>Mensaje actualmente seleccionado en la lista.</summary>
+        public Mensaje MensajeSeleccionado
+        {
+            get => _mensajeSeleccionado;
+            set
+            {
+                _mensajeSeleccionado = value;
+                // Refresca el CanExecute de todos los comandos
+                ((RelayCommand)AceptarDesafioCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)RechazarDesafioCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)AceptarIntercambioCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)RechazarIntercambioCommand).RaiseCanExecuteChanged();
+            }
+        }
 
-        /// <summary>
-        /// Se dispara cuando el usuario acepta un desafío de batalla.
-        /// Parámetro: battleId del mensaje seleccionado.
-        /// </summary>
+        // --- Eventos hacia la View ---
+        /// <summary>Se dispara cuando el usuario acepta un desafío de batalla. Parámetro: battleId.</summary>
         public event Action<string> BatallaAceptada;
 
-        public ICommand AceptarDesafioCommand { get; }
+        /// <summary>Se dispara cuando el usuario acepta un intercambio. Parámetro: tradeId.</summary>
+        public event Action<string> IntercambioAceptado;
+
+        // --- Comandos ---
+        public ICommand SeleccionarMensajeCommand { get; }
+        public ICommand AceptarDesafioCommand     { get; }
+        public ICommand RechazarDesafioCommand    { get; }
+        public ICommand AceptarIntercambioCommand { get; }
+        public ICommand RechazarIntercambioCommand { get; }
 
         public MisMensajesViewModel()
         {
             _repo    = new MensajeRepository();
             Mensajes = new ObservableCollection<Mensaje>();
 
+            SeleccionarMensajeCommand = new RelayCommand(
+                param => MensajeSeleccionado = param as Mensaje
+            );
+
             AceptarDesafioCommand = new RelayCommand(
                 _ => AceptarDesafio(),
-                _ => MensajeSeleccionado != null
+                _ => MensajeSeleccionado?.Tipo == "battle_request"
                      && !string.IsNullOrEmpty(MensajeSeleccionado.TipoBatallaId)
+            );
+
+            RechazarDesafioCommand = new RelayCommand(
+                _ => RechazarDesafio(),
+                _ => MensajeSeleccionado?.Tipo == "battle_request"
+            );
+
+            AceptarIntercambioCommand = new RelayCommand(
+                _ => AceptarIntercambio(),
+                _ => MensajeSeleccionado?.Tipo == "trade_request"
+                     && !string.IsNullOrEmpty(MensajeSeleccionado.TradeId)
+            );
+
+            RechazarIntercambioCommand = new RelayCommand(
+                _ => RechazarIntercambio(),
+                _ => MensajeSeleccionado?.Tipo == "trade_request"
             );
 
             _ = CargarMensajesAsync();
         }
+
+        // ── Acciones ────────────────────────────────────────────────────────────
 
         private void AceptarDesafio()
         {
@@ -50,9 +91,42 @@ namespace PK_Proyect.ViewModels
                 MessageBox.Show("Selecciona un mensaje de desafío primero.");
                 return;
             }
-
-            // Notifica a la View con el battleId para que abra BattleWindowView
             BatallaAceptada?.Invoke(MensajeSeleccionado.TipoBatallaId);
+        }
+
+        private async void RechazarDesafio()
+        {
+            if (MensajeSeleccionado == null) return;
+
+            await Task.Run(() => _repo.EliminarMensaje(MensajeSeleccionado.Id));
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Mensajes.Remove(MensajeSeleccionado);
+                MensajeSeleccionado = null;
+            });
+        }
+
+        private void AceptarIntercambio()
+        {
+            if (MensajeSeleccionado == null
+                || string.IsNullOrEmpty(MensajeSeleccionado.TradeId))
+            {
+                MessageBox.Show("Selecciona un mensaje de intercambio primero.");
+                return;
+            }
+            IntercambioAceptado?.Invoke(MensajeSeleccionado.TradeId);
+        }
+
+        private async void RechazarIntercambio()
+        {
+            if (MensajeSeleccionado == null) return;
+
+            await Task.Run(() => _repo.EliminarMensaje(MensajeSeleccionado.Id));
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Mensajes.Remove(MensajeSeleccionado);
+                MensajeSeleccionado = null;
+            });
         }
 
         private async Task CargarMensajesAsync()
