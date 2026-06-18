@@ -1865,8 +1865,6 @@ def create_pokemon_team(current_user):
 
         if not team_name:
             return jsonify({"error": "Falta el nombre del equipo"}), 400
-        if not isinstance(pokemon_ids, list) or len(pokemon_ids) == 0:
-            return jsonify({"error": "pokemon_ids debe ser una lista no vacía"}), 400
         if len(pokemon_ids) > 6:
             return jsonify({"error": "Un equipo no puede tener más de 6 Pokémon"}), 400
 
