@@ -5,7 +5,6 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Width="780" Height="500"
-        Background="{Binding BackgroundBrush}"
         FontFamily="{StaticResource PokemonClassic}"
         KeyDown="Window_KeyDown"
         Closed="Window_Closed">
@@ -13,7 +12,6 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <!-- Botón de acción principal (azul) -->
         <Style x:Key="RoundedButton" TargetType="Button">
             <Setter Property="Background" Value="#FF3B82F6"/>
             <Setter Property="Foreground" Value="White"/>
@@ -42,7 +40,6 @@
             </Setter>
         </Style>
 
-        <!-- Botón de movimiento (oscuro, alineado izquierda) -->
         <Style x:Key="MoveButton" TargetType="Button">
             <Setter Property="Background" Value="#FF1E3A5F"/>
             <Setter Property="Foreground" Value="White"/>
@@ -67,10 +64,6 @@
             </Setter>
         </Style>
 
-        <!-- Tarjeta de Pokémon seleccionable -->
-        <!-- NOTA: PickCard ya NO se asigna como Style="{StaticResource PickCard}" en los Border
-             de las DataTemplate. En su lugar se usa Border.Style directamente con BasedOn.
-             Esto evita el error XLS0501 "Style ya establecida más de una vez". -->
         <Style x:Key="PickCard" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#CCCCCC"/>
@@ -85,9 +78,9 @@
     <Border BorderBrush="Black" BorderThickness="4" Background="#FFF3C04A" Padding="10">
         <Grid>
 
-            <!-- ===========================================================
+            <!-- ===============================================================
                  PANEL 1: READY — Selección inicial de Pokémon
-                 =========================================================== -->
+                 =============================================================== -->
             <Grid Visibility="{Binding ShowPokemonPicker, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -105,8 +98,6 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!-- FIX XLS0501/XDG0039: NO Style=PickCard + Border.Style al mismo tiempo.
-                                     Usar solo Border.Style con BasedOn para heredar y añadir triggers. -->
                                 <Border Width="130" Height="155">
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource PickCard}">
@@ -141,16 +132,17 @@
                 </ScrollViewer>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-                    <TextBlock Text="{Binding BattleMessage}" VerticalAlignment="Center" Margin="0,0,16,0" Foreground="#FF666666" FontSize="11"/>
+                    <TextBlock Text="{Binding BattleMessage}" VerticalAlignment="Center" Margin="0,0,16,0"
+                               Foreground="#FF666666" FontSize="11"/>
                     <Button Content="► Combatir" Style="{StaticResource RoundedButton}"
                             Command="{Binding ConfirmPickCommand}" IsEnabled="{Binding CanConfirmPick}"
                             Padding="16,8"/>
                 </StackPanel>
             </Grid>
 
-            <!-- ===========================================================
+            <!-- ===============================================================
                  PANEL 2: CHOOSING_ACTION — Combate activo
-                 =========================================================== -->
+                 =============================================================== -->
             <Grid Visibility="{Binding ShowBattle, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>   <!-- rival -->
@@ -177,9 +169,9 @@
                     </Border>
                 </Grid>
 
-                <!-- Log del turno -->
+                <!-- Log del turno (histórico, siempre visible en background) -->
                 <Border Grid.Row="1" Background="#22000000" CornerRadius="4" Padding="6" Margin="0,4">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" x:Name="LogScroll">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding TurnLog}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -210,11 +202,59 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- FIX XDG0040: Border solo puede tener un hijo directo.
-                         Envolver ambos Grid (acciones y movimientos) en un solo Grid padre. -->
+                    <!-- Menú de acciones / movimientos -->
                     <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" Background="#FFF8F0D8"
                             CornerRadius="6" Padding="8" Margin="8,0,0,0">
                         <Grid>
+
+                            <!-- ===================================================
+                                 RESUMEN DEL TURNO
+                                 Aparece justo después de cada acción, encima del
+                                 menú de acciones. El jugador lo cierra pulsando
+                                 "Continuar" o Space/Enter.
+                                 =================================================== -->
+                            <Border Visibility="{Binding ShowTurnSummary, Converter={StaticResource BoolToVis}}"
+                                    Background="#F0F8F0D8" BorderBrush="#FF2C3E50" BorderThickness="2"
+                                    CornerRadius="6" Padding="10" Panel.ZIndex="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Título -->
+                                    <TextBlock Grid.Row="0"
+                                               Text="— Resumen del turno —"
+                                               FontWeight="Bold" FontSize="12"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#FF2C3E50"
+                                               Margin="0,0,0,8"/>
+
+                                    <!-- Líneas del log del servidor -->
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding LastTurnSummary}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           FontSize="11"
+                                                           Foreground="#FF2C3E50"
+                                                           TextWrapping="Wrap"
+                                                           Margin="0,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Botón continuar -->
+                                    <Button Grid.Row="2"
+                                            Content="Continuar ►"
+                                            Style="{StaticResource RoundedButton}"
+                                            Command="{Binding DismissTurnSummaryCommand}"
+                                            HorizontalAlignment="Right"
+                                            Padding="14,6" Margin="0,10,0,0"
+                                            FontSize="11"/>
+                                </Grid>
+                            </Border>
+
                             <!-- Acciones -->
                             <Grid Visibility="{Binding ShowActions, Converter={StaticResource BoolToVis}}">
                                 <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
@@ -237,38 +277,27 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Button Grid.Row="0" Grid.Column="0" Style="{StaticResource MoveButton}"
-                                        Command="{Binding UseMoveCommand}" Margin="4" Height="40"
-                                        CommandParameter="{Binding PlayerMoves[0]}"
-                                        Content="{Binding PlayerMoves[0].Name}"
-                                        IsEnabled="{Binding IsBattleActive}"/>
-                                <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource MoveButton}"
-                                        Command="{Binding UseMoveCommand}" Margin="4" Height="40"
-                                        CommandParameter="{Binding PlayerMoves[1]}"
-                                        Content="{Binding PlayerMoves[1].Name}"
-                                        IsEnabled="{Binding IsBattleActive}"/>
-                                <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource MoveButton}"
-                                        Command="{Binding UseMoveCommand}" Margin="4" Height="40"
-                                        CommandParameter="{Binding PlayerMoves[2]}"
-                                        Content="{Binding PlayerMoves[2].Name}"
-                                        IsEnabled="{Binding IsBattleActive}"/>
-                                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MoveButton}"
-                                        Command="{Binding UseMoveCommand}" Margin="4" Height="40"
-                                        CommandParameter="{Binding PlayerMoves[3]}"
-                                        Content="{Binding PlayerMoves[3].Name}"
-                                        IsEnabled="{Binding IsBattleActive}"/>
+                                <Button Grid.Row="0" Grid.Column="0" Style="{StaticResource MoveButton}" Command="{Binding UseMoveCommand}"
+                                        Margin="4" Height="40" CommandParameter="{Binding PlayerMoves[0]}" Content="{Binding PlayerMoves[0].Name}" IsEnabled="{Binding IsBattleActive}"/>
+                                <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource MoveButton}" Command="{Binding UseMoveCommand}"
+                                        Margin="4" Height="40" CommandParameter="{Binding PlayerMoves[1]}" Content="{Binding PlayerMoves[1].Name}" IsEnabled="{Binding IsBattleActive}"/>
+                                <Button Grid.Row="1" Grid.Column="0" Style="{StaticResource MoveButton}" Command="{Binding UseMoveCommand}"
+                                        Margin="4" Height="40" CommandParameter="{Binding PlayerMoves[2]}" Content="{Binding PlayerMoves[2].Name}" IsEnabled="{Binding IsBattleActive}"/>
+                                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MoveButton}" Command="{Binding UseMoveCommand}"
+                                        Margin="4" Height="40" CommandParameter="{Binding PlayerMoves[3]}" Content="{Binding PlayerMoves[3].Name}" IsEnabled="{Binding IsBattleActive}"/>
                                 <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                         Style="{StaticResource RoundedButton}" Content="← Volver"
                                         Command="{Binding BackToActionsCommand}" Margin="4,8,4,0" Height="32"/>
                             </Grid>
+
                         </Grid>
                     </Border>
                 </Grid>
             </Grid>
 
-            <!-- ===========================================================
+            <!-- ===============================================================
                  PANEL 3: WAITING_SWITCH — Cambio forzado
-                 =========================================================== -->
+                 =============================================================== -->
             <Grid Visibility="{Binding ShowForcedSwitch, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -287,7 +316,6 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!-- FIX XLS0501: mismo patrón que Panel 1 -->
                                 <Border Width="130" Height="155">
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource PickCard}">
@@ -326,17 +354,15 @@
                         HorizontalAlignment="Right" Padding="16,8" Margin="0,8,0,0"/>
             </Grid>
 
-            <!-- ===========================================================
+            <!-- ===============================================================
                  PANEL 4: FINISHED — Resultado final
-                 =========================================================== -->
+                 =============================================================== -->
             <Grid Visibility="{Binding ShowFinished, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="32">
                     <TextBlock Text="{Binding FinishMessage}"
                                FontWeight="Bold" FontSize="22"
-                               HorizontalAlignment="Center"
-                               Foreground="#FF2C3E50"
-                               TextWrapping="Wrap"
-                               Margin="0,0,0,24"/>
+                               HorizontalAlignment="Center" Foreground="#FF2C3E50"
+                               TextWrapping="Wrap" Margin="0,0,0,24"/>
 
                     <Border Background="#22000000" CornerRadius="4" Padding="8" MaxHeight="160" Margin="0,0,0,20">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
