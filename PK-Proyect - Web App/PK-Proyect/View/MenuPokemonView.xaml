@@ -203,7 +203,7 @@
                     FontSize="36"
                     Width="80"
                     Height="80"
-                    Command="{Binding AbrirMensajesCommand}" 
+                    Command="{Binding AbrirMisMensajesCommand}" 
                     Margin="0,118,881,353"
                     
                     Grid.Row="1" 
