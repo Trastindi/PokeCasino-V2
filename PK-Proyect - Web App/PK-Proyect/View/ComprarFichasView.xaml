@@ -32,7 +32,7 @@
                         Margin="5"
                         FontSize="7"
                         Background="#E0D0A8"
-                        Click="Comprar300"/>
+                        Click="Comprar30"/>
 
                 <Button Content="Comprar 3000"
                         Width="90" Height="30"
@@ -40,7 +40,7 @@
                         FontSize="7"
                         Margin="5"
                         Background="#E0D0A8"
-                        Click="Comprar3000"/>
+                        Click="Comprar300"/>
             </StackPanel>
 
             <Button Content="Cancelar"
