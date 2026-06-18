@@ -12,7 +12,9 @@ using System.Windows.Media.Imaging;
 
 namespace PK_Proyect.ViewModels
 {
-    public class BattleWindowViewModel : BaseViewModel, IDisposable
+    // FIX CS0103: hereda de ViewModelBase (la clase base real del proyecto),
+    // no de BaseViewModel que no existe.
+    public class BattleWindowViewModel : ViewModelBase, IDisposable
     {
         // ─ Dependencias ──────────────────────────────────────────────────────────
         private readonly IBattleService _battleService;
@@ -31,21 +33,15 @@ namespace PK_Proyect.ViewModels
         private bool _showBattle;
         private bool _showForcedSwitch;
         private bool _showFinished;
-        private bool _showTurnSummary;   // <─ NUEVO: panel de resumen de turno
+        private bool _showTurnSummary;
 
         public bool ShowPokemonPicker { get => _showPokemonPicker; set { _showPokemonPicker = value; OnPropertyChanged(); } }
         public bool ShowBattle        { get => _showBattle;        set { _showBattle        = value; OnPropertyChanged(); } }
         public bool ShowForcedSwitch  { get => _showForcedSwitch;  set { _showForcedSwitch  = value; OnPropertyChanged(); } }
         public bool ShowFinished      { get => _showFinished;      set { _showFinished      = value; OnPropertyChanged(); } }
+        public bool ShowTurnSummary   { get => _showTurnSummary;   set { _showTurnSummary   = value; OnPropertyChanged(); } }
 
-        /// <summary>True mientras se muestra el resumen del último turno.</summary>
-        public bool ShowTurnSummary
-        {
-            get => _showTurnSummary;
-            set { _showTurnSummary = value; OnPropertyChanged(); }
-        }
-
-        // ─═ Sub-paneles del panel de batalla ═───────────────────────────────────────────
+        // ─═ Sub-paneles ═─────────────────────────────────────────────────────────────────────
         private bool _showActions = true;
         private bool _showMoves;
         public bool ShowActions { get => _showActions; set { _showActions = value; OnPropertyChanged(); } }
@@ -73,9 +69,9 @@ namespace PK_Proyect.ViewModels
 
         // ─═ Movimientos ═────────────────────────────────────────────────────────────────
         public ObservableCollection<MoveModel>         PlayerMoves { get; } = new();
-
-        // ─═ Equipo (picker) ═───────────────────────────────────────────────────────────
         public ObservableCollection<PokemonEquipoItem> Equipo      { get; } = new();
+        public ObservableCollection<string>            TurnLog     { get; } = new();
+        public ObservableCollection<string>            LastTurnSummary { get; } = new();
 
         private PokemonEquipoItem? _selectedPokemon;
         public  PokemonEquipoItem? SelectedPokemon
@@ -92,43 +88,28 @@ namespace PK_Proyect.ViewModels
         }
         public bool CanConfirmPick => _selectedPokemon != null && !_selectedPokemon.EstaDerrotado;
 
-        // ─═ Log histórico (panel final) ═──────────────────────────────────────────────────
-        public ObservableCollection<string> TurnLog { get; } = new();
-
-        // ─═ Resumen del último turno (nuevo panel visible al final de turno) ═────────
-        /// <summary>Líneas del último turno recibidas del servidor.</summary>
-        public ObservableCollection<string> LastTurnSummary { get; } = new();
-
-        // ─═ Mensajes generales ═─────────────────────────────────────────────────────
         private string _battleMessage = "Elige tu Pokémon inicial.";
         public  string BattleMessage  { get => _battleMessage; set { _battleMessage = value; OnPropertyChanged(); } }
 
-        // ─═ Estado activo ═───────────────────────────────────────────────────────────
         private bool _isBattleActive;
         public  bool IsBattleActive  { get => _isBattleActive; set { _isBattleActive = value; OnPropertyChanged(); } }
 
-        // ─═ Pantalla final ═────────────────────────────────────────────────────────────
         private string _finishMessage = string.Empty;
         public  string FinishMessage  { get => _finishMessage; set { _finishMessage = value; OnPropertyChanged(); } }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  COMANDOS
-        // ═══════════════════════════════════════════════════════════════════════════
-        public ICommand ConfirmPickCommand    { get; }
-        public ICommand OpenMovesCommand      { get; }
-        public ICommand BackToActionsCommand  { get; }
-        public ICommand UseMoveCommand        { get; }
-        public ICommand SwitchPokemonCommand  { get; }
-        public ICommand ConfirmSwitchCommand  { get; }
-        public ICommand UseItemCommand        { get; }
-        public ICommand RunCommand            { get; }
-        public ICommand CloseCommand          { get; }
-        /// <summary>Cierra el panel de resumen y habilita el menú de acciones.</summary>
+        // ─═ Comandos ═─────────────────────────────────────────────────────────────────────
+        public ICommand ConfirmPickCommand        { get; }
+        public ICommand OpenMovesCommand          { get; }
+        public ICommand BackToActionsCommand      { get; }
+        public ICommand UseMoveCommand            { get; }
+        public ICommand SwitchPokemonCommand      { get; }
+        public ICommand ConfirmSwitchCommand      { get; }
+        public ICommand UseItemCommand            { get; }
+        public ICommand RunCommand                { get; }
+        public ICommand CloseCommand              { get; }
         public ICommand DismissTurnSummaryCommand { get; }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  CONSTRUCTOR
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Constructor ═─────────────────────────────────────────────────────────────────────
 
         public BattleWindowViewModel(IBattleService battleService,
                                      string?        battleId   = null,
@@ -155,9 +136,7 @@ namespace PK_Proyect.ViewModels
                 _ = IniciarBatallaAsync();
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  INICIO
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Inicio ═───────────────────────────────────────────────────────────────────────
 
         private async void IniciarBatallaAsync()
         {
@@ -165,25 +144,20 @@ namespace PK_Proyect.ViewModels
             {
                 var state = await _battleService.GetBattleStateAsync(_battleId!);
                 if (state == null) { BattleMessage = "Error al cargar la batalla."; return; }
-
                 var myTeam = state.GetTeamOf(_myPlayerId!);
                 Equipo.Clear();
                 foreach (var pk in myTeam)
                     Equipo.Add(PokemonEquipoItem.FromBattlePokemon(pk));
-
                 BattleMessage = "Elige tu Pokémon inicial.";
             }
             catch (Exception ex) { BattleMessage = $"Error: {ex.Message}"; }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  CONFIRMAR POKÉMON
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Confirmar Pokémon ═─────────────────────────────────────────────────────────────
 
         private async void ConfirmPickAsync()
         {
             if (_selectedPokemon == null) return;
-
             if (string.IsNullOrEmpty(_battleId))
             {
                 ApplyDemoPokemon(_selectedPokemon);
@@ -192,7 +166,6 @@ namespace PK_Proyect.ViewModels
                 IsBattleActive    = true;
                 return;
             }
-
             int idx = Equipo.IndexOf(_selectedPokemon);
             try
             {
@@ -206,9 +179,7 @@ namespace PK_Proyect.ViewModels
             catch (Exception ex) { BattleMessage = ex.Message; }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  POLLING
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Polling ═───────────────────────────────────────────────────────────────────────
 
         private async Task PollLoopAsync()
         {
@@ -226,13 +197,10 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  APLICAR ESTADO
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Aplicar estado ═──────────────────────────────────────────────────────────────────
 
         private string _lastSeenTurnLogHash = string.Empty;
 
-        /// <param name="fromPoll">True cuando viene del polling; false cuando es respuesta directa de un movimiento.</param>
         private void ApplyState(BattleState state, bool fromPoll = false)
         {
             var myPk  = state.GetActivePokemonOf(_myPlayerId!);
@@ -273,25 +241,19 @@ namespace PK_Proyect.ViewModels
                 OnPropertyChanged(nameof(OpponentHpText));
             }
 
-            // ── Resumen de turno ─────────────────────────────────────────────────
-            // Solo mostramos el resumen si el turn_log ha cambiado desde el último que vimos.
-            // Esto evita que el panel vuelva a aparecer en cada tick del polling.
+            // Resumen de turno
             if (state.TurnLog != null && state.TurnLog.Count > 0)
             {
-                // Calculamos un "hash" simple concatenando las líneas
                 string logHash = string.Join("|", state.TurnLog);
                 if (logHash != _lastSeenTurnLogHash)
                 {
                     _lastSeenTurnLogHash = logHash;
                     ShowTurnSummaryLines(state.TurnLog);
                 }
-
-                // Acumulamos en el log histórico del panel de victoria
                 foreach (var msg in state.TurnLog)
                     if (!TurnLog.Contains(msg)) TurnLog.Add(msg);
             }
 
-            // ── Estado de la batalla ────────────────────────────────────────────────
             switch (state.Status)
             {
                 case "choosing_action":
@@ -306,7 +268,7 @@ namespace PK_Proyect.ViewModels
                         BattleMessage    = "Tu Pokémon fue derrotado. Elige otro.";
                         ShowBattle       = false;
                         ShowForcedSwitch = true;
-                        ShowTurnSummary  = false;  // no bloquear la elección de cambio
+                        ShowTurnSummary  = false;
                     }
                     break;
 
@@ -321,39 +283,30 @@ namespace PK_Proyect.ViewModels
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  RESUMEN DE TURNO
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Resumen de turno ═───────────────────────────────────────────────────────────────
 
         private void ShowTurnSummaryLines(List<string> lines)
         {
             LastTurnSummary.Clear();
-            foreach (var line in lines)
-                LastTurnSummary.Add(line);
+            foreach (var line in lines) LastTurnSummary.Add(line);
             ShowTurnSummary = true;
-            IsBattleActive  = false;   // bloquear acciones mientras se lee el resumen
+            IsBattleActive  = false;
         }
 
         private void DismissTurnSummary()
         {
             ShowTurnSummary = false;
-            // Solo reactivar acciones si la batalla sigue activa
-            if (ShowBattle)
-                IsBattleActive = true;
+            if (ShowBattle) IsBattleActive = true;
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  USAR MOVIMIENTO
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Usar movimiento ═────────────────────────────────────────────────────────────────────
 
         private async Task UseMoveAsync(MoveModel? move)
         {
             if (move == null || string.IsNullOrEmpty(_battleId)) return;
-
             IsBattleActive = false;
-            ShowMoves      = false;
-            ShowActions    = true;
-
+            ShowMoves  = false;
+            ShowActions = true;
             try
             {
                 var result = await _battleService.UseMoveAsync(_battleId!, move.Name);
@@ -361,12 +314,9 @@ namespace PK_Proyect.ViewModels
                     Application.Current.Dispatcher.Invoke(() => ApplyState(result.NewState));
             }
             catch (Exception ex) { TurnLog.Add($"Error: {ex.Message}"); }
-            // IsBattleActive se recupera cuando el jugador descarta el resumen
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  CAMBIO DE POKÉMON
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Cambio de Pokémon ═─────────────────────────────────────────────────────────────────
 
         private Task ShowSwitchPanel()
         {
@@ -382,16 +332,13 @@ namespace PK_Proyect.ViewModels
             int idx = Equipo.IndexOf(_selectedPokemon);
             if (!string.IsNullOrEmpty(_battleId))
                 await _battleService.SwitchPokemonAsync(_battleId!, idx);
-
             ShowForcedSwitch = false;
             ShowBattle       = true;
             IsBattleActive   = true;
             SelectedPokemon  = null;
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  PLACEHOLDER (modo demo)
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Placeholder (modo demo) ═────────────────────────────────────────────────────────
 
         private void ApplyDemoPokemon(PokemonEquipoItem pk)
         {
@@ -404,7 +351,6 @@ namespace PK_Proyect.ViewModels
             OnPropertyChanged(nameof(PlayerHpText));
             PlayerMoves.Clear();
             foreach (var m in pk.Movimientos) PlayerMoves.Add(m);
-
             OpponentName   = "Rival";
             OpponentLevel  = 5;
             _opponentHp    = 20;
@@ -456,9 +402,7 @@ namespace PK_Proyect.ViewModels
             });
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        //  HELPERS
-        // ═══════════════════════════════════════════════════════════════════════════
+        // ─═ Helpers ═───────────────────────────────────────────────────────────────────────
 
         private static BitmapImage? LoadBitmap(string? url)
         {
