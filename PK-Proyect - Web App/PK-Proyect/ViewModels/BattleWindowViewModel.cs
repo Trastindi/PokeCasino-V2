@@ -361,13 +361,13 @@ namespace PK_Proyect.ViewModels
         {
             BattleMessage = "Modo demo (sin servidor).";
             for (int i = 1; i <= 3; i++)
-                Equipo.Add(new PokemonEquipoItem { Name = $"Pokémon {i}", Level = 5 });
+                Equipo.Add(new PokemonEquipoItem { Nombre = $"Pokémon {i}", Nivel = 5 });
         }
 
         private void ApplyDemoPokemon(PokemonEquipoItem pk)
         {
-            PlayerName   = pk.Name;
-            PlayerLevel  = pk.Level;
+            PlayerName   = pk.Nombre;
+            PlayerLevel  = pk.Nivel;
             _playerHp = _playerMaxHp = 100;
             OnPropertyChanged(nameof(PlayerHpPercent));
             OnPropertyChanged(nameof(PlayerHpText));
