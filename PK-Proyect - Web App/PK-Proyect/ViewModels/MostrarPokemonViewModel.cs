@@ -13,7 +13,7 @@ namespace PK_Proyect.ViewModels
 
         public MostrarPokemonViewModel(string nombreZona)
         {
-            Titulo = $"Pokémon Disponibles";
+            Titulo = $"Probabilidades";
         }
 
         public void Cargar(System.Collections.Generic.IEnumerable<PokemonItemViewModel> items)
