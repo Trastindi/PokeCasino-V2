@@ -430,7 +430,9 @@ def register_trade_routes(app, usuarios, mensajes, pokemon_user, trades, pokedex
             return jsonify({"error": "Error interno del servidor"}), 500
 
     # ── LISTAR INTERCAMBIOS DEL USUARIO ───────────────────────────────────
-    @app.get("/trades")
+    # strict_slashes=False evita la redirección 301 /trades → /trades/
+    # que ApiClient no sigue y resulta en un 404.
+    @app.get("/trades", strict_slashes=False)
     @token_required
     def list_trades(current_user):
         try:

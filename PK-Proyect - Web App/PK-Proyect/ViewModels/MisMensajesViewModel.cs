@@ -27,12 +27,18 @@ namespace PK_Proyect.ViewModels
                 ((RelayCommand)RechazarDesafioCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)AceptarIntercambioCommand).RaiseCanExecuteChanged();
                 ((RelayCommand)RechazarIntercambioCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)AbrirIntercambioCommand).RaiseCanExecuteChanged();
             }
         }
 
         // --- Eventos hacia la View ---
         public event Action<string> BatallaAceptada;
+
+        /// <summary>Disparado cuando el RECEPTOR acepta: tradeId es el msgId a responder.</summary>
         public event Action<string> IntercambioAceptado;
+
+        /// <summary>Disparado cuando el REMITENTE abre su trade_response: tradeId ya existe en BD.</summary>
+        public event Action<string> IntercambioAbiertoPorRemitente;
 
         // --- Comandos ---
         public ICommand SeleccionarMensajeCommand  { get; }
@@ -40,6 +46,12 @@ namespace PK_Proyect.ViewModels
         public ICommand RechazarDesafioCommand     { get; }
         public ICommand AceptarIntercambioCommand  { get; }
         public ICommand RechazarIntercambioCommand { get; }
+
+        /// <summary>
+        /// Abre directamente un intercambio ya existente (para el remitente
+        /// que recibe un mensaje de tipo "trade_response" cuando el rival acepta).
+        /// </summary>
+        public ICommand AbrirIntercambioCommand { get; }
 
         public MisMensajesViewModel()
         {
@@ -70,6 +82,13 @@ namespace PK_Proyect.ViewModels
                 _ => MensajeSeleccionado?.Tipo == "trade_request"
             );
 
+            // Disponible solo para mensajes tipo "trade_response" (el remitente recibe
+            // este mensaje cuando el rival acepta; ya contiene el trade_id creado).
+            AbrirIntercambioCommand = new RelayCommand(
+                _ => AbrirIntercambioExistente(),
+                _ => MensajeSeleccionado?.Tipo == "trade_response"
+            );
+
             _ = CargarMensajesAsync();
         }
 
@@ -79,7 +98,6 @@ namespace PK_Proyect.ViewModels
         {
             if (MensajeSeleccionado == null) return;
 
-            // Usa TipoBatallaId si existe, si no cae en el propio Id del mensaje
             var id = MensajeSeleccionado.TipoBatallaId;
             if (string.IsNullOrEmpty(id))
             {
@@ -125,6 +143,28 @@ namespace PK_Proyect.ViewModels
                 Mensajes.Remove(MensajeSeleccionado);
                 MensajeSeleccionado = null;
             });
+        }
+
+        /// <summary>
+        /// Para el REMITENTE: el mensaje es de tipo "trade_response" y ya trae
+        /// el trade_id generado por el servidor. Solo hay que abrir la ventana
+        /// de intercambio y cargar ese trade directamente (sin volver a llamar
+        /// a /trade_requests/.../respond).
+        /// </summary>
+        private void AbrirIntercambioExistente()
+        {
+            if (MensajeSeleccionado == null) return;
+
+            var tradeId = MensajeSeleccionado.TradeId;
+            if (string.IsNullOrEmpty(tradeId))
+            {
+                MessageBox.Show(
+                    "Este mensaje no contiene un ID de intercambio válido.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            IntercambioAbiertoPorRemitente?.Invoke(tradeId);
         }
 
         private async Task CargarMensajesAsync()
