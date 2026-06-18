@@ -9,8 +9,9 @@ namespace PK_Proyect.Services
     {
         /// <summary>
         /// Envía un desafío a otro usuario.
+        /// Devuelve el battle_id creado, o null si falla.
         /// </summary>
-        Task<bool> SendChallengeAsync(string currentUserId, string targetUserId);
+        Task<string> SendChallengeAsync(string currentUserId, string targetUserId);
 
         /// <summary>
         /// Solicita unirse a una batalla existente.

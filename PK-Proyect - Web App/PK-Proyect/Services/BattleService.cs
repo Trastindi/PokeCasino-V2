@@ -6,21 +6,31 @@ namespace PK_Proyect.Services
 {
     public class BattleService : IBattleService
     {
+        // DTO auxiliar para leer la respuesta del POST /battle_requests/{targetUserId}
+        private class BattleRequestResponse
+        {
+            public string id { get; set; }        // battle_id devuelto por el servidor
+            public string battle_id { get; set; } // por si el servidor usa este campo
+        }
+
         // POST /battle_requests/{targetUserId}
-        public async Task<bool> SendChallengeAsync(string currentUserId, string targetUserId)
+        // Devuelve el battle_id creado, o null si falla.
+        public async Task<string> SendChallengeAsync(string currentUserId, string targetUserId)
         {
             try
             {
-                var result = await ApiClient.PostAsync<object>(
+                var result = await ApiClient.PostAsync<BattleRequestResponse>(
                     $"/battle_requests/{targetUserId}",
                     (object?)null
                 );
-                return result != null;
+
+                // El servidor puede devolver el id en "id" o "battle_id"
+                return result?.battle_id ?? result?.id;
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show($"Error al enviar desafio: {ex.Message}");
-                return false;
+                return null;
             }
         }
 
