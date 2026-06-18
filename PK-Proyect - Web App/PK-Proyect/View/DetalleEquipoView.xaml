@@ -59,30 +59,49 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderBrush="Black" BorderThickness="2"
-                                        Margin="4,4,4,0" Padding="8"
-                                        Background="#E0D0A8">
-                                    <StackPanel Orientation="Horizontal">
+                    Margin="4,4,4,0" Padding="8"
+                    Background="#E0D0A8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                        <!-- Sprite -->
-                                        <Image Source="{Binding Sprite}"
-                                               Width="64" Height="64"
-                                               Margin="0,0,12,0"/>
+                                        <!-- Sprite usando SpriteUrl del wrapper -->
+                                        <Image Source="{Binding SpriteUrl}"
+                           Width="64" Height="64"
+                           Margin="0,0,12,0"/>
 
                                         <!-- Info -->
-                                        <StackPanel VerticalAlignment="Center">
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Nombre}"
-                                                       FontFamily="{StaticResource PokemonClassic}"
-                                                       FontSize="17" FontWeight="Bold"
-                                                       Foreground="Black"/>
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="17" FontWeight="Bold"
+                                   Foreground="Black"/>
                                             <TextBlock Text="{Binding Nivel, StringFormat='Nivel: {0}'}"
-                                                       FontFamily="{StaticResource PokemonClassic}"
-                                                       FontSize="12" Foreground="#333"/>
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="12" Foreground="#333"/>
                                             <TextBlock Text="{Binding TipoPrincipal, StringFormat='Tipo: {0}'}"
-                                                       FontFamily="{StaticResource PokemonClassic}"
-                                                       FontSize="12" Foreground="#555"/>
+                                   FontFamily="{StaticResource PokemonClassic}"
+                                   FontSize="12" Foreground="#555"/>
                                         </StackPanel>
 
-                                    </StackPanel>
+                                        <!-- Botón eliminar (X rojo) -->
+                                        <Button Grid.Column="2"
+                            Content="X"
+                            Width="28" Height="28"
+                            FontFamily="{StaticResource PokemonClassic}"
+                            FontSize="14"
+                            Foreground="{StaticResource PkWhite}"
+                            Background="{StaticResource PkRed}"
+                            BorderBrush="{StaticResource PkBlue}"
+                            BorderThickness="2"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Command="{Binding DataContext.RemovePokemonCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"/>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -96,10 +115,10 @@
                                             <Setter.Value>
                                                 <ControlTemplate>
                                                     <TextBlock Text="Este equipo no tiene integrantes aún."
-                                                               FontFamily="{StaticResource PokemonClassic}"
-                                                               FontSize="12" Foreground="#888"
-                                                               HorizontalAlignment="Center"
-                                                               Margin="0,40,0,0"/>
+                                           FontFamily="{StaticResource PokemonClassic}"
+                                           FontSize="12" Foreground="#888"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,40,0,0"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
